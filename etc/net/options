@@ -19,7 +19,7 @@ LSMOD=/sbin/lsmod
 INSMOD=/sbin/insmod
 SYSCTL=/sbin/sysctl
 # for MAPDESCR
-IFRENAME=/usr/local/sbin/ifrename
+IFRENAME=/sbin/ifrename
 # for LINKDETECT
 IFPLUGSTATUS=/sbin/ifplugstatus
 DEFAULT_VCONFIG=/usr/bin/vconfig
