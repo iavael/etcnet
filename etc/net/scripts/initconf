@@ -124,8 +124,10 @@ for iface in `$IP li | egrep '^[[:digit:]]+: ' | cut --delimiter=' ' --fields=2 
 			;;
 		esac
 	fi
-	[ -n "$IPV4ADDRS" ] && store $IFACEDIR/$iface/ipv4address "$IPV4ADDRS"
-	IPV4ROUTES=`$IP -4 ro ls dev $iface type unicast scope global | fgrep -v 'proto zebra' | tr '\n' '\t' | sed 's/\t/ NEWLINE /g' | sed 's/ NEWLINE /\\\\n/g'`
-	[ -n "$IPV4ROUTES" ] && store $IFACEDIR/$iface/ipv4route "$IPV4ROUTES"
+	if [ -n "$IPV4ADDRS" ]; then
+		store $IFACEDIR/$iface/ipv4address "$IPV4ADDRS"
+		IPV4ROUTES=`$IP -4 ro ls dev $iface type unicast scope global | fgrep -v 'proto zebra' | tr '\n' '\t' | sed 's/\t/ NEWLINE /g' | sed 's/ NEWLINE /\\\\n/g'`
+		[ -n "$IPV4ROUTES" ] && store $IFACEDIR/$iface/ipv4route "$IPV4ROUTES"
+	fi
 	echo ' finished'
 done
