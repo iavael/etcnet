@@ -8,7 +8,7 @@
 
 usage()
 {
-	echo "Usage: $0 <interface>"
+	echo "Usage: $0 <interface>" > /dev/stderr
 	exit 1
 }
 
@@ -25,28 +25,28 @@ pickup_options
 
 # 1. check constraints
 is_yes "$DISABLED" && {
-	echo -n 'skipped disabled iface '
+	print_message -n 'skipped disabled iface '
   exit 1
 }
 
 if [ "$2" = "boot" ]; then
 	is_no "$ONBOOT" && {
-		echo -n 'skipped on boot '
+		print_message -n 'skipped on boot '
 	  exit 1
 	}
 	is_yes "$USE_HOTPLUG" && {
-		echo -n 'skipped hotplug iface on boot '
+		print_message -n 'skipped hotplug iface on boot '
 	  exit 1
 	}
 	is_yes "$USE_PCMCIA" && {
-		echo -n 'skipped PCMCIA iface on boot '
+		print_message -n 'skipped PCMCIA iface on boot '
 	  exit 1
 	}
 fi
 
 # 2. check if device already exists
 iface_is_up $NAME && {
-	echo -n "'$NAME' skipped, already up "
+	print_message -n "'$NAME' skipped, already up "
 	exit 1
 }
 
@@ -64,13 +64,13 @@ fi
 
 # 4. make device appear
 if ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME; then
-	echo -n '.'
+	print_message -n '.'
 else
-	echo -n '!'
+	print_message -n '!'
 	exit 1
 fi
 
 # 5. configure iface
 IFTAB_FILE=`profiled_filename $IFTAB`
-[ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -n "$NAME" >/dev/null 2>&1 && echo -n '.'
+[ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -n "$NAME" >/dev/null 2>&1 && print_message -n '.'
 $SCRIPTDIR/ifup-common $NAME

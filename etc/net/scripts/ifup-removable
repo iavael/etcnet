@@ -7,7 +7,7 @@
 
 usage()
 {
-	echo "Usage: $0 <device>"
+	echo "Usage: $0 <interface>" > /dev/stderr
 	exit 1
 }
 
@@ -39,7 +39,7 @@ SCRIPTDIR=/etc/net/scripts
 MAPPED_NAME=`get_mapped_ifname $NAME`
 if [ -n "$MAPPED_NAME" -a "$NAME" != "$MAPPED_NAME" ]; then
 	NAME=$MAPPED_NAME
-	echo -n '.'
+	print_message -n '.'
 fi
 
 MYIFACEDIR=$IFACEDIR/$NAME
@@ -49,7 +49,7 @@ init_profile
 pickup_options
 
 is_yes "$DISABLED" && {
-	echo -n 'skipped, disabled '
+	print_message -n 'skipped, disabled '
   exit 1
 }
 

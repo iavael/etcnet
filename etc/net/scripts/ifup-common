@@ -25,16 +25,16 @@ pickup_options
 ! is_yes "$IN_IFPLUGD" && {
 	# 2. handle wireless extensions
 	# Dunno if $IFACEDIR/default/iwconfig can be of any use
-	[ -s `profiled_filename $IFACEDIR/default/iwconfig` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iwconfig` | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
-	[ -s `profiled_filename $MYIFACEDIR/iwconfig` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iwconfig` | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
+	[ -s `profiled_filename $IFACEDIR/default/iwconfig` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iwconfig` | xargs --max-lines=1 $IWCONFIG $NAME ) && print_message -n '.'
+	[ -s `profiled_filename $MYIFACEDIR/iwconfig` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iwconfig` | xargs --max-lines=1 $IWCONFIG $NAME ) && print_message -n '.'
 
 	# 3. setup link-level params
 	# TODO: pickup default sysctl file?
-	[ -s `profiled_filename $MYIFACEDIR/sysctl.conf` ] && sysctl -p `profiled_filename $MYIFACEDIR/sysctl.conf` && echo -n '.'
+	[ -s `profiled_filename $MYIFACEDIR/sysctl.conf` ] && sysctl -p `profiled_filename $MYIFACEDIR/sysctl.conf` && print_message -n '.'
 	# TODO: for iplink in ...
-	[ -s `profiled_filename $IFACEDIR/default/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
-	[ -s `profiled_filename $IFACEDIR/default/iplink-$TYPE` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink-$TYPE` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
-	[ -s `profiled_filename $MYIFACEDIR/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+	[ -s `profiled_filename $IFACEDIR/default/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && print_message -n '.'
+	[ -s `profiled_filename $IFACEDIR/default/iplink-$TYPE` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink-$TYPE` | xargs --max-lines=1 $IP link set dev $NAME ) && print_message -n '.'
+	[ -s `profiled_filename $MYIFACEDIR/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && print_message -n '.'
 }
 
 is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
@@ -42,12 +42,12 @@ is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
 
 # 5. bring iface up
 if ! is_yes $KEEP_DOWN; then
-	ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && echo -n '.'
-	$IP link set dev $NAME up && echo -n '.'
+	ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && print_message -n '.'
+	$IP link set dev $NAME up && print_message -n '.'
 	if [ -x `profiled_filename $MYIFACEDIR/resolv.conf` ]; then
 		rm -f /etc/resolv.conf
 		ln -s `profiled_filename $MYIFACEDIR/resolv.conf` /etc/resolv.conf
-		echo -n '.'
+		print_message -n '.'
 	fi
 fi
 
@@ -58,18 +58,18 @@ is_yes $DONT_FLUSH || {
 	$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
 	$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
 	$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
-	echo -n '.'
+	print_message -n '.'
 }
-is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME && echo -n '.'
-is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME && echo -n '.'
-is_yes "$CONFIG_IPX" &&  ExecIfExecutable $SCRIPTDIR/config-ipx $NAME  && echo -n '.'
-is_yes "$CONFIG_QOS" &&  ExecIfExecutable $SCRIPTDIR/config-qos $NAME  && echo -n '.'
+is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME && print_message -n '.'
+is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME && print_message -n '.'
+is_yes "$CONFIG_IPX" &&  ExecIfExecutable $SCRIPTDIR/config-ipx $NAME  && print_message -n '.'
+is_yes "$CONFIG_QOS" &&  ExecIfExecutable $SCRIPTDIR/config-qos $NAME  && print_message -n '.'
 
 # 7. type-specific additional optional configuration
-ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && echo -n '.'
+ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && print_message -n '.'
 
 # 8. ifup-post
-iface_is_up $NAME && ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && echo -n '.'
+iface_is_up $NAME && ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && print_message -n '.'
 
 # 9. process deps
 if is_yes "$IFUP_CHILDREN"; then

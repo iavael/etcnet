@@ -3,7 +3,7 @@
 # This script is intended to be run from /etc/ifplugd/ifplugd.action
 
 is_yes "$DISABLED" && {
-	echo -n 'skipped disabled iface '
+	print_message -n 'skipped disabled iface '
   exit 1
 }
 

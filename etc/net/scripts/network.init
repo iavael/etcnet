@@ -16,18 +16,18 @@ start_group()
 {
 	local GROUP_ID=${1:?start_group: missing 1st arg}
 	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
-#	echo "starting group $GROUP_ID ($GROUP_SIZE interfaces)"
+	echo "Starting group $GROUP_ID ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
 		# hosted physical
 		start_vlantab
 	}
 	for i in `seq 0 $((GROUP_SIZE-1))`; do
 		IFNAME=`echo ${GROUP[$GROUP_ID]} | awk "{print \\$$((i+1))}"`
-		echo -n "Starting $IFNAME: "
+		print_message -n "Starting $IFNAME: "
 		if $SCRIPTDIR/ifup $IFNAME boot; then
-			echo "OK"
+			print_message "OK"
 		else
-			echo ""
+			print_message ""
 		fi
 	done
 }
@@ -37,17 +37,18 @@ stop_group()
 {
 	local GROUP_ID=${1:?start_group: missing 1st arg}
 	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
+	echo "Stopping group $GROUP_ID ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
 		# hosted physical
 		stop_vlantab
 	}
 	for i in `seq 0 $((GROUP_SIZE-1))`; do
 		IFNAME=`echo ${GROUP[$GROUP_ID]} | awk "{print \\$$((i+1))}"`
-		echo -n "Stopping $IFNAME: "
+		print_message -n "Stopping $IFNAME: "
 		if $SCRIPTDIR/ifdown $IFNAME; then
-			echo "OK"
+			print_message "OK"
 		else
-			echo ""
+			print_message ""
 		fi
 	done
 }
@@ -58,7 +59,7 @@ start()
 	declare -a GROUP
 	# 1. fill in the groups
 	GROUPCOUNT=0
-	echo -n "Computing interface groups: "
+	print_message -n "Computing interface groups: "
 	export MYIFACEDIR NAME
 	for IFACEPATH in $IFACEDIR/*; do
 		NAME=${IFACEPATH//*\//}
@@ -74,9 +75,9 @@ start()
 		}
 		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
 		GROUPCOUNT=$((GROUPCOUNT + 1))
-		echo -n '.'
+		print_message -n '.'
 	done
-	echo " $GROUPCOUNT found"
+	print_message " $GROUPCOUNT found"
 	# 2. process each group
 	for i in 0 1 2 3 4; do
 	#	echo "group $i: ${GROUP[$i]}"
@@ -90,7 +91,7 @@ stop()
 	declare -a GROUP
 	# 1. fill in the groups
 	GROUPCOUNT=0
-	echo -n "Computing interface groups: "
+	print_message -n "Computing interface groups: "
 	export MYIFACEDIR NAME
 	for IFACEPATH in $IFACEDIR/*; do
 		NAME=${IFACEPATH//*\//}
@@ -106,9 +107,9 @@ stop()
 		}
 		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
 		GROUPCOUNT=$((GROUPCOUNT + 1))
-		echo -n '.'
+		print_message -n '.'
 	done
-	echo " $GROUPCOUNT found"
+	print_message " $GROUPCOUNT found"
 	# 2. process each group
 	for i in 4 3 2 1 0; do
 		[ -n "$GROUP[$i]" ] && stop_group $i

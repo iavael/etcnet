@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 . /etc/init.d/functions
 # defaults
@@ -67,10 +67,19 @@ pickup_options()
 
 print_error()
 {
-	echo "ERROR: $0: $@"
+	echo "ERROR: $0: $@" > /dev/stderr
 	# don't hang if logger hangs
 	logger -p daemon.info -t "ERROR: $0: $@" &
 }
+
+if is_yes "$VERBOSE"; then
+	print_message()
+	{
+		echo "$@"
+	}
+else
+	print_message() { return; }
+fi
 
 # get VLAN iface name by host iface and VLAN ID
 get_vlan_ifname()
@@ -122,9 +131,9 @@ shutdown_vlan_iface()
 start_vlantab()
 {
 	local PROFILED_VLANTAB=`profiled_filename $VLANTAB`
-	echo -n "Processing $PROFILED_VLANTAB: "
+	print_message -n "Processing $PROFILED_VLANTAB: "
 	[ -s $PROFILED_VLANTAB ] || {
-		echo empty.
+		print_message empty.
 		return
 	}
 	$MODPROBE 8021q || {
@@ -135,28 +144,28 @@ start_vlantab()
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
 	egrep -v '^$|^#' $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		iface_is_up "$HOST_IFACE" && setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
-		echo -n '.'
+		print_message -n '.'
 	done
 	# We can't count ifaces right in the while cycle due to pipe causing new process
-	echo "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
+	print_message "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
 }
 
 stop_vlantab()
 {
 	local PROFILED_VLANTAB=`profiled_filename $VLANTAB`
-	echo -n "Processing $PROFILED_VLANTAB: "
+	print_message -n "Processing $PROFILED_VLANTAB: "
 	[ -s $PROFILED_VLANTAB ] || {
-		echo empty.
+		print_message empty.
 		return
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
 	egrep -v '^$|^#' $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
-		echo -n '.'
+		print_message -n '.'
 	done
 	# See start_vlantab().
-	echo "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
+	print_message "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
 }
 
 iface_is_up()

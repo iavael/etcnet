@@ -4,7 +4,7 @@
 
 usage()
 {
-	echo "Usage: $0 <interface>"
+	echo "Usage: $0 <interface>" > /dev/stderr
 	exit 1
 }
 
@@ -68,7 +68,7 @@ export RECLEVEL=0
 # process only the first
 for d in $MYIFACEDIR/qos/*; do
 	[ -d $d ] && {
-		process_qos_dir $d root && echo -n '.'
+		process_qos_dir $d root && print_message -n '.'
 		break
 	}
 done
