@@ -139,6 +139,11 @@ case "$1" in
 		init_profile
 		stop
 		;;
+	stopwith)
+		[ $# -ne 2 ] && usage
+		init_profile $2
+		stop
+		;;
 	reload|restart)
 		[ $# -ne 1 ] && usage
 		init_profile
@@ -146,6 +151,13 @@ case "$1" in
 		start
 		;;
 	restartwith)
+		[ $# -ne 2 ] && usage
+		init_profile $2
+		stop
+		init_profile $2
+		start
+		;;
+	switchto)
 		[ $# -ne 2 ] && usage
 		init_profile
 		stop
