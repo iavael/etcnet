@@ -4,11 +4,11 @@
 init_profile
 pickup_options
 
-${CONFIGFILE:=`profiled_filename $MYIFACEDIR/$DEFAULT_PENTANET_CONF`}
-
 [ -x "${PENTANETT:=$DEFAULT_PENTANETT}" ] || {
 	print_error "$PENTANETT does not exist or is not executable for $NAME"
 	exit 1
 }
 
-[ -s "$CONFIGFILE" ] && $PENTANETT -a -f $CONFIGFILE >/dev/null
+CONFIGFILE=${CONFIGFILE:=$DEFAULT_PENTANET_CONF}
+PROF_CONFIGFILE=`profiled_filename $CONFIGFILE`
+[ -s "$PROF_CONFIGFILE" ] && $PENTANETT -a -f $PROF_CONFIGFILE >/dev/null
