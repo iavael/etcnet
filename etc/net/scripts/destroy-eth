@@ -4,6 +4,6 @@
 SourceIfNotEmpty $SCRIPTDIR/functions
 pickup_options
 
-MODULE=${MODULE:?missing MODULE}
+MODULE=${MODULE:=$NAME}
 
 try_rmmod $MODULE
