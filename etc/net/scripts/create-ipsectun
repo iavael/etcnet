@@ -6,9 +6,8 @@ pickup_options
 PHYSLOCAL=${PHYSLOCAL:?missing PHYSLOCAL}
 PHYSREMOTE=${PHYSREMOTE:?missing PHYSREMOTE}
 SPI=${SPI:?missing SPI}
-IPSECADM=${IPSECADM:=$DEFAULT_IPSECADM}
 
-[ -x "$IPSECADM" ] || {
+[ -x "${IPSECADM:=$DEFAULT_IPSECADM}" ] || {
 	print_error "$IPSECADM does not exist or is not executable. Try installing ipsecadm RPM."
 	exit 1
 }

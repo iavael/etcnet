@@ -3,18 +3,10 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-IFENSLAVE=${IFENSLAVE:=$DEFAULT_IFENSLAVE}
 REQUIRES=${REQUIRES:?REQUIRES must be set for $NAME}
 
-[ -x "$IFENSLAVE" ] || {
-	print_error "$IFENSLAVE does not exist or is not executable. Try installing iputils RPM."
-	exit 1
-}
-
-MODE=${MODE:=$DEFAULT_BOND_MODE}
-
 # TODO: max_bonds=1 to override modules.conf?
-$INSMOD bonding -o $NAME mode=$MODE $MODOPTIONS >/dev/null
+$INSMOD bonding -o $NAME mode=${MODE:-$DEFAULT_BOND_MODE} $MODOPTIONS >/dev/null
 # We assume that there is no other bonding modules hanging around.
 # TODO: compute iface table difference and find newly appeared iface.
 # We must assign bond IP address before calling ifenslave.
