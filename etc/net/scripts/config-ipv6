@@ -1,7 +1,6 @@
 #!/bin/sh
 
-. /etc/init.d/functions
-SourceIfNotEmpty $SCRIPTDIR/functions
+. $SCRIPTDIR/functions
 
 $MODPROBE ipv6
 

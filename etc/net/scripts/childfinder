@@ -14,9 +14,7 @@ usage()
 [ -z "$1" ] && usage
 PARENTNAME=$1
 CHILDREN=""
-. /etc/init.d/functions
-SCRIPTDIR=/etc/net/scripts
-SourceIfNotEmpty $SCRIPTDIR/functions
+. $SCRIPTDIR/functions
 export MYIFACEDIR NAME
 
 # same code as in etcnet.init

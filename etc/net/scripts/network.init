@@ -7,9 +7,8 @@
 # Do not load RH compatibility interface.
 WITHOUT_RC_COMPAT=1
 # Source function library.
-. /etc/init.d/functions
 SCRIPTDIR=/etc/net/scripts
-SourceIfNotEmpty $SCRIPTDIR/functions
+. $SCRIPTDIR/functions
 export IFACEDIR SCRIPTDIR PROFILE
 
 start_group()

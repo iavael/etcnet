@@ -14,9 +14,8 @@ usage()
 [ -z "$1" ] && usage
 NAME=$1
 
-. /etc/init.d/functions
 SCRIPTDIR=/etc/net/scripts
-SourceIfNotEmpty $SCRIPTDIR/functions
+. $SCRIPTDIR/functions
 MYIFACEDIR=$IFACEDIR/$NAME
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE
 

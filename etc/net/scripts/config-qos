@@ -53,15 +53,10 @@ process_qos_dir ()
 [ -z "$1" ] && usage
 NAME=$1
 
-. /etc/init.d/functions
-SCRIPTDIR=/etc/net/scripts
-SourceIfNotEmpty $SCRIPTDIR/functions
-MYIFACEDIR=$IFACEDIR/$NAME
-export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE
+. $SCRIPTDIR/functions
 
 init_profile
 pickup_options
-is_yes "$CONFIG_QOS" || exit 0
 [ -d $MYIFACEDIR/qos/ -a -x $MYIFACEDIR/qos/ ] || exit 0
 
 # clean up
