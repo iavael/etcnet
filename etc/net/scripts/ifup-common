@@ -64,6 +64,7 @@ is_yes $DONT_FLUSH || {
 is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME && echo -n '.'
 is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME && echo -n '.'
 is_yes "$CONFIG_IPX" &&  ExecIfExecutable $SCRIPTDIR/config-ipx $NAME  && echo -n '.'
+is_yes "$CONFIG_QOS" &&  ExecIfExecutable $SCRIPTDIR/config-qos $NAME  && echo -n '.'
 
 # 7. type-specific additional optional configuration
 ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && echo -n '.'
