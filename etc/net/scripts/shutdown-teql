@@ -4,7 +4,7 @@
 init_profile
 pickup_options
 
-: ${REQUIRES:?REQUIRES must be set for $NAME}
-for parent in $REQUIRES; do
-	$TC qdisc del dev $parent root
+: ${HOST:?HOST must be set for $NAME}
+for host in $HOST; do
+	$TC qdisc del dev $host root
 done

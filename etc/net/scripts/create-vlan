@@ -3,7 +3,7 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-: ${REQUIRES:?REQUIRES is missing for $NAME}
+: ${HOST:?HOST is missing for $NAME}
 : ${VID:?VID is missing for $NAME}
 
 $MODPROBE 8021q || {
@@ -12,10 +12,10 @@ $MODPROBE 8021q || {
 }
 
 # obsolete now?
-if iface_is_up $REQUIRES; then
-	create_vlan_iface $REQUIRES $VID $NAME
+if iface_is_up $HOST; then
+	create_vlan_iface $HOST $VID $NAME
 else
-	print_error "parent interface '$REQUIRES' for '$NAME' is down"
+	print_error "host interface '$HOST' for '$NAME' is down"
 	exit 1
 fi
 

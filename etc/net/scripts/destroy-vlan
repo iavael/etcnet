@@ -3,7 +3,7 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-: ${REQUIRES:?REQUIRES is missing for $NAME}
+: ${HOST:?HOST is missing for $NAME}
 : ${VID:?VID is missing for $NAME}
 
-destroy_vlan_iface $REQUIRES $VID $NAME
+destroy_vlan_iface $HOST $VID $NAME

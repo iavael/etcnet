@@ -7,6 +7,7 @@ pickup_options
 $INSMOD -o $NAME sch_teql >/dev/null
 $IP link set dev teql0 name $NAME
 
-for parent in $REQUIRES; do
-	$TC qdisc add dev $parent root $NAME
+: ${HOST:?HOST must be set for $NAME}
+for host in $HOST; do
+	$TC qdisc add dev $host root $NAME
 done

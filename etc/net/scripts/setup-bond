@@ -4,11 +4,11 @@
 init_profile
 pickup_options
 
-REQUIRES=${REQUIRES:?REQUIRES must be set for $NAME}
+: ${HOST:?HOST must be set for $NAME}
 
 [ -x "${IFENSLAVE:=$DEFAULT_IFENSLAVE}" ] || {
 	print_error "$IFENSLAVE does not exist or is not executable. Try installing iputils RPM."
 	exit 1
 }
 
-$IFENSLAVE $NAME $REQUIRES > /dev/null
+$IFENSLAVE $NAME $HOST > /dev/null
