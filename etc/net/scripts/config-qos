@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# This script handles QoS configuration for given iface name.
+
+usage()
+{
+	echo "Usage: $0 <device>"
+	exit 1
+}
+
+[ -z "$1" ] && usage
+NAME=$1
+
+. /etc/init.d/functions
+SCRIPTDIR=/etc/net/scripts
+SourceIfNotEmpty $SCRIPTDIR/functions
+MYIFACEDIR=$IFACEDIR/$NAME
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE
+
+init_profile
+pickup_options
+
+# clean up
+$TC qdisc del dev $NAME root 2>&1 > /dev/null
+
+# do the rest
