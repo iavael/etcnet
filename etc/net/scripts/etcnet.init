@@ -10,7 +10,7 @@ WITHOUT_RC_COMPAT=1
 . /etc/init.d/functions
 SCRIPTDIR=/etc/net/scripts
 SourceIfNotEmpty $SCRIPTDIR/functions
-export IFACEDIR SCRIPTDIR
+export IFACEDIR SCRIPTDIR PROFILE
 
 start_group()
 {
@@ -34,8 +34,7 @@ start_group()
 
 start()
 {
-	$SYSCTL -p /etc/net/sysctl.conf
-	[ -s $IPRULETAB ] && cat $IPRULETAB | xargs --max-lines=1 $IP rule add
+	$SYSCTL -p `profiled_filename /etc/net/sysctl.conf`
 	declare -a GROUP
 	# 1. fill in the groups
 	GROUPCOUNT=0
@@ -85,6 +84,7 @@ restart()
 	start
 }
 
+init_profile
 # See how we were called.
 case "$1" in
 	start)
