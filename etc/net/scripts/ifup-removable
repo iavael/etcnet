@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# This script is a hook for hotplug or pcmcia-cs.
+# It determines if the specified iface has to be
+# processed, then performs necessary pre-configuration
+# and lets ifup-common do the rest.
+
+usage()
+{
+	echo "Usage: $0 <device>"
+	exit 1
+}
+
+# Look if iface name will change after ifrename call.
+# Then load correct options. If hotplug/pcmcia is not
+# allowed for the interface, just return. Otherwise
+# rename the interface and run common iface init stuff.
+
+[ -z "$1" ] && usage
+NAME=$1
+OLD_NAME=$NAME
+CALLER=${2:?$0: missing 2nd arg}
+
+case "$CALLER" in
+	pcmcia_cs|hotplug)
+	;;
+	*)
+		print_error "invalid 2nd arg to $0: '$CALLER'"
+	;;
+esac
+
+. /etc/init.d/functions
+SCRIPTDIR=/etc/net/scripts
+SourceIfNotEmpty $SCRIPTDIR/functions
+
+# Deal with ifrename and mappings before we try to read options,
+# because iface name may change.
+
+if [ -s "$IFTAB" ]; then
+	[ -x $IFRENAME ] || {
+		print_error "$IFRENAME is unavailable, but $IFTAB exists"
+		exit 1
+	}
+	NEW_NAME=`$IFRENAME -c $IFTAB -i $NAME -f 2>/dev/null`
+	if [ $? = 0 -a -n "$NEW_NAME" ]; then
+		NAME=$NEW_NAME
+		echo -n '.'
+	fi
+fi
+
+MYIFACEDIR=$IFACEDIR/$NAME
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
+
+pickup_options
+
+is_yes "$DISABLED" && {
+	echo -n 'skipped, disabled '
+  exit 1
+}
+
+if [ "$CALLER" = "pcmcia_cs" ]; then
+	! is_yes "$USE_PCMCIA" && {
+		print_error "USE_PCMCIA is disabled for $NAME"
+		exit 1
+	}
+fi
+
+if [ "$CALLER" = "hotplug" ]; then
+	! is_yes "$USE_HOTPLUG" && {
+		print_error "USE_HOTPLUG is disabled for $NAME"
+		exit 1
+	}
+fi
+
+# Now we know that iface should be processed. Let's go.
+$IFRENAME -c $IFTAB -i $OLD_NAME
+$SCRIPTDIR/ifup-common $NAME
