@@ -1,8 +1,11 @@
 #!/bin/bash
 
+# $Id$
 # This script is expected to automatically create the first interface
 # configuration directories and files in case there are no existing ones
 # in /etc/net/ifaces.
+# Expected to detect: ethernet (static/dhcp/ipv4ll) and IP tunnels,
+# IPv4 addresses and static routes.
 
 IFACEDIR=${IFACEDIR:-/etc/net/ifaces}
 if [ "$1" = "write" ]; then
@@ -21,6 +24,7 @@ fi
 [ -x ${ETHTOOL:=/usr/sbin/ethtool} ] || echo "WARNING: $ETHTOOL is not available, module detection will be skipped"
 
 IFTAB=/etc/net/iftab
+OLDCFG="/etc/sysconfig/network-scripts/ifcfg"
 
 function store()
 {
@@ -70,11 +74,21 @@ for iface in `$IP li | egrep '^[[:digit:]]+: ' | cut --delimiter=' ' --fields=2 
 		echo " skipped pseudo-interface"
 		continue
 	fi
+	unset LINKTYPE OLDPROTO BOOTPROTO LLADDR MODULE IPV4ADDRS IPV4ROUTES
 	LINKTYPE=`$IP li sh dev $iface | fgrep 'link/' | sed 's/^ *link\///' | cut --delimiter=' ' --fields=1`
 	if [ -n "$LINKTYPE" ]; then
 		# try to find linktype-specific options
 		case "$LINKTYPE" in
 			ether)
+				# detect BOOTPROTO
+				if [ -s "$OLDCFG-$iface" ]; then
+					OLDPROTO="`grep ^[[:space:]]*BOOTPROTO= $OLDCFG-$iface | cut -f2 -d=`"
+					# map old name to new one
+					case $OLDPROTO in
+						dhcp|DHCP) BOOTPROTO="dhcp";;
+						zcip|ZCIP) BOOTPROTO="ipv4ll";;
+					esac
+				fi
 				# many others try to look as ethernet, so let's filter by iface name...
 				if [ "${iface//[0-9]*/}" = "eth" ]; then
 					# find and use link-level address
@@ -94,7 +108,11 @@ for iface in `$IP li | egrep '^[[:digit:]]+: ' | cut --delimiter=' ' --fields=2 
 						fi
 					fi
 				fi
-				IPV4ADDRS=`print_ipv4_BMA_addresses $iface`
+				if [ -n "$BOOTPROTO" ]; then
+					store $IFACEDIR/$iface/options "BOOTPROTO=$BOOTPROTO"
+				else
+					IPV4ADDRS=`print_ipv4_BMA_addresses $iface`
+				fi
 			;;
 			gre|ipip)
 				store $IFACEDIR/$iface/options "TUNTYPE=$LINKTYPE"
