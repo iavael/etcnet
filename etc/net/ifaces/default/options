@@ -46,6 +46,7 @@ USE_IFPLUGD=no
 CONFIG_IPV4=yes
 CONFIG_IPV6=no
 CONFIG_IPX=no
+CONFIG_QOS=no
 
 # eth feature
 LINKDETECT=no
