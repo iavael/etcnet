@@ -226,6 +226,8 @@ To switch between configurations without editing /etc/net/profile one can use:
 -handle network mounts?
 -check exit codes
 -handle dependant interfaces for ifplugd-controlled links
+-allow runtime profile selection by external script (e.g.
+ by discovered WAP address)
 
 7. CHANGELOG
 
