@@ -199,6 +199,8 @@ bring up all ifaces that depend on it.
 ifaces.
 4. We SHOULD keep track of processed ifaces for the original transaction
 to avoid loops.
+Look for IFUP_CHILDREN, IFDOWN_CHILDREN, IFUP_PARENTS and IFDOWN_PARENTS
+in /etc/net/ifaces/default/options.
 
 3.5.1 ifup algorythm
 [ifup_parents]
@@ -218,6 +220,13 @@ unconfig (and set DOWN)
 [ifdown-post]
 destroy (type-specific)
 [ifdown_parents]
+
+3.5.3 VLANs and iface deps
+As for now (0.5.2 and earlier) interfaces from vlantab bypass traditional logic,
+they can't cause parent/child interface to become up/down. If parent interface
+is down at the moment of vlantab processing (ONBOOT=no or misconfiguration), all
+child VLAN interfaces will be just skipped.
+
 
 4. SYSTEM CONFIGURATION
 4.1 Edit /etc/sysctl.conf so that it does not intersect with /etc/net/sysctl.conf
@@ -246,7 +255,7 @@ if [ -z "$1" ] || [ -z "$2" ] ; then
         exit 1
 fi
 
-[ "$2" = "up" ] && IN_IFPLUGD=yes exec /etc/net/scripts/ifup-common $1
+[ "$2" = "up" ] && IN_IFPLUGD=yes exec /etc/net/scripts/ifup-ifplugd $1
 [ "$2" = "down" ] && IN_IFPLUGD=yes exec /etc/net/scripts/ifdown $1
 
 exit 1
@@ -294,24 +303,24 @@ To switch between configurations without editing /etc/net/profile one can use:
 +assume ONBOOT=no for removables
 -Elektra support
 +zcip -> ipv4ll
--extend start_vlantab ans stop_vlantab for iface deps
++extend start_vlantab ans stop_vlantab for iface deps
 +don't rmmod ifplugd'd ifaces
 +use NETWORKING from /etc/sysconfig/network
--SNMP bridge workaround
+?SNMP bridge workaround
 +cleanup functions inclusion
--check recursion for bond/bri ifaces
++check recursion for bond/bri ifaces
 -lockfiles
 +profile vlantab
 -bridge-utils arg order patch
--ifup-ifplugd
++ifup-ifplugd
 
 7. CHANGELOG
 
 0.5.2:
 	ethernet bridge support
-	code cleanup and minor fixes
+	code cleanup (includes, VLAN code) and minor fixes
 	enhanced interface dependencies handling (changed variable naming,
-		introduced shutdown scripts, updated README)
+		introduced shutdown scripts, updated README and default options)
 0.5.1:
 	ifplugd+ifdown fix
 	ALT docs update
