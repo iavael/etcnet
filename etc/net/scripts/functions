@@ -176,7 +176,7 @@ init_profile()
 		elif [ -r "$PROC_CMDLINE" ]; then
 			# try to fetch profile name from kernel options
 			PROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | \
-			sed 's/ /\n/g' | egrep '^netprof=' | cut -d'=' -f2`
+			sed 's/ /\n/g' | egrep '^netprofile=' | cut -d'=' -f2`
 		fi
 	fi
 	return 0
