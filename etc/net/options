@@ -14,6 +14,7 @@ IFTAB=/etc/net/iftab
 
 # programs
 IP=/sbin/ip
+TC=/sbin/tc
 MODPROBE=/sbin/modprobe
 LSMOD=/sbin/lsmod
 INSMOD=/sbin/insmod
