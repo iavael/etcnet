@@ -72,6 +72,11 @@ process_sysctl_conf()
 	return 0
 }
 
+# setup link-level params
+xargise_file $IFACEDIR/default/iplink "$IP link set dev $NAME"
+xargise_file $IFACEDIR/default/iplink-$TYPE "$IP link set dev $NAME"
+xargise_file $MYIFACEDIR/iplink "$IP link set dev $NAME"
+
 # bring iface up
 if ! is_yes $KEEP_DOWN; then
 	$IP link set dev $NAME up && print_progress
@@ -86,10 +91,7 @@ fi
 # handle wireless extensions
 is_yes "$CONFIG_WIRELESS" && ExecIfExecutable $SCRIPTDIR/config-wireless $NAME && print_progress
 
-# setup link-level params
-xargise_file $IFACEDIR/default/iplink "$IP link set dev $NAME"
-xargise_file $IFACEDIR/default/iplink-$TYPE "$IP link set dev $NAME"
-xargise_file $MYIFACEDIR/iplink "$IP link set dev $NAME"
+# process ip neighbours
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
 
 # setup addresses and (only if iface is up) routes
