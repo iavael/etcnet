@@ -39,3 +39,6 @@ DHCP_TIMEOUT=30
 
 # ZCIP
 ZCIP_CLIENT=/sbin/zcip
+
+# for LINKDETECT option
+IFPLUGSTATUS=/sbin/ifplugstatus
