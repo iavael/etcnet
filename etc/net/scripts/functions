@@ -349,6 +349,7 @@ xargise_file()
 	fi
 }
 
+# see ifaces/default/options-eth
 wait_for_macaddr()
 {
 	local TARGET="${1:?missing 1st arg to $FUNCNAME}"
@@ -359,7 +360,10 @@ wait_for_macaddr()
 	}
 	local i
 	for i in `seq 1 $MACADDR_WAITTIME`; do
-		usleep 100000
-		echo $i
+		if $IP li sh dev $TARGET 2>/dev/null | fgrep -q 'link/ether 00:00:00:00:00:00'; then
+			usleep 100000
+		else
+			break
+		fi
 	done
 }

@@ -14,4 +14,5 @@ LINKDETECT=no
 # if you use mac address match rule in iftab, it may happen to broke.
 # If this variable is set to non-zero, /etc/net will wait for specified
 # amount of 0.1 sec times for MAC address to become not 00:00:00:00:00:00.
+# WARNING: EXPERIMENTAL FEATURE !!!
 # MACADDR_WAITTIME=10

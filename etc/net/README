@@ -322,18 +322,18 @@ As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
 - type-specific sysctl.conf defaults
 - support more than one teql interfaces
 - bluetooth support
-+ init_profile audit
 - 'check' arg for network.init
 - handle dhcp/ipv4ll in ifdown*
-- mount support
-- ifport support
-- usb support
+- mounts support
+- post-create hook support
 
 7. CHANGELOG
 
 0.5.3:
 	fixed ifplugd support
 	code cleanup (optimized profile detection, config processing)
+	usbnet support (tested on Prolific PL-2301/PL-2302)
+	added network subsys lock back
 0.5.2:
 	initial IPX, ethernet bridge and traffic equalizer support
 	code cleanup (includes, VLAN code) and minor fixes
