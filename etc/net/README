@@ -226,12 +226,14 @@ To switch between configurations without editing /etc/net/profile one can use:
 -handle network mounts?
 -check exit codes
 -handle dependant interfaces for ifplugd-controlled links
--allow runtime profile selection by external script (e.g.
++allow runtime profile selection by external script (e.g.
  by discovered WAP address)
+-implement recursion for ifup (e.g. by vlantab)
+-use only /bin & /sbin programs to survive w/o /usr (/usr on NFS)
 
 7. CHANGELOG
 
-0.4.0: DHCP/ZCIP/LINKDETECT/ifplugd
+0.4.0: DHCP/ZCIP/LINKDETECT/ifplugd support
 0.3.0: network profiles framework (see section 5)
 0.2.2: experimental wireless support, some fixes
 0.2.1: PCMCIA now works (see above)

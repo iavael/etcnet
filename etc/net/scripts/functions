@@ -197,7 +197,7 @@ init_profile()
 		PROFILE=`$MYIFACEDIR/selectprofile | head -1 | awk '{print $1}'`
 	elif [ -z "$PROFILE" ]; then
 		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
-			PROFILE=`egrep -v '^$|^#' "$PROFILE_FILE" | head -1`
+			PROFILE=`egrep -v '^$|^#' "$PROFILE_FILE" | head -1 | awk '{print $1}'`
 		elif [ -r "$PROC_CMDLINE" ]; then
 			# try to fetch profile name from kernel options
 			PROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | \
