@@ -32,3 +32,10 @@ DEFAULT_IFENSLAVE=/sbin/ifenslave
 # profiles
 PROFILE_FILE=/etc/net/profile
 PROC_CMDLINE=/proc/cmdline
+
+# DHCP
+DHCP_CLIENT=/sbin/dhcpcd
+DHCP_TIMEOUT=30
+
+# ZCIP
+ZCIP_CLIENT=/sbin/zcip
