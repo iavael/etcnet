@@ -15,7 +15,7 @@ LOCKFILE=/var/lock/subsys/network
 
 start_group()
 {
-	local GROUP_ID=${1:?start_group: missing 1st arg}
+	local GROUP_ID=${1:?missing 1st argument to $FUNCNAME}
 	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
 	echo "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
@@ -36,7 +36,7 @@ start_group()
 # clone
 stop_group()
 {
-	local GROUP_ID=${1:?start_group: missing 1st arg}
+	local GROUP_ID=${1:?missing 1st argument to $FUNCNAME}
 	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
 	echo "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
