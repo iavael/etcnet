@@ -25,21 +25,21 @@ pickup_options
 
 # 1. check constraints
 is_yes "$DISABLED" && {
-	print_message -n 'skipped disabled iface '
+	print_message -n 'skipped disabled iface '$NAME''
   exit 1
 }
 
 if [ "$2" = "boot" ]; then
 	is_no "$ONBOOT" && {
-		print_message -n 'skipped on boot '
+		print_message -n 'skipped '$NAME' on boot '
 	  exit 1
 	}
 	is_yes "$USE_HOTPLUG" && {
-		print_message -n 'skipped hotplug iface on boot '
+		print_message -n 'skipped hotplug iface '$NAME' on boot '
 	  exit 1
 	}
 	is_yes "$USE_PCMCIA" && {
-		print_message -n 'skipped PCMCIA iface on boot '
+		print_message -n 'skipped PCMCIA iface '$NAME' on boot '
 	  exit 1
 	}
 fi
