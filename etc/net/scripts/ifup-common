@@ -39,7 +39,7 @@ pickup_options
 }
 
 is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
-# --- Up to this line is be enough for ifplugd to run at first stage.
+# --- Up to this line is enough for ifplugd to run at first stage.
 
 # 5. bring iface up
 if ! is_yes $KEEP_DOWN; then
