@@ -13,9 +13,12 @@ usage()
 [ -z "$1" ] && usage
 NAME=$1
 
-SCRIPTDIR=/etc/net/scripts
-. $SCRIPTDIR/functions
-MYIFACEDIR=$IFACEDIR/$NAME
+. ${SCRIPTDIR:=/etc/net/scripts}/functions
+if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
+	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
+else
+	MYIFACEDIR=$IFACEDIR/$NAME
+fi
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE SEEN_IFACES
 
 init_netprofile

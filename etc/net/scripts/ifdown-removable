@@ -26,8 +26,7 @@ case "$CALLER" in
 	;;
 esac
 
-SCRIPTDIR=/etc/net/scripts
-. $SCRIPTDIR/functions
+. ${SCRIPTDIR:=/etc/net/scripts}/functions
 
 # Deal with ifrename and mappings before we try to read options,
 # because iface name may change.
@@ -40,8 +39,12 @@ if [ -n "$MAPPED_NAME" -a "$NAME" != "$MAPPED_NAME" ]; then
 	print_progress
 fi
 
-MYIFACEDIR=$IFACEDIR/$NAME
-export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
+if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
+	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
+else
+	MYIFACEDIR=$IFACEDIR/$NAME
+fi
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE SEEN_IFACES
 
 init_netprofile
 pickup_options
