@@ -271,57 +271,6 @@ xargise_file()
 	return 0
 }
 
-process_sysctl_conf()
-{
-	local SRCFILE=${1:?missing 1st arg to $FUNCNAME}
-	local NAME=$2
-	local ONELINE
-	local VARPREFIX
-	[ -s $SRCFILE ] || return 0
-	$DENOISE $SRCFILE | sed "s/ //g" | while read ONELINE; do
-		local VARNAME=`echo $ONELINE  | cut --delimiter='=' --fields=1`
-		local VARVALUE=`echo $ONELINE | cut --delimiter='=' --fields=2`
-		# If variable name contains dot(s), we use it as is. Otherwise
-		# we append interface prefix.
-		if echo $VARNAME | fgrep -vq .; then
-			[ -z $NAME ] && {
-				print_error "Can't autocomplete sysctl variable name '$VARNAME' in file '$SRCFILE'. Please fix"
-				return 1
-			}
-			# try to guess prefix from variable name
-			# There should be a better way to build this case block...
-			case $VARNAME in
-				force_igmp_version|disable_policy|disable_xfrm|arp_ignore|arp_announce)
-					VARPREFIX="net.ipv4.conf.$NAME."
-				;;
-				arp_filter|tag|log_martians|bootp_relay|medium_id|proxy_arp)
-					VARPREFIX="net.ipv4.conf.$NAME."
-				;;
-				accept_source_route|send_redirects|rp_filter|shared_media)
-					VARPREFIX="net.ipv4.conf.$NAME."
-				;;
-				secure_redirects|accept_redirects|mc_forwarding|forwarding)
-					VARPREFIX="net.ipv4.conf.$NAME."
-				;;
-				locktime|proxy_delay|anycast_delay|proxy_qlen|unres_qlen)
-					VARPREFIX="net.ipv4.neigh.$NAME."
-				;;
-				gc_stale_time|delay_first_probe_time|base_reachable_time)
-					VARPREFIX="net.ipv4.neigh.$NAME."
-				;;
-				retrans_time|app_solicit|ucast_solicit|mcast_solicit)
-					VARPREFIX="net.ipv4.neigh.$NAME."
-				;;
-				*)
-					print_error "Can't autocomplete sysctl variable name '$VARNAME' in file '$SRCFILE'. Please fix"
-					return 1
-			esac
-		fi
-		$SYSCTL -q -w $VARPREFIX$VARNAME=$VARVALUE
-	done
-	return 0
-}
-
 stop_dhcp_client()
 {
 	local PIDFILE=/var/run/dhcpcd-$NAME.pid
