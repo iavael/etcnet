@@ -164,6 +164,7 @@ start()
 	export MYIFACEDIR NAME
 	for MYIFACEDIR in $IFACEDIR/*; do
 		NAME=`basename $MYIFACEDIR`
+		[ "$NAME" = "${NAME/%@$NETHOST/}" ] || continue
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE DISABLED
 		pickup_options
