@@ -2,6 +2,7 @@
 
 . /etc/init.d/functions
 SourceIfNotEmpty $SCRIPTDIR/functions
+init_profile
 pickup_options
 
 $MODPROBE plip

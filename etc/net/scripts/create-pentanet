@@ -2,6 +2,7 @@
 
 $NAME=$1
 SourceIfNotEmpty $SCRIPTDIR/functions
+init_profile
 pickup_options
 
 ${CONFIGFILE:=$MYIFACEDIR/$DEFAULT_PENTANET_CONF}
