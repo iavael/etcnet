@@ -19,7 +19,6 @@ setup_vlan_iface()
 		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
 		return 1
 	}
-	$VCONFIG set_name_type ${NAMETYPE:-$DEFAULT_VLAN_NAMETYPE} >/dev/null 2>&1 || return 1
 	$VCONFIG add $HOST_IFACE $VID >/dev/null 2>&1 || return 1
 	local REALNAME=`get_vlan_ifname $HOST_IFACE $VID`
 	if [ -z "$NAME" -o "$NAME" = "AUTO" ]; then
@@ -56,7 +55,7 @@ start_vlantab()
 		return
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME PROBED_8021Q=no
-	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
+	$VCONFIG set_name_type $VLAN_NAMETYPE >/dev/null 2>&1 || return 1
 	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		if [ "$PROBED_8021Q" = "no" ]; then
 			PROBED_8021Q=yes
@@ -87,7 +86,6 @@ stop_vlantab()
 		return 0
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
-	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
 	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		if shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
 			print_progress
