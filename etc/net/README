@@ -31,7 +31,7 @@ $ less /etc/net/ifaces/default/options-*
 # vi /etc/hotplug/net.agent (see /etc/net/ifaces/default/options:USE_HOTPLUG)
 ...
 # chkconfig network off
-# ln -s /etc/init.d/etcnet /etc/net/scripts/etcnet.init
+# ln -s /etc/init.d/network /etc/net/scripts/network.init
 # chkconfig --add etcnet
 # chkconfig etcnet on
 # service network stop
@@ -122,7 +122,7 @@ iplink: 1 ip link option per line
 ipv4rule: 1 ip -4 rule option per line
 
 /etc/net/scripts
-etcnet.init: chkconfig initscript
+network.init: chkconfig initscript
 functions: helper functions
 options: default options
 
@@ -286,6 +286,7 @@ To switch between configurations without editing /etc/net/profile one can use:
 	initial recursion and dependencies processing framework
 	logger, DHCP, etcnet.init argc fixes
 	changed ZCIP to IPv4LL
+	renamed etcnet.init to network.init, introduced sysconfig/network to ease migration
 0.4.2:
 	documentation updates
 	synced with most recent beta of wireless-utils
