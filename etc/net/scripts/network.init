@@ -59,12 +59,11 @@ start()
 	$SYSCTL -p `profiled_filename /etc/net/sysctl.conf`
 	declare -a GROUP
 	# 1. fill in the groups
-	GROUPCOUNT=0
+	IFACECOUNT=0
 	print_message -n "Computing interface groups: "
 	export MYIFACEDIR NAME
-	for IFACEPATH in $IFACEDIR/*; do
-		NAME=${IFACEPATH//*\//}
-		MYIFACEDIR=$IFACEDIR/$NAME
+	for MYIFACEDIR in $IFACEDIR/*; do
+		NAME=`basename $MYIFACEDIR`
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE DISABLED
 		pickup_options
@@ -75,10 +74,10 @@ start()
 			continue
 		}
 		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
-		GROUPCOUNT=$((GROUPCOUNT + 1))
+		: $((IFACECOUNT++))
 		print_progress
 	done
-	print_message " $GROUPCOUNT interfaces found"
+	print_message " $IFACECOUNT interfaces found"
 	# 2. process each group
 	for i in 0 1 2 3 4; do
 		[ -n "$GROUP[$i]" ] && start_group $i
@@ -94,9 +93,8 @@ stop()
 	GROUPCOUNT=0
 	print_message -n "Computing interface groups: "
 	export MYIFACEDIR NAME
-	for IFACEPATH in $IFACEDIR/*; do
-		NAME=${IFACEPATH//*\//}
-		MYIFACEDIR=$IFACEDIR/$NAME
+	for MYIFACEDIR in $IFACEDIR/*; do
+		NAME=`basename $MYIFACEDIR`
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE DISABLED
 		pickup_options
@@ -107,7 +105,7 @@ stop()
 			continue
 		}
 		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
-		GROUPCOUNT=$((GROUPCOUNT + 1))
+		: $((GROUPCOUNT++))
 		print_progress
 	done
 	print_message " $GROUPCOUNT interfaces found"
@@ -123,8 +121,8 @@ check()
 {
 	print_message "Checking interfaces in $IFACEDIR:"
 	export MYIFACEDIR NAME
-	for IFACEPATH in $IFACEDIR/*; do
-		NAME=${IFACEPATH//*\//}
+	for MYIFACEDIR in $IFACEDIR/*; do
+		NAME=`basename $MYIFACEDIR`
 		MYIFACEDIR=$IFACEDIR/$NAME
 		# skip default
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
@@ -193,7 +191,7 @@ check()
 		esac
 		# examine all files
 		for IFACEFILE in $MYIFACEDIR/*; do
-			TESTFILE=${IFACEFILE//*\//}
+			TESTFILE=`basename $IFACEFILE`
 			[ "$TESTFILE" = "CVS" ] && continue
 			print_message -n -e "\t$NAME/$TESTFILE:"
 			# strip optional profile suffix
