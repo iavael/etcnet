@@ -6,7 +6,7 @@ pickup_options
 REQUIRES=${REQUIRES:?REQUIRES must be set for $NAME}
 
 # TODO: max_bonds=1 to override modules.conf?
-$INSMOD bonding -o $NAME mode=${MODE:-$DEFAULT_BOND_MODE} $MODOPTIONS >/dev/null
+$INSMOD bonding -o $NAME mode=${BONDMODE:-$DEFAULT_BONDMODE} $BONDOPTIONS >/dev/null
 # We assume that there is no other bonding modules hanging around.
 # TODO: compute iface table difference and find newly appeared iface.
 # We must assign bond IP address before calling ifenslave.

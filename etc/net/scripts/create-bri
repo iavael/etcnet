@@ -3,8 +3,7 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-BRCTL=${BRCTL:=$DEFAULT_BRCTL}
-[ -x "$BRCTL" ] || {
+[ -x "${BRCTL:=$DEFAULT_BRCTL}" ] || {
 	print_error "$BRCTL does not exist or is not executable. Try installing bridge-utils RPM."
 	exit 1
 }
