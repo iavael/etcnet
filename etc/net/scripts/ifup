@@ -17,7 +17,12 @@ NAME=$1
 
 SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
-MYIFACEDIR=$IFACEDIR/$NAME
+if [ -d $IFACEDIR/$NAME@NETHOST ]; then
+	MYIFACEDIR=$IFACEDIR/$NAME@NETHOST
+else
+	MYIFACEDIR=$IFACEDIR/$NAME
+fi
+
 [ -d "$MYIFACEDIR" ] || {
 	print_error "interface configuration directory '$MYIFACEDIR' not found"
 	exit 1

@@ -163,8 +163,9 @@ start()
 	print_message -n "Computing interface groups: "
 	export MYIFACEDIR NAME
 	for MYIFACEDIR in $IFACEDIR/*; do
-		NAME=`basename $MYIFACEDIR`
-		[ "$NAME" = "${NAME/%@$NETHOST/}" ] || continue
+		BNAME=`basename $MYIFACEDIR`
+		NAME=${BNAME/%@*/}
+		[ "${NAME/%@*/}" = "${BNAME/%@$NETHOST/}" ] || continue
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE DISABLED
 		pickup_options
