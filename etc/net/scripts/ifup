@@ -36,13 +36,24 @@ iface_is_up $NAME && {
 # 2. make device appear
 # When called from hotplug, we already have module loaded and only
 # need to continue from MAPDESCR (inclusive).
-if [ "$IN_HOTPLUG" = "1" ]; then
-	is_yes $USE_HOTPLUG || exit 0
-else
-	is_yes "$USE_HOTPLUG" && {
+# By default skip ifaces configured to be managed by cardmgr/hotplug.
+
+if is_yes "$USE_HOTPLUG"; then
+	if [ "$IN_HOTPLUG" != "1" ]; then
 		echo -n 'skipped, hotplug '
 	  exit 1
-	}
+	fi
+fi
+
+if is_yes "$USE_PCMCIA"; then
+	if [ "$IN_PCMCIA" != "1" ]; then
+		echo -n 'skipped, pcmcia '
+	  exit 1
+	fi
+fi
+
+# Don't call modprobe for removable devices.
+if [ -z "$IN_HOTPLUG" -a -z "$IN_PCMCIA" ]; then
 	if ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME; then
 		echo -n '.'
 	else
