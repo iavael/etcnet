@@ -4,6 +4,7 @@
 SourceIfNotEmpty $SCRIPTDIR/functions
 pickup_options
 
-MODULE=${MODULE:?missing MODULE}
+# If an administrator wishes to rely on modules.conf, let's agree.
+MODULE=${MODULE:=$NAME}
 
 $MODPROBE $MODULE
