@@ -1,3 +1,10 @@
 # When set to no, this may cause most daemons' initscripts skip starting.
 NETWORKING=yes
+
+# Used by hotplug/pcmcia/ifplugd scripts to detect current network config
+# subsystem.
 CONFMETHOD=etcnet
+
+# Used by rc.sysinit to setup system hostname at boot.
+#HOSTNAME=
+#DOMAINNAME=
