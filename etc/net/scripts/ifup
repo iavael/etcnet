@@ -69,6 +69,3 @@ fi
 IFTAB_FILE=`profiled_filename $IFTAB`
 [ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -n "$NAME" >/dev/null 2>&1 && echo -n '.'
 $SCRIPTDIR/ifup-common $NAME
-
-# 6. process deps
-is_yes "$RECURSIVE_IFUP" && ifup_children

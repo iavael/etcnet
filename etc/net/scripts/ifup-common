@@ -72,4 +72,7 @@ ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && echo -n '.'
 # 8. ifup-post
 iface_is_up $NAME && ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && echo -n '.'
 
+# 9. process deps
+is_yes "$RECURSIVE_IFUP" && ifup_children
+
 exit 0
