@@ -66,8 +66,8 @@ pickup_options()
 
 print_error()
 {
-	echo ERROR: $0: $@
-	logger -p daemon.info -t ERROR: $0: $@
+	echo "ERROR: $0: $@"
+	logger -p daemon.info -t "ERROR: $0: $@"
 }
 
 # get VLAN iface name by host iface and VLAN ID

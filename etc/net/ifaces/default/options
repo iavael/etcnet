@@ -1,20 +1,49 @@
+# Set to "yes" to ignore the interface. Note that setting DISABLED
+# to "yes" in ifaces/default/options and having no "DISABLED=no"
+# in interface-specific options file will effectively disable ALL
+# interfaces.
 DISABLED=no
+
+# BOOTPROTO can be any of the following: static, dhcp, zcip.
+# "static": use ipv4address/ipv6address
+# "dhcp": run DHCP client
+# "zcip": run ZCIP client
+# As far as I know, there are no working IPv6 DHCP
+# implementations. ZCIP is not required for IPv6 because of
+# link-scope addresses.
+# Additional feature is multi-method configurations (methods
+# can be delimited by ' ', ',' or '-':
+# "dhcp-static": try DHCP, if it fails, configure static address(es)
+# "dhcp-zcip": same, but fallback to ZCIP
+# "dhcp-zcip-static": try DHCP, fallback to ZCIP (very unlikely to fail),
+# fallback to static
+# etcnet will try to configure interface at the first succeeding
+# method. Note that etcnet will process routes and rules despite of
+# BOOTPROTO.
 BOOTPROTO=static
+
+# Defines if the interface will be automatically brought up during
+# system startup or 'service etcnet start' invocation.
 ONBOOT=yes
-# if set to yes, iface will be skipped during boot
+
+# If set to yes, iface will be skipped during boot.
 # Note that standard hotplug calls /sbin/ifup and /sbin/ifdown.
 # This should be changed to /etc/net/scripts/ifup and
 # /etc/net/scripts/ifdown respectively, if you wish to use
 # etcnet from hotplug.
 USE_HOTPLUG=no
+
 # Same for pcmcia_cs
 USE_PCMCIA=no
+
 # protocols
 CONFIG_IPV4=yes
 CONFIG_IPV6=yes
 CONFIG_IPX=no
+
 # eth feature
 LINKDETECT=no
 KEEP_DOWN=no
+
 # IPv4 only
 DONT_FLUSH=no
