@@ -9,9 +9,11 @@ Supported interface types:
 +ethernet (eth)
 +IP tunnels (iptun)
 +IPSec static tunnels (ipsectun)
-+/-VLANs (vlan)
++VLANs (vlan)
 +PLIP (plip)
 +bonding (bond)
++bridge
++traffic equalizers (teql)
 +/-dummy
 
 Supported protocols:
@@ -287,40 +289,31 @@ To switch between configurations without editing /etc/net/profile one can use:
 # service etcnet restartwith home
 
 6. TODO
--ppp hooks and /etc/ppp/ip-up*
--control
--default prefixes for sysctl.conf files
--handle 'add' in ipv4rule on ifdown
--analyze zebra and RTPROTO ip option
--handle network mounts?
--check exit codes
-+interface dependencies support
--implement -r flag to ifup
--IrLAN support?
--wireless host AP support?
-+QoS infrastructure
--IPSec (openswan) support?
-+assume ONBOOT=no for removables
--Elektra support
-+zcip -> ipv4ll
-+extend start_vlantab ans stop_vlantab for iface deps
-+don't rmmod ifplugd'd ifaces
-+use NETWORKING from /etc/sysconfig/network
-?SNMP bridge workaround
-+cleanup functions inclusion
-+check recursion for bond/bri ifaces
--lockfiles
-+profile vlantab
--bridge-utils arg order patch
-+ifup-ifplugd
+- ppp support
+- pptp-client support
+- default prefixes for sysctl.conf files
+- handle 'add' in ipv4rule on ifdown
+- analyze zebra and RTPROTO ip option
+- handle network mounts
+- check exit codes
+- implement -r flag to ifup
+X wireless host AP support (ifup-pre should work Ok)
+- IPSec (openswan) support?
+- Elektra support
+? SNMP bridge workaround
+- lockfiles
+- bridge-utils arg order patch
+- type-specific sysctl.conf defaults
+- support more than one teql interfaces
 
 7. CHANGELOG
 
 0.5.2:
-	ethernet bridge support
+	ethernet bridge and traffic equalizer support
 	code cleanup (includes, VLAN code) and minor fixes
 	enhanced interface dependencies handling (changed variable naming,
 		introduced shutdown scripts, updated README and default options)
+	two new commands to network.init
 0.5.1:
 	ifplugd+ifdown fix
 	ALT docs update
