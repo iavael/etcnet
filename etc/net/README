@@ -163,10 +163,30 @@ interface tried to be setup before its host interface ever exists).
 
 4. SYSTEM CONFIGURATION
 4.1 Edit /etc/sysctl.conf so that it does not intersect with /etc/net/sysctl.conf
+
 4.2 pcmcia_cs configuration
 Edit /etc/pcmcia/network.opts and replace calls to /sbin/ifup and 
 /sbin/ifdown to '/etc/net/scripts/ifup-removable $1 pcmcia_cs' and
 '/etc/net/scripts/ifdown-removable $1 pcmcia_cs' respectively.
+
+4.3 ifplugd configuration
+my /etc/ifplugd/ifplugd.conf:
+INTERFACES="ether"
+ARGS="--wait-on-fork --no-auto --monitor --no-shutdown --ignore-retval --delay-up=0 --delay-down=2"
+
+my /etc/ifplugd/ifplugd.action:
+set -e
+
+if [ -z "$1" ] || [ -z "$2" ] ; then
+        echo "Wrong arguments" > /dev/stderr
+        exit 1
+fi
+
+[ "$2" = "up" ] && IN_IFPLUGD=yes exec /etc/net/scripts/ifup-common $1
+[ "$2" = "down" ] && IN_IFPLUGD=yes exec /etc/net/scripts/ifdown $1
+
+exit 1
+
 
 5. NETWORK PROFILES
 A profile is a configuration superset. E.g. when a notebook boots up in
