@@ -1,4 +1,4 @@
-etcnet version 0.4.2
+etcnet version 0.5.0
 
 1. GENERAL INFORMATION
 
@@ -15,16 +15,16 @@ Supported interface types:
 +/-dummy
 
 Supported protocols:
-IPv4 (static, DHCP, ZCIP)
+IPv4 (static, DHCP, IPv4LL)
 IPv6 (static)
 
 2. QUICK START
 # mkdir /etc/net/ifaces/myinterface1
 $ less /etc/net/ifaces/default/options
 $ less /etc/net/ifaces/default/options-*
-# vi /etc/net/ifaces/myinterface/options
-# vi /etc/net/ifaces/myinterface/ipv4address
-# vi /etc/net/ifaces/myinterface/ipv4route
+# vi /etc/net/ifaces/myinterface1/options
+# vi /etc/net/ifaces/myinterface1/ipv4address
+# vi /etc/net/ifaces/myinterface1/ipv4route
 ...
 # mkdir /etc/net/ifaces/myinterface2
 ...
@@ -41,6 +41,7 @@ $ less /etc/net/ifaces/default/options-*
 2A. Example configuration
 eth0 with 10.0.0.1/24, default route to 10.0.0.254 and route 10.0.1.0/24 through 10.0.0.253
 
+{
 old /etc/sysconfig/network-scripts/ifcfg-eth0:
 ---8<---8<---
 DEVICE=eth0
@@ -64,8 +65,9 @@ old /etc/modules.conf:
 ---8<---8<---
 alias eth0 3c59x
 ---8<---8<---
+}
 
-
+{
 new /etc/net/iface/<any name>/options
 ---8<---8<---
 # only if name is not "eth[0-9]+"
@@ -83,19 +85,21 @@ new /etc/net/iface/<any name>/ipv4route
 10.0.1.0/24 via 10.0.0.253
 default via 10.0.0.254
 ---8<---8<---
+}
 
 2B. REQUIREMENTS
 ifrename (part of recent wireless-utils package) is a must for interface
-name maps.
+name maps. NOTE: /etc/net 0.4.2 requires ifrename-28!
 vlan-utils24 are required to setup VLAN interfaces.
 Your kernel must have CryptoAPI patch applied to setup PSK IPSec tunnels.
 When LINKDETECT is implemented, you will need ifplugstatus from
 ifplugd package.
 When BOOTPROTO is implemented, you will need a DHCP and (optionally)
-ZCIP client.
+IPv4LL client (zcip).
 iproute2 is a must
+See 
 
-3. FILES
+3.1 FILES
 /etc/net/iface/default
 There is no interface named 'default', this dir only stores default
 configuration. Files:
@@ -130,7 +134,17 @@ vlantab: VLAN mass-configuration
 
 iftab: interface mappings table, processed each time ifup is run
 
-3.1 PLIP maps
+3.2 Interface groups:
+0/virtual: dummy, lo (tun/tuntap?)
+1/realphys (real physical): ethernet, PLIP (SLIP?)
+2/hostedphys (hosted physical): VLANs, bonding
+3/indeplog (independent/stateless logical): IP tunnels, IPSec tunnels, eql (vtun?)
+4/deplog (dependent/statefull logical): PPP (PPtP)
+Each interface has its type. Several types form a group. Groups are brought up
+in a fixed order to avoid broken dependencies (say, you will not want your VLAN
+interface tried to be setup before its host interface ever exists).
+
+3.3 PLIP maps
 My notes for multiple PLIP interfaces.
 
 myplip mac fc:fc:fc:fc:fc:fc
@@ -148,17 +162,43 @@ below parport_pc parport
 options parport io=0x3f8,0x3bc
 I can't check if this works now.
 
+3.4 QoS hierarchy
+/etc/net/ifaces/ether/qos/
+1/ --- root qdisc, 1 is handle (1:)
+1/qdisc --- root qdisc options
+10/   \
+20/    | - root qdisc subclasses (handles are 1:10, 1:20 and 1:30 respectively)
+30/   /
+10/class --- class options
+10/100/ --- class child qdisc options (handle 10:100)
+10/100/101/   \
+10/100/102/    | - subclasses (100:101, 100:102, 100:103)
+10/100/103/   /
+General rules:
+1. Classes and qdiscs can contain each other. Typically a class contains a qdisc
+or one or more subclasses. A qdisc typically contains one ore more classes.
+2. Containment is represented by directory tree.
+3. Directory must contain one of two files: either 'class' or 'qdisc' so that we
+know the type of each node. The file contains current node parameters.
+4. Qdisc handle is it's directory name with ':'.
+5. Class classid is the last qdisc seen in the tree plus ':' plus current class's
+directory name.
+6. If current directory contains file 'extra', it's contents will be used when
+creating children (usually classes). This does not apply to childrens' children.
+7. Class dir can contain 'filter' file with filter statements. The filters will
+belong to parent qdisc and will point to current dir (class), you don't have to
+specify parent and flowid keywords. If 'extra.filter' file exists, it's contents
+will be prefixed to each line of 'filter' file.
 
-
-Interface groups:
-0/virtual: dummy, lo (tun/tuntap?)
-1/realphys (real physical): ethernet, PLIP (SLIP?)
-2/hostedphys (hosted physical): VLANs, bonding
-3/indeplog (independent/stateless logical): IP tunnels, IPSec tunnels, eql (vtun?)
-4/deplog (dependent/statefull logical): PPP (PPtP)
-Each interface has its type. Several types form a group. Groups are brought up
-in a fixed order to avoid broken dependencies (say, you will not want your VLAN
-interface tried to be setup before its host interface ever exists).
+3.5. INTERFACE RECURSION AND DEPENDENCIES
+1. When we bring up an iface, we MUST ensure that parent iface is up.
+If it is not so, continue only if we succeeded bringing parent iface up.
+2. When we have brought an iface up, we MAY (if configured to do it)
+bring up all ifaces that depend on it.
+3. When we bring down an iface, we MUST first bring down all dependant
+ifaces.
+4. We SHOULD keep track of processed ifaces for the original transaction
+to avoid loops.
 
 
 4. SYSTEM CONFIGURATION
@@ -220,20 +260,34 @@ To switch between configurations without editing /etc/net/profile one can use:
 # service etcnet restartwith home
 
 6. TODO
--ppp hooks
+-ppp hooks and /etc/ppp/ip-up*
 -control
 -default prefixes for sysctl.conf files
 -handle 'add' in ipv4rule on ifdown
 -analyze zebra and RTPROTO ip option
 -handle network mounts?
 -check exit codes
--handle dependant interfaces for ifplugd-controlled links !!!
--implement recursion for ifup (e.g. by vlantab) !!!
--introduce /etc/ppp/ ?
--purge all VLANs from iface on shutdown
++interface dependencies support
+-implement -r flag to ifup, handle vlantab
+-IrLAN support?
+-wireless host AP support?
+-QoS infrastructure
+-IPSec (openswan) support?
++fix logger hang bug
++check argc in etcnet.init
++assume ONBOOT=no for removables
+-Elektra support
++zcip -> ipv4ll
+-extend start_vlantab ans stop_vlantab for iface deps
+-make /sbin/ifup and /sbin/ifdown symlinks, not files
 
 7. CHANGELOG
 
+0.5.0:
+	initial QoS framework
+	initial recursion and dependencies processing framework
+	some fixes
+	changed ZCIP to IPv4LL
 0.4.2:
 	documentation updates
 	synced with most recent beta of wireless-utils
