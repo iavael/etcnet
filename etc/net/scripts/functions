@@ -187,7 +187,7 @@ init_nethost()
 {
 	if [ -n "$1" ]; then
 		NETHOST="$1"
-	elif grep "^$HOSTNAME " $HOSTTAB; then
+	elif [ -s "$HOSTTAB" ] && grep "^$HOSTNAME " $HOSTTAB; then
 		NETHOST=`$DENOISE $HOSTTAB | grep -m 1 "^$HOSTNAME " | cut -d' ' -f2`
 	else
 		NETHOST=$HOSTNAME
