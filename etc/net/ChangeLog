@@ -2,6 +2,7 @@
 	create-ppp minor bugfix
 	renamed iptun/ipsectun/pentanet/ppp options
 	plipconfig support
+	eliminated ALTLinux service package dependency
 0.6.4:
 	8021q is no more unconditionally loaded, other VLAN code enhancements
 	another print_message()/print_progress() bugfix

@@ -1,8 +1,53 @@
 #!/bin/bash
 
-. /etc/init.d/functions
-# defaults
 SourceIfNotEmpty /etc/net/options
+
+# Stolen from /etc/init.d/functions and improved.
+is_yes()
+{
+	local TESTVAL=${1:?missing 1st arg to $FUNCNAME}
+	case "$TESTVAL" in
+		[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
+			# true returns zero
+			return 0
+		;;
+		*)
+			# false returns one
+			return 1
+		;;
+	esac
+}
+
+is_no()
+{
+	local TESTVAL=${1:?missing 1st arg to $FUNCNAME}
+	case "$TESTVAL" in
+		[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|[Nn]|0)
+			# true returns zero
+			return 0
+			;;
+		*)
+			# false returns one
+			return 1
+		;;
+	esac
+}
+
+SourceIfNotEmpty()
+{
+	local f
+	f="$1"
+	shift
+	[ -s "$f" ] && . "$f" "$@"
+}
+
+ExecIfExecutable()
+{
+	local f
+	f="$1"
+	shift
+	[ -x "$f" ] && "$f" "$@"
+}
 
 supported_type()
 {

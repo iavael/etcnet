@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# etcnet
+# network
 # chkconfig: 2345 10 90
-# description: etcnet is network configuration software
+# description: /etc/net is network configuration software
 
-# Do not load RH compatibility interface.
+# ALTLinux: Do not load RH compatibility interface.
 WITHOUT_RC_COMPAT=1
-# Source function library.
+
 SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 SourceIfNotEmpty /etc/sysconfig/network
