@@ -22,13 +22,13 @@ for MYIFACEDIR in $IFACEDIR/*; do
 	NAME=${BNAME/%@*/}
 	[ "${NAME/%@*/}" = "${BNAME/%@$NETHOST/}" ] || continue
 	[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
-	unset DISABLED
+	unset DISABLED REQUIRES HOST
 	pickup_options
 	is_yes "$DISABLED" && continue
 	# absent quotes effectively normalize field separator to space
-	if echo $REQUIRES | tr ' ' '\n' | grep -q ^$NAME$; then
+	if echo $REQUIRES | tr ' ' '\n' | grep -q ^$PARENTNAME$; then
 		CHILDREN="${CHILDREN:+$CHILDREN }$NAME"
-	elif echo $REQUIRES | tr ' ' '\n' | grep -q ^$NAME$; then
+	elif echo $HOST | tr ' ' '\n' | grep -q ^$PARENTNAME$; then
 		CHILDREN="${CHILDREN:+$CHILDREN }$NAME"
 	fi
 done
