@@ -9,6 +9,7 @@ WITHOUT_RC_COMPAT=1
 # Source function library.
 SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
+SourceIfNotEmpty /etc/sysconfig/network
 export IFACEDIR SCRIPTDIR PROFILE
 
 start_group()
@@ -120,6 +121,7 @@ usage()
 	exit 1
 }
 
+is_yes "$NETWORKING" || return 0
 # See how we were called.
 case "$1" in
 	start)
