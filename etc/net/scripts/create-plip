@@ -5,3 +5,4 @@ pickup_options
 
 $MODPROBE plip
 $IP link set plip0 name $NAME
+xargise_file $MYIFACEDIR/plipconfig "${PLIPCONFIG:-$DEFAULT_PLIPCONFIG} $NAME"

@@ -26,6 +26,7 @@ INSMOD=/sbin/insmod
 SYSCTL=/sbin/sysctl
 DEFAULT_IWCONFIG=/sbin/iwconfig
 DEFAULT_WPA_SUPPLICANT=/usr/sbin/wpa_supplicant
+DEFAULT_PLIPCONFIG=/sbin/plipconfig
 # for iftab
 IFRENAME=/sbin/ifrename
 DEFAULT_VCONFIG=/usr/bin/vconfig
