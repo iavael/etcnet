@@ -35,6 +35,7 @@ start_group()
 start()
 {
 	$SYSCTL -p /etc/net/sysctl.conf
+	[ -s $IPRULETAB ] && cat $IPRULETAB | xargs --max-lines=1 $IP rule add
 	declare -a GROUP
 	# 1. fill in the groups
 	GROUPCOUNT=0

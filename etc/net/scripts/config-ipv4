@@ -6,5 +6,10 @@ SourceIfNotEmpty $SCRIPTDIR/functions
 [ -s $MYIFACEDIR/ipv4address ] && cat $MYIFACEDIR/ipv4address | \
 xargs --max-lines=1 $IP -4 address add dev $NAME
 
-iface_is_up $NAME && [ -s $MYIFACEDIR/ipv4route ] && \
-cat $MYIFACEDIR/ipv4route | xargs --max-lines=1 $IP -4 route append dev $NAME
+if iface_is_up $NAME; then
+	[ -s $MYIFACEDIR/ipv4route ] && cat $MYIFACEDIR/ipv4route | xargs --max-lines=1 $IP -4 route append dev $NAME
+	# Setup rules only after routes are Ok, so that route tables are
+	# populated when rule starts routing traffic to them.
+	# Note that we don't have 'add' here.
+	[ -s $MYIFACEDIR/ipv4rule ] && cat $MYIFACEDIR/ipv4rule | xargs --max-lines=1 $IP rule
+fi
