@@ -39,6 +39,7 @@ if [ -n "$MAPPED_NAME" -a "$NAME" != "$MAPPED_NAME" ]; then
 	print_progress
 fi
 
+init_nethost
 if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
 	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
 else
