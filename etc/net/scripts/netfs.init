@@ -29,6 +29,12 @@ SMBMTAB=`grep -vs '^#' /proc/mounts |awk '{ if (($3 == "smbfs") && ($2 != "/")) 
 CIFSMTAB=`grep -vs '^#' /proc/mounts |awk '{ if (($3 == "cifs") && ($2 != "/")) print $2}'`
 NCPMTAB=`grep -vs '^#' /proc/mounts |awk '{ if (($3 == "ncpfs") && ($2 != "/")) print $2}'`
 
+getmtabfor()
+{
+	local TARGETFS=${1:?missing 1st argument to $FUNCNAME}
+	grep -vs '^#' /proc/mounts | awk '{ if (($3 == "$TARGETFS") && ($2 != "/")) print $2}'
+}
+
 start()
 {
 	is_yes "$NETWORKING" || return 0
