@@ -7,6 +7,8 @@ ONBOOT=yes
 # /etc/net/scripts/ifdown respectively, if you wish to use
 # etcnet from hotplug.
 USE_HOTPLUG=no
+# Same for pcmcia_cs
+USE_PCMCIA=no
 # protocols
 CONFIG_IPV4=yes
 CONFIG_IPV6=yes
