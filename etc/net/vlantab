@@ -10,7 +10,8 @@
 # Note that you can only specify IP address in this file now. If you
 # need additional configuration (ip link/ip route), create appropriate
 # iface directory with required files.
-ether 2 two
-ether 3 three
-ether 4
-ether 5 AUTO 192.168.31.0/24
+
+#ether 2 two
+#ether 3 three
+#ether 4
+#ether 5 AUTO 192.168.31.0/24
