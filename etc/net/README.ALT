@@ -1,4 +1,4 @@
-/etc/net 0.5.2
+/etc/net 0.5.3
 ALTLinux Sisyphus
 
 just apt-get install etcnet and make sure CONFMETHOD in /etc/sysconfig/network
@@ -17,5 +17,4 @@ service network
 /etc/sysconfig/network
 
 TODO
--/etc/ppp/ip-up*
 -control
