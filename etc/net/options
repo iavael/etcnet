@@ -49,3 +49,8 @@ IFPLUGSTATUS=/sbin/ifplugstatus
 
 # bridge interfaces
 DEFAULT_BRCTL=/sbin/brctl
+
+# IPX tools
+IPX_INTERFACE=/sbin/ipx_interface
+IPX_INTERNAL_NET=/sbin/ipx_internal_net
+IPX_CONFIGURE=/sbin/ipx_configure
