@@ -180,3 +180,10 @@ get_mapped_ifname()
 		[ $? = 0 -a -n "$NEW_NAME" ] && echo $NEW_NAME
 	fi
 }
+
+profiled_filename()
+{
+	local BASE=${1:?$FUNCNAME: missing 1st arg}
+	local CAND=$BASE${PROFILE:+.$PROFILE}
+	[ -e $CAND ] && echo $CAND || echo $BASE
+}
