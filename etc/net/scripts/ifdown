@@ -18,7 +18,6 @@ export IFACEDIR MYIFACEDIR SCRIPTDIR NAME SEEN_IFACES
 init_profile
 pickup_options
 
-echo "DEBUG: $0 $@"
 # 1. check constraints
 is_yes "$DISABLED" && exit 0
 iface_exists $NAME || exit 0
