@@ -132,12 +132,12 @@ start_vlantab()
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
-	egrep -v '^$|^#' $VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+	egrep -v '^$|^#' `profiled_filename $VLANTAB` | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		iface_is_up "$HOST_IFACE" && setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
 		echo -n '.'
 	done
 	# We can't count ifaces right in the while cycle due to pipe causing new process
-	echo "`egrep -vc '^$|^#' $VLANTAB` ifaces created."
+	echo "`egrep -vc '^$|^#' `profiled_filename $VLANTAB`` ifaces created."
 }
 
 stop_vlantab()
@@ -150,12 +150,12 @@ stop_vlantab()
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	local -i -x VLANCNT=0
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
-	egrep -v '^$|^#' $VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+	egrep -v '^$|^#' `profiled_filename $VLANTAB` | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
 		echo -n '.'
 	done
 	# See start_vlantab().
-	echo "`egrep -vc '^$|^#' $VLANTAB` ifaces deleted."
+	echo "`egrep -vc '^$|^#' `profiled_filename $VLANTAB`` ifaces deleted."
 }
 
 iface_is_up()
@@ -250,11 +250,33 @@ ifup_children ()
 	foreach_child ifup
 }
 
-# check if parent iface (REQUIRES=) is up and ifup if needed
-ifup_parent ()
+# check if parent iface(s) (REQUIRES=) is up and ifup if needed
+ifup_parents ()
 {
-	return 0
-	$SCRIPTDIR/ifup $REQUIRES
+	local parent ret=0
+	for parent in $REQUIRES; do
+		if ! iface_is_up $parent; then
+			$SCRIPTDIR/ifup $parent || {
+				ret=$?
+				break
+			}
+		fi
+	done
+	return $ret
+}
+
+ifdown_parents ()
+{
+	local parent ret=0
+	for parent in $REQUIRES; do
+		if iface_is_up $parent; then
+			$SCRIPTDIR/ifdown $parent || {
+				ret=$?
+				break
+			}
+		fi
+	done
+	return $ret
 }
 
 iface_exists ()

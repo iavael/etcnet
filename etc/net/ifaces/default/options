@@ -55,5 +55,22 @@ KEEP_DOWN=no
 # IPv4 only
 DONT_FLUSH=no
 
-# If set to yes, makes ifup search for dependent ifaces and bring them up too.
-RECURSIVE_IFUP=no
+# ****************** Interface dependencies ******************
+# If interface A has REQUIRES=B in it's options file, A is the child, B is the parent.
+# I don't recommend change defaults here. See also: README/3.5
+
+# If set to yes, this variable will cause ifup call for all child (having current
+# interface in their REQUIRES list) after the current interface is set up.
+IFUP_CHILDREN=no
+
+# If set to yes, this variable will cause ifup call for all parent (listed in current
+# REQUIRES list) before the current interface is set up.
+IFUP_PARENTS=yes
+
+# If set to yes, this variable will cause ifdown call for all child (having current
+# interface in their REQUIRES list) before the current interface is shut down.
+IFDOWN_CHILDREN=yes
+
+# If set to yes, this variable will cause ifdown call for all parent (listed in current
+# REQUIRES list) after the current interface is shut down.
+IFDOWN_PARENTS=no

@@ -12,11 +12,7 @@ REQUIRES=${REQUIRES:?REQUIRES must be set for $NAME}
 }
 
 for parent in $REQUIRES; do
-	$BRCTL addif $NAME $parent
+	$BRCTL delif $NAME $parent
+# There is no need to keep bridge slaves up
+	$SCRIPTDIR/ifdown $parent
 done
-
-[ -s `profiled_filename $MYIFACEDIR/brctl` ] && {
-	egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/brctl` | \
-	sed "s/ AUTO / $NAME /" | \
-	xargs --max-lines=1 $BRCTL
-} && echo -n '.'

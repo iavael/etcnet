@@ -72,6 +72,11 @@ ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && echo -n '.'
 iface_is_up $NAME && ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && echo -n '.'
 
 # 9. process deps
-is_yes "$RECURSIVE_IFUP" && ifup_children
+if is_yes "$IFUP_CHILDREN"; then
+	ifup_children || {
+		print_error "Could not ifup children for parent iface '$NAME'"
+		exit 1
+	}
+fi
 
 exit 0

@@ -1,4 +1,4 @@
-etcnet version 0.5.1
+etcnet version 0.5.2
 
 1. GENERAL INFORMATION
 
@@ -200,6 +200,24 @@ ifaces.
 4. We SHOULD keep track of processed ifaces for the original transaction
 to avoid loops.
 
+3.5.1 ifup algorythm
+[ifup_parents]
+create (type-specific)
+[rename]
+[ifup-pre]
+config (protocols and set UP)
+setup (type-specific, may bind to parents or modify them)
+[ifup-post]
+[ifup_children]
+
+3.5.2 ifdown algorythm
+[ifdown_children]
+[shutdown] (type-specific, may unbind from parents or modify them)
+[ifdown-pre]
+unconfig (and set DOWN)
+[ifdown-post]
+destroy (type-specific)
+[ifdown_parents]
 
 4. SYSTEM CONFIGURATION
 4.1 Edit /etc/sysctl.conf so that it does not intersect with /etc/net/sysctl.conf
@@ -278,14 +296,21 @@ To switch between configurations without editing /etc/net/profile one can use:
 +zcip -> ipv4ll
 -extend start_vlantab ans stop_vlantab for iface deps
 +don't rmmod ifplugd'd ifaces
--use NETWORKING from /etc/sysconfig/network
--handle more than one bridge
++use NETWORKING from /etc/sysconfig/network
 -SNMP bridge workaround
++cleanup functions inclusion
+-check recursion for bond/bri ifaces
+-lockfiles
++profile vlantab
+-bridge-utils arg order patch
 
 7. CHANGELOG
 
 0.5.2:
 	ethernet bridge support
+	code cleanup and minor fixes
+	enhanced interface dependencies handling (changed variable naming,
+		introduced shutdown scripts, updated README)
 0.5.1:
 	ifplugd+ifdown fix
 	ALT docs update

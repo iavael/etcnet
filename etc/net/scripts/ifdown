@@ -22,10 +22,18 @@ pickup_options
 is_yes "$DISABLED" && exit 0
 iface_exists $NAME || exit 0
 
-# 2. kill all children :-[ ]
+# 1a. prepare for shutdown
+if is_yes "$IFDOWN_CHILDREN"; then
+	ifdown_children || {
+		print_error "Could not ifdown children for parent iface '$NAME'"
+		exit 1
+	}
+fi
+ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
+
+# 2. Always kill all children :-[ ]
 ORIG_IN_IFPLUGD=$IN_IFPLUGD
 IN_IFPLUGD=
-ifdown_children
 IN_IFPLUGD=$ORIG_IN_IFPLUGD
 
 if iface_is_up $NAME; then
@@ -42,3 +50,11 @@ if ! is_yes $DONT_FLUSH; then
 fi
 
 # 4. TODO: restore resolv.conf
+
+# 5. Shutdown parent only if requested.
+if is_yes "$IFDOWN_PARENTS"; then
+	ifdown_parents || {
+		print_error "Could not ifdown parent '$REQUIRES' for child iface '$NAME'"
+		exit 1
+	}
+fi

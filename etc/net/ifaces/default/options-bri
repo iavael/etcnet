@@ -1,5 +1,36 @@
-# This variable must be defined for each bridge interface.
-# Don't define it here.
+###
+# From bridge-STP-HOWTO:
+# There is a number of rules you are not allowed to break (otherwise
+# your bridge will do).
+# * A port can only be a member of one bridge.
+# * A bridge knows nothing about routes.
+# * A bridge knows nothing about higher protocols than ARP. That's the
+#   reason why it can bridge any possible protocol possibly running on
+#   your Ethernet.
+# * No matter how many ports you have in your logical bridge, it's
+#   covered by only one logical interface.
+# * As soon as a port (e.g. a NIC) is added to a bridge you have no
+#   more direct control about it.
+###
+# Note on brtcl options file.
+# If brctl file exists in interface directory, it will be processed like
+# iplink/ipv4address files with one exception. Current order of arguments
+# to brctl binary does not allow us to omit bridge name in brctl options
+# file. So you must either duplicate your bridge name in brctl options or
+# use AUTO to let setup-bri substitute it with current bridge name.
+###
+# With default values you will have your ethernet slaves up after bridge
+# shutdown. To have your ethers be shut down too, uncomment the following
+# setting, but remember to have IFDOWN_CHILDREN=no in all your slaves'
+# options file.
+#IFDOWN_PARENTS=yes
+
+# This variable must be defined for each bridge interface. This is a
+# space-separated list of slave ethernet interfaces combining the
+# bridge. Don't forget to create configurations for the slave interfaces
+# too.
+# Don't define this variable here, the right place is your interface's
+# options file. 
 #REQUIRES=
 # Optional overloading of brctl path.
 #BRCTL=

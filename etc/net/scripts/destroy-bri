@@ -1,7 +1,6 @@
 #!/bin/bash
 
 . $SCRIPTDIR/functions
-init_profile
 pickup_options
 
 BRCTL=${BRCTL:=$DEFAULT_BRCTL}
@@ -10,4 +9,5 @@ BRCTL=${BRCTL:=$DEFAULT_BRCTL}
 	exit 1
 }
 
-$BRCTL addbr $NAME
+$BRCTL delbr $NAME
+try_rmmod bridge

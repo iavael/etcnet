@@ -51,10 +51,12 @@ iface_is_up $NAME && {
 }
 
 # 3. deps control
-ifup_parent || {
-	print_error "Could not ifup parent '$REQUIRES' for child iface '$NAME'"
-	exit 1
-}
+if is_yes "$IFUP_PARENTS"; then
+	ifup_parents || {
+		print_error "Could not ifup parent '$REQUIRES' for child iface '$NAME'"
+		exit 1
+	}
+fi
 
 # 4. make device appear
 if ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME; then
