@@ -13,8 +13,8 @@ IPv6
 
 Interface groups:
 
-virtual: dummy, lo (tun?)
-realphys (real physical): ethernet, PLIP (SLIP?)
-hostedphys (hosted physical): VLANs, bonding
-indeplog (independent/stateless logical): IP tunnels, IPSec tunnels, eql (vtun?)
-deplog (dependent/statefull logical): PPP (PPtP)
+0/virtual: dummy, lo (tun?)
+1/realphys (real physical): ethernet, PLIP (SLIP?)
+2/hostedphys (hosted physical): VLANs, bonding
+3/indeplog (independent/stateless logical): IP tunnels, IPSec tunnels, eql (vtun?)
+4/deplog (dependent/statefull logical): PPP (PPtP)
