@@ -8,7 +8,7 @@
 
 usage()
 {
-	echo "Usage: $0 <device>"
+	echo "Usage: $0 <device> [-r]"
 	exit 1
 }
 
@@ -25,13 +25,23 @@ init_profile
 pickup_options
 
 is_yes "$DISABLED" && {
-	echo -n 'skipped, disabled '
+	echo -n 'skipped disabled iface '
   exit 1
 }
 
-if [ "$2" = "boot" -a "$ONBOOT" = "no" ]; then
-	echo -n 'skipped during boot '
-  exit 1
+if [ "$2" = "boot" ]; then
+	is_no "$ONBOOT" && {
+		echo -n 'skipped on boot '
+	  exit 1
+	}
+	is_yes "$USE_HOTPLUG" && {
+		echo -n 'skipped hotplug iface on boot '
+	  exit 1
+	}
+	is_yes "$USE_PCMCIA" && {
+		echo -n 'skipped PCMCIA iface on boot '
+	  exit 1
+	}
 fi
 
 # 1. check if device already exists
