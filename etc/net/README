@@ -1,4 +1,4 @@
-etcnet version 0.1
+etcnet version 0.1.0
 
 1. GENERAL INFORMATION
 
@@ -14,18 +14,10 @@ Supported interface types:
 +/-dummy
 
 Supported protocols:
-IPv4
-IPv6
+IPv4 (static)
+IPv6 (static)
 
-Interface groups:
-
-0/virtual: dummy, lo (tun?)
-1/realphys (real physical): ethernet, PLIP (SLIP?)
-2/hostedphys (hosted physical): VLANs, bonding
-3/indeplog (independent/stateless logical): IP tunnels, IPSec tunnels, eql (vtun?)
-4/deplog (dependent/statefull logical): PPP (PPtP)
-
-2. CONFIGURATION GUIDE
+2. QUICK START
 # mkdir /etc/net/ifaces/myinterface1
 $ less /etc/net/ifaces/default/options
 $ less /etc/net/ifaces/default/options-*
@@ -44,8 +36,57 @@ $ less /etc/net/ifaces/default/options-*
 # rmmod <all loaded network modules>
 # service etcnet start
 
-3. TODO
-check REQUIRES for vlantab
+Get the latest wireless-utils, compile it and install
+/usr/local/sbin/ifrename and /usr/local/lib/libiw.so.27
+Otherwise MAPDESCR will not work.
+vlan-utils24 are required to setup VLAN interfaces.
+Your kernel must have CryptoAPI patch applied to setup IPSec tunnels.
+When LINKDETECT is implemented, you will need ifplugstatus from
+ifplugd package.
+When BOOTPROTO is implemented, you will need a DHCP and (optionally)
+ZCIP client.
+iproute2 is a must
 
-4. CHANGELOG
-0.1: 1st public release
+3. REFERENCE
+/etc/net/iface/default
+There is no interface named 'default', this dir only stores default
+configuration. Files:
+options: default options for all interfaces
+options-<TYPE>: default options for interfaces of type TYPE
+Thos scripts are executed only if [ -x ]:
+ifup-pre-local: executed before interface is up, but after it exists
+ifup-post-local: executed after the interface is completely up and running
+ifdown-pre-local: executed before the interface is going to be shutdown
+ifdown-post-local: executed after the interface is completely gone
+
+/etc/net/ifaces/<IFACE>
+This is interface-specific configuration. Files:
+options: general and type-specific options
+ipv4address: 1 IPv4 address per line
+ipv4route: 1 IPv4 route per line
+ipv6address: 1 IPv6 address per line
+ipv6route: 1 IPv6 route per line
+iplink: 1 ip link option per line
+
+/etc/net/scripts
+etcnet.init: chkconfig initscript
+functions: helper functions
+options: default options
+
+Interface groups:
+0/virtual: dummy, lo (tun/tuntap?)
+1/realphys (real physical): ethernet, PLIP (SLIP?)
+2/hostedphys (hosted physical): VLANs, bonding
+3/indeplog (independent/stateless logical): IP tunnels, IPSec tunnels, eql (vtun?)
+4/deplog (dependent/statefull logical): PPP (PPtP)
+Each interface has its type. Several types form a group. Groups are brought up
+in a fixed order to avoid broken dependencies (say, you will not want your VLAN
+interface tried to be setup before its host interface ever exists).
+
+4. TODO
+-check REQUIRES for vlantab
+-BOOTPROTOTO other than static
+-LINKDETECT
+
+5. CHANGELOG
+0.1.0: 1st public release
