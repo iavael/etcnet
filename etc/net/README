@@ -1,11 +1,13 @@
+1. GENERAL INFORMATION
+
 Supported interface types:
-ethernet (eth)
-IP tunnels (iptun)
-IPSec static tunnels (ipsectun)
-VLANs (vlan)
-PLIP (plip)
-bonding (bond)
-dummy: +/-
++ethernet (eth)
++IP tunnels (iptun)
++IPSec static tunnels (ipsectun)
++/-VLANs (vlan)
++PLIP (plip)
++bonding (bond)
++/-dummy
 
 Supported protocols:
 IPv4
@@ -18,3 +20,25 @@ Interface groups:
 2/hostedphys (hosted physical): VLANs, bonding
 3/indeplog (independent/stateless logical): IP tunnels, IPSec tunnels, eql (vtun?)
 4/deplog (dependent/statefull logical): PPP (PPtP)
+
+2. CONFIGURATION GUIDE
+# mkdir /etc/net/ifaces/myinterface1
+$ less /etc/net/ifaces/default/options
+$ less /etc/net/ifaces/default/options-*
+# vi /etc/net/ifaces/myinterface/options
+# vi /etc/net/ifaces/myinterface/ipv4address
+# vi /etc/net/ifaces/myinterface/ipv4route
+...
+# mkdir /etc/net/ifaces/myinterface2
+...
+
+# chkconfig network off
+# ln -s /etc/init.d/etcnet /etc/net/scripts/etcnet.init
+# chkconfig --add etcnet
+# chkconfig etcnet on
+# service network stop
+# rmmod <all loaded network modules>
+# service etcnet start
+
+3. TODO
+check REQUIRES for vlantab
