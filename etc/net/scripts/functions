@@ -32,7 +32,7 @@ type2group()
 		vlan|bond|bri|teql)
 			echo '2'
 		;;
-		iptun|ipsectun|eql)
+		iptun|ipsectun)
 			echo '3'
 		;;
 		ppp|ippp|pptp)
