@@ -4,10 +4,25 @@
 # configuration directories and files in case there are no existing ones
 # in /etc/net/ifaces.
 
-[ "$1" = "write" ] && TESTMODE=no
-[ -x ${IP:=/sbin/ip} ] || exit 1
-[ -x ${ETHTOOL:=/usr/sbin/ethtool} ] || exit 1
-[ -d ${IFACEDIR:=/etc/net/ifaces} ] || exit 1
+IFACEDIR=${IFACEDIR:-/etc/net/ifaces}
+if [ "$1" = "write" ]; then
+	TESTMODE=no
+	[ -d "$IFACEDIR" ] || {
+		echo "ERROR: $IFACEDIR does not exist"
+		exit 1
+	}
+fi
+
+[ -x ${IP:=/sbin/ip} ] || {
+	echo "ERROR: $IP is not available"
+	exit 1
+}
+
+[ -x ${ETHTOOL:=/usr/sbin/ethtool} ] || {
+	echo "ERROR: $ETHTOOL is not available"
+	exit 1
+}
+
 IFTAB=/etc/net/iftab
 
 function store()
@@ -34,7 +49,7 @@ function makedir()
 	fi
 }
 
-for iface in `$IP li | egrep '^[[:digit:]]+: ' | cut --delimiter=' ' --fields=2 | sed 's/://'`; do
+for iface in `$IP li | egrep '^[[:digit:]]+: ' | cut --delimiter=' ' --fields=2 | sed 's/://' | sed 's/@NONE$//'`; do
 	echo -n "Processing interface '$iface':"
 	if [ -d $IFACEDIR/$iface ]; then
 		echo " configuration exists"
