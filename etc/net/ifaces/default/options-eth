@@ -16,3 +16,5 @@ LINKDETECT=no
 # amount of 0.1 sec times for MAC address to become not 00:00:00:00:00:00.
 # WARNING: EXPERIMENTAL FEATURE !!!
 # MACADDR_WAITTIME=10
+
+CONFIG_WIRELESS=yes
