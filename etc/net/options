@@ -43,3 +43,6 @@ ZCIP_CLIENT=/sbin/zcip
 
 # for LINKDETECT option
 IFPLUGSTATUS=/sbin/ifplugstatus
+
+# bridge interfaces
+DEFAULT_BRCTL=/sbin/brctl

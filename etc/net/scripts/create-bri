@@ -1,2 +1,8 @@
 #!/bin/sh
 
+. /etc/init.d/functions
+SourceIfNotEmpty $SCRIPTDIR/functions
+init_profile
+pickup_options
+
+$BRCTL addbr $NAME

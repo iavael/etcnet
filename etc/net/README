@@ -278,9 +278,14 @@ To switch between configurations without editing /etc/net/profile one can use:
 +zcip -> ipv4ll
 -extend start_vlantab ans stop_vlantab for iface deps
 +don't rmmod ifplugd'd ifaces
+-use NETWORKING from /etc/sysconfig/network
+-handle more than one bridge
+-SNMP bridge workaround
 
 7. CHANGELOG
 
+0.5.2:
+	ethernet bridge support
 0.5.1:
 	ifplugd+ifdown fix
 	ALT docs update

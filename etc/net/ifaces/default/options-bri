@@ -1,3 +1,5 @@
-CONFIG_IPV4=no
-CONFIG_IPV6=no
-CONFIG_IPX=no
+# This variable must be defined for each bridge interface.
+# Don't define it here.
+#REQUIRES=
+# Optional overloading of brctl path.
+#BRCTL=

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+SourceIfNotEmpty $SCRIPTDIR/functions
+init_profile
+pickup_options
+
+BRCTL=${BRCTL:=$DEFAULT_BRCTL}
+REQUIRES=${REQUIRES:?REQUIRES must be set for $NAME}
+
+[ -x "$BRCTL" ] || {
+	print_error "$BRCTL does not exist or is not executable. Try installing bridge-utils RPM."
+	exit 1
+}
+
+for parent in $REQUIRES; do
+	$BRCTL addif $NAME $parent
+done
