@@ -66,50 +66,6 @@ name2type()
 	supported_type $CAND && echo $CAND
 }
 
-type2group()
-{
-	local TYPE=${1:?missing 1st arg to $FUNCNAME}
-	case "$TYPE" in
-		lo|dummy)
-			echo '0'
-		;;
-		eth|plip|usb|pentanet)
-			echo '1'
-		;;
-		vlan|bond|bri|teql)
-			echo '2'
-		;;
-		iptun|ipsectun)
-			echo '3'
-		;;
-		ppp|ippp|pptp)
-			echo '4'
-		;;
-	esac
-}
-
-group2name()
-{
-	local G=${1:?missing 1st arg to $FUNCNAME}
-	case "$G" in
-		0)
-			echo 'virtual'
-		;;
-		1)
-			echo 'realphys'
-		;;
-		2)
-			echo 'hostedphys'
-		;;
-		3)
-			echo 'indeplog'
-		;;
-		4)
-			echo 'deplog'
-		;;
-	esac
-}
-
 # read options hierarchy
 pickup_options()
 {
