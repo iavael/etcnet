@@ -58,7 +58,7 @@ supported_type()
 	return 1
 }
 
-# translate iface name into corresponding type
+# try to translate iface name into corresponding type
 name2type()
 {
 	local NAME=${1:?missing 1st arg to $FUNCNAME}
@@ -163,7 +163,10 @@ profiled_filename()
 	[ -e $CAND ] && echo $CAND || echo $BASE
 }
 
-# TODO: check once again order of overrides
+# This function updates current config file namespace, consisting of
+# profile name and host name. Profile name can be overriden, but host
+# name can't be.
+# Should be called init_netprofile()
 init_profile()
 {
 	if [ -n "$1" ]; then
