@@ -30,3 +30,6 @@ DEFAULT_PENTANET_CONF=pentanet.conf
 DEFAULT_IPSECADM=/usr/sbin/ipsecadm
 # for bond
 DEFAULT_IFENSLAVE=/sbin/ifenslave
+# profiles
+PROFILE_FILE=/etc/net/profile
+PROC_CMDLINE=/proc/cmdline
