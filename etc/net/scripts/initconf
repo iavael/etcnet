@@ -118,8 +118,8 @@ for iface in `$IP li | egrep '^[[:digit:]]+: ' | cut --delimiter=' ' --fields=2 
 				store $IFACEDIR/$iface/options "TUNTYPE=$LINKTYPE"
 				CARRIER_LOCAL=`ip tu sh $iface | sed 's/  /\n/g' | grep '^local ' | cut --delimiter=' ' --fields=2`
 				CARRIER_REMOTE=`ip tu sh $iface | sed 's/  /\n/g' | grep '^remote ' | cut --delimiter=' ' --fields=2`
-				[ -n "$CARRIER_LOCAL" ] && store $IFACEDIR/$iface/options "PHYSLOCAL=$CARRIER_LOCAL"
-				[ -n "$CARRIER_REMOTE" ] && store $IFACEDIR/$iface/options "PHYSREMOTE=$CARRIER_REMOTE"
+				[ -n "$CARRIER_LOCAL" ] && store $IFACEDIR/$iface/options "TUNLOCAL=$CARRIER_LOCAL"
+				[ -n "$CARRIER_REMOTE" ] && store $IFACEDIR/$iface/options "TUNREMOTE=$CARRIER_REMOTE"
 				IPV4ADDRS=`print_ipv4_P2P_addresses $iface`
 			;;
 		esac
