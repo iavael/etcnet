@@ -25,10 +25,9 @@ LSMOD=/sbin/lsmod
 INSMOD=/sbin/insmod
 SYSCTL=/sbin/sysctl
 DEFAULT_IWCONFIG=/sbin/iwconfig
+DEFAULT_WPA_SUPPLICANT=/usr/sbin/wpa_supplicant
 # for iftab
 IFRENAME=/sbin/ifrename
-# for LINKDETECT
-IFPLUGSTATUS=/sbin/ifplugstatus
 DEFAULT_VCONFIG=/usr/bin/vconfig
 DEFAULT_PENTANETT=/usr/sbin/pentanett
 DEFAULT_PENTANET_CONF=pentanet.conf
