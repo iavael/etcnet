@@ -26,7 +26,7 @@ type2group()
 		lo|dummy)
 			echo '0'
 		;;
-		eth|plip|usb)
+		eth|plip|usb|pentanet)
 			echo '1'
 		;;
 		vlan|bond|bri|teql)
