@@ -371,6 +371,7 @@ process_sysctl_conf()
 	local SRCFILE=${1:?missing 1st arg to $FUNCNAME}
 	local NAME=$2
 	local ONELINE
+	local VARPREFIX
 	[ -s $SRCFILE ] || return 0
 	cat $SRCFILE | sed "s/ //g" | while read ONELINE; do
 		local VARNAME=`echo $ONELINE | awk -F= '{print $1}'`
@@ -383,17 +384,28 @@ process_sysctl_conf()
 				return 1
 			}
 			# try to guess prefix from variable name
+			# There should be a better way to build this case block...
 			case $VARNAME in
 				force_igmp_version|disable_policy|disable_xfrm|arp_ignore|arp_announce)
-				arp_filter|tag|log_martians|bootp_relay|medium_id|proxy_arp)
-				accept_source_route|send_redirects|rp_filter|shared_media)
-				secure_redirects|accept_redirects|mc_forwarding|forwarding)
-					local VARPREFIX="net.ipv4.conf.$NAME."
+					VARPREFIX="net.ipv4.conf.$NAME."
 				;;
-				locktime|proxy_delay|anycast_delay|proxy_qlen|unres_qlen
-				gc_stale_time|delay_first_probe_time|base_reachable_time
-				retrans_time|app_solicit|ucast_solicit|mcast_solicit
-					local VARPREFIX="net.ipv4.neigh.$NAME."
+				arp_filter|tag|log_martians|bootp_relay|medium_id|proxy_arp)
+					VARPREFIX="net.ipv4.conf.$NAME."
+				;;
+				accept_source_route|send_redirects|rp_filter|shared_media)
+					VARPREFIX="net.ipv4.conf.$NAME."
+				;;
+				secure_redirects|accept_redirects|mc_forwarding|forwarding)
+					VARPREFIX="net.ipv4.conf.$NAME."
+				;;
+				locktime|proxy_delay|anycast_delay|proxy_qlen|unres_qlen)
+					VARPREFIX="net.ipv4.neigh.$NAME."
+				;;
+				gc_stale_time|delay_first_probe_time|base_reachable_time)
+					VARPREFIX="net.ipv4.neigh.$NAME."
+				;;
+				retrans_time|app_solicit|ucast_solicit|mcast_solicit)
+					VARPREFIX="net.ipv4.neigh.$NAME."
 				;;
 				*)
 					print_error "Can't autocomplete sysctl variable name '$VARNAME' in file '$SRCFILE'. Please fix"

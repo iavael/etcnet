@@ -23,12 +23,6 @@ pickup_options
 	# 2. handle wireless extensions
 	is_yes "$CONFIG_WIRELESS" && ExecIfExecutable $SCRIPTDIR/config-wireless $NAME && print_message -n '.'
 	# 3. setup link-level params
-	GLOBAL_SYSCTL=`profiled_filename $IFACEDIR/sysctl.conf`
-	TYPESPEC_SYSCTL=`profiled_filename $IFACEDIR/default/sysctl.conf-$TYPE`
-	MY_SYSCTL=`profiled_filename $MYIFACEDIR/sysctl.conf`
-	[ -s $GLOBAL_SYSCTL ] && process_sysctl_conf $GLOBAL_SYSCTL && print_message -n '.'
-	[ -s $TYPESPEC_SYSCTL ] && process_sysctl_conf $TYPESPEC_SYSCTL && print_message -n '.'
-	[ -s $MY_SYSCTL ] && process_sysctl_conf $MY_SYSCTL $NAME && print_message -n '.'
 	xargise_file $IFACEDIR/default/iplink "$IP link set dev $NAME"
 	xargise_file $IFACEDIR/default/iplink-$TYPE "$IP link set dev $NAME"
 	xargise_file $MYIFACEDIR/iplink "$IP link set dev $NAME"
@@ -62,6 +56,13 @@ is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME && print_
 is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME && print_message -n '.'
 is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME  && print_message -n '.'
 is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME  && print_message -n '.'
+
+GLOBAL_SYSCTL=`profiled_filename $IFACEDIR/sysctl.conf`
+TYPESPEC_SYSCTL=`profiled_filename $IFACEDIR/default/sysctl.conf-$TYPE`
+MY_SYSCTL=`profiled_filename $MYIFACEDIR/sysctl.conf`
+[ -s $GLOBAL_SYSCTL ] && process_sysctl_conf $GLOBAL_SYSCTL && print_message -n '.'
+[ -s $TYPESPEC_SYSCTL ] && process_sysctl_conf $TYPESPEC_SYSCTL $NAME && print_message -n '.'
+[ -s $MY_SYSCTL ] && process_sysctl_conf $MY_SYSCTL $NAME && print_message -n '.'
 
 # 7. type-specific additional optional configuration
 ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && print_message -n '.'

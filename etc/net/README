@@ -317,7 +317,6 @@ As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
 ? SNMP bridge workaround
 - lockfiles
 - bridge-utils arg order patch
-- type-specific sysctl.conf defaults
 - support more than one teql interfaces
 - bluetooth support
 - 'check' arg for network.init
@@ -329,7 +328,7 @@ As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
 
 0.6.0:
 	PPP support
-	smart sysctl.conf handling
+	smart sysctl.conf handling (variable auto-completion, global and type-specific defaults)
 0.5.3:
 	fixed ifplugd support
 	code cleanup (optimized profile detection, config processing)
