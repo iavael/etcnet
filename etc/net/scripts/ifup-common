@@ -44,7 +44,7 @@ is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
 # 5. bring iface up
 if ! is_yes $KEEP_DOWN; then
 	ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && echo -n '.'
-	ip link set dev $NAME up && echo -n '.'
+	$IP link set dev $NAME up && echo -n '.'
 	if [ -x `profiled_filename $MYIFACEDIR/resolv.conf` ]; then
 		rm -f /etc/resolv.conf
 		ln -s `profiled_filename $MYIFACEDIR/resolv.conf` /etc/resolv.conf
