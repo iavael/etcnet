@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# This script is expected to automatically create the first interface
+# configuration directories and files in case there are no existing ones
+# in /etc/net/ifaces.
+
+SCRIPTDIR=/etc/net/scripts
+. $SCRIPTDIR/functions
+
+for iface in `$IP ad | egrep '^[[:digit:]]+: ' | cut --delimiter=' ' --fields=2 | sed 's/://'`; do
+	print_message -n "Processing interface '$iface': "
+	if [ -d $IFACEDIR/$iface ]; then
+		print_message "configuration exists"
+		continue
+	fi
+	print_message 'finished'
+done
