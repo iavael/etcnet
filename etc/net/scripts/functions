@@ -230,11 +230,11 @@ ifup_children ()
 	foreach_child ifup
 }
 
-# check if parent iface(s) (REQUIRES=) is up and ifup if needed
+# check if parent iface(s) (REQUIRES/HOST) is up and ifup if needed
 ifup_parents ()
 {
 	local parent ret=0
-	for parent in $REQUIRES; do
+	for parent in "$REQUIRES $HOST"; do
 		if ! iface_is_up $parent; then
 			$SCRIPTDIR/ifup $parent || {
 				ret=$?
@@ -248,7 +248,7 @@ ifup_parents ()
 ifdown_parents ()
 {
 	local parent ret=0
-	for parent in $REQUIRES; do
+	for parent in "$REQUIRES $HOST"; do
 		if iface_is_up $parent; then
 			$SCRIPTDIR/ifdown $parent || {
 				ret=$?
