@@ -188,7 +188,7 @@ profiled_filename()
 	[ -e $CAND ] && echo $CAND || echo $BASE
 }
 
-// TODO: check once again order of overrides
+# TODO: check once again order of overrides
 init_profile()
 {
 	if [ -n "$1" ]; then
