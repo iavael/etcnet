@@ -15,10 +15,12 @@ Supported interface types:
 +bridge
 +traffic equalizers (teql)
 +/-dummy
++Pent@NET
 
 Supported protocols:
 IPv4 (static, DHCP, IPv4LL)
 IPv6 (static)
+IPX
 
 2. QUICK START
 # mkdir /etc/net/ifaces/myinterface1
@@ -122,6 +124,8 @@ ipv6address: 1 IPv6 address per line
 ipv6route: 1 IPv6 route per line
 iplink: 1 ip link option per line
 ipv4rule: 1 ip -4 rule option per line
+brctl: 1 'brctl set' arg set per line
+ipxinterface: 1 'ipx_interface add' arg set per line
 
 /etc/net/scripts
 network.init: chkconfig initscript
@@ -305,16 +309,20 @@ X wireless host AP support (ifup-pre should work Ok)
 - bridge-utils arg order patch
 - type-specific sysctl.conf defaults
 - support more than one teql interfaces
+- bluetooth support
+- init_profile audit
 
 7. CHANGELOG
 
 0.5.2:
-	ethernet bridge and traffic equalizer support
+	initial IPX, ethernet bridge and traffic equalizer support
 	code cleanup (includes, VLAN code) and minor fixes
 	enhanced interface dependencies handling (changed variable naming,
 		introduced shutdown scripts, updated README and default options)
 	two new commands to network.init
 	IPv4LL bugfix
+	verbosity option
+	enhanced pentanet support
 0.5.1:
 	ifplugd+ifdown fix
 	ALT docs update
