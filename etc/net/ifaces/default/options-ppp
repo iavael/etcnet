@@ -34,7 +34,8 @@
 # will override this value, not append.
 #EXTRA_PPPOPTIONS=<string>
 
-# Note: empty pppoptions/pppinit/pppconnect/pppdisconnect files will not be used.
+# Note: empty pppoptions/pppinit/pppconnect/pppdisconnect files will
+# not be used.
 # Note: those files are not shell scripts, but chat scripts.
 #
 # One could override the default base for profiled pppd options file
