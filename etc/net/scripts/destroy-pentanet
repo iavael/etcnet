@@ -1,8 +1,6 @@
 #!/bin/bash
 
 . $SCRIPTDIR/functions
-init_profile
 pickup_options
 
-
-$MODPROBE pentanet
+try_rmmod pentanet

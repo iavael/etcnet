@@ -1,2 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
+# IPX protocol configuration script, works like brctl processor.
+
+. $SCRIPTDIR/functions
+pickup_options
+
+IPX_INTF_FILE=`profiled_filename $MYIFACEDIR/ipxinterface`
+[ -s "$IPX_INTF_FILE" ] || exit 0
+[ -x "$IPX_INTERFACE" ] || {
+	print_error "$IPX_INTERFACE does not exist or is not executable. Try installing ipxutils RPM."
+	return 1
+}
+[ -f /proc/net/ipx ] || $MODPROBE ipx
+
+egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/brctl` | \
+sed "s/ AUTO / $NAME /" | xargs --max-lines=1 $IPX_INTERFACE add && \
+print_message -n '.'
