@@ -4,15 +4,11 @@
 init_profile
 pickup_options
 
-${PENTANETT:=$DEFAULT_PENTANETT}
 ${CONFIGFILE:=`profiled_filename $MYIFACEDIR/$DEFAULT_PENTANET_CONF`}
 
-[ -x "$PENTANETT" ] || {
+[ -x "${PENTANETT:=$DEFAULT_PENTANETT}" ] || {
 	print_error "$PENTANETT does not exist or is not executable for $NAME"
 	exit 1
 }
 
-[ -s "$CONFIGFILE" ] && {
-	$PENTANETT -a -f $CONFIGFILE >/dev/null
-	echo "0" > /proc/sys/net/ipv4/conf/$NAME/rp_filter
-}
+[ -s "$CONFIGFILE" ] && $PENTANETT -a -f $CONFIGFILE >/dev/null

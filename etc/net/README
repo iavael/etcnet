@@ -307,9 +307,7 @@ As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
 {setup,shutdown}-.* and network.init scripts.
 
 6. TODO
-- ppp support
 - pptp-client support
-- default prefixes for sysctl.conf files
 - handle 'add' in ipv4rule on ifdown
 - analyze zebra and RTPROTO ip option
 - handle network mounts
@@ -324,7 +322,6 @@ As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
 - bluetooth support
 - 'check' arg for network.init
 - handle dhcp/ipv4ll in ifdown*
-- mounts support
 - post-create hook support
 - type-specific files profiling
 
@@ -332,6 +329,7 @@ As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
 
 0.6.0:
 	PPP support
+	smart sysctl.conf handling
 0.5.3:
 	fixed ifplugd support
 	code cleanup (optimized profile detection, config processing)
