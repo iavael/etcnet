@@ -373,7 +373,7 @@ process_sysctl_conf()
 	local ONELINE
 	local VARPREFIX
 	[ -s $SRCFILE ] || return 0
-	cat $SRCFILE | sed "s/ //g" | while read ONELINE; do
+	egrep -v '^$|^#' $SRCFILE | sed "s/ //g" | while read ONELINE; do
 		local VARNAME=`echo $ONELINE | awk -F= '{print $1}'`
 		local VARVALUE=`echo $ONELINE | awk -F= '{print $2}'`
 		# If variable name contains dot(s), we use it as is. Otherwise
