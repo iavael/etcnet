@@ -44,7 +44,7 @@ USE_PCMCIA=no
 USE_IFPLUGD=no
 
 CONFIG_IPV4=yes
-CONFIG_IPV6=yes
+CONFIG_IPV6=no
 CONFIG_IPX=no
 
 # eth feature
