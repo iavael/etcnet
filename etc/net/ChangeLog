@@ -5,6 +5,7 @@
 	eliminated ALTLinux service package dependency
 	replaced awk with cut
 	another VLAN code cleanup/speedup
+	netprof kernel arg becomes netprofile a la RedHat
 0.6.4:
 	8021q is no more unconditionally loaded, other VLAN code enhancements
 	another print_message()/print_progress() bugfix
