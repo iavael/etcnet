@@ -204,6 +204,8 @@ iface_is_up()
 try_rmmod()
 {
 	local MODNAME=${1:?missing 1st argument to $FUNCNAME}
+	# Note: usage counter is treated in a different way by 2.6 kernels.
+	# This may cause bugs :(
 	$LSMOD | egrep -qs "^$MODNAME +[0-9]+ +0 " && rmmod $MODNAME
 }
 
@@ -427,4 +429,11 @@ print_progress()
 {
 	local SYMBOL=${1:-.}
 	is_yes "$PRINT_PROGRESS" && print_message -n "$SYMBOL"
+}
+
+stop_dhcp_client()
+{
+	local PIDFILE=/var/run/dhcpcd-$NAME.pid
+	[ -s $PIDFILE ] && kill -SIGHUP `cat $PIDFILE`
+	# There probably should be a delay/wait loop here, dhcpcd doesn't die fast.
 }

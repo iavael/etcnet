@@ -37,9 +37,18 @@ if is_yes "$IFDOWN_CHILDREN"; then
 fi
 IN_IFPLUGD=$ORIG_IN_IFPLUGD
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh del dev $NAME"
-ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
+
+# Look if there is DHCP agent hanging around. zcip should die w/o our help.
+case "$BOOTPROTO" in
+	dhcp)
+		stop_dhcp_client
+	;;
+	*)
+	;;
+esac
 
 if iface_is_up $NAME; then
+	ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
 	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME && print_progress
 	ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
 	$IP link set dev $NAME down
