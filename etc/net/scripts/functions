@@ -188,16 +188,20 @@ profiled_filename()
 	[ -e $CAND ] && echo $CAND || echo $BASE
 }
 
+// TODO: check once again order of overrides
 init_profile()
 {
 	if [ -n "$1" ]; then
 		PROFILE="$1"
+	elif [ -s "$MYIFACEDIR/selectprofile" -a -x "$MYIFACEDIR/selectprofile" ]; then
+		PROFILE=`$MYIFACEDIR/selectprofile | head -1 | awk '{print $1}'`
 	elif [ -z "$PROFILE" ]; then
 		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
 			PROFILE=`egrep -v '^$|^#' "$PROFILE_FILE" | head -1`
 		elif [ -r "$PROC_CMDLINE" ]; then
 			# try to fetch profile name from kernel options
-			PROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | tr ' ' '\n' | egrep '^netprof=' | awk -F= '{print $2}'`
+			PROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | \
+			tr ' ' '\n' | egrep '^netprof=' | awk -F= '{print $2}'`
 		fi
 	fi
 }
