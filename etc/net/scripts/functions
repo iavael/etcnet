@@ -105,6 +105,7 @@ setup_vlan_iface()
 		$IP link set $REALNAME name $NAME
 	fi
 	[ -n "$ADDRESS" ] && $IP address add $ADDRESS dev $NAME
+	$IP link set dev $NAME up
 }
 
 shutdown_vlan_iface()
