@@ -22,18 +22,17 @@ export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
 
 pickup_options
 
-# 1. check if device already exists
-iface_is_up $NAME && {
-	echo -n "'$NAME' skipped, already up "
-	exit 1
-}
+# 2. process wireless extensions
+# Dunno if $IFACEDIR/default/iwconfig can be of any use
+[ -s $IFACEDIR/default/iwconfig ] && ( egrep -v '^$|^#' $IFACEDIR/default/iwconfig | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
+[ -s $MYIFACEDIR/iwconfig ] && ( egrep -v '^$|^#' $MYIFACEDIR/iwconfig | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
 
 # 3. setup link-level params
 # TODO: pickup default sysctl file?
 [ -s $MYIFACEDIR/sysctl.conf ] && sysctl -p $MYIFACEDIR/sysctl.conf && echo -n '.'
-[ -s $IFACEDIR/default/iplink ] && ( cat $IFACEDIR/default/iplink | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
-[ -s $IFACEDIR/default/iplink-$TYPE ] && ( cat $IFACEDIR/default/iplink-$TYPE | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
-[ -s $MYIFACEDIR/iplink ] && ( cat $MYIFACEDIR/iplink | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+[ -s $IFACEDIR/default/iplink ] && ( egrep -v '^$|^#' $IFACEDIR/default/iplink | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+[ -s $IFACEDIR/default/iplink-$TYPE ] && ( egrep -v '^$|^#' $IFACEDIR/default/iplink-$TYPE | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+[ -s $MYIFACEDIR/iplink ] && ( egrep -v '^$|^#' $MYIFACEDIR/iplink | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
 
 # 5. bring iface up
 if ! is_yes $KEEP_DOWN; then
