@@ -16,6 +16,7 @@ SCRIPTDIR=/etc/net/scripts
 SourceIfNotEmpty $SCRIPTDIR/functions
 MYIFACEDIR=$IFACEDIR/$NAME
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
+init_profile
 pickup_options
 
 is_yes "$DISABLED" && exit 0

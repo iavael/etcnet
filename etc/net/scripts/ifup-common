@@ -20,27 +20,29 @@ SourceIfNotEmpty $SCRIPTDIR/functions
 MYIFACEDIR=$IFACEDIR/$NAME
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
 
+init_profile
 pickup_options
 
 # 2. handle wireless extensions
 # Dunno if $IFACEDIR/default/iwconfig can be of any use
-[ -s $IFACEDIR/default/iwconfig ] && ( egrep -v '^$|^#' $IFACEDIR/default/iwconfig | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
-[ -s $MYIFACEDIR/iwconfig ] && ( egrep -v '^$|^#' $MYIFACEDIR/iwconfig | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
+[ -s `profiled_filename $IFACEDIR/default/iwconfig` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iwconfig` | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
+[ -s `profiled_filename $MYIFACEDIR/iwconfig` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iwconfig` | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
 
 # 3. setup link-level params
 # TODO: pickup default sysctl file?
-[ -s $MYIFACEDIR/sysctl.conf ] && sysctl -p $MYIFACEDIR/sysctl.conf && echo -n '.'
-[ -s $IFACEDIR/default/iplink ] && ( egrep -v '^$|^#' $IFACEDIR/default/iplink | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
-[ -s $IFACEDIR/default/iplink-$TYPE ] && ( egrep -v '^$|^#' $IFACEDIR/default/iplink-$TYPE | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
-[ -s $MYIFACEDIR/iplink ] && ( egrep -v '^$|^#' $MYIFACEDIR/iplink | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+[ -s `profiled_filename $MYIFACEDIR/sysctl.conf` ] && sysctl -p `profiled_filename $MYIFACEDIR/sysctl.conf` && echo -n '.'
+# TODO: for iplink in ...
+[ -s `profiled_filename $IFACEDIR/default/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+[ -s `profiled_filename $IFACEDIR/default/iplink-$TYPE` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink-$TYPE` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+[ -s `profiled_filename $MYIFACEDIR/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
 
 # 5. bring iface up
 if ! is_yes $KEEP_DOWN; then
 	ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && echo -n '.'
 	ip link set dev $NAME up && echo -n '.'
-	if [ -x $MYIFACEDIR/resolv.conf ]; then
+	if [ -x `profiled_filename $MYIFACEDIR/resolv.conf` ]; then
 		rm -f /etc/resolv.conf
-		ln -s $MYIFACEDIR/resolv.conf /etc/resolv.conf
+		ln -s `profiled_filename $MYIFACEDIR/resolv.conf` /etc/resolv.conf
 		echo -n '.'
 	fi
 fi

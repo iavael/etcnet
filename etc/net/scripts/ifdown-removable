@@ -32,6 +32,8 @@ SourceIfNotEmpty $SCRIPTDIR/functions
 
 # Deal with ifrename and mappings before we try to read options,
 # because iface name may change.
+# Note: when called from hotplug, $1 holds correct ifname.
+# In pcmcia_cs case we get the old ifname (before ifrename call).
 
 MAPPED_NAME=`get_mapped_ifname $NAME`
 if [ -n "$MAPPED_NAME" -a "$NAME" != "$MAPPED_NAME" ]; then
@@ -42,6 +44,7 @@ fi
 MYIFACEDIR=$IFACEDIR/$NAME
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
 
+init_profile
 pickup_options
 
 is_yes "$DISABLED" && {
