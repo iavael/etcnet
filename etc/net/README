@@ -134,6 +134,10 @@ interface tried to be setup before its host interface ever exists).
 -check REQUIRES for vlantab
 -BOOTPROTOTO other than static
 -LINKDETECT
+-hotplug hooks
+-ppp hooks
+-control
+-Makefile
 
 5. CHANGELOG
 0.1.0: 1st public release
