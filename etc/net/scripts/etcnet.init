@@ -44,7 +44,7 @@ start()
 		MYIFACEDIR=$IFACEDIR/$NAME
 		export MYIFACEDIR NAME
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
-		unset TYPE
+		unset TYPE DISABLED
 		pickup_options
 		is_yes "$DISABLED" && continue
 		GROUP_ID=`type2group $TYPE`
