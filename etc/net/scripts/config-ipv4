@@ -27,7 +27,7 @@ try_ipv4ll()
 		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing zcip RPM."
 		return 1
 	}
-	[ is_yes "$LINKDETECT" ] && check_eth_link $NAME || return 1
+	is_yes "$LINKDETECT" && check_eth_link $NAME || return 1
 	$ZCIP_CLIENT -s -i $NAME
 	return $?
 }

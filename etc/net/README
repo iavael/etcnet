@@ -314,6 +314,7 @@ X wireless host AP support (ifup-pre should work Ok)
 	enhanced interface dependencies handling (changed variable naming,
 		introduced shutdown scripts, updated README and default options)
 	two new commands to network.init
+	IPv4LL bugfix
 0.5.1:
 	ifplugd+ifdown fix
 	ALT docs update
