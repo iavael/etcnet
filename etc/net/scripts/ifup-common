@@ -50,10 +50,10 @@ is_yes $DONT_FLUSH || {
 	$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
 	print_progress
 }
-is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME && print_progress
-is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME && print_progress
-is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME  && print_progress
-is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME  && print_progress
+is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME
+is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME
+is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME
+is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME
 
 GLOBAL_SYSCTL=`profiled_filename $IFACEDIR/sysctl.conf`
 TYPESPEC_SYSCTL=`profiled_filename $IFACEDIR/default/sysctl.conf-$TYPE`
