@@ -16,7 +16,7 @@ start_group()
 {
 	local GROUP_ID=${1:?start_group: missing 1st arg}
 	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
-	echo "Starting group $GROUP_ID ($GROUP_SIZE interfaces)"
+	echo "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
 		# hosted physical
 		start_vlantab
@@ -37,7 +37,7 @@ stop_group()
 {
 	local GROUP_ID=${1:?start_group: missing 1st arg}
 	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
-	echo "Stopping group $GROUP_ID ($GROUP_SIZE interfaces)"
+	echo "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
 		# hosted physical
 		stop_vlantab
@@ -77,7 +77,7 @@ start()
 		GROUPCOUNT=$((GROUPCOUNT + 1))
 		print_message -n '.'
 	done
-	print_message " $GROUPCOUNT found"
+	print_message " $GROUPCOUNT interfaces found"
 	# 2. process each group
 	for i in 0 1 2 3 4; do
 	#	echo "group $i: ${GROUP[$i]}"
@@ -109,7 +109,7 @@ stop()
 		GROUPCOUNT=$((GROUPCOUNT + 1))
 		print_message -n '.'
 	done
-	print_message " $GROUPCOUNT found"
+	print_message " $GROUPCOUNT interfaces found"
 	# 2. process each group
 	for i in 4 3 2 1 0; do
 		[ -n "$GROUP[$i]" ] && stop_group $i

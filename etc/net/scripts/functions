@@ -41,6 +41,28 @@ type2group()
 	esac
 }
 
+group2name()
+{
+	local G=${1:?missing 1st arg to $FUNCNAME}
+	case "$G" in
+		0)
+			echo 'virtual'
+		;;
+		1)
+			echo 'realphys'
+		;;
+		2)
+			echo 'hostedphys'
+		;;
+		3)
+			echo 'indeplog'
+		;;
+		4)
+			echo 'deplog'
+		;;
+	esac
+}
+
 # read options hierarchy
 pickup_options()
 {
