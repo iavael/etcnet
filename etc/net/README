@@ -36,6 +36,53 @@ $ less /etc/net/ifaces/default/options-*
 # rmmod <all loaded network modules>
 # service etcnet start
 
+2A. Example configuration
+eth0 with 10.0.0.1/24, default route to 10.0.0.254 and route 10.0.1.0/24 through 10.0.0.253
+
+old /etc/sysconfig/network-scripts/ifcfg-eth0:
+---8<---8<---
+DEVICE=eth0
+BOOTPROTO=static
+IPADDR=10.0.0.1
+NETMASK=255.255.255.0
+ONBOOT=yes
+---8<---8<---
+
+old /etc/sysconfig/network:
+---8<---8<---
+GATEWAY=10.0.0.254
+---8<---8<---
+
+old /etc/sysconfig/static-routes:
+---8<---8<---
+eth0 net 10.0.1.0 netmask 255.255.255.0 gw 10.0.0.253
+---8<---8<---
+
+old /etc/modules.conf:
+---8<---8<---
+alias eth0 3c59x
+---8<---8<---
+
+
+new /etc/net/iface/<any name>/options
+---8<---8<---
+# only if name is not "eth[0-9]+"
+TYPE=eth
+MODULE=3c59x
+---8<---8<---
+
+new /etc/net/iface/<any name>/ipv4address
+---8<---8<---
+10.0.0.1/24
+---8<---8<---
+
+new /etc/net/iface/<any name>/ipv4route
+---8<---8<---
+10.0.1.0/24 via 10.0.0.253
+default via 10.0.0.254
+---8<---8<---
+
+2B. REQUIREMENTS
 Get the latest wireless-utils, compile it and install
 /usr/local/sbin/ifrename and /usr/local/lib/libiw.so.27
 Otherwise MAPDESCR will not work.
@@ -47,7 +94,7 @@ When BOOTPROTO is implemented, you will need a DHCP and (optionally)
 ZCIP client.
 iproute2 is a must
 
-3. REFERENCE
+3. FILES
 /etc/net/iface/default
 There is no interface named 'default', this dir only stores default
 configuration. Files:
