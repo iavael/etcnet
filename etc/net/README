@@ -150,6 +150,7 @@ interface tried to be setup before its host interface ever exists).
 -same for sysctl.conf files
 -move hotplug/ifplugd to BOOTPROTO/ONBOOT?
 -handle 'add' in ipv4rule in ifdown
+-analyze zebra and RTPROTO ip option
 
 5. CHANGELOG
 0.2.0:
