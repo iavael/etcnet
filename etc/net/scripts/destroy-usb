@@ -1,3 +1,8 @@
 #!/bin/bash
 
-try_rmmod usbnet
+. $SCRIPTDIR/functions
+pickup_options
+
+MODULE=${MODULE:=$NAME}
+
+try_rmmod $MODULE
