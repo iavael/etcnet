@@ -2,6 +2,7 @@
 # to "yes" in ifaces/default/options and having no "DISABLED=no"
 # in interface-specific options file will effectively disable ALL
 # interfaces.
+#  0.4.0: now we don't have to specify TYPE for disabled interfaces
 DISABLED=no
 
 # BOOTPROTO can be any of the following: static, dhcp, zcip.

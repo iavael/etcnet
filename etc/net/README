@@ -214,7 +214,7 @@ To switch between configurations without editing /etc/net/profile one can use:
 # service etcnet restartwith home
 
 6. TODO
--check REQUIRES for vlantab
++handle host iface down for vlantab
 +BOOTPROTOTO other than static
 +LINKDETECT
 +ifplugd integration
@@ -230,7 +230,7 @@ To switch between configurations without editing /etc/net/profile one can use:
  by discovered WAP address)
 -implement recursion for ifup (e.g. by vlantab)
 -use only /bin & /sbin programs to survive w/o /usr (/usr on NFS)
--don't require TYPE for disabled interfaces
++don't require TYPE for disabled interfaces
 
 7. CHANGELOG
 

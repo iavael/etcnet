@@ -32,5 +32,4 @@ esac
 ## iwconfig.hotspot2
 # ap 22:22:22:22:22:22 essid essid2 key open s:key2
 ## options.disabled
-# TYPE=eth
 # DISABLED=yes
