@@ -7,6 +7,9 @@ DISABLED=no
 
 # BOOTPROTO can be any of the following: static, dhcp, ipv4ll.
 # * "static": use ipv4address/ipv6address
+# 'static' has the same meaning as 'none' in initscripts/net-scripts sense.
+# IF you don't want to assing any address to an interface, but still keep
+# it up and running, you can just use 'static' and have no ipv4address file.
 # * "dhcp": run DHCP client
 # * "ipv4ll": run IPv4LL client (zcip)
 # As far as I know, there are no working IPv6 DHCP
@@ -46,19 +49,21 @@ USE_IFPLUGD=no
 CONFIG_IPV4=yes
 CONFIG_IPV6=no
 CONFIG_IPX=no
-CONFIG_QOS=no
+CONFIG_QOS=yes
 CONFIG_WIRELESS=yes
 
 # eth feature
 LINKDETECT=no
+
+# If set to yes, interface will not be set UP, but configured.
 KEEP_DOWN=no
 
-# IPv4 only
+# IPv4/IPv6. Don't flush existing addresses from interface before assigning new.
 DONT_FLUSH=no
 
 # ****************** Interface dependencies ******************
 # If interface A has REQUIRES=B in it's options file, A is the child, B is the parent.
-# I don't recommend change defaults here. See also: README/3.5
+# I don't recommend changing defaults here. See also: README/3.5
 
 # If set to yes, this variable will cause ifup call for all child (having current
 # interface in their REQUIRES list) after the current interface is set up.
