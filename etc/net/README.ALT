@@ -4,3 +4,9 @@ ALTLinux Sisyphus
 edit CONFMETHOD in /etc/pcmcia/network.opts
 edit CONFMETHOD in /etc/ifplugd/ifplugd.conf
 edit CONFMETHOD in /etc/sysconfig/hotplug
+
+Version requirements for /etc/net 0.4.1:
+hotplug >= 2004_03_29-alt13
+ifrename >= 27-alt4.pre25
+pcmcia-cs >= 3.2.7-alt6
+ifplugd >= 0.25-alt3

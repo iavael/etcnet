@@ -1,8 +1,9 @@
-cetcnet version 0.4.0
+etcnet version 0.4.1
 
 1. GENERAL INFORMATION
 
 URL: http://pilot.org.ua/etcnet/
+See README.ALT for ALTLinux specific information.
 
 Supported interface types:
 +ethernet (eth)
@@ -169,7 +170,12 @@ Edit /etc/pcmcia/network.opts and replace calls to /sbin/ifup and
 /sbin/ifdown to '/etc/net/scripts/ifup-removable $1 pcmcia_cs' and
 '/etc/net/scripts/ifdown-removable $1 pcmcia_cs' respectively.
 
-4.3 ifplugd configuration
+4.3 hotplug configuration
+Edit /etc/hotplug/net.agent and change 
+/sbin/ifdown to '/etc/net/scripts/ifdown-removable $1 hotplug' and
+/sbin/ifup to '/etc/net/scripts/ifup-removable $1 hotplug'.
+
+4.4 ifplugd configuration
 my /etc/ifplugd/ifplugd.conf:
 INTERFACES="ether"
 ARGS="--wait-on-fork --no-auto --monitor --no-shutdown --ignore-retval --delay-up=0 --delay-down=2"
@@ -234,6 +240,7 @@ To switch between configurations without editing /etc/net/profile one can use:
 
 7. CHANGELOG
 
+0.4.1: ifrename call fix, did some ALTLinux integration
 0.4.0: DHCP/ZCIP/LINKDETECT/ifplugd support
 0.3.0: network profiles framework (see section 5)
 0.2.2: experimental wireless support, some fixes
