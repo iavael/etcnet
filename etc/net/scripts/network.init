@@ -205,27 +205,27 @@ check()
 			esac
 			print_message ''
 		done
-		# TODO: improve iface name regexp
-		# check iftab(s)
-		for iftab in /etc/net/iftab /etc/net/iftab.*; do
-			[ -f $iftab ] || continue
-			print_message -n "$iftab:"
-			if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]]*[[:space:]]+mac|arp|driver|businfo|firmware|baseaddress|irq|iwproto|pcmciaslot[[:space:]]+.+$)' $iftab; then
-				print_message " WARNING: unrecognised line(s)"
-			else
-				print_message " IS OK"
-			fi
-		done
-		# check iftab(s)
-		for vlantab in /etc/net/vlantab /etc/net/vlantab.*; do
-			[ -f $vlantab ] || continue
-			print_message -n "$vlantab:"
-			if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]]*[[:space:]]+[[:digit:]]+([[:space:]]+[[:alpha:]][[:alnum:]]*([[:space:]].*)?)?$)' $vlantab; then
-				print_message " WARNING: unrecognised line(s)"
-			else
-				print_message " IS OK"
-			fi
-		done
+	done
+	# TODO: improve iface name regexp
+	# check iftab(s)
+	for iftab in /etc/net/iftab /etc/net/iftab.*; do
+		[ -f $iftab ] || continue
+		print_message -n "$iftab:"
+		if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]]*[[:space:]]+mac|arp|driver|businfo|firmware|baseaddress|irq|iwproto|pcmciaslot[[:space:]]+.+$)' $iftab; then
+			print_message " WARNING: unrecognised line(s)"
+		else
+			print_message " IS OK"
+		fi
+	done
+	# check iftab(s)
+	for vlantab in /etc/net/vlantab /etc/net/vlantab.*; do
+		[ -f $vlantab ] || continue
+		print_message -n "$vlantab:"
+		if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]]*[[:space:]]+[[:digit:]]+([[:space:]]+[[:alpha:]][[:alnum:]]*([[:space:]].*)?)?$)' $vlantab; then
+			print_message " WARNING: unrecognised line(s)"
+		else
+			print_message " IS OK"
+		fi
 	done
 }
 usage()
