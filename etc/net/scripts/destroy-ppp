@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# This script destroys a PPP interface.
+
+usage()
+{
+	echo "Usage: $0 <interface>" > /dev/stderr
+	exit 1
+}
+
+[ -z "$1" ] && usage
+NAME=$1
+. $SCRIPTDIR/functions
+pickup_options
+
+kill `cat /var/run/ppp${NAME//ppp/}.pid`

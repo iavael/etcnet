@@ -11,8 +11,6 @@
 - support more than one teql interfaces
 - bluetooth support
 - handle dhcp/ipv4ll in ifdown*
-- post-create hook support
 - resolv.conf audit
-- ifdown+ppp
 - rp-pppoe support
 - ipneigh file
