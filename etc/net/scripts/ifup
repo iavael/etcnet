@@ -8,7 +8,7 @@
 
 usage()
 {
-	echo "Usage: $0 <device> [-r]"
+	echo "Usage: $0 <interface>"
 	exit 1
 }
 
