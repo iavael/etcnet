@@ -63,16 +63,15 @@ if [ -z "$IN_HOTPLUG" -a -z "$IN_PCMCIA" ]; then
 fi
 
 # deal with ifrename and mappings
-if [ -n "$MAPDESCR" ]; then
+if [ -s "$IFTAB" ]; then
 	[ -x $IFRENAME ] || {
-		print_error "$IFRENAME is unavailable, but map description is set for $NAME"
+		print_error "$IFRENAME is unavailable, but $IFTAB exists"
 		exit 1
 	}
-	if (echo $NAME $MAPDESCR | $IFRENAME -c -); then
+	NEW_NAME=`$IFRENAME -c $IFTAB -i $NAME 2>/dev/null`
+	if [ $? = 0 -a -n "$NEW_NAME" ]; then
+		NAME=$NEW_NAME
 		echo -n '.'
-	else
-		echo -n '!'
-		exit 1
 	fi
 fi
 

@@ -18,5 +18,3 @@ LINKDETECT=no
 KEEP_DOWN=no
 # IPv4 only
 DONT_FLUSH=no
-# useful for eth/wifi/aeronet, see man iftab
-#MAPDESCR=
