@@ -199,7 +199,14 @@ check()
 			# strip optional profile suffix
 			case ${TESTFILE//.*/} in
 				# standalone optional files
-				options|iplink|ipv4address|ipv6address|sysctl.conf)
+				options)
+					if egrep -vq '^$|^#|(^[[:alpha:]][[:alnum:]_]*[[:space:]]*=[[:space:]]*.*$)' $IFACEFILE; then
+						print_message -n ' WARNING: unrecognised line(s)'
+							else
+						print_message -n ' IS OK'
+					fi
+					;;
+				iplink|ipv4address|ipv6address|sysctl.conf)
 					print_message -n ' seems OK'
 					;;
 				ipv4route|ipv4rule)
@@ -237,9 +244,9 @@ check()
 		[ -f $iftab ] || continue
 		print_message -n "$iftab:"
 		if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]]*[[:space:]]+mac|arp|driver|businfo|firmware|baseaddress|irq|iwproto|pcmciaslot[[:space:]]+.+$)' $iftab; then
-			print_message " WARNING: unrecognised line(s)"
+			print_message ' WARNING: unrecognised line(s)'
 		else
-			print_message " IS OK"
+			print_message ' IS OK'
 		fi
 	done
 	# check iftab(s)
@@ -247,9 +254,9 @@ check()
 		[ -f $vlantab ] || continue
 		print_message -n "$vlantab:"
 		if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]]*[[:space:]]+[[:digit:]]+([[:space:]]+[[:alpha:]][[:alnum:]]*([[:space:]].*)?)?$)' $vlantab; then
-			print_message " WARNING: unrecognised line(s)"
+			print_message ' WARNING: unrecognised line(s)'
 		else
-			print_message " IS OK"
+			print_message ' IS OK'
 		fi
 	done
 }
