@@ -2,7 +2,11 @@
 
 1. vi /etc/sysconfig/network
 Pay attention to NETWORKING and CONFMETHOD variables
-Note that FORWARD_IPV4, GATEWAY and GATEWAYDEV variables are deprecated.
+Note that FORWARD_IPV4, GATEWAY and GATEWAYDEV variables are
+ignored by /etc/net.
 
-2. chkconfig --list network
-You may need to run 'chkconfig network reset'
+2. Edit /etc/sysctl.conf and remove the lines that are present
+in /etc/net/sysctl.conf.
+
+3. chkconfig --list network
+You may need to run 'chkconfig network reset' (known bug).
