@@ -4,6 +4,4 @@
 pickup_options
 
 # If an administrator wishes to rely on modules.conf, let's agree.
-MODULE=${MODULE:=$NAME}
-
-$MODPROBE $MODULE
+$MODPROBE ${MODULE:-$NAME}

@@ -3,6 +3,4 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-MODULE=${MODULE:=$NAME}
-
-try_rmmod $MODULE
+try_rmmod ${MODULE:-$NAME}
