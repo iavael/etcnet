@@ -61,7 +61,7 @@ add_seen_iface $NAME
 # 3b. deps control
 if is_yes "$IFUP_PARENTS"; then
 	ifup_parents || {
-		print_error "Could not ifup parent '$REQUIRES' for child iface '$NAME'"
+		print_error "Could not ifup dependency for interface '$NAME'"
 		exit 1
 	}
 fi

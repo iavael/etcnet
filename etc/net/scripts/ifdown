@@ -67,7 +67,7 @@ fi
 # 5. Shutdown parent only if requested.
 if is_yes "$IFDOWN_PARENTS"; then
 	ifdown_parents || {
-		print_error "Could not ifdown parent '$REQUIRES' for child iface '$NAME'"
+		print_error "Could not ifdown dependency for interface '$NAME'"
 		exit 1
 	}
 fi
