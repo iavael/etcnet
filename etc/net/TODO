@@ -16,3 +16,4 @@ X rp-pppoe support
 ? bluetooth support
 - better ifplugd intergation
 - replace awk with cut
+- ifdown and removable interfaces
