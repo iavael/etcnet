@@ -19,6 +19,8 @@ try_dhcp()
 	fi
 	$DHCP_CLIENT -d -t $DHCP_TIMEOUT $NAME >/dev/null
 	local RET=$?
+	# dhcpcd sets iface down on failure, breaking dhcp-* BOOTPROTOs
+	[ "$RET" != "0" ] && ! is_yes $KEEP_DOWN && $IP link set dev $NAME up
 	return $RET
 }
 
