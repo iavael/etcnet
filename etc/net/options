@@ -22,24 +22,24 @@ IFACEDIR=/etc/net/ifaces
 VLANTAB=/etc/net/vlantab
 IFTAB=/etc/net/iftab
 
-# programs
+# tools
 IP=/sbin/ip
 TC=/sbin/tc
 MODPROBE=/sbin/modprobe
 LSMOD=/sbin/lsmod
 INSMOD=/sbin/insmod
 SYSCTL=/sbin/sysctl
+IFRENAME=/sbin/ifrename
+IFPLUGSTATUS=/sbin/ifplugstatus
 DEFAULT_IWCONFIG=/sbin/iwconfig
 DEFAULT_WPA_SUPPLICANT=/usr/sbin/wpa_supplicant
 DEFAULT_PLIPCONFIG=/sbin/plipconfig
-# for iftab
-IFRENAME=/sbin/ifrename
 DEFAULT_VCONFIG=/usr/bin/vconfig
 DEFAULT_PENTANETT=/usr/sbin/pentanett
 DEFAULT_PENTANET_CONF=pentanet.conf
 DEFAULT_IPSECADM=/usr/sbin/ipsecadm
-# for bond
 DEFAULT_IFENSLAVE=/sbin/ifenslave
+DEFAULT_BRCTL=/sbin/brctl
 # profiles
 PROFILE_FILE=/etc/net/profile
 PROC_CMDLINE=/proc/cmdline
@@ -51,12 +51,6 @@ DHCPCD_GRACE_TIME=2
 
 # IPv4LL
 ZCIP_CLIENT=/sbin/zcip
-
-# for LINKDETECT option
-IFPLUGSTATUS=/sbin/ifplugstatus
-
-# bridge interfaces
-DEFAULT_BRCTL=/sbin/brctl
 
 # IPX tools
 IPX_INTERFACE=/sbin/ipx_interface
