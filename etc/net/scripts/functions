@@ -47,7 +47,7 @@ pickup_options()
 	# to determine iface type we must read it's config, but
 	# we should read global config and type config first.
 	# A workaround here.
-	SourceIfNotEmpty $MYIFACEDIR/options
+	SourceIfNotEmpty `profiled_filename $MYIFACEDIR/options`
 	[ -z "$TYPE" ] && TYPE=`name2type $NAME`
 	[ -z "$TYPE" ] && {
 		print_error "No TYPE is specified for iface '$NAME' and can't guess automatically. Please fix."
@@ -57,11 +57,11 @@ pickup_options()
 		print_error "iface type '$TYPE' is not supported"
 	fi
 	# source default options
-	SourceIfNotEmpty $IFACEDIR/default/options
+	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options`
 	# then source default options for our iface type
-	SourceIfNotEmpty $IFACEDIR/default/options-$TYPE
+	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-$TYPE`
 	# and finally source iface options
-	SourceIfNotEmpty $MYIFACEDIR/options
+	SourceIfNotEmpty `profiled_filename $MYIFACEDIR/options`
 }
 
 print_error()
@@ -123,12 +123,12 @@ shutdown_vlan_iface()
 start_vlantab()
 {
 	echo -n "Processing $VLANTAB: "
-	[ -s $VLANTAB ] || {
+	[ -s `profiled_filename $VLANTAB` ] || {
 		echo empty.
 		return
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
-	SourceIfNotEmpty $IFACEDIR/default/options-vlan
+	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
 	egrep -v '^$|^#' $VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
 		echo -n '.'
@@ -140,13 +140,13 @@ start_vlantab()
 stop_vlantab()
 {
 	echo -n "Processing $VLANTAB: "
-	[ -s $VLANTAB ] || {
+	[ -s `profiled_filename $VLANTAB` ] || {
 		echo empty.
 		return
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	local -i -x VLANCNT=0
-	SourceIfNotEmpty $IFACEDIR/default/options-vlan
+	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
 	egrep -v '^$|^#' $VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
 		echo -n '.'
@@ -171,12 +171,12 @@ try_rmmod()
 # Look if iface name will change after ifrename call.
 get_mapped_ifname()
 {
-	if [ -s "$IFTAB" ]; then
+	if [ -s "`profiled_filename $IFTAB`" ]; then
 		[ -x $IFRENAME ] || {
-			print_error "$IFRENAME is unavailable, but $IFTAB exists"
+			print_error "$IFRENAME is unavailable, but `profiled_filename $IFTAB` exists"
 			exit 1
 		}
-		NEW_NAME=`$IFRENAME -c $IFTAB ${1:+-i $1} -f 2>/dev/null | head -1`
+		NEW_NAME=`$IFRENAME -c `profiled_filename $IFTAB` ${1:+-i $1} -f 2>/dev/null | head -1`
 		[ $? = 0 -a -n "$NEW_NAME" ] && echo $NEW_NAME
 	fi
 }
@@ -187,7 +187,6 @@ profiled_filename()
 	local CAND=$BASE${PROFILE:+.$PROFILE}
 	[ -e $CAND ] && echo $CAND || echo $BASE
 }
-
 
 init_profile()
 {
