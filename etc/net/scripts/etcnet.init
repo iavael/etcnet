@@ -39,10 +39,10 @@ start()
 	# 1. fill in the groups
 	GROUPCOUNT=0
 	echo -n "Computing interface groups: "
+	export MYIFACEDIR NAME
 	for IFACEPATH in $IFACEDIR/*; do
 		NAME=${IFACEPATH//*\//}
 		MYIFACEDIR=$IFACEDIR/$NAME
-		export MYIFACEDIR NAME
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE DISABLED
 		pickup_options
