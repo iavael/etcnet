@@ -1,0 +1,7 @@
+This example illustrates an ethernet bridge and GRE tunnel
+over ethernet. Note that both bridge and tunnel have REQUIRES
+variable in options file. This variable defines interface
+dependencies: if bridge or iptunnel are brought up, port* and
+ether respectively will be checked to be up first. In bridge
+case both interfaces listed in REQUIRES will be enslaved to
+the bridge.

@@ -1,0 +1,3 @@
+Another bandwidth limiting example. The whole interface
+throughput is limited to 256 kbits/s.
+Base directory is /etc/net/ifaces/<iface name>

@@ -1,0 +1,3 @@
+This example consists of 3 ethernet cards, two of which form
+a bridge. The third one is used to establish GRE tunnel.
+Base directory is /etc/net

@@ -1,0 +1,18 @@
+lcp-echo-failure 0
+lcp-echo-interval 0
+/dev/ircomm0
+:10.10.10.10
+noipdefault
+ipcp-accept-local
+#defaultroute
+#usepeerdns
+novj
+nobsdcomp
+novjccomp
+nopcomp
+noaccomp
+nodeflate
+noauth
+user "beeline"
+receive-all
+nolog
