@@ -259,6 +259,26 @@ check()
 			print_message ' IS OK'
 		fi
 	done
+	# check options file(s)
+	for options in /etc/net/options /etc/net/options.*; do
+		[ -f $options ] || continue
+		print_message -n "$options:"
+		if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]_]*[[:space:]]*=[[:space:]]*.*$)' $options; then
+			print_message ' WARNING: unrecognised line(s)'
+		else
+			print_message ' IS OK'
+		fi
+	done
+	# check profile file
+	for profile in /etc/net/profile; do
+		[ -f $profile ] || continue
+		print_message -n "$profile:"
+		if egrep -qv '^$|^#|(^[[:alnum:]_]+$)' $profile; then
+			print_message ' WARNING: unrecognised line(s)'
+		else
+			print_message ' IS OK'
+		fi
+	done
 }
 usage()
 {
