@@ -13,4 +13,4 @@ NAME=$1
 . $SCRIPTDIR/functions
 pickup_options
 
-kill `cat /var/run/ppp${NAME//ppp/}.pid`
+kill `cat /var/run/$NAME.pid`
