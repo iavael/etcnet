@@ -16,3 +16,4 @@ X rp-pppoe support
 ? bluetooth support
 - better ifplugd intergation
 - ifdown and removable interfaces
+- fix childfinder for new HOST variable and multi-item REQUIRES
