@@ -206,14 +206,28 @@ check()
 						print_message -n ' IS OK'
 					fi
 					;;
-				iplink|ipv4address|ipv6address|sysctl.conf)
+				sysctl.conf)
+					if egrep -vq '^$|^#|(^[[:alpha:]][[:alnum:]_\.]*[[:space:]]*=[[:space:]]*.*$)' $IFACEFILE; then
+						print_message -n ' WARNING: unrecognised line(s)'
+							else
+						print_message -n ' IS OK'
+					fi
+					;;
+				iplink|ipv4address|ipv6address)
 					print_message -n ' seems OK'
 					;;
-				ipv4route|ipv4rule)
+				ipv4route)
 					if [ -s $MYIFACEDIR/ipv4address ]; then
 						print_message -n ' seems OK'
 					else
 						print_message -n ' WARNING: missing ipv4address?'
+					fi
+					;;
+				ipv4rule)
+					if [ -s $MYIFACEDIR/ipv4route ]; then
+						print_message -n ' seems OK'
+					else
+						print_message -n ' WARNING: missing ipv4route?'
 					fi
 					;;
 				ipv6route)
