@@ -29,6 +29,7 @@ pickup_options
 	xargise_file $MYIFACEDIR/iwconfig "$IWCONFIG $NAME"
 
 	# 3. setup link-level params
+	# useless until default prefixes are implemented
 	[ -s `profiled_filename $IFACEDIR/sysctl.conf` ] && sysctl -p `profiled_filename $IFACEDIR/sysctl.conf` && print_message -n '.'
 	[ -s `profiled_filename $IFACEDIR/sysctl.conf-$TYPE` ] && sysctl -p `profiled_filename $IFACEDIR/sysctl.conf-$TYPE` && print_message -n '.'
 	[ -s `profiled_filename $MYIFACEDIR/sysctl.conf` ] && sysctl -p `profiled_filename $MYIFACEDIR/sysctl.conf` && print_message -n '.'
