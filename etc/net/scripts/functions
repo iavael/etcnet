@@ -121,8 +121,9 @@ shutdown_vlan_iface()
 
 start_vlantab()
 {
-	echo -n "Processing $VLANTAB: "
-	[ -s `profiled_filename $VLANTAB` ] || {
+	local PROFILED_VLANTAB=`profiled_filename $VLANTAB`
+	echo -n "Processing $PROFILED_VLANTAB: "
+	[ -s $PROFILED_VLANTAB ] || {
 		echo empty.
 		return
 	}
@@ -132,30 +133,30 @@ start_vlantab()
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
-	egrep -v '^$|^#' `profiled_filename $VLANTAB` | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+	egrep -v '^$|^#' $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		iface_is_up "$HOST_IFACE" && setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
 		echo -n '.'
 	done
 	# We can't count ifaces right in the while cycle due to pipe causing new process
-	echo "`egrep -vc '^$|^#' `profiled_filename $VLANTAB`` ifaces created."
+	echo "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
 }
 
 stop_vlantab()
 {
-	echo -n "Processing $VLANTAB: "
-	[ -s `profiled_filename $VLANTAB` ] || {
+	local PROFILED_VLANTAB=`profiled_filename $VLANTAB`
+	echo -n "Processing $PROFILED_VLANTAB: "
+	[ -s $PROFILED_VLANTAB ] || {
 		echo empty.
 		return
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
-	local -i -x VLANCNT=0
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
-	egrep -v '^$|^#' `profiled_filename $VLANTAB` | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+	egrep -v '^$|^#' $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
 		echo -n '.'
 	done
 	# See start_vlantab().
-	echo "`egrep -vc '^$|^#' `profiled_filename $VLANTAB`` ifaces deleted."
+	echo "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
 }
 
 iface_is_up()
@@ -198,7 +199,7 @@ init_profile()
 {
 	if [ -n "$1" ]; then
 		PROFILE="$1"
-	elif [ -s "$MYIFACEDIR/selectprofile" -a -x "$MYIFACEDIR/selectprofile" ]; then
+	elif [ -n "$MYIFACEDIR" -a -s "$MYIFACEDIR/selectprofile" -a -x "$MYIFACEDIR/selectprofile" ]; then
 		PROFILE=`$MYIFACEDIR/selectprofile | head -1 | awk '{print $1}'`
 	elif [ -z "$PROFILE" ]; then
 		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
