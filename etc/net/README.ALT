@@ -1,7 +1,10 @@
 0. apt-get install etcnet
 
 1. vi /etc/sysconfig/network
-Pay attention to NETWORKING and CONFMETHOD variables
+Pay attention to NETWORKING and CONFMETHOD variables:
+NETWORKING=yes
+CONFMETHOD=etcnet
+
 Note that FORWARD_IPV4, GATEWAY and GATEWAYDEV variables are
 ignored by /etc/net.
 

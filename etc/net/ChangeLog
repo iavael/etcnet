@@ -6,6 +6,7 @@
 	replaced awk with cut
 	another VLAN code cleanup/speedup
 	netprof kernel arg becomes netprofile a la RedHat
+	imported examples from web-site
 0.6.4:
 	8021q is no more unconditionally loaded, other VLAN code enhancements
 	another print_message()/print_progress() bugfix
