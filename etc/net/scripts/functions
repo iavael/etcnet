@@ -16,7 +16,6 @@ name2type()
 {
 	local NAME=${1:?name2type: missing 1st arg}
 	local CAND=`echo "$NAME" | sed "s/[0-9]*$//"`
-#		bond|bri|dummy|eth|ipsectun|iptun|lo|pentanet|ppp|pptp|sbni|sit|slip|teql|vlan|wlan
 	supported_type $CAND && echo $CAND
 }
 
@@ -25,19 +24,19 @@ type2group()
 	local TYPE=${1:?type2group: missing 1st arg}
 	case "$TYPE" in
 		lo|dummy)
-			echo 'VIRTUAL'
+			echo '0'
 		;;
 		eth|plip)
-			echo 'REALPHYS'
+			echo '1'
 		;;
 		vlan|bond)
-			echo 'HOSTEDPHYS'
+			echo '2'
 		;;
 		iptun|ipsectun|eql)
-			echo 'INDEPLOG'
+			echo '3'
 		;;
 		ppp|ippp|pptp)
-			echo 'DEPLOG'
+			echo '4'
 		;;
 	esac
 }
@@ -47,7 +46,7 @@ pickup_options()
 {
 	# to determine iface type we must read it's config, but
 	# we should read global config and type config first.
-	# A small trick.
+	# A workaround here.
 	SourceIfNotEmpty $MYIFACEDIR/options
 	[ -z "$TYPE" ] && TYPE=`name2type $NAME`
 	[ -z "$TYPE" ] && {

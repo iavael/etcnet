@@ -7,66 +7,25 @@ export IFACEDIR SCRIPTDIR
 
 $SYSCTL -p /etc/net/sysctl.conf
 
-declare -a VIRTUAL
-declare -a REALPHYS
-declare -a HOSTEDPHYS
-declare -a INDEPLOG
-declare -a DEPLOG
-VIRTUAL_SIZE=0
-REALPHYS_SIZE=0
-HOSTEDPHYS_SIZE=0
-INDEPLOG_SIZE=0
-DEPLOG_SIZE=0
 declare -a GROUP
-GROUP[0]='VIRTUAL'
-GROUP[1]='REALPHYS'
-GROUP[2]='HOSTEDPHYS'
-GROUP[3]='INDEPLOG'
-GROUP[4]='DEPLOG'
-
-addelem()
-{
-	local ARRAY_NAME=${1:?addelem: missing 1st arg}
-	local VALUE=${2:?addelem: missing 2nd arg}
-	local SIZE=`eval echo '$'$ARRAY_NAME'_SIZE'`
-#	echo "for $ARRAY_NAME size is $SIZE"
-	case "$ARRAY_NAME" in
-		VIRTUAL)
-			VIRTUAL[$SIZE]=$VALUE
-			VIRTUAL_SIZE=$((SIZE+1))
-		;;
-		REALPHYS)
-			REALPHYS[$SIZE]=$VALUE
-			REALPHYS_SIZE=$((SIZE+1))
-		;;
-		HOSTEDPHYS)
-			HOSTEDPHYS[$SIZE]=$VALUE
-			HOSTEDPHYS_SIZE=$((SIZE+1))
-		;;
-		INDEPLOG)
-			INDEPLOG[$SIZE]=$VALUE
-			INDEPLOG_SIZE=$((SIZE+1))
-		;;
-		DEPLOG)
-			DEPLOG[$SIZE]=$VALUE
-			DEPLOG_SIZE=$((SIZE+1))
-		;;
-		*)
-			echo "uknown array $ARRAY_NAME"
-		;;
-	esac
-}
+GROUP[0]=''
+GROUP[1]=''
+GROUP[2]=''
+GROUP[3]=''
+GROUP[4]=''
 
 start_group()
 {
-	local GROUP_NAME=${1:?start_group: missing 1st arg}
-	local GROUP_SIZE=`eval echo '$'$GROUP_NAME'_SIZE'`
-	echo "starting group $GROUP_NAME ($GROUP_SIZE interfaces)"
-	[ "$GROUP_NAME" = "HOSTEDPHYS" ] && {
+	local GROUP_ID=${1:?start_group: missing 1st arg}
+	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
+#	echo "starting group $GROUP_ID ($GROUP_SIZE interfaces)"
+	[ $GROUP_ID -eq 2 ] && {
+		# hosted physical
 		echo start_vlantab
 	}
 	for i in `seq 0 $((GROUP_SIZE-1))`; do
-		echo "$SCRIPTDIR/ifup `eval echo '${'$GROUP_NAME'['$i']}'`"
+		IFNAME=`echo ${GROUP[$GROUP_ID]} | awk "{print \\$$((i+1))}"`
+		echo "$SCRIPTDIR/ifup $IFNAME"
 	done
 }
 
@@ -76,37 +35,21 @@ for IFACEPATH in $IFACEDIR/*; do
 	NAME=${IFACEPATH//*\//}
 	MYIFACEDIR=$IFACEDIR/$NAME
 	export MYIFACEDIR NAME
-	echo "processing $NAME"
 	[ "$NAME" = "default" ] && continue
+	[ "$NAME" = "CVS" ] && continue
 	unset TYPE
 	pickup_options
-#	echo "TYPE=$TYPE"
-#	echo "72: REALPHYS_SIZE=$REALPHYS_SIZE"
-	GROUP_NAME=`type2group $TYPE`
-	[ -z "$GROUP_NAME" ] && {
+#	echo "processing $NAME of type $TYPE"
+	GROUP_ID=`type2group $TYPE`
+	[ -z "$GROUP_ID" ] && {
 		print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 		continue
 	}
-	# add element to an array
-#	echo "adding $NAME to $GROUP"
-	addelem $GROUP_NAME $NAME
-#	$GROUP[${#$GROUP[@]}]=$NAME
+	GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
 done
 
 # 2. process each group
-#echo "${GROUP[@]}"
-for group in ${GROUP[@]}; do
-	start_group $group
+for i in 0 1 2 3 4; do
+#	echo "group $i: ${GROUP[$i]}"
+	[ -n "$GROUP[$i]" ] && start_group $i
 done
-
-#for IFACEPATH in $IFACEDIR/*; do
-#	IFACE=${IFACEPATH//*\//}
-#	# bring up lo too
-#	[ "$IFACE" = "default" ] && continue
-##	iface_is_up $IFACE && continue
-#	echo -n "Starting $IFACE... "
-#	$SCRIPTDIR/ifup $IFACE
-#	echo "done with RC $?"
-#done
-#
-#start_vlantab
