@@ -1,4 +1,0 @@
-# From man iftab:
-# Each  mapping is described on a separate line, it starts with an inter-
-# face name, and contains a set of descriptors,  separated  by  space  or
-# tabs.
