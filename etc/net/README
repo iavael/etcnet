@@ -1,4 +1,4 @@
-etcnet version 0.4.0
+cetcnet version 0.4.0
 
 1. GENERAL INFORMATION
 
@@ -230,6 +230,7 @@ To switch between configurations without editing /etc/net/profile one can use:
  by discovered WAP address)
 -implement recursion for ifup (e.g. by vlantab)
 -use only /bin & /sbin programs to survive w/o /usr (/usr on NFS)
+-don't require TYPE for disabled interfaces
 
 7. CHANGELOG
 
