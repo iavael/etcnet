@@ -18,6 +18,7 @@ export IFACEDIR MYIFACEDIR SCRIPTDIR NAME SEEN_IFACES
 init_profile
 pickup_options
 
+echo "DEBUG: $0 $@"
 # 1. check constraints
 is_yes "$DISABLED" && exit 0
 iface_exists $NAME || exit 0
@@ -35,6 +36,7 @@ if is_yes "$IFDOWN_CHILDREN"; then
 		exit 1
 	}
 fi
+IN_IFPLUGD=$ORIG_IN_IFPLUGD
 
 ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
 
@@ -46,7 +48,6 @@ fi
 
 
 # 3. get rid of the iface
-IN_IFPLUGD=$ORIG_IN_IFPLUGD
 if ! is_yes $DONT_FLUSH; then
 	ip address flush dev $NAME > /dev/null 2>&1
 	is_yes "$IN_IFPLUGD" || ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
