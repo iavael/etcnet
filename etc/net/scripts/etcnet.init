@@ -78,27 +78,36 @@ stop()
 	stop_vlantab
 }
 
-restart()
+usage()
 {
-	stop
-	start
+	msg_usage "${0##*/} {start|stop|restart|reload|reloadwith <new profile name>}"
+	exit 1
 }
 
-init_profile
 # See how we were called.
 case "$1" in
 	start)
+		init_profile
 		start
 		;;
 	stop)
+		init_profile
 		stop
 		;;
 	reload|restart)
-		restart
+		init_profile
+		stop
+		start
+		;;
+	reloadwith)
+		[ -z "$1" ] && usage
+		init_profile
+		stop
+		export PROFILE=$NEWPROF
+		start
 		;;
 	*)
-		msg_usage "${0##*/} {start|stop|restart|reload}"
-		exit 1
+		usage
 esac
 
 exit 0
