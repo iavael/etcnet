@@ -160,7 +160,7 @@ check()
 					if [ -s $MYIFACEDIR/ipv6address ]; then
 						print_message -n ' seems OK'
 					else
-						print_message -n ' missing ipv6address?'
+						print_message -n ' WARNING: missing ipv6address?'
 					fi
 					;;
 				pppoptions|pppinit|pppconnect|pppdisconnect)
