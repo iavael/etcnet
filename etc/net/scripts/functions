@@ -308,7 +308,7 @@ init_profile()
 	if [ -n "$1" ]; then
 		PROFILE="$1"
 	elif [ -n "$MYIFACEDIR" -a -s "$MYIFACEDIR/selectprofile" -a -x "$MYIFACEDIR/selectprofile" ]; then
-		PROFILE=`$MYIFACEDIR/selectprofile $0 | head -1 | $CUTSP -f1
+		PROFILE=`$MYIFACEDIR/selectprofile $0 | head -1 | $CUTSP -f1`
 	elif [ -z "$PROFILE" ]; then
 		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
 			PROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | $CUTSP -f1`
