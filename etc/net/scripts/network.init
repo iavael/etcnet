@@ -17,14 +17,14 @@ start_group()
 {
 	local GROUP_ID=${1:?missing 1st argument to $FUNCNAME}
 	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
-	echo "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
+	print_message "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
 		# hosted physical
 		start_vlantab
 	}
 	for i in `seq 0 $((GROUP_SIZE-1))`; do
 		IFNAME=`echo ${GROUP[$GROUP_ID]} | awk "{print \\$$((i+1))}"`
-		print_message -n "Starting $IFNAME: "
+		print_message -n -e "\tStarting $IFNAME: "
 		if $SCRIPTDIR/ifup $IFNAME boot; then
 			print_message "OK"
 		else
@@ -38,14 +38,14 @@ stop_group()
 {
 	local GROUP_ID=${1:?missing 1st argument to $FUNCNAME}
 	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
-	echo "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
+	print_message "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
 		# hosted physical
 		stop_vlantab
 	}
 	for i in `seq 0 $((GROUP_SIZE-1))`; do
 		IFNAME=`echo ${GROUP[$GROUP_ID]} | awk "{print \\$$((i+1))}"`
-		print_message -n "Stopping $IFNAME: "
+		print_message -n -e "\tStopping $IFNAME: "
 		if $SCRIPTDIR/ifdown $IFNAME; then
 			print_message "OK"
 		else
