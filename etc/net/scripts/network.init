@@ -118,6 +118,66 @@ stop()
 	rm -f "$LOCKFILE"
 }
 
+# first-look ifaces checker
+check()
+{
+	print_message "Checking interfaces in $IFACEDIR:"
+	export MYIFACEDIR NAME
+	for IFACEPATH in $IFACEDIR/*; do
+		NAME=${IFACEPATH//*\//}
+		MYIFACEDIR=$IFACEDIR/$NAME
+		# skip default
+		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
+		unset TYPE
+		pickup_options
+		GROUP_ID=`type2group $TYPE`
+		GROUP=`group2name $GROUP_ID`
+		print_message -n "$NAME: ${TYPE:-unknown type}/${GROUP:-unknown group}"
+		if [ -z "$GROUP" ];then
+			print_message ' ERROR: unsupported interface!'
+			continue
+		fi
+		print_message ' PASSED'
+		# examine all files
+		for IFACEFILE in $MYIFACEDIR/*; do
+			TESTFILE=${IFACEFILE//*\//}
+			[ "$TESTFILE" = "CVS" ] && continue
+			print_message -n "$NAME/$TESTFILE:"
+			# strip optional profile suffix
+			case ${TESTFILE//.*/} in
+				# standalone optional files
+				options|iplink|ipv4address|ipv6address|sysctl.conf)
+					print_message -n ' seems OK'
+					;;
+				ipv4route|ipv4rule)
+					if [ -s $MYIFACEDIR/ipv4address ]; then
+						print_message -n ' seems OK'
+					else
+						print_message -n ' WARNING: missing ipv4address?'
+					fi
+					;;
+				ipv6route)
+					if [ -s $MYIFACEDIR/ipv6address ]; then
+						print_message -n ' seems OK'
+					else
+						print_message -n ' missing ipv6address?'
+					fi
+					;;
+				pppoptions|pppinit|pppconnect|pppdisconnect)
+					if [ "$TYPE" = "ppp" ]; then
+						print_message -n ' seems OK'
+					else
+						print_message -n ' WARNING: useless file!'
+					fi
+					;;
+				*)
+					print_message -n ' ???'
+					;;
+			esac
+			print_message ''
+		done
+	done
+}
 usage()
 {
 	msg_usage "${0##*/} {start|stop|restart|reload|restartwith <new profile name>}"
@@ -166,6 +226,10 @@ case "$1" in
 		stop
 		init_profile $2
 		start
+		;;
+	check)
+		init_profile
+		check
 		;;
 	*)
 		usage
