@@ -88,6 +88,8 @@ pickup_options()
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-$TYPE`
 	# and finally source iface options
 	SourceIfNotEmpty `profiled_filename $MYIFACEDIR/options`
+	# Load type-specific functions
+	SourceIfNotEmpty $SCRIPTDIR/functions-$TYPE
 }
 
 print_error()
@@ -177,6 +179,19 @@ init_profile()
 			sed 's/ /\n/g' | egrep '^netprof=' | cut --delimiter='=' --fields=2`
 		fi
 	fi
+	return 0
+}
+
+init_nethost()
+{
+	if [ -n "$1" ]; then
+		NETHOST="$1"
+	elif grep "^$HOSTNAME " $HOSTTAB; then
+		NETHOST=`$DENOISE $HOSTTAB | grep -m 1 "^$HOSTNAME " | CUTSP -f2`
+	else
+		NETHOST=$HOSTNAME
+	fi
+	return 0
 }
 
 # iterator

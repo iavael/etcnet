@@ -19,7 +19,9 @@ DEFAULT_IPV4RULE_CMD='add'
 
 # config files
 IFACEDIR=/etc/net/ifaces
+VARLIBDIR=/var/lib/etcnet
 VLANTAB=/etc/net/vlantab
+HOSTTAB=/etc/net/hosttab
 IFTAB=/etc/net/iftab
 
 # tools
