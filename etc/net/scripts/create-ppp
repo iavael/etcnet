@@ -26,7 +26,7 @@ pickup_options
 CHAT_CMD="$CHAT ${CHATOPTIONS:-$DEFAULT_CHATOPTIONS} -f"
 
 # This one is a must.
-BASIC_PPPOPTIONS="updetach unit ${NAME//ppp/}"
+BASIC_PPPOPTIONS="nolog updetach unit ${NAME//ppp/}"
 
 PROF_PPPOPTIONSFILE=`profiled_filename $MYIFACEDIR/${PPPOPTIONSFILE:=$DEFAULT_PPPOPTIONSFILE}`
 [ -s $PROF_PPPOPTIONSFILE ] || PROF_PPPOPTIONSFILE=
