@@ -29,7 +29,7 @@ type2group()
 		eth|plip)
 			echo '1'
 		;;
-		vlan|bond)
+		vlan|bond|bri|teql)
 			echo '2'
 		;;
 		iptun|ipsectun|eql)
