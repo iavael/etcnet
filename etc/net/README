@@ -198,20 +198,13 @@ To switch between configurations without editing /etc/net/profile one can use:
 +BOOTPROTOTO other than static
 +LINKDETECT
 +ifplugd integration
-+hotplug event handlers
 -ppp hooks
 -control
-+ip rule
-+default prefixes for ip*route/rule
 -same for sysctl.conf files
 -handle 'add' in ipv4rule on ifdown
 -analyze zebra and RTPROTO ip option
 -handle network mounts?
-+remove MAPDESCR from PLIP files
-+check iplink handling
 -check exit codes
-+fix get_mapped_ifname
-+fix ifrename patch (manpage)
 
 7. CHANGELOG
 
