@@ -52,9 +52,6 @@ CONFIG_IPX=no
 CONFIG_QOS=yes
 CONFIG_WIRELESS=no
 
-# eth feature
-LINKDETECT=no
-
 # If set to yes, interface will not be set UP, but configured.
 KEEP_DOWN=no
 
