@@ -96,7 +96,7 @@ stop()
 	for IFACEPATH in $IFACEDIR/*; do
 		NAME=${IFACEPATH//*\//}
 		MYIFACEDIR=$IFACEDIR/$NAME
-		[ "$NAME" = "default" -o "$NAME" = "CVS" -o "$NAME" = "lo" ] && continue
+		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE DISABLED
 		pickup_options
 		is_yes "$DISABLED" && continue
