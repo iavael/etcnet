@@ -1,9 +1,28 @@
 #!/bin/bash
 
-# This script is intended to be run from /etc/ifplugd/ifplugd.action
+# This script is intended to be run from /etc/ifplugd/ifplugd.action.
+# The only thing we should do is to configure the interface without
+# creating it.
+
+usage()
+{
+	echo "Usage: $0 <interface>" > /dev/stderr
+	exit 1
+}
+
+[ -z "$1" ] && usage
+NAME=$1
+
+SCRIPTDIR=/etc/net/scripts
+. $SCRIPTDIR/functions
+MYIFACEDIR=$IFACEDIR/$NAME
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE SEEN_IFACES
+
+init_profile
+pickup_options
 
 is_yes "$DISABLED" && {
-	print_message -n 'skipped disabled iface '
+	print_message 'skipped disabled iface'
   exit 1
 }
 
