@@ -213,7 +213,7 @@ foreach_child ()
 	local CHILDREN=`$SCRIPTDIR/childfinder $NAME`
 	local ret=0
 	for child in $CHILDREN; do
-		$SCRIPTDIR/$WHAT $child || ret=$((ret+1))
+		$SCRIPTDIR/$WHAT $child || : $((ret++))
 	done
 	return $ret
 }
