@@ -14,4 +14,4 @@
 #ether 2 two
 #ether 3 three
 #ether 4
-#ether 5 AUTO 192.168.31.0/24
+#ether 5 AUTO 192.168.31.32/24
