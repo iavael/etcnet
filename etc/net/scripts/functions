@@ -172,12 +172,14 @@ try_rmmod()
 # Look if iface name will change after ifrename call.
 get_mapped_ifname()
 {
-	if [ -s "`profiled_filename $IFTAB`" ]; then
+	local OLDNAME=${1:?missing 1st argument to $FUNCNAME}
+	local PROF_IFTAB=`profiled_filename $IFTAB`
+	if [ -s "$PROF_IFTAB" ]; then
 		[ -x $IFRENAME ] || {
-			print_error "$IFRENAME is unavailable, but `profiled_filename $IFTAB` exists"
+			print_error "$IFRENAME is unavailable, but $PROF_IFTAB exists"
 			exit 1
 		}
-		NEW_NAME=`$IFRENAME -c `profiled_filename $IFTAB` ${1:+-i $1} -f 2>/dev/null | head -1`
+		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>/dev/null | head -1 | awk '{print $7}' | sed 's/.$//'`
 		[ $? = 0 -a -n "$NEW_NAME" ] && echo $NEW_NAME
 	fi
 }
