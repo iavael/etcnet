@@ -156,8 +156,19 @@ get_mapped_ifname()
 profiled_filename()
 {
 	local BASE=${1:?missing 1st arg to $FUNCNAME}
-	local CAND=$BASE${PROFILE:+#$PROFILE}
-	[ -e $CAND ] && echo $CAND || echo $BASE
+	local CAND1=$BASE${PROFILE:+#$PROFILE}${NETHOST:+@$NETHOST}
+	local CAND2=$BASE${NETHOST:+@$NETHOST}
+	local CAND3=$BASE${PROFILE:+#$PROFILE}
+	local CAND4=$BASE
+	if [ -e $CAND1 ]; then
+		echo $CAND1
+	elif [ -e $CAND2 ]; then
+		echo $CAND2
+	elif [ -e $CAND3 ]; then
+		echo $CAND3
+	else
+		echo $CAND4
+	return 0
 }
 
 # This function updates current config file namespace, consisting of
