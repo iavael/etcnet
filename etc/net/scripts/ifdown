@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# ifdown script for usual interfaces
+
 usage()
 {
 	echo "Usage: $0 <device>"

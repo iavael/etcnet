@@ -1,9 +1,6 @@
 #!/bin/bash
 
 # This script is a hook for hotplug or pcmcia-cs.
-# It determines if the specified iface has to be
-# processed, then performs necessary pre-configuration
-# and lets ifup-common do the rest.
 
 usage()
 {
@@ -66,6 +63,10 @@ if [ "$CALLER" = "hotplug" ]; then
 	}
 fi
 
-# Now we know that iface should be processed. Let's go.
-[ "$NAME" != "$OLD_NAME" ] && $IFRENAME -c $IFTAB -i $OLD_NAME 2>/dev/null
-$SCRIPTDIR/ifup-common $NAME
+# common part
+if iface_is_up $NAME; then
+	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME
+	$IP link set dev $NAME down
+	ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME
+fi
+

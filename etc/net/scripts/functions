@@ -167,3 +167,16 @@ try_rmmod()
 	local MODNAME=${1:?try_rmmod: missing 1st argument}
 	$LSMOD | egrep -qs "^$MODNAME +[0-9]+ +0 " && rmmod $MODNAME
 }
+
+# Look if iface name will change after ifrename call.
+get_mapped_ifname()
+{
+	if [ -s "$IFTAB" ]; then
+		[ -x $IFRENAME ] || {
+			print_error "$IFRENAME is unavailable, but $IFTAB exists"
+			exit 1
+		}
+		NEW_NAME=`$IFRENAME -c $IFTAB -i $NAME -f 2>/dev/null`
+		[ $? = 0 -a -n "$NEW_NAME" ] && echo $NEW_NAME
+	fi
+}
