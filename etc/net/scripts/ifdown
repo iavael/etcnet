@@ -36,7 +36,7 @@ fi
 # 3. get rid of the iface
 if ! is_yes $DONT_FLUSH; then
 	ip address flush dev $NAME > /dev/null 2>&1
-	ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
+	is_yes "$IN_IFPLUGD" || ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
 fi
 
 # 4. TODO: restore resolv.conf
