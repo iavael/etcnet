@@ -1,3 +1,8 @@
+0.6.1:
+	print_progress() bugfix (error with ipv4route ignorance)
+	by default wireless extensions are now configured for 'eth' interfaces only
+	fixed error message about missing iwconfig
+	removed garbage files
 0.6.0:
 	PPP support
 	smart sysctl.conf handling (variable auto-completion, global and type-specific defaults)

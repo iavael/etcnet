@@ -24,7 +24,7 @@ MODPROBE=/sbin/modprobe
 LSMOD=/sbin/lsmod
 INSMOD=/sbin/insmod
 SYSCTL=/sbin/sysctl
-IWCONFIG=/sbin/iwconfig
+DEFAULT_IWCONFIG=/sbin/iwconfig
 # for iftab
 IFRENAME=/sbin/ifrename
 # for LINKDETECT

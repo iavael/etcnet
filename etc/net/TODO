@@ -1,8 +1,9 @@
 - resolv.conf code audit
-- handle network mounts
+X handle network mounts
 - Linux 2.6 IPSec support
 - pptp-client support
-- rp-pppoe support
+X rp-pppoe support
+- WiFi/WPA support
 - Elektra support
 - handle 'add' in ipv4rule on ifdown
 - analyze zebra and RTPROTO ip option
@@ -11,6 +12,5 @@
 ? SNMP bridge workaround
 - lockfiles
 - bridge-utils arg order patch
-- support more than one teql interfaces
-- bluetooth support
-- WPA support
+- kernel patch: support more than one teql interfaces
+? bluetooth support
