@@ -18,4 +18,4 @@ done
 	egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/brctl` | \
 	sed "s/ AUTO / $NAME /" | \
 	xargs --max-lines=1 $BRCTL
-} && print_message -n '.'
+} && print_progress

@@ -164,7 +164,7 @@ start_vlantab()
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
 	egrep -v '^$|^#' $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		iface_is_up "$HOST_IFACE" && setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
-		print_message -n '.'
+		print_progress
 	done
 	# We can't count ifaces right in the while cycle due to pipe causing new process
 	print_message "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
@@ -182,7 +182,7 @@ stop_vlantab()
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
 	egrep -v '^$|^#' $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
-		print_message -n '.'
+		print_progress
 	done
 	# See start_vlantab().
 	print_message "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
@@ -343,7 +343,7 @@ xargise_file()
 	local PROCESSOR="${2:?missing 2nd arg to $FUNCNAME}"
 	local REALFILE=`profiled_filename $BASEFILE`
 	if [ -s $REALFILE ]; then
-		egrep -v '^$|^#' $REALFILE | xargs --max-lines=1 $PROCESSOR && print_message -n '.'
+		egrep -v '^$|^#' $REALFILE | xargs --max-lines=1 $PROCESSOR && print_progress
 	fi
 }
 
@@ -415,4 +415,10 @@ process_sysctl_conf()
 		$SYSCTL -q -w $VARPREFIX$VARNAME=$VARVALUE
 	done
 	return 0
+}
+
+print_progress()
+{
+	local SYMBOL=${1:-.}
+	is_yes "$PRINT_PROGRESS" && print_message -n "$SYMBOL"
 }

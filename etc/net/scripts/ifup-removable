@@ -39,7 +39,7 @@ SCRIPTDIR=/etc/net/scripts
 MAPPED_NAME=`get_mapped_ifname $NAME`
 if [ -n "$MAPPED_NAME" -a "$NAME" != "$MAPPED_NAME" ]; then
 	NAME=$MAPPED_NAME
-	print_message -n '.'
+	print_progress
 fi
 
 MYIFACEDIR=$IFACEDIR/$NAME

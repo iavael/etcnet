@@ -67,14 +67,14 @@ if is_yes "$IFUP_PARENTS"; then
 fi
 
 # 3c. exec scripts
-ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && print_message -n '.'
-ExecIfExecutable $MYIFACEDIR/ifup-pre $NAME && print_message -n '.'
+ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && print_progress
+ExecIfExecutable $MYIFACEDIR/ifup-pre $NAME && print_progress
 
 # 4. make device appear
 if ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME; then
-	print_message -n '.'
+	print_progress
 else
-	print_message -n '!'
+	print_progress '!'
 	exit 1
 fi
 
@@ -83,5 +83,5 @@ fi
 
 # 5. configure iface
 IFTAB_FILE=`profiled_filename $IFTAB`
-[ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -n "$NAME" >/dev/null 2>&1 && print_message -n '.'
+[ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -n "$NAME" >/dev/null 2>&1 && print_progress
 $SCRIPTDIR/ifup-common $NAME

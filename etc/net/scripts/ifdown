@@ -40,12 +40,12 @@ IN_IFPLUGD=$ORIG_IN_IFPLUGD
 ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
 
 if iface_is_up $NAME; then
-	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME && print_message -n '.'
-	ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_message -n '.'
+	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME && print_progress
+	ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
 	$IP link set dev $NAME down
 fi
-ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME && print_message -n '.'
-ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_message -n '.'
+ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME && print_progress
+ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
 
 
 # 3. get rid of the iface

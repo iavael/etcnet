@@ -64,7 +64,7 @@ export RECLEVEL=0
 # process only the first
 for d in $MYIFACEDIR/qos/*; do
 	[ -d $d ] && {
-		process_qos_dir $d root && print_message -n '.'
+		process_qos_dir $d root && print_progress
 		break
 	}
 done

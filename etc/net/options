@@ -1,5 +1,7 @@
 # Set this to yes to see more messages during start and stop.
 VERBOSE=yes
+# Progress dots are on by default.
+PROGRESS=yes
 
 # vconfig --help
 DEFAULT_VLAN_NAMETYPE=DEV_PLUS_VID_NO_PAD

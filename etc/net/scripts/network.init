@@ -76,7 +76,7 @@ start()
 		}
 		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
 		GROUPCOUNT=$((GROUPCOUNT + 1))
-		print_message -n '.'
+		print_progress
 	done
 	print_message " $GROUPCOUNT interfaces found"
 	# 2. process each group
@@ -108,7 +108,7 @@ stop()
 		}
 		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
 		GROUPCOUNT=$((GROUPCOUNT + 1))
-		print_message -n '.'
+		print_progress
 	done
 	print_message " $GROUPCOUNT interfaces found"
 	# 2. process each group

@@ -21,7 +21,7 @@ pickup_options
 
 ! is_yes "$IN_IFPLUGD" && {
 	# 2. handle wireless extensions
-	is_yes "$CONFIG_WIRELESS" && ExecIfExecutable $SCRIPTDIR/config-wireless $NAME && print_message -n '.'
+	is_yes "$CONFIG_WIRELESS" && ExecIfExecutable $SCRIPTDIR/config-wireless $NAME && print_progress
 	# 3. setup link-level params
 	xargise_file $IFACEDIR/default/iplink "$IP link set dev $NAME"
 	xargise_file $IFACEDIR/default/iplink-$TYPE "$IP link set dev $NAME"
@@ -33,12 +33,12 @@ is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
 
 # 5. bring iface up
 if ! is_yes $KEEP_DOWN; then
-	$IP link set dev $NAME up && print_message -n '.'
+	$IP link set dev $NAME up && print_progress
 	MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`
 	if [ -s $MYRESOLVCONF ]; then
 		rm -f /etc/resolv.conf
 		ln -s $MYRESOLVCONF /etc/resolv.conf
-		print_message -n '.'
+		print_progress
 	fi
 fi
 
@@ -49,27 +49,27 @@ is_yes $DONT_FLUSH || {
 	$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
 	$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
 	$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
-	print_message -n '.'
+	print_progress
 }
-is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME && print_message -n '.'
-is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME && print_message -n '.'
-is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME  && print_message -n '.'
-is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME  && print_message -n '.'
+is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME && print_progress
+is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME && print_progress
+is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME  && print_progress
+is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME  && print_progress
 
 GLOBAL_SYSCTL=`profiled_filename $IFACEDIR/sysctl.conf`
 TYPESPEC_SYSCTL=`profiled_filename $IFACEDIR/default/sysctl.conf-$TYPE`
 MY_SYSCTL=`profiled_filename $MYIFACEDIR/sysctl.conf`
-[ -s $GLOBAL_SYSCTL ] && process_sysctl_conf $GLOBAL_SYSCTL && print_message -n '.'
-[ -s $TYPESPEC_SYSCTL ] && process_sysctl_conf $TYPESPEC_SYSCTL $NAME && print_message -n '.'
-[ -s $MY_SYSCTL ] && process_sysctl_conf $MY_SYSCTL $NAME && print_message -n '.'
+[ -s $GLOBAL_SYSCTL ] && process_sysctl_conf $GLOBAL_SYSCTL && print_progress
+[ -s $TYPESPEC_SYSCTL ] && process_sysctl_conf $TYPESPEC_SYSCTL $NAME && print_progress
+[ -s $MY_SYSCTL ] && process_sysctl_conf $MY_SYSCTL $NAME && print_progress
 
 # 7. type-specific additional optional configuration
-ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && print_message -n '.'
+ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && print_progress
 
 # 8. ifup-post
 iface_is_up $NAME && {
-	ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && print_message -n '.'
-	ExecIfExecutable $MYIFACEDIR/ifup-post $NAME && print_message -n '.'
+	ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && print_progress
+	ExecIfExecutable $MYIFACEDIR/ifup-post $NAME && print_progress
 }
 
 # 9. process deps
