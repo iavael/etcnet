@@ -32,16 +32,16 @@ if ! is_yes $KEEP_DOWN; then
 	fi
 fi
 
-# 2. handle wireless extensions
+# handle wireless extensions
 is_yes "$CONFIG_WIRELESS" && ExecIfExecutable $SCRIPTDIR/config-wireless $NAME && print_progress
 
-# 3. setup link-level params
+# setup link-level params
 xargise_file $IFACEDIR/default/iplink "$IP link set dev $NAME"
 xargise_file $IFACEDIR/default/iplink-$TYPE "$IP link set dev $NAME"
 xargise_file $MYIFACEDIR/iplink "$IP link set dev $NAME"
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
 
-# 6. setup addresses and (only if iface is up) routes
+# setup addresses and (only if iface is up) routes
 # don't flush IPv6 auto-generated link-level addresses
 is_yes $DONT_FLUSH || {
 	$IP -4 address flush dev $NAME >/dev/null 2>&1
@@ -62,16 +62,16 @@ MY_SYSCTL=`profiled_filename $MYIFACEDIR/sysctl.conf`
 [ -s $TYPESPEC_SYSCTL ] && process_sysctl_conf $TYPESPEC_SYSCTL $NAME && print_progress
 [ -s $MY_SYSCTL ] && process_sysctl_conf $MY_SYSCTL $NAME && print_progress
 
-# 7. type-specific additional optional configuration
+# type-specific additional optional configuration
 ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && print_progress
 
-# 8. ifup-post
+# ifup-post
 iface_is_up $NAME && {
 	ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && print_progress
 	ExecIfExecutable $MYIFACEDIR/ifup-post $NAME && print_progress
 }
 
-# 9. process deps
+# process deps
 if is_yes "$IFUP_CHILDREN"; then
 	IN_IFPLUGD=
 	ifup_children || {
