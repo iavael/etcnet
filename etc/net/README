@@ -268,7 +268,7 @@ To switch between configurations without editing /etc/net/profile one can use:
 -handle network mounts?
 -check exit codes
 +interface dependencies support
--implement -r flag to ifup, handle vlantab
+-implement -r flag to ifup
 -IrLAN support?
 -wireless host AP support?
 +QoS infrastructure
@@ -277,7 +277,6 @@ To switch between configurations without editing /etc/net/profile one can use:
 -Elektra support
 +zcip -> ipv4ll
 -extend start_vlantab ans stop_vlantab for iface deps
--make /sbin/ifup and /sbin/ifdown symlinks, not files
 
 7. CHANGELOG
 

@@ -13,3 +13,9 @@ pcmcia-cs >= 3.2.7-alt7
 ifplugd >= 0.25-alt3
 
 Don't forget to review /etc/sysconfig/network.
+
+Note on network-config-subsystem:
+/sbin/ifup
+/sbin/ifdown
+service network
+/etc/sysconfig/network
