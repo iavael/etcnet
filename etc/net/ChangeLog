@@ -1,3 +1,6 @@
+0.6.4:
+	8021q is no more unconditionally loaded, other VLAN code enhancements
+	another print_message()/print_progress() bugfix
 0.6.3:
 	wireless extensions fix
 0.6.2:
