@@ -15,7 +15,7 @@ for parent in $REQUIRES; do
 done
 
 [ -s `profiled_filename $MYIFACEDIR/brctl` ] && {
-	egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/brctl` | \
+	$DENOISE `profiled_filename $MYIFACEDIR/brctl` | \
 	sed "s/ AUTO / $NAME /" | \
 	xargs --max-lines=1 $BRCTL
 } && print_progress

@@ -2,6 +2,7 @@
 
 . /etc/net/options
 CUTSP="cut --delimiter=' '"
+DENOISE="egrep '^[^#]'"
 
 # Stolen from /etc/init.d/functions and improved.
 is_yes()
@@ -221,7 +222,7 @@ start_vlantab()
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME PROBED_8021Q=no
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
-	egrep -v '^$|^#' $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		if [ "$PROBED_8021Q" = "no" ]; then
 			PROBED_8021Q=yes
 			$MODPROBE 8021q || {
@@ -238,7 +239,7 @@ start_vlantab()
 		fi
 	done
 	# We can't count ifaces right in the while cycle due to pipe causing new process
-	print_message "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
+	print_message "`$DENOISE -c $PROFILED_VLANTAB` lines processed."
 	return 0
 }
 
@@ -252,7 +253,7 @@ stop_vlantab()
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
-	egrep -v '^$|^#' $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		if shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
 			print_progress
 		else
@@ -260,7 +261,7 @@ stop_vlantab()
 		fi
 	done
 	# See start_vlantab().
-	print_message "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
+	print_message "`$DENOISE -c $PROFILED_VLANTAB` lines processed."
 	return 0
 }
 
@@ -310,7 +311,7 @@ init_profile()
 		PROFILE=`$MYIFACEDIR/selectprofile $0 | head -1 | $CUTSP -f1
 	elif [ -z "$PROFILE" ]; then
 		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
-			PROFILE=`egrep -v '^$|^#' "$PROFILE_FILE" | head -1 | $CUTSP -f1`
+			PROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | $CUTSP -f1`
 		elif [ -r "$PROC_CMDLINE" ]; then
 			# try to fetch profile name from kernel options
 			PROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | \
@@ -421,7 +422,7 @@ xargise_file()
 	local PROCESSOR="${2:?missing 2nd arg to $FUNCNAME}"
 	local REALFILE=`profiled_filename $BASEFILE`
 	if [ -s $REALFILE ]; then
-		egrep -v '^$|^#' $REALFILE | xargs --max-lines=1 $PROCESSOR && print_progress
+		$DENOISE $REALFILE | xargs --max-lines=1 $PROCESSOR && print_progress
 	fi
 	return 0
 }
@@ -452,7 +453,7 @@ process_sysctl_conf()
 	local ONELINE
 	local VARPREFIX
 	[ -s $SRCFILE ] || return 0
-	egrep -v '^$|^#' $SRCFILE | sed "s/ //g" | while read ONELINE; do
+	$DENOISE $SRCFILE | sed "s/ //g" | while read ONELINE; do
 		local VARNAME=`echo $ONELINE  | cut --delimiter='=' --fields=1`
 		local VARVALUE=`echo $ONELINE | cut --delimiter='=' --fields=2`
 		# If variable name contains dot(s), we use it as is. Otherwise

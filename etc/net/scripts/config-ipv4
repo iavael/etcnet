@@ -62,7 +62,7 @@ config_routes_rules()
 {
 	# setup routes
 	local SRCFILE=`profiled_filename $MYIFACEDIR/ipv4route`
-	[ -s "$SRCFILE" ] && egrep -v '^$|^#' "$SRCFILE" | \
+	[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
 	while read FIRST REST; do
 	# If there is no operation, substitute default, otherwise keep.
 		case "$FIRST" in
@@ -83,7 +83,7 @@ config_routes_rules()
 	# records for the same rule to prevent multiple records in
 	# kernel rule table.
 	SRCFILE=`profiled_filename $MYIFACEDIR/ipv4rule`
-	[ -s "$SRCFILE" ] && egrep -v '^$|^#' $SRCFILE | \
+	[ -s "$SRCFILE" ] && $DENOISE $SRCFILE | \
 	while read FIRST REST; do
 	# If there is no operation, substitute default, otherwise keep.
 		case "$FIRST" in
