@@ -7,6 +7,7 @@
 	improved pre/post script invocation
 	progress messages can be disabled at all
 	ipneigh file support
+	DHCP code fixes
 0.5.3:
 	fixed ifplugd support
 	code cleanup (optimized profile detection, config processing)
