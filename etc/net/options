@@ -19,7 +19,8 @@ MODPROBE=/sbin/modprobe
 LSMOD=/sbin/lsmod
 INSMOD=/sbin/insmod
 SYSCTL=/sbin/sysctl
-# for MAPDESCR
+IWCONFIG=/sbin/iwconfig
+# for iftab
 IFRENAME=/sbin/ifrename
 # for LINKDETECT
 IFPLUGSTATUS=/sbin/ifplugstatus
