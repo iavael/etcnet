@@ -29,8 +29,8 @@ process_sysctl_conf()
 	local VARPREFIX
 	[ -s $SRCFILE ] || return 0
 	$DENOISE $SRCFILE | sed "s/ //g" | while read ONELINE; do
-		local VARNAME=`echo $ONELINE  | cut --delimiter='=' --fields=1`
-		local VARVALUE=`echo $ONELINE | cut --delimiter='=' --fields=2`
+		local VARNAME=`echo $ONELINE  | cut -d'=' -f1`
+		local VARVALUE=`echo $ONELINE | cut -d'=' -f2`
 		# If variable name contains dot(s), we use it as is. Otherwise
 		# we append interface prefix.
 		if echo $VARNAME | fgrep -vq .; then

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 . /etc/net/options
-CUTSP="cut -d\ "
 DENOISE="egrep '^[^#]'"
 
 # Stolen from /etc/init.d/functions and improved.
@@ -127,7 +126,7 @@ fi
 iface_is_up()
 {
 	local NAME=${1:?missing 1st argument to $FUNCNAME}
-	$IP -o link show dev $NAME 2>/dev/null | $CUTSP -f3 | grep -qs '[<,]UP[,>]'
+	$IP -o link show dev $NAME 2>/dev/null | cut -d' ' -f3 | grep -qs '[<,]UP[,>]'
 	return $?
 }
 
@@ -149,7 +148,7 @@ get_mapped_ifname()
 			print_error "$IFRENAME is unavailable, but $PROF_IFTAB exists"
 			exit 1
 		}
-		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>/dev/null | head -1 | $CUTSP -f7 | sed 's/.$//'`
+		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>/dev/null | head -1 | cut -d' ' -f7 | sed 's/.$//'`
 		[ $? = 0 -a -n "$NEW_NAME" ] && echo $NEW_NAME
 	fi
 }
@@ -170,14 +169,14 @@ init_profile()
 	if [ -n "$1" ]; then
 		PROFILE="$1"
 	elif [ -n "$MYIFACEDIR" -a -s "$MYIFACEDIR/selectprofile" -a -x "$MYIFACEDIR/selectprofile" ]; then
-		PROFILE=`$MYIFACEDIR/selectprofile $0 | head -1 | $CUTSP -f1`
+		PROFILE=`$MYIFACEDIR/selectprofile $0 | head -1 | cut -d' ' -f1`
 	elif [ -z "$PROFILE" ]; then
 		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
-			PROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | $CUTSP -f1`
+			PROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | cut -d' ' -f1`
 		elif [ -r "$PROC_CMDLINE" ]; then
 			# try to fetch profile name from kernel options
 			PROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | \
-			sed 's/ /\n/g' | egrep '^netprof=' | cut --delimiter='=' --fields=2`
+			sed 's/ /\n/g' | egrep '^netprof=' | cut -d'=' -f2`
 		fi
 	fi
 	return 0
@@ -189,7 +188,7 @@ init_nethost()
 	if [ -n "$1" ]; then
 		NETHOST="$1"
 	elif grep "^$HOSTNAME " $HOSTTAB; then
-		NETHOST=`$DENOISE $HOSTTAB | grep -m 1 "^$HOSTNAME " | CUTSP -f2`
+		NETHOST=`$DENOISE $HOSTTAB | grep -m 1 "^$HOSTNAME " | cut -d' ' -f2`
 	else
 		NETHOST=$HOSTNAME
 	fi

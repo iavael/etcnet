@@ -6,7 +6,7 @@ get_vlan_ifname()
 {
 	local HOSTIFACE=${1:?missing 1st arg to $FUNCNAME}
 	local VID=${2:?missing 2nd arg to $FUNCNAME}
-	grep "|\ *$VID\ *|\ *$HOSTIFACE" /proc/net/vlan/config | $CUTSP -f1
+	grep "|\ *$VID\ *|\ *$HOSTIFACE" /proc/net/vlan/config | cut -d' ' -f1
 }
 
 # create VLAN iface <parent iface> <VLAN ID> [name]
