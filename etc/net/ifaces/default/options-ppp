@@ -2,6 +2,9 @@
 
 ONBOOT=no
 
+# pppd assigns addresses itself
+DONT_FLUSH=on
+
 # pppd location, optional
 #PPPD=<string>
 
