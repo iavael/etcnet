@@ -336,3 +336,15 @@ add_seen_iface ()
 		SEEN_IFACES="$SEEN_IFACES $newname"
 	fi
 }
+
+# Universal configuration processor. Automatically does profiling,
+# comments filtering and progress reporting.
+xargise_file()
+{
+	local BASEFILE="${1:?missing 1st arg to $FUNCNAME}"
+	local PROCESSOR="${2:?missing 2nd arg to $FUNCNAME}"
+	local REALFILE=`profiled_filename $BASEFILE`
+	if [ -s $REALFILE ]; then
+		egrep -v '^$|^#' $REALFILE | xargs --max-lines=1 "$PROCESSOR" && print_message -n '.'
+	fi
+}

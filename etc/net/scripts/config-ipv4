@@ -5,19 +5,27 @@ pickup_options
 
 try_static()
 {
-	[ -s `profiled_filename $MYIFACEDIR/ipv4address` ] && \
-	egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/ipv4address` | \
-	xargs --max-lines=1 $IP -4 address add dev $NAME
+	echo "CP3"
+	xargise_file $MYIFACEDIR/ipv4address "$IP -4 address add dev $NAME"
+	echo "CP4"
 }
 
 try_dhcp()
 {
+	echo "CP1"
 	[ -x "$DHCP_CLIENT" ] || {
+	echo "CP1.1"
 		print_error "$DHCP_CLIENT does not exist or is not executable. Try installing dhcpcd RPM."
 		return 1
 	}
-	is_yes "$LINKDETECT" && check_eth_link $NAME || return 1
+	echo "CP1.2"
+	if is_yes "$LINKDETECT"; then
+	echo "CP1.2.1"
+		check_eth_link $NAME || return 1
+	fi
+	echo "CP1.3"
 	$DHCP_CLIENT -d -t $DHCP_TIMEOUT $NAME >/dev/null
+	echo "CP2"
 	return $?
 }
 

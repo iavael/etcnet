@@ -4,8 +4,6 @@
 
 $MODPROBE ipv6
 
-[ -s `profiled_filename $MYIFACEDIR/ipv6address` ] && cat `profiled_filename $MYIFACEDIR/ipv6address` | \
-xargs --max-lines=1 $IP -6 address add dev $NAME
-
-iface_is_up $NAME && [ -s `profiled_filename $MYIFACEDIR/ipv6route` ] && \
-cat `profiled_filename $MYIFACEDIR/ipv6route` | xargs --max-lines=1 $IP -6 route append dev $NAME
+xargise_file $MYIFACEDIR/ipv6address "$IP -6 address add dev $NAME"
+iface_is_up $NAME && \
+xargise_file $MYIFACEDIR/ipv6route "$IP -6 route append dev $NAME"
