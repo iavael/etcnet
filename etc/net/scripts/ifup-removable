@@ -67,5 +67,5 @@ if [ "$CALLER" = "hotplug" ]; then
 fi
 
 # Now we know that iface should be processed. Let's go.
-[ "$NAME" != "$OLD_NAME" ] && $IFRENAME -c $IFTAB -i $OLD_NAME 2>/dev/null
+[ "$NAME" != "$OLD_NAME" ] && $IFRENAME -c $IFTAB -i $OLD_NAME >/dev/null 2>&1
 $SCRIPTDIR/ifup-common $NAME

@@ -48,16 +48,11 @@ else
 	exit 1
 fi
 
-if [ -s "$IFTAB" ]; then
-	[ -x $IFRENAME ] || {
-		print_error "$IFRENAME is unavailable, but $IFTAB exists"
-		exit 1
-	}
-	NEW_NAME=`$IFRENAME -c $IFTAB -i $NAME 2>/dev/null`
-	if [ $? = 0 -a -n "$NEW_NAME" ]; then
-		NAME=$NEW_NAME
-		echo -n '.'
-	fi
+MAPPED_NAME=`get_mapped_ifname $NAME`
+if [ "$NAME" != "$MAPPED_NAME" ]; then
+	$IFRENAME -c $IFTAB -i $NAME >/dev/null 2>&1
+	NAME=$MAPPED_NAME
+	echo -n '.'
 fi
 
 $SCRIPTDIR/ifup-common $NAME
