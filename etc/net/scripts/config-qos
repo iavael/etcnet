@@ -4,8 +4,43 @@
 
 usage()
 {
-	echo "Usage: $0 <device>"
+	echo "Usage: $0 <interface>"
 	exit 1
+}
+
+# process_qos_dir <current dir> <parent> [last qdisc handle] [extra]
+process_qos_dir ()
+{
+	local TNAME TTYPE TWORD TTEXT TID
+	local TDIR=${1:?missing 1st arg to $FUNCNAME}
+	local TNAME=${TDIR//*\//}
+	# this arg is 'root' for the first call and 'parent x:y' for the rest
+	local PARENT=${2:?missing 2nd arg to $FUNCNAME}
+	local LAST_QH=$3
+	local EXTRA=$4
+	if [ -f $TDIR/class ]; then
+		TTYPE=class
+		TWORD=classid
+		TID="$LAST_QH$TNAME"
+		TTEXT=`head -1 $TDIR/class`
+	elif [ -f $TDIR/qdisc ]; then
+		TTYPE=qdisc
+		TWORD=handle
+		TID="$TNAME:"
+		LAST_QH=$TID
+		TTEXT=`head -1 $TDIR/qdisc`
+	else
+		print_error "Unknown node type in $FUNCNAME, TDIR=$TDIR"
+		return 1
+	fi
+	echo "$RECLEVEL processing node $TID ($PARENT) of type $TTYPE"
+	echo "$TC $TTYPE add dev $NAME $PARENT $TWORD $TID $TTEXT $EXTRA"
+	RECLEVEL=$((RECLEVEL+1))
+	for d in $TDIR/*; do
+		[ -d $d ] && $FUNCNAME $d "parent $TID" "$LAST_QH" "`head -1 $TDIR/extra 2>/dev/null`"
+	done
+	RECLEVEL=$((RECLEVEL-1))
+	return 0
 }
 
 [ -z "$1" ] && usage
@@ -19,8 +54,22 @@ export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE
 
 init_profile
 pickup_options
+is_yes "$CONFIG_QOS" || exit 0
+[ -d $MYIFACEDIR/qos/ -a -x $MYIFACEDIR/qos/ ] || exit 0
 
 # clean up
-$TC qdisc del dev $NAME root 2>&1 > /dev/null
+echo CP1
+$TC qdisc del dev $NAME root >/dev/null 2>&1
 
+echo CP2
 # do the rest
+cd $MYIFACEDIR/qos/
+export RECLEVEL=0
+# process only the first
+for d in $MYIFACEDIR/qos/*; do
+	[ -d $d ] && {
+echo CP3
+		process_qos_dir $d root && echo '.'
+		break
+	}
+done
