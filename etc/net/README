@@ -27,7 +27,8 @@ $ less /etc/net/ifaces/default/options-*
 ...
 # mkdir /etc/net/ifaces/myinterface2
 ...
-
+# vi /etc/hotplug/net.agent (see /etc/net/ifaces/default/options:USE_HOTPLUG)
+...
 # chkconfig network off
 # ln -s /etc/init.d/etcnet /etc/net/scripts/etcnet.init
 # chkconfig --add etcnet
@@ -140,15 +141,20 @@ interface tried to be setup before its host interface ever exists).
 -check REQUIRES for vlantab
 -BOOTPROTOTO other than static
 -LINKDETECT and ifplugd integration
--hotplug event handlers
++hotplug event handlers
 -ppp hooks
 -control
 -Makefile
 +ip rule
 +default prefixes for ip*route/rule
 -same for sysctl.conf files
+-move hotplug/ifplugd to BOOTPROTO/ONBOOT?
+-handle 'add' in ipv4rule in ifdown
 
 5. CHANGELOG
-0.2.0: ip rule hooks
+0.2.0:
+	ip rule support
+	experimental hotplug support (no time to check, but should work)
+	RC: 2 for hard error, 1 for soft error
 0.1.1: more docs
 0.1.0: 1st public release
