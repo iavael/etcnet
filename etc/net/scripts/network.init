@@ -208,7 +208,8 @@ check()
 		# TODO: improve iface name regexp
 		# check iftab(s)
 		for iftab in /etc/net/iftab /etc/net/iftab.*; do
-			print_message -n "$iftab: "
+			print_message -n "$iftab:"
+			[ -f $iftab ] || continue
 			if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]]*[[:space:]]+mac|arp|driver|businfo|firmware|baseaddress|irq|iwproto|pcmciaslot[[:space:]]+.+$)' $iftab; then
 				print_message " WARNING: unrecognised line(s)"
 			else
@@ -217,7 +218,8 @@ check()
 		done
 		# check iftab(s)
 		for vlantab in /etc/net/vlantab /etc/net/vlantab.*; do
-			print_message -n "$vlantab: "
+			print_message -n "$vlantab:"
+			[ -f $vlantab ] || continue
 			if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]]*[[:space:]]+[[:digit:]]+([[:space:]]+[[:alpha:]][[:alnum:]]*([[:space:]].*)?)?$)' $vlantab; then
 				print_message " WARNING: unrecognised line(s)"
 			else
