@@ -29,16 +29,26 @@ fi
 
 # 1. check if device already exists
 iface_is_up $NAME && {
-	echo -n 'skipped, already up '
+	echo -n "'$NAME' skipped, already up "
 	exit 1
 }
 
 # 2. make device appear
-if ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME; then
-	echo -n '.'
+# When called from hotplug, we already have module loaded and only
+# need to continue from MAPDESCR (inclusive).
+if [ "$IN_HOTPLUG" = "1" ]; then
+	is_yes $USE_HOTPLUG || exit 0
 else
-	echo -n '!'
-	exit 1
+	is_yes "$USE_HOTPLUG" && {
+		echo -n 'skipped, hotplug '
+	  exit 1
+	}
+	if ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME; then
+		echo -n '.'
+	else
+		echo -n '!'
+		exit 1
+	fi
 fi
 
 # deal with ifrename and mappings
