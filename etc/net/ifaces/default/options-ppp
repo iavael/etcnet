@@ -1,1 +1,41 @@
-CONFIG_IPV4=no
+# Default options for PPP interfaces. Comments are mostly 'man pppd' quotations.
+
+# pppd location, optional
+#PPPD=<string>
+
+# Terminate after n consecutive  failed  connection  attempts.   A
+# value of 0 means no limit.  The default value is 10.
+#MAXFAIL=<integer>
+
+# Do  not  exit  after  a connection is terminated; instead try to
+# reopen the connection. The maxfail option still has an effect on
+# persistent connections. pppd default value is 'off'.
+#PERSIST=<boolean>
+
+# Specifies how many seconds to wait before re-initiating the link
+# after it terminates.  This option only has  any  effect  if  the
+# persist  or  demand  option  is used.  The holdoff period is not
+# applied if the link was terminated because it was idle.
+#HOLDOFF=<integer>
+
+# Specifies that pppd should disconnect if the link is idle for  n
+# seconds.   The  link is idle when no data packets (i.e. IP pack-
+# ets) are being sent or received.  Note: it is not  advisable  to
+# use  this  option  with  the  persist  option without the demand
+# option.  If the active-filter  option  is  given,  data  packets
+# which  are  rejected by the specified activity filter also count
+# as the link being idle.
+#IDLE=<integer>
+
+# Additional pppd args. Note that interface-specific options file
+# will override this value, not append.
+#EXTRA_PPPOPTIONS=<string>
+
+# Note: empty pppoptions and pppinit files will not be used.
+#
+# One could override the default base for profiled pppd options file
+# here, but why?
+#PPPOPTIONSFILE=<string>
+
+# Same for pppd init script.
+#PPPINITFILE=<string>

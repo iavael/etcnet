@@ -14,10 +14,7 @@ usage()
 [ -z "$1" ] && usage
 NAME=$1
 
-SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
-MYIFACEDIR=$IFACEDIR/$NAME
-export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE SEEN_IFACES
 
 init_profile
 pickup_options
@@ -42,9 +39,10 @@ is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
 if ! is_yes $KEEP_DOWN; then
 	ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && print_message -n '.'
 	$IP link set dev $NAME up && print_message -n '.'
-	if [ -x `profiled_filename $MYIFACEDIR/resolv.conf` ]; then
+	MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`
+	if [ -s $MYRESOLVCONF ]; then
 		rm -f /etc/resolv.conf
-		ln -s `profiled_filename $MYIFACEDIR/resolv.conf` /etc/resolv.conf
+		ln -s $MYRESOLVCONF /etc/resolv.conf
 		print_message -n '.'
 	fi
 fi
@@ -60,8 +58,8 @@ is_yes $DONT_FLUSH || {
 }
 is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME && print_message -n '.'
 is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME && print_message -n '.'
-is_yes "$CONFIG_IPX" &&  ExecIfExecutable $SCRIPTDIR/config-ipx $NAME  && print_message -n '.'
-is_yes "$CONFIG_QOS" &&  ExecIfExecutable $SCRIPTDIR/config-qos $NAME  && print_message -n '.'
+is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME  && print_message -n '.'
+is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME  && print_message -n '.'
 
 # 7. type-specific additional optional configuration
 ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && print_message -n '.'

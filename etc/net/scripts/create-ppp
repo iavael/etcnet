@@ -1,2 +1,42 @@
-#!/bin/sh
+#!/bin/bash
 
+# This script tries to create a PPP interface.
+
+usage()
+{
+	echo "Usage: $0 <interface>" > /dev/stderr
+	exit 1
+}
+
+[ -z "$1" ] && usage
+NAME=$1
+
+. $SCRIPTDIR/functions
+pickup_options
+${PPPD:=$DEFAULT_PPPD}
+
+[ -x "$PPPD" ] || {
+	print_error "$PPPD does not exist or is not executable. Try installing ppp RPM."
+	exit 1
+}
+
+# This one is a must.
+BASIC_PPPOPTIONS="updetach"
+
+${PPPOPTIONSFILE:=$DEFAULT_PPPOPTIONSFILE}
+if [ -n "$PPPOPTIONSFILE" ]; then
+	PROF_PPPOPTIONSFILE=`profiled_filename $PPPOPTIONSFILE`
+	[ -s $PROF_PPPOPTIONSFILE ] && BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS file $PROF_PPPOPTIONSFILE"
+fi
+${PPPINITFILE:=$DEFAULT_PPPINITFILE}
+if [ -n "$PPPINITFILE" ]; then
+	PROF_PPPINITFILE=`profiled_filename $PPPINITFILE`
+	[ -s $PROF_PPPINITFILE ] && BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS init $PROF_PPPINITFILE"
+fi
+BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS${MAXFAIL:+ maxfail $MAXFAIL}"
+is_yes "$PERSIST" && BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS persist"
+BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS${HOLDOFF:+ holdoff $HOLDOFF}"
+BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS${IDLE:+ idle $idle}"
+
+# Let the show start...
+$PPPD $BASIC_PPPOPTIONS $EXTRA_PPPOPTIONS

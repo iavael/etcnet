@@ -329,6 +329,8 @@ As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
 
 7. CHANGELOG
 
+0.6.0:
+	PPP support
 0.5.3:
 	fixed ifplugd support
 	code cleanup (optimized profile detection, config processing)
