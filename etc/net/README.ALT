@@ -1,13 +1,13 @@
-/etc/net 0.5.3
+/etc/net 0.6.0
 ALTLinux Sisyphus
 
-just apt-get install etcnet and make sure CONFMETHOD in /etc/sysconfig/network
-is set to etcnet
+# apt-get install etcnet
+# vi /etc/sysconfig/network
 
 Version requirements for etcnet-0.5.2:
 hotplug >= 2004_09_23-alt13 (?)
 ifrename >= 28-alt1.pre1
-pcmcia-cs >= 3.2.7-alt7
+pcmcia-cs >= 3.2.8-alt2
 ifplugd >= 0.26-alt2
 
 Note on network-config-subsystem:
@@ -15,6 +15,4 @@ Note on network-config-subsystem:
 /sbin/ifdown
 service network
 /etc/sysconfig/network
-
-TODO
--control
+/var/lock/subsys/network

@@ -1,0 +1,47 @@
+0.6.0:
+	PPP support
+	smart sysctl.conf handling (variable auto-completion, global and type-specific defaults)
+	Pent@NET bugfix
+	QoS configuration is on by default
+	configuration checker
+0.5.3:
+	fixed ifplugd support
+	code cleanup (optimized profile detection, config processing)
+	usbnet support (tested on Prolific PL-2301/PL-2302)
+	added network subsys lock back
+0.5.2:
+	initial IPX, ethernet bridge and traffic equalizer support
+	code cleanup (includes, VLAN code) and minor fixes
+	enhanced interface dependencies handling (changed variable naming,
+		introduced shutdown scripts, updated README and default options)
+	two new commands to network.init
+	IPv4LL bugfix
+	verbosity option
+	enhanced pentanet support
+0.5.1:
+	ifplugd+ifdown fix
+	ALT docs update
+0.5.0:
+	initial QoS framework
+	initial recursion and dependencies processing framework
+	logger, DHCP, etcnet.init argc fixes
+	changed ZCIP to IPv4LL
+	renamed etcnet.init to network.init, introduced sysconfig/network to ease migration
+0.4.2:
+	documentation updates
+	synced with most recent beta of wireless-utils
+	disabled IPv6 by default
+	enabled etcnet service by default
+	fixed bug with missing iftab
+	fixed bug with vlantab and UP flag
+0.4.1: ifrename call fix, did some ALTLinux integration
+0.4.0: DHCP/ZCIP/LINKDETECT/ifplugd support
+0.3.0: network profiles framework (see section 5)
+0.2.2: experimental wireless support, some fixes
+0.2.1: PCMCIA now works (see above)
+0.2.0:
+	ip rule support
+	experimental hotplug support (no time to check, but should work)
+	RC: 2 for hard error, 1 for soft error
+0.1.1: more docs
+0.1.0: 1st public release
