@@ -436,4 +436,5 @@ stop_dhcp_client()
 	local PIDFILE=/var/run/dhcpcd-$NAME.pid
 	[ -s $PIDFILE ] && kill -SIGHUP `cat $PIDFILE`
 	# There probably should be a delay/wait loop here, dhcpcd doesn't die fast.
+	sleep ${DHCPCD_GRACE_TIME:-0}
 }
