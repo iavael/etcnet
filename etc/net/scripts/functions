@@ -68,7 +68,8 @@ pickup_options()
 print_error()
 {
 	echo "ERROR: $0: $@"
-	logger -p daemon.info -t "ERROR: $0: $@"
+	# don't hang if logger hangs
+	logger -p daemon.info -t "ERROR: $0: $@" &
 }
 
 # get VLAN iface name by host iface and VLAN ID
@@ -135,7 +136,7 @@ start_vlantab()
 		iface_is_up "$HOST_IFACE" && setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
 		echo -n '.'
 	done
-	# We can't count ifaces right in the while cycle due to pipe.
+	# We can't count ifaces right in the while cycle due to pipe causing new process
 	echo "`egrep -vc '^$|^#' $VLANTAB` ifaces created."
 }
 
@@ -225,3 +226,40 @@ check_eth_link ()
 	return 0
 }
 
+# iterator
+foreach_child ()
+{
+	local WHAT=${1:?missing 1st argument to $FUNCNAME}
+	local CHILDREN=`$SCRIPTDIR/childfinder $NAME`
+	local ret=0
+	for child in $CHILDREN; do
+		$SCRIPTDIR/$WHAT $child || ret=$((ret+1))
+	done
+	return $ret
+}
+
+# get down all dependant ifaces
+ifdown_children ()
+{
+	foreach_child ifdown
+}
+
+# same for ifdown
+ifup_children ()
+{
+	foreach_child ifup
+}
+
+# check if parent iface (REQUIRES=) is up and ifup if needed
+ifup_parent ()
+{
+	return 0
+	$SCRIPTDIR/ifup $REQUIRES
+}
+
+iface_exists ()
+{
+	local NAME=${1:?missing 1st argument to $FUNCNAME}
+	$IP li sh dev $NAME >/dev/null 2>&1
+	return $?
+}
