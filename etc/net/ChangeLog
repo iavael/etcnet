@@ -1,4 +1,4 @@
-0.7.0:
+0.7.0 2005-03-18
 	create-ppp minor bugfix
 	renamed iptun/ipsectun/pentanet/ppp options
 	plipconfig support
@@ -8,23 +8,23 @@
 	netprof kernel arg becomes netprofile a la RedHat
 	imported examples from web-site
 	former REQUIRES becomes HOST for interface group 2 (hosted physical)
-0.6.4:
+0.6.4 2005-03-05
 	8021q is no more unconditionally loaded, other VLAN code enhancements
 	another print_message()/print_progress() bugfix
 	initial config migration script
-0.6.3:
+0.6.3 2005-03-03
 	wireless extensions fix
-0.6.2:
+0.6.2 2005-03-02
 	dhcp-static BOOTPROTO and dhcpcd workaround
 	'service network check' enhancement
 	copyright/licensing info in README
 	removed duplicates from options files
-0.6.1:
+0.6.1 2005-02-26
 	print_progress() bugfix (error with ipv4route ignorance)
 	by default wireless extensions are now configured for 'eth' interfaces only
 	fixed error message about missing iwconfig
 	removed garbage files
-0.6.0:
+0.6.0 2005-02-17
 	PPP support
 	smart sysctl.conf handling (variable auto-completion, global and type-specific defaults)
 	Pent@NET bugfix
@@ -34,12 +34,12 @@
 	progress messages can be disabled at all
 	ipneigh file support
 	DHCP code fixes
-0.5.3:
+0.5.3 2005-02-04
 	fixed ifplugd support
 	code cleanup (optimized profile detection, config processing)
 	usbnet support (tested on Prolific PL-2301/PL-2302)
 	added network subsys lock back
-0.5.2:
+0.5.2 2005-01-03
 	initial IPX, ethernet bridge and traffic equalizer support
 	code cleanup (includes, VLAN code) and minor fixes
 	enhanced interface dependencies handling (changed variable naming,
@@ -48,30 +48,37 @@
 	IPv4LL bugfix
 	verbosity option
 	enhanced pentanet support
-0.5.1:
+0.5.1 2004-12-23
 	ifplugd+ifdown fix
 	ALT docs update
-0.5.0:
+0.5.0 2004-12-17
 	initial QoS framework
 	initial recursion and dependencies processing framework
 	logger, DHCP, etcnet.init argc fixes
 	changed ZCIP to IPv4LL
 	renamed etcnet.init to network.init, introduced sysconfig/network to ease migration
-0.4.2:
+0.4.2 2004-12-05
 	documentation updates
 	synced with most recent beta of wireless-utils
 	disabled IPv6 by default
 	enabled etcnet service by default
 	fixed bug with missing iftab
 	fixed bug with vlantab and UP flag
-0.4.1: ifrename call fix, did some ALTLinux integration
-0.4.0: DHCP/ZCIP/LINKDETECT/ifplugd support
-0.3.0: network profiles framework (see section 5)
-0.2.2: experimental wireless support, some fixes
-0.2.1: PCMCIA now works (see above)
-0.2.0:
+0.4.1 2004-11-11
+	ifrename call fix, did some ALTLinux integration
+0.4.0 2004-10-19
+	DHCP/ZCIP/LINKDETECT/ifplugd support
+0.3.0 2004-09-28
+	network profiles framework (see section 5)
+0.2.2 2004-08-28
+	experimental wireless support, some fixes
+0.2.1 2004-08-24
+	PCMCIA now works (see README)
+0.2.0 2004-08-21
 	ip rule support
 	experimental hotplug support (no time to check, but should work)
 	RC: 2 for hard error, 1 for soft error
-0.1.1: more docs
-0.1.0: 1st public release
+0.1.1 2004-08-18
+	more docs
+0.1.0 2004-08-18
+	1st public release
