@@ -1,6 +1,11 @@
 DISABLED=no
 BOOTPROTO=static
 ONBOOT=yes
+# if set to yes, iface will be skipped during boot
+# Note that standard hotplug calls /sbin/ifup and /sbin/ifdown.
+# This should be changed to /etc/net/scripts/ifup and
+# /etc/net/scripts/ifdown respectively, if you wish to use
+# etcnet from hotplug.
 USE_HOTPLUG=no
 # protocols
 CONFIG_IPV4=yes
