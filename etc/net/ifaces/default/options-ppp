@@ -1,5 +1,8 @@
 # Default options for PPP interfaces. Comments are mostly 'man pppd' quotations.
 
+# pppd assigns addresses itself
+DONT_FLUSH=yes
+
 # pppd location, optional
 #PPPD=<string>
 
