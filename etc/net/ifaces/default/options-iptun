@@ -1,13 +1,13 @@
 # IP addresses of physical devices that carry tunneled packets (required).
-#PHYSLOCAL=
-#PHYSREMOTE=
+#TUNLOCAL=
+#TUNREMOTE=
 
 # Tunneled (resulting) packets TTL, can be 1-64 or "inherit" (default).
 # For some applications it's better to configure a fixed value.
-#TTL=
+#TUNTTL=
 
 # IP tunnel type: 'ipip' (default), 'gre' or 'sit'.
 #TUNTYPE=
 
 # Append whatever you want (GRE keys etc).
-#MISCOPTIONS=
+#TUNOPTIONS=

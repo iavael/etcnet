@@ -3,8 +3,8 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-PHYSLOCAL=${PHYSLOCAL:?missing PHYSLOCAL}
-PHYSREMOTE=${PHYSREMOTE:?missing PHYSREMOTE}
+TUNLOCAL=${TUNLOCAL:?missing TUNLOCAL}
+TUNREMOTE=${TUNREMOTE:?missing TUNREMOTE}
 
 case "${TUNTYPE:=ipip}" in
 	ipip)
@@ -22,4 +22,4 @@ case "${TUNTYPE:=ipip}" in
 esac
 $MODPROBE $MODULE
 
-$IP tunnel add $NAME mode $TUNTYPE local $PHYSLOCAL remote $PHYSREMOTE ttl ${TTL:-inherit} $MISCOPTIONS
+$IP tunnel add $NAME mode $TUNTYPE local $TUNLOCAL remote $TUNREMOTE ttl ${TUNTTL:-inherit} $TUNOPTIONS

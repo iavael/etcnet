@@ -3,9 +3,9 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-PHYSLOCAL=${PHYSLOCAL:?missing PHYSLOCAL}
-PHYSREMOTE=${PHYSREMOTE:?missing PHYSREMOTE}
-SPI=${SPI:?missing SPI}
+TUNLOCAL=${TUNLOCAL:?missing TUNLOCAL}
+TUNREMOTE=${TUNREMOTE:?missing TUNREMOTE}
+TUNSPI=${TUNSPI:?missing TUNSPI}
 
 [ -x "${IPSECADM:=$DEFAULT_IPSECADM}" ] || {
 	print_error "$IPSECADM does not exist or is not executable. Try installing ipsecadm RPM."
@@ -37,7 +37,7 @@ if [ -n "$CIPHER" -o -n "$CIPHERFILE" ]; then
 fi
 
 if [ -z "$CIPHER_OPTIONS" -a -z "$DIGEST_OPTIONS" ]; then
-	print_error "Cipher or digest must be defined"
+	print_error "Either cipher or digest must be defined"
 	exit 1
 fi
 
@@ -48,11 +48,11 @@ $MODPROBE cryptoapi || {
 	exit 1
 }
 
-modprobe ipsec_tunnel || {
+$MODPROBE ipsec_tunnel || {
 	print_error "ipsec_tunnel kernel module not found"
 	exit 1
 }
-	
-$IPSECADM sa add --spi=$SPI --src=$PHYSLOCAL --dst=$PHYSREMOTE \
+
+$IPSECADM sa add --spi=$TUNSPI --src=$TUNLOCAL --dst=$TUNREMOTE \
 $CIPHER_OPTIONS $DIGEST_OPTIONS --duplex && \
-$IPSECADM tunnel add $NAME --local=$PHYSLOCAL --remote=$PHYSREMOTE --spi=$SPI
+$IPSECADM tunnel add $NAME --local=$TUNLOCAL --remote=$TUNREMOTE --spi=$TUNSPI

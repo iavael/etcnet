@@ -2,8 +2,12 @@
 #IPSECADM=
 
 # IP addresses of physical devices that carry tunneled packets (required).
-#PHYSLOCAL=
-#PHYSREMOTE=
+#TUNLOCAL=
+#TUNREMOTE=
+
+# SPI must be defined for an IPSec tunnel. SPI is a hexadecimal
+# number, values less than 0x2000 are reserved.
+#TUNSPI=0x2000
 
 # At least one of cipher or digest must be configured.
 # CIPHERFILE and DIGESTFILE are searched in iface dir.
