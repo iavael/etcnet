@@ -8,5 +8,5 @@ edit CONFMETHOD in /etc/ifplugd/ifplugd.conf
 Version requirements for /etc/net 0.4.2:
 hotplug >= 2004_03_29-alt13
 ifrename >= 28-alt1.pre1
-pcmcia-cs >= 3.2.7-alt6
+pcmcia-cs >= 3.2.7-alt7
 ifplugd >= 0.25-alt3

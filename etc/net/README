@@ -234,7 +234,13 @@ To switch between configurations without editing /etc/net/profile one can use:
 
 7. CHANGELOG
 
-0.4.2: documentation updates, sync with recent wireless-utils
+0.4.2:
+	documentation updates
+	synced with most recent beta of wireless-utils
+	disabled IPv6 by default
+	enabled etcnet service by default
+	fixed bug with missing iftab
+	fixed bug with vlantab and UP flag
 0.4.1: ifrename call fix, did some ALTLinux integration
 0.4.0: DHCP/ZCIP/LINKDETECT/ifplugd support
 0.3.0: network profiles framework (see section 5)
