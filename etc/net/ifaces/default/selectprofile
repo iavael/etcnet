@@ -11,6 +11,9 @@
 # Original idea: Alexander Bokovoy
 # (http://www.livejournal.com/users/abbra/4508.html?mode=reply)
 
+# see README/5.2 for info
+[ "$1" = "ifup-common" ] || exit 0
+
 iw_ap_address=$(iwlist $NAME scan | fgrep Address: | cut -d: -f2-|cut -d' ' -f2)
 
 case $iw_ap_address in
