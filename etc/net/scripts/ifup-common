@@ -22,7 +22,6 @@ export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
 
 pickup_options
 
----------
 # 1. check if device already exists
 iface_is_up $NAME && {
 	echo -n "'$NAME' skipped, already up "
