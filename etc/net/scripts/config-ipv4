@@ -22,10 +22,10 @@ try_dhcp()
 	return $?
 }
 
-try_zcip()
+try_ipv4ll()
 {
 	[ -x "$ZCIP_CLIENT" ] || {
-		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing dhcpcd RPM."
+		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing zcip RPM."
 		return 1
 	}
 	[ is_yes "$LINKDETECT" ] && check_eth_link $NAME || return 1
@@ -77,17 +77,17 @@ if iface_is_up $NAME; then
 		dhcp)
 			try_dhcp && config_routes_rules
 			;;
-		zcip)
-			try_zcip && config_routes_rules
+		ipv4ll)
+			try_ipv4ll && config_routes_rules
 			;;
 		dhcp-static)
 			try_dhcp || try_static && config_routes_rules
 			;;
-		dhcp-zcip)
-			try_dhcp || try_zcip && config_routes_rules
+		dhcp-ipv4ll)
+			try_dhcp || try_ipv4ll && config_routes_rules
 			;;
-		dhcp-zcip-static)
-			try_dhcp || try_zcip || try_static && config_routes_rules
+		dhcp-ipv4ll-static)
+			try_dhcp || try_ipv4ll || try_static && config_routes_rules
 			;;
 		*)
 			print_error "unknown BOOTPROTO '$BOOTPROTO'"

@@ -1,8 +1,8 @@
 # Optional now.
 #MODULE=
 
-# LINKDETECT option allows skip DHCP/ZCIP timeout, if ethernet cable is
-# not plugged in during initialization. This feature requires ifplugstatus
+# LINKDETECT option allows to avoid DHCP/IPv4LL timeout, if ethernet cable is
+# not plugged in during startup. This feature requires ifplugstatus
 # and is off by default, because not all network cards report correct link
 # status.
 #LINKDETECT={yes|no}
