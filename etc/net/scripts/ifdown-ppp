@@ -18,7 +18,7 @@ SCRIPTDIR=/etc/net/scripts
 MYIFACEDIR=$IFACEDIR/$NAME
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME SEEN_IFACES
 
-init_profile
+init_netprofile
 pickup_options
 seen_iface $NAME && exit 0
 add_seen_iface $NAME

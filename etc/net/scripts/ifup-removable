@@ -45,7 +45,7 @@ fi
 MYIFACEDIR=$IFACEDIR/$NAME
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME SEEN_IFACES
 
-init_profile
+init_netprofile
 pickup_options
 
 is_yes "$DISABLED" && {

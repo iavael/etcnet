@@ -15,7 +15,7 @@ SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 MYIFACEDIR=$IFACEDIR/$NAME
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME SEEN_IFACES
-init_profile
+init_netprofile
 pickup_options
 
 # 1. check constraints

@@ -28,7 +28,7 @@ fi
 }
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE SEEN_IFACES
 
-init_profile
+init_netprofile
 pickup_options
 
 # 1. check constraints

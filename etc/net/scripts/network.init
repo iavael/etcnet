@@ -413,53 +413,53 @@ case "$1" in
 	start)
 		[ $# -ne 1 ] && usage
 		init_nethost
-		init_profile
+		init_netprofile
 		start
 		;;
 	startwith)
 		[ $# -ne 2 ] && usage
 		init_nethost
-		init_profile $2
+		init_netprofile $2
 		start
 		;;
 	stop)
 		[ $# -ne 1 ] && usage
 		init_nethost
-		init_profile
+		init_netprofile
 		stop
 		;;
 	stopwith)
 		[ $# -ne 2 ] && usage
 		init_nethost
-		init_profile $2
+		init_netprofile $2
 		stop
 		;;
 	reload|restart)
 		[ $# -ne 1 ] && usage
 		init_nethost
-		init_profile
+		init_netprofile
 		stop
 		start
 		;;
 	restartwith)
 		[ $# -ne 2 ] && usage
 		init_nethost
-		init_profile $2
+		init_netprofile $2
 		stop
-		init_profile $2
+		init_netprofile $2
 		start
 		;;
 	switchto)
 		[ $# -ne 2 ] && usage
 		init_nethost
-		init_profile
+		init_netprofile
 		stop
-		init_profile $2
+		init_netprofile $2
 		start
 		;;
 	check)
 		init_nethost
-		init_profile
+		init_netprofile
 		check
 		;;
 	*)

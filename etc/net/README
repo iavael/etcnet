@@ -312,7 +312,7 @@ that the script should perform actions only at certain stages. 'selectprofile' w
 always get calling script name as the first parameter, so you can skip trying to
 detect wireless AP before the kernel module is even loaded, for example. See
 /etc/net/ifaces/default/selectprofile for sample implementation.
-As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
+As for /etc/net-0.5.3 init_netprofile is called only from {ifup,ifdown}.*,
 {setup,shutdown}-.* and network.init scripts.
 
 6. PPP interfaces

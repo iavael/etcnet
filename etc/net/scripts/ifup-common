@@ -16,7 +16,7 @@ NAME=$1
 
 . $SCRIPTDIR/functions
 
-init_profile
+init_netprofile
 pickup_options
 
 is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
