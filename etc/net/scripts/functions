@@ -176,7 +176,7 @@ get_mapped_ifname()
 			print_error "$IFRENAME is unavailable, but $IFTAB exists"
 			exit 1
 		}
-		NEW_NAME=`$IFRENAME -c $IFTAB -i $NAME -f 2>/dev/null`
+		NEW_NAME=`$IFRENAME -c $IFTAB -f 2>/dev/null | head -1`
 		[ $? = 0 -a -n "$NEW_NAME" ] && echo $NEW_NAME
 	fi
 }
