@@ -19,7 +19,7 @@ function store()
 		print_message -e "$FILELINE"
 		print_message '--------8<--------8<--------8<--------8<'
 	else
-		echo -e "FILELINE" >> $FILENAME
+		echo -e "$FILELINE" >> $FILENAME
 	fi
 }
 
