@@ -1,0 +1,6 @@
+/etc/net 0.4.1
+ALTLinux Sisyphus
+
+edit CONFMETHOD in /etc/pcmcia/network.opts
+edit CONFMETHOD in /etc/ifplugd/ifplugd.conf
+edit CONFMETHOD in /etc/sysconfig/hotplug
