@@ -67,6 +67,7 @@ if [ "$CALLER" = "hotplug" ]; then
 fi
 
 # common part
+ifdown_children
 if iface_is_up $NAME; then
 	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME
 	$IP link set dev $NAME down
