@@ -1,4 +1,4 @@
-0.7.1
+0.7.1 2005-03-25
 	network.init minor bugfix
 	flushed ppp address bugfix
 	removed pptp files
