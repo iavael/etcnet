@@ -22,7 +22,7 @@ init_profile
 pickup_options
 
 is_yes "$DISABLED" && {
-	print_message 'skipped disabled iface'
+	print_message "skipped disabled iface $NAME"
   exit 1
 }
 

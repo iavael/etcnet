@@ -49,7 +49,7 @@ init_profile
 pickup_options
 
 is_yes "$DISABLED" && {
-	print_message -n 'skipped, disabled '
+	print_message -n "skipped disabled iface $NAME"
   exit 1
 }
 
