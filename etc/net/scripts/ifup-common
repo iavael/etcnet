@@ -24,10 +24,7 @@ pickup_options
 
 ! is_yes "$IN_IFPLUGD" && {
 	# 2. handle wireless extensions
-	# Dunno if $IFACEDIR/default/iwconfig can be of any use
-	xargise_file $IFACEDIR/default/iwconfig "$IWCONFIG $NAME"
-	xargise_file $MYIFACEDIR/iwconfig "$IWCONFIG $NAME"
-
+	is_yes "$CONFIG_WIRELESS" && ExecIfExecutable $SCRIPTDIR/config-wireless $NAME && print_message -n '.'
 	# 3. setup link-level params
 	# useless until default prefixes are implemented
 	[ -s `profiled_filename $IFACEDIR/sysctl.conf` ] && sysctl -p `profiled_filename $IFACEDIR/sysctl.conf` && print_message -n '.'

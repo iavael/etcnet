@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# This script handles wireless extensions.
+
+usage()
+{
+	echo "Usage: $0 <interface>" > /dev/stderr
+	exit 1
+}
+
+[ -z "$1" ] && usage
+NAME=$1
+
+. $SCRIPTDIR/functions
+pickup_options
+
+[ -x "$IWCONFIG" ] || {
+	print_error "$IWCONFIG does not exist or is not executable. Try installing wireless-utils RPM."
+	exit 1
+}
+
+# Dunno if $IFACEDIR/default/iwconfig can be of any use
+xargise_file $IFACEDIR/default/iwconfig "$IWCONFIG $NAME"
+xargise_file $MYIFACEDIR/iwconfig "$IWCONFIG $NAME"
