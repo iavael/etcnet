@@ -1,8 +1,13 @@
-/etc/net 0.6.2
+/etc/net 0.6.3
 ALTLinux Sisyphus
 
-# apt-get install etcnet
-# vi /etc/sysconfig/network
+0. apt-get install etcnet
+
+1. vi /etc/sysconfig/network
+Pay attention to NETWORKING and CONFMETHOD variables
+
+2. chkconfig --list network
+You may need to run 'chkconfig network reset'
 
 Version requirements for etcnet-0.5.2:
 hotplug >= 2004_09_23-alt13 (?)

@@ -19,20 +19,9 @@ NAME=$1
 init_profile
 pickup_options
 
-! is_yes "$IN_IFPLUGD" && {
-	# 2. handle wireless extensions
-	is_yes "$CONFIG_WIRELESS" && ExecIfExecutable $SCRIPTDIR/config-wireless $NAME && print_progress
-	# 3. setup link-level params
-	xargise_file $IFACEDIR/default/iplink "$IP link set dev $NAME"
-	xargise_file $IFACEDIR/default/iplink-$TYPE "$IP link set dev $NAME"
-	xargise_file $MYIFACEDIR/iplink "$IP link set dev $NAME"
-	xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
-}
-
 is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
-# --- Up to this line is enough for ifplugd to run at first stage.
 
-# 5. bring iface up
+# bring iface up
 if ! is_yes $KEEP_DOWN; then
 	$IP link set dev $NAME up && print_progress
 	MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`
@@ -42,6 +31,15 @@ if ! is_yes $KEEP_DOWN; then
 		print_progress
 	fi
 fi
+
+# 2. handle wireless extensions
+is_yes "$CONFIG_WIRELESS" && ExecIfExecutable $SCRIPTDIR/config-wireless $NAME && print_progress
+
+# 3. setup link-level params
+xargise_file $IFACEDIR/default/iplink "$IP link set dev $NAME"
+xargise_file $IFACEDIR/default/iplink-$TYPE "$IP link set dev $NAME"
+xargise_file $MYIFACEDIR/iplink "$IP link set dev $NAME"
+xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
 
 # 6. setup addresses and (only if iface is up) routes
 # don't flush IPv6 auto-generated link-level addresses

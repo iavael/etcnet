@@ -1,3 +1,5 @@
+0.6.3:
+	wireless extensions fix
 0.6.2:
 	dhcp-static BOOTPROTO and dhcpcd workaround
 	'service network check' enhancement

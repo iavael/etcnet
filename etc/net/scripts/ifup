@@ -84,4 +84,4 @@ fi
 # 5. configure iface
 IFTAB_FILE=`profiled_filename $IFTAB`
 [ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -n "$NAME" >/dev/null 2>&1 && print_progress
-$SCRIPTDIR/ifup-common $NAME
+! is_yes "$USE_IFPLUGD" && $SCRIPTDIR/ifup-common $NAME
