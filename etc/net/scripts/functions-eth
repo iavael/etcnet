@@ -33,3 +33,13 @@ wait_for_macaddr()
 		fi
 	done
 }
+
+stop_dhcp_client()
+{
+	local PIDFILE=/var/run/dhcpcd-$NAME.pid
+	if [ -s $PIDFILE ]; then
+		kill -SIGHUP `cat $PIDFILE`
+		# There probably should be a delay/wait loop here, dhcpcd doesn't die fast.
+		sleep ${DHCPCD_GRACE_TIME:-0}
+	fi
+}
