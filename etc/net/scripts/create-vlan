@@ -7,6 +7,12 @@ pickup_options
 REQUIRES=${REQUIRES:?REQUIRES is missing for $NAME}
 VID=${VID:?VID is missing for $NAME}
 
+$MODPROBE 8021q || {
+	print_error "8021q kernel module not found"
+	exit 2
+}
+
+# obsolete now?
 if iface_is_up $REQUIRES; then
 	setup_vlan_iface $REQUIRES $VID $NAME
 else

@@ -83,20 +83,16 @@ get_vlan_ifname()
 # create VLAN iface <parent iface> <VLAN ID> [name]
 setup_vlan_iface()
 {
+	local HOST_IFACE=${1:?missing 1st arg to $FUNCNAME}
+	local VID=${2:?missing 2nd arg to $FUNCNAME}
+	local NAME=$3
+	local ADDRESS=$4
 	local VCONFIG=${VCONFIG:=$DEFAULT_VCONFIG}
 	local NAMETYPE=${NAMETYPE:=$DEFAULT_VLAN_NAMETYPE}
 	[ -x "$VCONFIG" ] || {
 		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
 		exit 2
 	}
-	$MODPROBE 8021q || {
-		print_error "8021q kernel module not found"
-		exit 2
-	}
-	local HOST_IFACE=${1:?missing 1st arg to $FUNCNAME}
-	local VID=${2:?missing 2nd arg to $FUNCNAME}
-	local NAME=$3
-	local ADDRESS=$4
 	$VCONFIG set_name_type $NAMETYPE >/dev/null 2>&1
 	$VCONFIG add $HOST_IFACE $VID >/dev/null 2>&1
 	local REALNAME=`get_vlan_ifname $HOST_IFACE $VID`
@@ -129,6 +125,10 @@ start_vlantab()
 	[ -s `profiled_filename $VLANTAB` ] || {
 		echo empty.
 		return
+	}
+	$MODPROBE 8021q || {
+		print_error "8021q kernel module not found"
+		exit 2
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
