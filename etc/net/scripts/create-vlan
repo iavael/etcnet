@@ -3,8 +3,8 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-REQUIRES=${REQUIRES:?REQUIRES is missing for $NAME}
-VID=${VID:?VID is missing for $NAME}
+: ${REQUIRES:?REQUIRES is missing for $NAME}
+: ${VID:?VID is missing for $NAME}
 
 $MODPROBE 8021q || {
 	print_error "8021q kernel module not found"
@@ -13,7 +13,7 @@ $MODPROBE 8021q || {
 
 # obsolete now?
 if iface_is_up $REQUIRES; then
-	setup_vlan_iface $REQUIRES $VID $NAME
+	create_vlan_iface $REQUIRES $VID $NAME
 else
 	print_error "parent interface '$REQUIRES' for '$NAME' is down"
 	exit 1

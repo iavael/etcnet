@@ -11,7 +11,7 @@ get_vlan_ifname()
 
 # create VLAN iface <parent iface> <VLAN ID> [name]
 # Used by create-vlan and start_vlantab()
-setup_vlan_iface()
+create_vlan_iface()
 {
 	local HOST_IFACE=${1:?missing 1st arg to $FUNCNAME}
 	local VID=${2:?missing 2nd arg to $FUNCNAME}
@@ -34,7 +34,7 @@ setup_vlan_iface()
 }
 
 # Used by destroy-vlan and stop_vlantab()
-shutdown_vlan_iface()
+destroy_vlan_iface()
 {
 	local VCONFIG
 	[ -x "${VCONFIG:=$DEFAULT_VCONFIG}" ] || {

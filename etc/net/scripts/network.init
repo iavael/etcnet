@@ -75,7 +75,7 @@ start_vlantab()
 			}
 		fi
 		if iface_is_up "$HOST_IFACE"; then
-			if setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
+			if create_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
 				print_progress
 			else
 				print_nack
@@ -97,7 +97,7 @@ stop_vlantab()
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
-		if shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
+		if destroy_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
 			print_progress
 		else
 			print_nack
