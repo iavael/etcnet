@@ -5,3 +5,4 @@ SourceIfNotEmpty $SCRIPTDIR/functions
 pickup_options
 
 $MODPROBE plip
+$IP link set plip0 name $NAME

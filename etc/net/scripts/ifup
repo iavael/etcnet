@@ -48,11 +48,5 @@ else
 	exit 1
 fi
 
-MAPPED_NAME=`get_mapped_ifname $NAME`
-if [ -n "$MAPPED_NAME" -a "$NAME" != "$MAPPED_NAME" ]; then
-	$IFRENAME -c $IFTAB -i $NAME >/dev/null 2>&1
-	NAME=$MAPPED_NAME
-	echo -n '.'
-fi
-
+$IFRENAME -c $IFTAB >/dev/null 2>&1 && echo -n '.'
 $SCRIPTDIR/ifup-common $NAME

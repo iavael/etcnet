@@ -22,7 +22,7 @@ export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
 
 pickup_options
 
-# 2. process wireless extensions
+# 2. handle wireless extensions
 # Dunno if $IFACEDIR/default/iwconfig can be of any use
 [ -s $IFACEDIR/default/iwconfig ] && ( egrep -v '^$|^#' $IFACEDIR/default/iwconfig | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
 [ -s $MYIFACEDIR/iwconfig ] && ( egrep -v '^$|^#' $MYIFACEDIR/iwconfig | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
@@ -63,4 +63,5 @@ ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && echo -n '.'
 
 # 8. ifup-post
 iface_is_up $NAME && ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && echo -n '.'
+
 exit 0
