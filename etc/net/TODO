@@ -1,7 +1,6 @@
 - resolv.conf code audit
 X handle network mounts
 - Linux 2.6 IPSec support
-- pptp-client support
 X rp-pppoe support
 - WiFi/WPA support
 - Elektra support
