@@ -24,7 +24,10 @@ is_yes "$DISABLED" && exit 0
 iface_exists $NAME || exit 0
 
 # 2. kill all children :-[ ]
+ORIG_IN_IFPLUGD=$IN_IFPLUGD
+IN_IFPLUGD=
 ifdown_children
+IN_IFPLUGD=$ORIG_IN_IFPLUGD
 
 if iface_is_up $NAME; then
 	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME
