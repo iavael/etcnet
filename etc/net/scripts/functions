@@ -231,7 +231,7 @@ init_profile()
 	if [ -n "$1" ]; then
 		PROFILE="$1"
 	elif [ -n "$MYIFACEDIR" -a -s "$MYIFACEDIR/selectprofile" -a -x "$MYIFACEDIR/selectprofile" ]; then
-		PROFILE=`$MYIFACEDIR/selectprofile | head -1 | awk '{print $1}'`
+		PROFILE=`$MYIFACEDIR/selectprofile $0| head -1 | awk '{print $1}'`
 	elif [ -z "$PROFILE" ]; then
 		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
 			PROFILE=`egrep -v '^$|^#' "$PROFILE_FILE" | head -1 | awk '{print $1}'`
