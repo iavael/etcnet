@@ -15,12 +15,22 @@ try_dhcp()
 		return 1
 	}
 	if is_yes "$LINKDETECT"; then
-		check_eth_link $NAME || return 1
+		if check_eth_link $NAME; then
+			print_progress
+		else
+			print_nack
+			return 1
+		fi
 	fi
 	$DHCP_CLIENT -d -t $DHCP_TIMEOUT $NAME >/dev/null
 	local RET=$?
 	# dhcpcd sets iface down on failure, breaking dhcp-* BOOTPROTOs
-	[ "$RET" != "0" ] && ! is_yes $KEEP_DOWN && $IP link set dev $NAME up
+	if [ "$RET" != "0" ]; then
+		print_nack
+		! is_yes $KEEP_DOWN && $IP link set dev $NAME up
+	else
+		print_progress
+	fi
 	return $RET
 }
 
@@ -30,15 +40,29 @@ try_ipv4ll()
 		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing zcip RPM."
 		return 1
 	}
-	is_yes "$LINKDETECT" && check_eth_link $NAME || return 1
+	if is_yes "$LINKDETECT"; then
+		if check_eth_link $NAME; then
+			print_progress
+		else
+			print_nack
+			return 1
+		fi
+	fi
 	$ZCIP_CLIENT -s -i $NAME
-	return $?
+	local RET=$?
+	if [ "$RET" != "0" ]; then
+		print_nack
+	else
+		print_progress
+	fi
+	return $RET
 }
 
 config_routes_rules()
 {
 	# setup routes
-	[ -s `profiled_filename $MYIFACEDIR/ipv4route` ] && egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/ipv4route` | \
+	local SRCFILE=`profiled_filename $MYIFACEDIR/ipv4route`
+	[ -s "$SRCFILE" ] && egrep -v '^$|^#' "$SRCFILE" | \
 	while read FIRST REST; do
 	# If there is no operation, substitute default, otherwise keep.
 		case "$FIRST" in
@@ -49,6 +73,7 @@ config_routes_rules()
 				$IP -4 route $DEFAULT_IPV4ROUTE_CMD $FIRST $REST
 			;;
 		esac
+		print_progress
 	done
 
 	# Setup rules only after routes are Ok, so that route tables are
@@ -57,7 +82,8 @@ config_routes_rules()
 	# As for now, you will have to place both 'del' and 'add'
 	# records for the same rule to prevent multiple records in
 	# kernel rule table.
-	[ -s `profiled_filename $MYIFACEDIR/ipv4rule` ] && egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/ipv4rule` | \
+	SRCFILE=`profiled_filename $MYIFACEDIR/ipv4rule`
+	[ -s "$SRCFILE" ] && egrep -v '^$|^#' $SRCFILE | \
 	while read FIRST REST; do
 	# If there is no operation, substitute default, otherwise keep.
 		case "$FIRST" in
@@ -68,6 +94,7 @@ config_routes_rules()
 				$IP -4 rule $DEFAULT_IPV4RULE_CMD $FIRST $REST
 			;;
 		esac
+		print_progress
 	done
 }
 

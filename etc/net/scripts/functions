@@ -109,6 +109,12 @@ print_progress()
 	is_yes "$PROGRESS" && print_message -n "$SYMBOL"
 }
 
+print_nack()
+{
+	local SYMBOL=${1:-!}
+	is_yes "$PROGRESS" && print_message -n "$SYMBOL"
+}
+
 # get VLAN iface name by host iface and VLAN ID
 get_vlan_ifname()
 {
