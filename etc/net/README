@@ -1,4 +1,4 @@
-etcnet version 0.5.2
+etcnet version 0.5.3
 
 1. GENERAL INFORMATION
 
@@ -268,6 +268,7 @@ exit 1
 
 
 5. NETWORK PROFILES
+5.1 static profiles
 A profile is a configuration superset. E.g. when a notebook boots up in
 several different networks, it's desirable to select current configuration
 by just one parameter. Current profile name can be set via:
@@ -292,6 +293,19 @@ To switch between configurations without editing /etc/net/profile one can use:
 # service etcnet startwith office
 # service etcnet restartwith home
 
+5.2 dynamic profiles
+If 'selectprofile' executable script exists in iface directory, it will be run with a
+single argument, which defines current stage of (de)configuration sequence. If you
+want to override current profile name during runtime, you should perform required
+actions in this script and print profile name to stdout. Since this script will be run
+several times and runtime detection can take certain time to complete, it is advised
+that the script should perform actions only at certain stages. 'selectprofile' will
+always get calling script name as the first parameter, so you can skip trying to
+detect wireless AP before the kernel module is even loaded, for example. See
+/etc/net/ifaces/default/selectprofile for sample implementation.
+As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
+{setup,shutdown}-.* and network.init scripts.
+
 6. TODO
 - ppp support
 - pptp-client support
@@ -301,8 +315,6 @@ To switch between configurations without editing /etc/net/profile one can use:
 - handle network mounts
 - check exit codes
 - implement -r flag to ifup
-X wireless host AP support (ifup-pre should work Ok)
-- IPSec (openswan) support?
 - Elektra support
 ? SNMP bridge workaround
 - lockfiles
@@ -310,10 +322,17 @@ X wireless host AP support (ifup-pre should work Ok)
 - type-specific sysctl.conf defaults
 - support more than one teql interfaces
 - bluetooth support
-- init_profile audit
++ init_profile audit
+- 'check' arg for network.init
+- handle dhcp/ipv4ll in ifdown*
+- mount support
+- ifport support
 
 7. CHANGELOG
 
+0.5.3:
+	fixed ifplugd support
+	code cleanup (optimized profile detection, config processing)
 0.5.2:
 	initial IPX, ethernet bridge and traffic equalizer support
 	code cleanup (includes, VLAN code) and minor fixes
