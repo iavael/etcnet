@@ -7,6 +7,7 @@ See README.ALT for ALTLinux specific information.
 
 Supported interface types:
 +ethernet (eth)
++WiFi
 +IP tunnels (iptun)
 +IPSec static tunnels (ipsectun)
 +VLANs (vlan)
