@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # get VLAN iface name by host iface and VLAN ID
+# Used by {setup,shutdown}_vlan_iface()
 get_vlan_ifname()
 {
 	local HOSTIFACE=${1:?missing 1st arg to $FUNCNAME}
@@ -9,6 +10,7 @@ get_vlan_ifname()
 }
 
 # create VLAN iface <parent iface> <VLAN ID> [name]
+# Used by create-vlan and start_vlantab()
 setup_vlan_iface()
 {
 	local HOST_IFACE=${1:?missing 1st arg to $FUNCNAME}
@@ -31,6 +33,7 @@ setup_vlan_iface()
 	return 0
 }
 
+# Used by destroy-vlan and stop_vlantab()
 shutdown_vlan_iface()
 {
 	local VCONFIG
@@ -43,57 +46,5 @@ shutdown_vlan_iface()
 	local NAME=`get_vlan_ifname $HOST_IFACE $VID`
 	$IP address flush dev $NAME >/dev/null 2>&1
 	$VCONFIG rem $NAME >/dev/null 2>&1 || return 1
-	return 0
-}
-
-start_vlantab()
-{
-	local PROFILED_VLANTAB=`profiled_filename $VLANTAB`
-	print_message -n "Processing $PROFILED_VLANTAB: "
-	[ -s $PROFILED_VLANTAB ] || {
-		print_message empty.
-		return
-	}
-	local HOST_IFACE CHILD_VID CHILD_NAME PROBED_8021Q=no
-	$VCONFIG set_name_type $VLAN_NAMETYPE >/dev/null 2>&1 || return 1
-	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
-		if [ "$PROBED_8021Q" = "no" ]; then
-			PROBED_8021Q=yes
-			$MODPROBE 8021q || {
-				print_error "error inserting 8021q kernel module"
-				return 1
-			}
-		fi
-		if iface_is_up "$HOST_IFACE"; then
-			if setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
-				print_progress
-			else
-				print_nack
-			fi
-		fi
-	done
-	# We can't count ifaces right in the while cycle due to pipe causing new process
-	print_message "`$DENOISE -c $PROFILED_VLANTAB` lines processed."
-	return 0
-}
-
-stop_vlantab()
-{
-	local PROFILED_VLANTAB=`profiled_filename $VLANTAB`
-	print_message -n "Processing $PROFILED_VLANTAB: "
-	[ -s $PROFILED_VLANTAB ] || {
-		print_message empty.
-		return 0
-	}
-	local HOST_IFACE CHILD_VID CHILD_NAME
-	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
-		if shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
-			print_progress
-		else
-			print_nack
-		fi
-	done
-	# See start_vlantab().
-	print_message "`$DENOISE -c $PROFILED_VLANTAB` lines processed."
 	return 0
 }
