@@ -8,10 +8,31 @@ xargs --max-lines=1 $IP -4 address add dev $NAME
 
 if iface_is_up $NAME; then
 	[ -s $MYIFACEDIR/ipv4route ] && egrep -v '^$|^#' $MYIFACEDIR/ipv4route | \
-	xargs --max-lines=1 $IP -4 route append
+	while read FIRST REST; do
+	# If there is no operation, substitute default, otherwise keep.
+		case "$FIRST" in
+			add|del|change|append|replace)
+				$IP -4 route $FIRST $REST
+			;;
+			*)
+				$IP -4 route $DEFAULT_IPV4ROUTE_CMD $FIRST $REST
+			;;
+		esac
+	done
+
 	# Setup rules only after routes are Ok, so that route tables are
 	# populated when rule starts routing traffic to them.
 	# Note that we don't have 'add' here.
 	[ -s $MYIFACEDIR/ipv4rule ] && egrep -v '^$|^#'  $MYIFACEDIR/ipv4rule | \
-	xargs --max-lines=1 $IP rule
+	while read FIRST REST; do
+	# If there is no operation, substitute default, otherwise keep.
+		case "$FIRST" in
+			add|del)
+				$IP -4 rule $FIRST $REST
+			;;
+			*)
+				$IP -4 rule $DEFAULT_IPV4RULE_CMD $FIRST $REST
+			;;
+		esac
+	done
 fi

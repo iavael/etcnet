@@ -139,14 +139,16 @@ interface tried to be setup before its host interface ever exists).
 4. TODO
 -check REQUIRES for vlantab
 -BOOTPROTOTO other than static
--LINKDETECT
--hotplug hooks
+-LINKDETECT and ifplugd integration
+-hotplug event handlers
 -ppp hooks
 -control
 -Makefile
--setup correct MTU for VLAN interfaces
 +ip rule
++default prefixes for ip*route/rule
+-same for sysctl.conf files
 
 5. CHANGELOG
+0.2.0: ip rule hooks
 0.1.1: more docs
 0.1.0: 1st public release

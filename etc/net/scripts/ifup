@@ -34,7 +34,12 @@ iface_is_up $NAME && {
 }
 
 # 2. make device appear
-ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME && echo -n '.'
+if ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME; then
+	echo -n '.'
+else
+	echo -n '!'
+	exit 1
+fi
 
 # deal with ifrename and mappings
 if [ -n "$MAPDESCR" ]; then
@@ -42,7 +47,12 @@ if [ -n "$MAPDESCR" ]; then
 		print_error "$IFRENAME is unavailable, but map description is set for $NAME"
 		exit 1
 	}
-	( echo $NAME $MAPDESCR | $IFRENAME -c - ) && echo -n '.'
+	if (echo $NAME $MAPDESCR | $IFRENAME -c -); then
+		echo -n '.'
+	else
+		echo -n '!'
+		exit 1
+	fi
 fi
 
 # 3. setup link-level params

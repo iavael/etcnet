@@ -57,7 +57,7 @@ start()
 		GROUPCOUNT=$((GROUPCOUNT + 1))
 		echo -n '.'
 	done
-	echo ""
+	echo " $GROUPCOUNT found"
 	# 2. process each group
 	for i in 0 1 2 3 4; do
 	#	echo "group $i: ${GROUP[$i]}"
