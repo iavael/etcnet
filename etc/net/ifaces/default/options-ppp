@@ -2,6 +2,7 @@
 
 # pppd assigns addresses itself
 DONT_FLUSH=yes
+ONBOOT=no
 
 # pppd location, optional
 #PPPD=<string>
