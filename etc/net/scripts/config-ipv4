@@ -25,8 +25,9 @@ try_dhcp()
 	fi
 	echo "CP1.3"
 	$DHCP_CLIENT -d -t $DHCP_TIMEOUT $NAME >/dev/null
-	echo "CP2"
-	return $?
+	local RET=$?
+	echo "CP2 $RET"
+	return $RET
 }
 
 try_ipv4ll()
