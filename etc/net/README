@@ -195,19 +195,18 @@ To switch between configurations without editing /etc/net/profile one can use:
 
 6. TODO
 -check REQUIRES for vlantab
--BOOTPROTOTO other than static
++BOOTPROTOTO other than static
 -LINKDETECT and ifplugd integration
 +hotplug event handlers
 -ppp hooks
 -control
--Makefile
 +ip rule
 +default prefixes for ip*route/rule
 -same for sysctl.conf files
 -move hotplug/ifplugd to BOOTPROTO/ONBOOT?
 -handle 'add' in ipv4rule in ifdown
 -analyze zebra and RTPROTO ip option
--handle network mounts
+-handle network mounts?
 +remove MAPDESCR from PLIP files
 +check iplink handling
 -check exit codes
