@@ -122,7 +122,7 @@ shutdown_vlan_iface()
 
 start_vlantab()
 {
-	echo -n "Processing $VLANTAB... "
+	echo -n "Processing $VLANTAB: "
 	[ -s $VLANTAB ] || {
 		echo empty.
 		return
@@ -131,6 +131,7 @@ start_vlantab()
 	SourceIfNotEmpty $IFACEDIR/default/options-vlan
 	egrep -v '^$|^#' $VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
+		echo -n '.'
 	done
 	# We can't count ifaces right in the while cycle due to pipe.
 	echo "`egrep -vc '^$|^#' $VLANTAB` ifaces created."
@@ -138,7 +139,7 @@ start_vlantab()
 
 stop_vlantab()
 {
-	echo -n "Processing $VLANTAB... "
+	echo -n "Processing $VLANTAB: "
 	[ -s $VLANTAB ] || {
 		echo empty.
 		return
@@ -148,6 +149,7 @@ stop_vlantab()
 	SourceIfNotEmpty $IFACEDIR/default/options-vlan
 	egrep -v '^$|^#' $VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
+		echo -n '.'
 	done
 	# See start_vlantab().
 	echo "`egrep -vc '^$|^#' $VLANTAB` ifaces deleted."

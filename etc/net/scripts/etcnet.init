@@ -23,7 +23,12 @@ start_group()
 	}
 	for i in `seq 0 $((GROUP_SIZE-1))`; do
 		IFNAME=`echo ${GROUP[$GROUP_ID]} | awk "{print \\$$((i+1))}"`
-		$SCRIPTDIR/ifup $IFNAME
+		echo -n "Starting $IFNAME: "
+		if $SCRIPTDIR/ifup $IFNAME boot; then
+			echo "OK"
+		else
+			echo ""
+		fi
 	done
 }
 
@@ -32,6 +37,8 @@ start()
 	$SYSCTL -p /etc/net/sysctl.conf
 	declare -a GROUP
 	# 1. fill in the groups
+	GROUPCOUNT=0
+	echo -n "Computing interface groups: "
 	for IFACEPATH in $IFACEDIR/*; do
 		NAME=${IFACEPATH//*\//}
 		MYIFACEDIR=$IFACEDIR/$NAME
@@ -46,7 +53,10 @@ start()
 			continue
 		}
 		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
+		GROUPCOUNT=$((GROUPCOUNT + 1))
+		echo -n '.'
 	done
+	echo ""
 	# 2. process each group
 	for i in 0 1 2 3 4; do
 	#	echo "group $i: ${GROUP[$i]}"
@@ -61,7 +71,7 @@ stop()
 		IFACE=${IFACEPATH//*\//}
 		# don't do bad things
 		[ "$IFACE" = "default" -o "$IFACE" = "lo" -o "$IFACE" = "CVS" ] && continue
-		echo -n "Stopping $IFACE... "
+		echo -n "Stopping $IFACE: "
 		$SCRIPTDIR/ifdown $IFACE
 		echo "done"
 	done
