@@ -220,7 +220,6 @@ To switch between configurations without editing /etc/net/profile one can use:
 # service etcnet restartwith home
 
 6. TODO
-+handle host iface down for vlantab
 -ppp hooks
 -control
 -default prefixes for sysctl.conf files
@@ -231,6 +230,7 @@ To switch between configurations without editing /etc/net/profile one can use:
 -handle dependant interfaces for ifplugd-controlled links !!!
 -implement recursion for ifup (e.g. by vlantab) !!!
 -introduce /etc/ppp/ ?
+-purge all VLANs from iface on shutdown
 
 7. CHANGELOG
 

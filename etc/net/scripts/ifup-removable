@@ -71,6 +71,6 @@ fi
 # Now we know that iface should be processed. Let's go.
 if [ "$NAME" != "$OLD_NAME" ]; then
 	IFTAB_FILE=`profiled_filename $IFTAB`
-	[ -s "$IFTAB_FILE" ] && $IFRENAME -c $IFTAB_FILE -i $OLD_NAME -n $NAME >/dev/null 2>&1
+	[ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -i $OLD_NAME -n $NAME >/dev/null 2>&1
 fi
 $SCRIPTDIR/ifup-common $NAME
