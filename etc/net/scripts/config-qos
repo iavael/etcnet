@@ -53,11 +53,9 @@ process_qos_dir ()
 [ -z "$1" ] && usage
 NAME=$1
 
-. $SCRIPTDIR/functions
-
-init_profile
-pickup_options
 [ -d $MYIFACEDIR/qos/ -a -x $MYIFACEDIR/qos/ ] || exit 0
+. $SCRIPTDIR/functions
+pickup_options
 
 # clean up
 $TC qdisc del dev $NAME root >/dev/null 2>&1
