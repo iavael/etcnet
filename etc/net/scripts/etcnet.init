@@ -80,7 +80,7 @@ stop()
 
 usage()
 {
-	msg_usage "${0##*/} {start|stop|restart|reload|reloadwith <new profile name>}"
+	msg_usage "${0##*/} {start|stop|restart|reload|restartwith <new profile name>}"
 	exit 1
 }
 
@@ -88,6 +88,11 @@ usage()
 case "$1" in
 	start)
 		init_profile
+		start
+		;;
+	startwith)
+		[ -z "$2" ] && usage
+		init_profile $2
 		start
 		;;
 	stop)
@@ -99,11 +104,11 @@ case "$1" in
 		stop
 		start
 		;;
-	reloadwith)
-		[ -z "$1" ] && usage
+	restartwith)
+		[ -z "$2" ] && usage
 		init_profile
 		stop
-		export PROFILE=$NEWPROF
+		init_profile $2
 		start
 		;;
 	*)

@@ -190,7 +190,9 @@ profiled_filename()
 
 init_profile()
 {
-	if [ -z "$PROFILE" ]; then
+	if [ -n "$1" ]; then
+		PROFILE="$1"
+	elif [ -z "$PROFILE" ]; then
 		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
 			PROFILE=`egrep -v '^$|^#' "$PROFILE_FILE" | head -1`
 		elif [ -r "$PROC_CMDLINE" ]; then

@@ -168,6 +168,10 @@ Next example: booting two different hosts from the same HDD (root fs). The same 
 previous, but additional options.yourprofilename and iftab.yourprofilename for the
 different network card.
 
+To switch between configurations without editing /etc/net/profile one can use:
+# service etcnet startwith office
+# service etcnet restartwith home
+
 6. TODO
 -check REQUIRES for vlantab
 -BOOTPROTOTO other than static
