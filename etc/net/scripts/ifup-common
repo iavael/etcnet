@@ -18,26 +18,28 @@ NAME=$1
 SCRIPTDIR=/etc/net/scripts
 SourceIfNotEmpty $SCRIPTDIR/functions
 MYIFACEDIR=$IFACEDIR/$NAME
-export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE
 
 init_profile
 pickup_options
 
-# 2. handle wireless extensions
-# Dunno if $IFACEDIR/default/iwconfig can be of any use
-[ -s `profiled_filename $IFACEDIR/default/iwconfig` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iwconfig` | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
-[ -s `profiled_filename $MYIFACEDIR/iwconfig` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iwconfig` | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
+! is_yes "$IN_IFPLUGD" && {
+	# 2. handle wireless extensions
+	# Dunno if $IFACEDIR/default/iwconfig can be of any use
+	[ -s `profiled_filename $IFACEDIR/default/iwconfig` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iwconfig` | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
+	[ -s `profiled_filename $MYIFACEDIR/iwconfig` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iwconfig` | xargs --max-lines=1 $IWCONFIG $NAME ) && echo -n '.'
 
-# 3. setup link-level params
-# TODO: pickup default sysctl file?
-[ -s `profiled_filename $MYIFACEDIR/sysctl.conf` ] && sysctl -p `profiled_filename $MYIFACEDIR/sysctl.conf` && echo -n '.'
-# TODO: for iplink in ...
-[ -s `profiled_filename $IFACEDIR/default/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
-[ -s `profiled_filename $IFACEDIR/default/iplink-$TYPE` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink-$TYPE` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
-[ -s `profiled_filename $MYIFACEDIR/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+	# 3. setup link-level params
+	# TODO: pickup default sysctl file?
+	[ -s `profiled_filename $MYIFACEDIR/sysctl.conf` ] && sysctl -p `profiled_filename $MYIFACEDIR/sysctl.conf` && echo -n '.'
+	# TODO: for iplink in ...
+	[ -s `profiled_filename $IFACEDIR/default/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+	[ -s `profiled_filename $IFACEDIR/default/iplink-$TYPE` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink-$TYPE` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+	[ -s `profiled_filename $MYIFACEDIR/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
+}
 
-# Up to this line should be enough for ifplugd to run.
-is_yes "$USE_IFPLUGD" && exit 0
+# Up to this line is be enough for ifplugd to run at first stage.
+is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
 
 # 5. bring iface up
 if ! is_yes $KEEP_DOWN; then

@@ -29,9 +29,8 @@ fi
 # get rid of the iface
 if ! is_yes $DONT_FLUSH; then
 	ip address flush dev $NAME > /dev/null 2>&1
-	# Don't call modprobe for removable devices.
-	[ -z "$IN_HOTPLUG" -a -z "$IN_PCMCIA" ] && \
-	ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
+	# Don't remove the iface, if it's controlled by ifplugd
+	is_yes "$USE_IFPLUGD" || ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
 fi
 
 # TODO: restore resolv.conf

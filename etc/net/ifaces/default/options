@@ -5,17 +5,17 @@
 DISABLED=no
 
 # BOOTPROTO can be any of the following: static, dhcp, zcip.
-# "static": use ipv4address/ipv6address
-# "dhcp": run DHCP client
-# "zcip": run ZCIP client
+# * "static": use ipv4address/ipv6address
+# * "dhcp": run DHCP client
+# * "zcip": run ZCIP client
 # As far as I know, there are no working IPv6 DHCP
 # implementations. ZCIP is not required for IPv6 because of
 # link-scope addresses.
 # Additional feature is multi-method configurations (methods
 # can be delimited by ' ', ',' or '-':
-# "dhcp-static": try DHCP, if it fails, configure static address(es)
-# "dhcp-zcip": same, but fallback to ZCIP
-# "dhcp-zcip-static": try DHCP, fallback to ZCIP (very unlikely to fail),
+# * "dhcp-static": try DHCP, if it fails, configure static address(es)
+# * "dhcp-zcip": same, but fallback to ZCIP
+# * "dhcp-zcip-static": try DHCP, fallback to ZCIP (very unlikely to fail),
 # fallback to static
 # etcnet will try to configure interface at the first succeeding
 # method. Note that etcnet will process routes and rules despite of
@@ -36,7 +36,12 @@ USE_HOTPLUG=no
 # Same for pcmcia_cs
 USE_PCMCIA=no
 
+# A special configuration method. The interface will be
+# created, but no configuration will be done. When ifplugd detects cable
+# presence on the interface, it will run ifup-common to finish configuration.
 # protocols
+USE_IFPLUGD=no
+
 CONFIG_IPV4=yes
 CONFIG_IPV6=yes
 CONFIG_IPX=no
