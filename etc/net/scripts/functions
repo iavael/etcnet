@@ -98,21 +98,24 @@ if is_yes "$VERBOSE"; then
 	print_message()
 	{
 		echo "$@"
+		return 0
 	}
 else
-	print_message() { return; }
+	print_message() { return 0; }
 fi
 
 print_progress()
 {
 	local SYMBOL=${1:-.}
 	is_yes "$PROGRESS" && print_message -n "$SYMBOL"
+	return 0
 }
 
 print_nack()
 {
 	local SYMBOL=${1:-!}
 	is_yes "$PROGRESS" && print_message -n "$SYMBOL"
+	return 0
 }
 
 # get VLAN iface name by host iface and VLAN ID
@@ -132,10 +135,10 @@ setup_vlan_iface()
 	local ADDRESS=$4
 	[ -x "${VCONFIG:=$DEFAULT_VCONFIG}" ] || {
 		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
-		exit 2
+		return 1
 	}
-	$VCONFIG set_name_type ${NAMETYPE:-$DEFAULT_VLAN_NAMETYPE} >/dev/null 2>&1
-	$VCONFIG add $HOST_IFACE $VID >/dev/null 2>&1
+	$VCONFIG set_name_type ${NAMETYPE:-$DEFAULT_VLAN_NAMETYPE} >/dev/null 2>&1 || return 1
+	$VCONFIG add $HOST_IFACE $VID >/dev/null 2>&1 || return 1
 	local REALNAME=`get_vlan_ifname $HOST_IFACE $VID`
 	if [ -z "$NAME" -o "$NAME" = "AUTO" ]; then
 		NAME=$REALNAME
@@ -144,6 +147,7 @@ setup_vlan_iface()
 	fi
 	[ -n "$ADDRESS" ] && $IP address add $ADDRESS dev $NAME
 	$IP link set dev $NAME up
+	return 0
 }
 
 shutdown_vlan_iface()
@@ -151,13 +155,14 @@ shutdown_vlan_iface()
 	local VCONFIG
 	[ -x "${VCONFIG:=$DEFAULT_VCONFIG}" ] || {
 		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
-		exit 1
+		return 1
 	}
 	local HOST_IFACE=${1:?missing 1st arg to $FUNCNAME}
 	local VID=${2:?missing 2nd arg to $FUNCNAME}
 	local NAME=`get_vlan_ifname $HOST_IFACE $VID`
 	$IP address flush dev $NAME >/dev/null 2>&1
-	$VCONFIG rem $NAME >/dev/null 2>&1
+	$VCONFIG rem $NAME >/dev/null 2>&1 || return 1
+	return 0
 }
 
 start_vlantab()
@@ -168,18 +173,27 @@ start_vlantab()
 		print_message empty.
 		return
 	}
-	$MODPROBE 8021q || {
-		print_error "8021q kernel module not found"
-		exit 2
-	}
-	local HOST_IFACE CHILD_VID CHILD_NAME
+	local HOST_IFACE CHILD_VID CHILD_NAME PROBED_8021Q=no
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
 	egrep -v '^$|^#' $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
-		iface_is_up "$HOST_IFACE" && setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
-		print_progress
+		if [ "$PROBED_8021Q" = "no" ]; then
+			PROBED_8021Q=yes
+			$MODPROBE 8021q || {
+				print_error "error inserting 8021q kernel module"
+				return 1
+			}
+		fi
+		if iface_is_up "$HOST_IFACE"; then
+			if setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
+				print_progress
+			else
+				print_nack
+			fi
+		fi
 	done
 	# We can't count ifaces right in the while cycle due to pipe causing new process
 	print_message "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
+	return 0
 }
 
 stop_vlantab()
@@ -188,16 +202,20 @@ stop_vlantab()
 	print_message -n "Processing $PROFILED_VLANTAB: "
 	[ -s $PROFILED_VLANTAB ] || {
 		print_message empty.
-		return
+		return 0
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
 	egrep -v '^$|^#' $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
-		shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
-		print_progress
+		if shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
+			print_progress
+		else
+			print_nack
+		fi
 	done
 	# See start_vlantab().
 	print_message "`egrep -vc '^$|^#' $PROFILED_VLANTAB` lines processed."
+	return 0
 }
 
 iface_is_up()
@@ -359,6 +377,7 @@ xargise_file()
 	if [ -s $REALFILE ]; then
 		egrep -v '^$|^#' $REALFILE | xargs --max-lines=1 $PROCESSOR && print_progress
 	fi
+	return 0
 }
 
 # see ifaces/default/options-eth
