@@ -185,6 +185,7 @@ init_profile()
 	return 0
 }
 
+# Network hostname init. Should be called by network.init during startup.
 init_nethost()
 {
 	if [ -n "$1" ]; then
