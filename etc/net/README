@@ -1,4 +1,4 @@
-etcnet version 0.7.0
+etcnet version 0.7.1
 http://pilot.org.ua/etcnet/
 
 Copyright (c) 2004-2005 Denis Ovsienko (info#pilot_org_ua)
@@ -26,7 +26,7 @@ Supported interface types:
 +/-dummy
 +Pent@NET
 +usbnet
-+PPP
++PPP (see below for PPtP)
 
 Supported protocols:
 IPv4 (static, DHCP, IPv4LL)
@@ -348,3 +348,11 @@ file#profile@{host,alias}
 file@{host,alias}
 file#profile
 file
+
+9. PPTP interfaces
+/etc/net supports Linux pptp-client. PPTP interfaces are in fact PPP interfaces,
+main difference is that one has to put
+--
+pty 'pptp --nolaunchpppd 1.2.3.4'
+--
+line into pppoptions file. 1.2.3.4 is IP address of PPTP server.

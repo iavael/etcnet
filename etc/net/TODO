@@ -1,5 +1,4 @@
 - resolv.conf code audit
-X handle network mounts
 - Linux 2.6 IPSec support
 X rp-pppoe support
 - WiFi/WPA support
@@ -11,7 +10,6 @@ X rp-pppoe support
 - lockfiles
 - bridge-utils arg order patch
 - kernel patch: support more than one teql interfaces
-? bluetooth support
+- bluetooth support
 - better ifplugd intergation
 - ifdown and removable interfaces
-- fix childfinder for new HOST variable and multi-item REQUIRES
