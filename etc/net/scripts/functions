@@ -369,6 +369,7 @@ wait_for_macaddr()
 process_sysctl_conf()
 {
 	local SRCFILE=${1:?missing 1st arg to $FUNCNAME}
+	local NAME=$2
 	local ONELINE
 	[ -s $SRCFILE ] || return 0
 	cat $SRCFILE | sed "s/ //g" | while read ONELINE; do
@@ -377,7 +378,11 @@ process_sysctl_conf()
 		# If variable name contains dot(s), we use it as is. Otherwise
 		# we append interface prefix.
 		if echo $VARNAME | fgrep -vq .; then
-			# guess prefix from variable name
+			[ -z $NAME ] && {
+				print_error "Can't autocomplete sysctl variable name '$VARNAME' in file '$SRCFILE'. Please fix"
+				return 1
+			}
+			# try to guess prefix from variable name
 			case $VARNAME in
 				force_igmp_version|disable_policy|disable_xfrm|arp_ignore|arp_announce)
 				arp_filter|tag|log_martians|bootp_relay|medium_id|proxy_arp)
@@ -392,9 +397,10 @@ process_sysctl_conf()
 				;;
 				*)
 					print_error "Can't autocomplete sysctl variable name '$VARNAME' in file '$SRCFILE'. Please fix"
-					continue
+					return 1
 			esac
 		fi
 		$SYSCTL -q -w $VARPREFIX$VARNAME=$VARVALUE
 	done
+	return 0
 }
