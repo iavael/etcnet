@@ -326,6 +326,7 @@ As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
 - handle dhcp/ipv4ll in ifdown*
 - mounts support
 - post-create hook support
+- type-specific files profiling
 
 7. CHANGELOG
 

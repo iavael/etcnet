@@ -3,6 +3,9 @@
 # pppd location, optional
 #PPPD=<string>
 
+# chat location, optional
+#CHAT=<string>
+
 # Terminate after n consecutive  failed  connection  attempts.   A
 # value of 0 means no limit.  The default value is 10.
 #MAXFAIL=<integer>
@@ -31,11 +34,21 @@
 # will override this value, not append.
 #EXTRA_PPPOPTIONS=<string>
 
-# Note: empty pppoptions and pppinit files will not be used.
+# Note: empty pppoptions/pppinit/pppconnect/pppdisconnect files will not be used.
+# Note: those files are not shell scripts, but chat scripts.
 #
 # One could override the default base for profiled pppd options file
 # here, but why?
 #PPPOPTIONSFILE=<string>
 
 # Same for pppd init script.
-#PPPINITFILE=<string>
+#PPPINITCHAT=<string>
+
+# ... connect script...
+#PPPCONNECTCHAT=<string>
+
+# ...and disconnect script
+#PPPDISCONNECTCHAT=<script>
+
+# -t chat option
+#CHAT_TIMEOUT=<integer>

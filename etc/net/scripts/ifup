@@ -18,6 +18,10 @@ NAME=$1
 SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 MYIFACEDIR=$IFACEDIR/$NAME
+[ -d "$MYIFACEDIR" ] || {
+	print_error "interface configuration directory '$MYIFACEDIR' not found"
+	exit 1
+}
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE SEEN_IFACES
 
 init_profile

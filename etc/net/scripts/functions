@@ -118,14 +118,12 @@ setup_vlan_iface()
 	local VID=${2:?missing 2nd arg to $FUNCNAME}
 	local NAME=$3
 	local ADDRESS=$4
-	local VCONFIG=${VCONFIG:=$DEFAULT_VCONFIG}
-	local NAMETYPE=${NAMETYPE:=$DEFAULT_VLAN_NAMETYPE}
-	[ -x "$VCONFIG" ] || {
+	[ -x "${VCONFIG:-$DEFAULT_VCONFIG}" ] || {
 		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
 		exit 2
 	}
-	$VCONFIG set_name_type $NAMETYPE >/dev/null 2>&1
-	$VCONFIG add $HOST_IFACE $VID >/dev/null 2>&1
+	${VCONFIG:-$DEFAULT_VCONFIG} set_name_type ${NAMETYPE:-$DEFAULT_VLAN_NAMETYPE} >/dev/null 2>&1
+	${VCONFIG:-$DEFAULT_VCONFIG} add $HOST_IFACE $VID >/dev/null 2>&1
 	local REALNAME=`get_vlan_ifname $HOST_IFACE $VID`
 	if [ -z "$NAME" -o "$NAME" = "AUTO" ]; then
 		NAME=$REALNAME
@@ -138,8 +136,8 @@ setup_vlan_iface()
 
 shutdown_vlan_iface()
 {
-	local VCONFIG=${VCONFIG:=$DEFAULT_VCONFIG}
-	[ -x "$VCONFIG" ] || {
+	local VCONFIG
+	[ -x "${VCONFIG:-$DEFAULT_VCONFIG}" ] || {
 		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
 		exit 1
 	}
@@ -147,7 +145,7 @@ shutdown_vlan_iface()
 	local VID=${2:?missing 2nd arg to $FUNCNAME}
 	local NAME=`get_vlan_ifname $HOST_IFACE $VID`
 	$IP address flush dev $NAME >/dev/null 2>&1
-	$VCONFIG rem $NAME >/dev/null 2>&1
+	${VCONFIG:-$DEFAULT_VCONFIG} rem $NAME >/dev/null 2>&1
 }
 
 start_vlantab()
