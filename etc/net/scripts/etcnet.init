@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # etcnet
-# chkconfig: - 10 90
+# chkconfig: 2345 10 90
 # description: etcnet is network configuration software
 
 # Do not load RH compatibility interface.
