@@ -1,4 +1,4 @@
-etcnet version 0.2.2
+etcnet version 0.3.0
 
 1. GENERAL INFORMATION
 
@@ -147,7 +147,28 @@ Edit /etc/pcmcia/network.opts and replace calls to /sbin/ifup and
 /sbin/ifdown to '/etc/net/scripts/ifup-removable $1 pcmcia_cs' and
 '/etc/net/scripts/ifdown-removable $1 pcmcia_cs' respectively.
 
-5. TODO
+5. NETWORK PROFILES
+A profile is a configuration superset. E.g. when a notebook boots up in
+several different networks, it's desirable to select current configuration
+by just one parameter. Current profile name can be set via:
+ 1. environment variable PROFILE (not a good idea I guess)
+ 2. file /etc/net/profile (file should contain just one word, e.g. "office" w/o quotes)
+ 3. kernel boot parameter "netprof", e.g. "LILO: linux netprof=home"
+Specifying a profile does nothing by default. But if etcnet scripts know the
+current profile name (e.g. "home") and look for a configuration file (e.g. "options"
+and "options.home" exists, then "options.home" will be used instead of "options".
+The same for ipv4address, ipv4route, ipv4rule, ipv6address, iplink and so on).
+
+Now if you want to boot the same host in two different networks, you will most
+probably have to create additional ipv4address.yourprofilename for another address
+and ipv4route.yourprofilename for another default route. Same for resolv.conf,
+I guess.
+
+Next example: booting two different hosts from the same HDD (root fs). The same as
+previous, but additional options.yourprofilename and iftab.yourprofilename for the
+different network card.
+
+6. TODO
 -check REQUIRES for vlantab
 -BOOTPROTOTO other than static
 -LINKDETECT and ifplugd integration
@@ -161,9 +182,16 @@ Edit /etc/pcmcia/network.opts and replace calls to /sbin/ifup and
 -move hotplug/ifplugd to BOOTPROTO/ONBOOT?
 -handle 'add' in ipv4rule in ifdown
 -analyze zebra and RTPROTO ip option
+-handle network mounts
+-remove MAPDESCR from PLIP files
++check iplink handling
+-check exit codes
++fix get_mapped_ifname
+-fix ifrename patch (manpage)
 
-6. CHANGELOG
+7. CHANGELOG
 
+0.3.0: network profiles framework (see section 5)
 0.2.2: experimental wireless support, some fixes
 0.2.1: PCMCIA now works (see above)
 0.2.0:
