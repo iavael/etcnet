@@ -35,14 +35,13 @@ $ less /etc/net/ifaces/default/options-*
 # mkdir /etc/net/ifaces/myinterface2
 ...
 # vi /etc/hotplug/net.agent (see /etc/net/ifaces/default/options:USE_HOTPLUG)
+# vi /etc/pcmcia/network
 ...
-# chkconfig network off
-# ln -s /etc/init.d/network /etc/net/scripts/network.init
-# chkconfig --add etcnet
-# chkconfig etcnet on
 # service network stop
+# rm /etc/init.d/network
+# ln -s /etc/init.d/network /etc/net/scripts/network.init
 # rmmod <all loaded network modules>
-# service etcnet start
+# service network start
 
 2A. Example configuration
 eth0 with 10.0.0.1/24, default route to 10.0.0.254 and route 10.0.1.0/24 through 10.0.0.253
