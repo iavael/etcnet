@@ -159,7 +159,7 @@ get_mapped_ifname()
 profiled_filename()
 {
 	local BASE=${1:?missing 1st arg to $FUNCNAME}
-	local CAND=$BASE${PROFILE:+.$PROFILE}
+	local CAND=$BASE${PROFILE:+#$PROFILE}
 	[ -e $CAND ] && echo $CAND || echo $BASE
 }
 
