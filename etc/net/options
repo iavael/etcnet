@@ -3,8 +3,13 @@ VERBOSE=yes
 # Progress dots are on by default.
 PROGRESS=yes
 
-# vconfig --help
-DEFAULT_VLAN_NAMETYPE=DEV_PLUS_VID_NO_PAD
+# VLAN interfaces naming type, see vconfig --help.
+# This variable is used only for vlantab AUTO interfaces.
+# VLAN_PLUS_VID
+# VLAN_PLUS_VID_NO_PAD
+# DEV_PLUS_VID
+# DEV_PLUS_VID_NO_PAD
+VLAN_NAMETYPE=DEV_PLUS_VID_NO_PAD
 
 # See options-bond
 DEFAULT_BONDMODE=0
