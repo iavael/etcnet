@@ -1,0 +1,10 @@
+resolv.conf
+	This file is copied to /etc each time the system is booted.
+options
+	Default parameters for all interface types.
+options-$TYPE
+	Default parameters for $TYPE interfaces.
+sysctl.conf
+	Processed each time any interface goes up before interfaces-specific
+	sysctl.conf.
+ifrename requires libiw.27.so from wireless-tools

@@ -1,0 +1,20 @@
+Supported interface types:
+ethernet (eth)
+IP tunnels (iptun)
+IPSec static tunnels (ipsectun)
+VLANs (vlan)
+PLIP (plip)
+bonding (bond)
+dummy: +/-
+
+Supported protocols:
+IPv4
+IPv6
+
+Interface groups:
+
+virtual: dummy, lo (tun?)
+realphys (real physical): ethernet, PLIP (SLIP?)
+hostedphys (hosted physical): VLANs, bonding
+indeplog (independent/stateless logical): IP tunnels, IPSec tunnels, eql (vtun?)
+deplog (dependent/statefull logical): PPP (PPtP)

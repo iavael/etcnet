@@ -1,0 +1,32 @@
+#!/bin/sh
+
+usage()
+{
+	echo "Usage: $0 <device>"
+	exit 1
+}
+
+[ -z "$1" ] && usage
+NAME=$1
+
+. /etc/init.d/functions
+SCRIPTDIR=/etc/net/scripts
+SourceIfNotEmpty $SCRIPTDIR/functions
+MYIFACEDIR=$IFACEDIR/$NAME
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
+pickup_options
+
+is_yes "$DISABLED" && exit 0
+if iface_is_up $NAME; then
+	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME
+	$IP link set dev $NAME down
+	ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME
+fi
+
+# get rid of the iface
+if ! is_yes $DONT_FLUSH; then
+	ip address flush dev $NAME > /dev/null 2>&1
+	ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
+fi
+
+# TODO: restore resolv.conf

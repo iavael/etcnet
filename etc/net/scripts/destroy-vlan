@@ -1,0 +1,10 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+SourceIfNotEmpty $SCRIPTDIR/functions
+pickup_options
+
+REQUIRES=${REQUIRES:?REQUIRES is missing for $NAME}
+VID=${VID:?VID is missing for $NAME}
+
+shutdown_vlan_iface $REQUIRES $VID $NAME

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+SCRIPTDIR=/etc/net/scripts
+SourceIfNotEmpty $SCRIPTDIR/functions
+
+for IFACEPATH in $IFACEDIR/*; do
+	IFACE=${IFACEPATH//*\//}
+	# don't do bad things
+	[ "$IFACE" = "default" -o "$IFACE" = "lo" ] && continue
+	echo -n "Stopping $IFACE... "
+	$SCRIPTDIR/ifdown $IFACE
+	echo "done"
+done
+stop_vlantab

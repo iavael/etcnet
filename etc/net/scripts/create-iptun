@@ -1,0 +1,28 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+SourceIfNotEmpty $SCRIPTDIR/functions
+pickup_options
+
+PHYSLOCAL=${PHYSLOCAL:?missing PHYSLOCAL}
+PHYSREMOTE=${PHYSREMOTE:?missing PHYSREMOTE}
+TTL=${TTL:=inherit}
+TUNTYPE=${TUNTYPE:=ipip}
+
+case "$TUNTYPE" in
+	ipip)
+		MODULE=ipip
+		;;
+	gre)
+		MODULE=ip_gre
+		;;
+	sit)
+		MODULE=ipv6
+		;;
+	*)
+		print_error "TUNTYPE for $NAME must be either 'ipip', 'gre' or 'sit'"
+		exit 1
+esac
+$MODPROBE $MODULE
+
+$IP tunnel add $NAME mode $TUNTYPE local $PHYSLOCAL remote $PHYSREMOTE ttl $TTL $MISCOPTIONS

@@ -1,0 +1,15 @@
+DISABLED=no
+BOOTPROTO=static
+ONBOOT=yes
+USE_HOTPLUG=no
+# protocols
+CONFIG_IPV4=yes
+CONFIG_IPV6=yes
+CONFIG_IPX=no
+# eth feature
+LINKDETECT=no
+KEEP_DOWN=no
+# IPv4 only
+DONT_FLUSH=no
+# useful for eth/wifi/aeronet, see man iftab
+#MAPDESCR=

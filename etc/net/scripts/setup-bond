@@ -1,0 +1,15 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+SourceIfNotEmpty $SCRIPTDIR/functions
+pickup_options
+
+IFENSLAVE=${IFENSLAVE:=$DEFAULT_IFENSLAVE}
+REQUIRES=${REQUIRES:?REQUIRES must be set for $NAME}
+
+[ -x "$IFENSLAVE" ] || {
+	print_error "$IFENSLAVE does not exist or is not executable. Try installing iputils RPM."
+	exit 1
+}
+
+$IFENSLAVE $NAME $REQUIRES > /dev/null

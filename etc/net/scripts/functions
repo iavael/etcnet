@@ -1,0 +1,168 @@
+#!/bin/sh
+
+. /etc/init.d/functions
+# defaults
+SourceIfNotEmpty /etc/net/options
+
+supported_type()
+{
+	local TYPE=${1:?supported_type: missing 1st arg}
+	[ -x $SCRIPTDIR/create-$TYPE -o -x $SCRIPTDIR/destroy-$TYPE ] && return 0
+	return 1
+}
+
+# translate iface name into corresponding type
+name2type()
+{
+	local NAME=${1:?name2type: missing 1st arg}
+	local CAND=`echo "$NAME" | sed "s/[0-9]*$//"`
+#		bond|bri|dummy|eth|ipsectun|iptun|lo|pentanet|ppp|pptp|sbni|sit|slip|teql|vlan|wlan
+	supported_type $CAND && echo $CAND
+}
+
+type2group()
+{
+	local TYPE=${1:?type2group: missing 1st arg}
+	case "$TYPE" in
+		lo|dummy)
+			echo 'VIRTUAL'
+		;;
+		eth|plip)
+			echo 'REALPHYS'
+		;;
+		vlan|bond)
+			echo 'HOSTEDPHYS'
+		;;
+		iptun|ipsectun|eql)
+			echo 'INDEPLOG'
+		;;
+		ppp|ippp|pptp)
+			echo 'DEPLOG'
+		;;
+	esac
+}
+
+# read options hierarchy
+pickup_options()
+{
+	# to determine iface type we must read it's config, but
+	# we should read global config and type config first.
+	# A small trick.
+	SourceIfNotEmpty $MYIFACEDIR/options
+	[ -z "$TYPE" ] && TYPE=`name2type $NAME`
+	[ -z "$TYPE" ] && {
+		print_error "No TYPE is specified for iface '$NAME' and can't guess automatically. Please fix."
+		return 1
+	}
+	if ! supported_type $TYPE; then
+		print_error "iface type '$TYPE' is not supported"
+	fi
+	# source default options
+	SourceIfNotEmpty $IFACEDIR/default/options
+	# then source default options for our iface type
+	SourceIfNotEmpty $IFACEDIR/default/options-$TYPE
+	# and finally source iface options
+	SourceIfNotEmpty $MYIFACEDIR/options
+}
+
+print_error()
+{
+	echo ERROR: $0: $@
+	logger -p daemon.info -t ERROR: $0: $@
+}
+
+# get VLAN iface name by host iface and VLAN ID
+get_vlan_ifname()
+{
+	local HOSTIFACE=${1:?get_vlan_ifname: missing 1st arg}
+	local VID=${2:?get_vlan_ifname: missing 2nd arg}
+	tr '|' '%' < /proc/net/vlan/config | grep "%\ *$VID\ *%\ *$HOSTIFACE" | awk '{print $1}'
+}
+
+# create VLAN iface <parent iface> <VLAN ID> [name]
+setup_vlan_iface()
+{
+	local VCONFIG=${VCONFIG:=$DEFAULT_VCONFIG}
+	local NAMETYPE=${NAMETYPE:=$DEFAULT_VLAN_NAMETYPE}
+	[ -x "$VCONFIG" ] || {
+		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
+		exit 1
+	}
+	$MODPROBE 8021q || {
+		print_error "8021q kernel module not found"
+		exit 1
+	}
+	local HOST_IFACE=${1:?setup_vlan_iface: missing 1st arg}
+	local VID=${2:?setup_vlan_iface: missing 2nd arg}
+	local NAME=$3
+	local ADDRESS=$4
+	$VCONFIG set_name_type $NAMETYPE >/dev/null 2>&1
+	$VCONFIG add $HOST_IFACE $VID >/dev/null 2>&1
+	local REALNAME=`get_vlan_ifname $HOST_IFACE $VID`
+	if [ -z "$NAME" -o "$NAME" = "AUTO" ]; then
+		NAME=$REALNAME
+	else
+		$IP link set $REALNAME name $NAME
+	fi
+	[ -n "$ADDRESS" ] && $IP address add $ADDRESS dev $NAME
+}
+
+shutdown_vlan_iface()
+{
+	local VCONFIG=${VCONFIG:=$DEFAULT_VCONFIG}
+	[ -x "$VCONFIG" ] || {
+		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
+		exit 1
+	}
+	local HOST_IFACE=${1:?setup_vlan_iface: missing 1st arg}
+	local VID=${2:?setup_vlan_iface: missing 2nd arg}
+	local NAME=`get_vlan_ifname $HOST_IFACE $VID`
+	$IP address flush dev $NAME >/dev/null 2>&1
+	$VCONFIG rem $NAME >/dev/null 2>&1
+}
+
+start_vlantab()
+{
+	echo -n "Processing $VLANTAB... "
+	[ -s $VLANTAB ] || {
+		echo empty.
+		return
+	}
+	local HOST_IFACE CHILD_VID CHILD_NAME
+	SourceIfNotEmpty $IFACEDIR/default/options-vlan
+	egrep -v '^$|^#' $VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+		setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
+	done
+	# We can't count ifaces right in the while cycle due to pipe.
+	echo "`egrep -vc '^$|^#' $VLANTAB` ifaces created."
+}
+
+stop_vlantab()
+{
+	echo -n "Processing $VLANTAB... "
+	[ -s $VLANTAB ] || {
+		echo empty.
+		return
+	}
+	local HOST_IFACE CHILD_VID CHILD_NAME
+	local -i -x VLANCNT=0
+	SourceIfNotEmpty $IFACEDIR/default/options-vlan
+	egrep -v '^$|^#' $VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+		shutdown_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
+	done
+	# See start_vlantab().
+	echo "`egrep -vc '^$|^#' $VLANTAB` ifaces deleted."
+}
+
+iface_is_up()
+{
+	local NAME=${1:?missing 1st argument to iface_is_up}
+	$IP link show dev $NAME 2>/dev/null | awk '{print $3}' | grep -qs '[<,]UP[,>]'
+	return $?
+}
+
+try_rmmod()
+{
+	local MODNAME=${1:?try_rmmod: missing 1st argument}
+	$LSMOD | egrep -qs "^$MODNAME +[0-9]+ +0 " && rmmod $MODNAME
+}

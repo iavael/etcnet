@@ -1,0 +1,13 @@
+# (optional) vconfig location, default $DEFAULT_VCONFIG
+#VCONFIG=
+
+# Naming type (optional), see vconfig --help.
+# This variable is also used when processing vlantab.
+# VLAN_PLUS_VID, VLAN_PLUS_VID_NO_PAD, DEV_PLUS_VID, DEV_PLUS_VID_NO_PAD (default)
+#NAMETYPE=
+
+# (required) Parent iface name.
+#REQUIRES=
+
+# (required) VLAN ID
+#VID=

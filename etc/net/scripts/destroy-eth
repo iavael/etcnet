@@ -1,0 +1,9 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+SourceIfNotEmpty $SCRIPTDIR/functions
+pickup_options
+
+MODULE=${MODULE:?missing MODULE}
+
+try_rmmod $MODULE

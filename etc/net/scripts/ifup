@@ -1,0 +1,74 @@
+#!/bin/bash
+
+usage()
+{
+	echo "Usage: $0 <device>"
+	exit 1
+}
+
+[ -z "$1" ] && usage
+NAME=$1
+
+. /etc/init.d/functions
+SCRIPTDIR=/etc/net/scripts
+SourceIfNotEmpty $SCRIPTDIR/functions
+MYIFACEDIR=$IFACEDIR/$NAME
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
+
+pickup_options
+
+is_yes "$DISABLED" && exit 0
+if [ "$2" = "boot" -a "$ONBOOT" = "no" ]; then
+  exit
+fi
+
+# 1. check if device already exists
+iface_is_up $NAME && exit 0
+
+# 2. make device appear
+ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME
+
+# deal with ifrename and mappings
+if [ -n "$MAPDESCR" ]; then
+	[ -x $IFRENAME ] || {
+		print_error "$IFRENAME is unavailable, but map description is set for $NAME"
+		exit 1
+	}
+	echo $NAME $MAPDESCR | $IFRENAME -c -
+fi
+
+# 3. setup link-level params
+# TODO: pickup default sysctl file?
+[ -s $MYIFACEDIR/sysctl.conf ] && sysctl -p $MYIFACEDIR/sysctl.conf
+[ -s $IFACEDIR/default/iplink ] && cat $IFACEDIR/default/iplink | xargs --max-lines=1 $IP link set dev $NAME
+[ -s $IFACEDIR/default/iplink-$TYPE ] && cat $IFACEDIR/default/iplink-$TYPE | xargs --max-lines=1 $IP link set dev $NAME
+[ -s $MYIFACEDIR/iplink ] && cat $MYIFACEDIR/iplink | xargs --max-lines=1 $IP link set dev $NAME
+
+# 5. bring iface up
+if ! is_yes $KEEP_DOWN; then
+	ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME
+	ip link set dev $NAME up
+	if [ -x $MYIFACEDIR/resolv.conf ]; then
+		rm -f /etc/resolv.conf
+		ln -s $MYIFACEDIR/resolv.conf /etc/resolv.conf
+	fi
+fi
+
+# 6. setup addresses and (only if iface is up) routes
+# don't flush IPv6 auto-generated addresses
+is_yes $DONT_FLUSH || {
+	$IP -4 address flush dev $NAME >/dev/null 2>&1
+	$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
+	$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
+	$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
+}
+is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME
+is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME
+is_yes "$CONFIG_IPX" &&  ExecIfExecutable $SCRIPTDIR/config-ipx $NAME
+
+# 7. type-specific additional optional configuration
+ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME
+
+# 8. ifup-post
+iface_is_up $NAME && ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME
+exit 0

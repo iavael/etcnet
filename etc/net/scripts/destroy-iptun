@@ -1,0 +1,9 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+SourceIfNotEmpty $SCRIPTDIR/functions
+
+$IP tunnel del $NAME
+# ?
+try_rmmod ipip
+try_rmmod ip_gre

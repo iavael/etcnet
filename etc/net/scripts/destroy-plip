@@ -1,0 +1,7 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+SourceIfNotEmpty $SCRIPTDIR/functions
+pickup_options
+
+try_rmmod plip

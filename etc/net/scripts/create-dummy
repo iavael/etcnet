@@ -1,0 +1,13 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+SourceIfNotEmpty $SCRIPTDIR/functions
+pickup_options
+
+
+# TODO: check if device is already up/module loaded
+# load module
+#$IP link set $NAME down
+
+# this actually does not work with anything other than dummy0
+$MODPROBE dummy

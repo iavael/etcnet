@@ -1,0 +1,22 @@
+#!/bin/sh
+
+$NAME=$1
+SourceIfNotEmpty $SCRIPTDIR/functions
+pickup_options
+
+${CONFIGFILE:=$MYIFACEDIR/$DEFAULT_PENTANET_CONF}
+${PENTANETT:=$DEFAULT_PENTANETT}
+
+[ -x "$PENTANETT" ] || {
+	print_error "$PENTANETT does not exist or is not executable for $NAME"
+	exit 1
+}
+
+[ -s "$CONFIGFILE" ] || {
+	print_error "$CONFIGFILE does not exist or is empty for $NAME"
+	exit 1
+}
+
+#? $MODPROBE pentanet
+$IP link set $DEVICE down
+$PENTANETT -a -f $CONFIGFILE >/dev/null
