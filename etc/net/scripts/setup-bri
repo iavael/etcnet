@@ -4,7 +4,7 @@
 init_profile
 pickup_options
 
-REQUIRES=${REQUIRES:?REQUIRES must be set for $NAME}
+: ${REQUIRES:?REQUIRES must be set for $NAME}
 [ -x "${BRCTL:=$DEFAULT_BRCTL}" ] || {
 	print_error "$BRCTL does not exist or is not executable. Try installing bridge-utils RPM."
 	exit 1

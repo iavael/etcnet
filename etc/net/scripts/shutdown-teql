@@ -4,6 +4,7 @@
 init_profile
 pickup_options
 
+: ${REQUIRES:?REQUIRES must be set for $NAME}
 for parent in $REQUIRES; do
 	$TC qdisc del dev $parent root
 done
