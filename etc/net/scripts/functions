@@ -425,12 +425,6 @@ process_sysctl_conf()
 	return 0
 }
 
-print_progress()
-{
-	local SYMBOL=${1:-.}
-	is_yes "$PRINT_PROGRESS" && print_message -n "$SYMBOL"
-}
-
 stop_dhcp_client()
 {
 	local PIDFILE=/var/run/dhcpcd-$NAME.pid
