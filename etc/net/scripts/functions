@@ -15,7 +15,7 @@ supported_type()
 name2type()
 {
 	local NAME=${1:?missing 1st arg to $FUNCNAME}
-	local CAND=`echo "$NAME" | sed "s/[0-9]*$//"`
+	local CAND=${NAME//[0-9]*/}
 	supported_type $CAND && echo $CAND
 }
 
