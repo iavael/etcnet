@@ -66,6 +66,10 @@ if is_yes "$IFUP_PARENTS"; then
 	}
 fi
 
+# 3c. exec scripts
+ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && print_message -n '.'
+ExecIfExecutable $MYIFACEDIR/ifup-pre $NAME && print_message -n '.'
+
 # 4. make device appear
 if ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME; then
 	print_message -n '.'

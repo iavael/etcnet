@@ -33,8 +33,6 @@ is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
 
 # 5. bring iface up
 if ! is_yes $KEEP_DOWN; then
-	ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && print_message -n '.'
-	ExecIfExecutable $MYIFACEDIR/ifup-pre $NAME && print_message -n '.'
 	$IP link set dev $NAME up && print_message -n '.'
 	MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`
 	if [ -s $MYRESOLVCONF ]; then
