@@ -1,0 +1,93 @@
+#!/bin/sh
+#
+# etcnet
+# chkconfig: - 10 90
+# description: etcnet is network configuration software
+
+# Do not load RH compatibility interface.
+WITHOUT_RC_COMPAT=1
+# Source function library.
+. /etc/init.d/functions
+SCRIPTDIR=/etc/net/scripts
+SourceIfNotEmpty $SCRIPTDIR/functions
+export IFACEDIR SCRIPTDIR
+
+start_group()
+{
+	local GROUP_ID=${1:?start_group: missing 1st arg}
+	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
+#	echo "starting group $GROUP_ID ($GROUP_SIZE interfaces)"
+	[ $GROUP_ID -eq 2 ] && {
+		# hosted physical
+		start_vlantab
+	}
+	for i in `seq 0 $((GROUP_SIZE-1))`; do
+		IFNAME=`echo ${GROUP[$GROUP_ID]} | awk "{print \\$$((i+1))}"`
+		$SCRIPTDIR/ifup $IFNAME
+	done
+}
+
+start()
+{
+	$SYSCTL -p /etc/net/sysctl.conf
+	declare -a GROUP
+	# 1. fill in the groups
+	for IFACEPATH in $IFACEDIR/*; do
+		NAME=${IFACEPATH//*\//}
+		MYIFACEDIR=$IFACEDIR/$NAME
+		export MYIFACEDIR NAME
+		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
+		unset TYPE
+		pickup_options
+	#	echo "processing $NAME of type $TYPE"
+		GROUP_ID=`type2group $TYPE`
+		[ -z "$GROUP_ID" ] && {
+			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
+			continue
+		}
+		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
+	done
+	# 2. process each group
+	for i in 0 1 2 3 4; do
+	#	echo "group $i: ${GROUP[$i]}"
+		[ -n "$GROUP[$i]" ] && start_group $i
+	done
+}
+
+# TODO: fix group order
+stop()
+{
+	for IFACEPATH in $IFACEDIR/*; do
+		IFACE=${IFACEPATH//*\//}
+		# don't do bad things
+		[ "$IFACE" = "default" -o "$IFACE" = "lo" -o "$IFACE" = "CVS" ] && continue
+		echo -n "Stopping $IFACE... "
+		$SCRIPTDIR/ifdown $IFACE
+		echo "done"
+	done
+	stop_vlantab
+}
+
+restart()
+{
+	stop
+	start
+}
+
+# See how we were called.
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	reload|restart)
+		restart
+		;;
+	*)
+		msg_usage "${0##*/} {start|stop|restart|reload}"
+		exit 1
+esac
+
+exit 0
