@@ -56,6 +56,7 @@ group2name()
 		;;
 	esac
 }
+
 start_vlantab()
 {
 	local PROFILED_VLANTAB=`profiled_filename $VLANTAB`
