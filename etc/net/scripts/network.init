@@ -119,7 +119,7 @@ start_group()
 		start_vlantab
 	}
 	for i in `seq 1 $GROUP_SIZE`; do
-		IFNAME=`echo ${GROUP[$GROUP_ID]} | $CUTSP -f$i`
+		IFNAME=`echo "${GROUP[$GROUP_ID]}" | cut -d' ' --fields=$i`
 		print_message -n -e "\tStarting $IFNAME: "
 		if $SCRIPTDIR/ifup $IFNAME boot; then
 			print_message "OK"
@@ -140,7 +140,7 @@ stop_group()
 		stop_vlantab
 	}
 	for i in `seq 1 $GROUP_SIZE`; do
-		IFNAME=`echo ${GROUP[$GROUP_ID]} | $CUTSP -f$i`
+		IFNAME=`echo "${GROUP[$GROUP_ID]}" | cut -d' ' --fields=$i`
 		print_message -n -e "\tStopping $IFNAME: "
 		if $SCRIPTDIR/ifdown $IFNAME; then
 			print_message "OK"
@@ -169,7 +169,11 @@ start()
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 			continue
 		}
-		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
+		if [ -z "${GROUP[$GROUP_ID]}" ]; then
+			GROUP[$GROUP_ID]=$NAME
+		else
+			GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
+		fi
 		: $((IFACECOUNT++))
 		print_progress
 	done
@@ -200,7 +204,11 @@ stop()
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 			continue
 		}
-		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
+		if [ -z "${GROUP[$GROUP_ID]}" ]; then
+			GROUP[$GROUP_ID]=$NAME
+		else
+			GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
+		fi
 		: $((GROUPCOUNT++))
 		print_progress
 	done
