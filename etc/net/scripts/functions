@@ -85,11 +85,11 @@ setup_vlan_iface()
 	local NAMETYPE=${NAMETYPE:=$DEFAULT_VLAN_NAMETYPE}
 	[ -x "$VCONFIG" ] || {
 		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
-		exit 1
+		exit 2
 	}
 	$MODPROBE 8021q || {
 		print_error "8021q kernel module not found"
-		exit 1
+		exit 2
 	}
 	local HOST_IFACE=${1:?setup_vlan_iface: missing 1st arg}
 	local VID=${2:?setup_vlan_iface: missing 2nd arg}
