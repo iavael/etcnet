@@ -15,3 +15,4 @@ X rp-pppoe support
 - kernel patch: support more than one teql interfaces
 ? bluetooth support
 - better ifplugd intergation
+- replace awk with cut
