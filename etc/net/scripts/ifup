@@ -21,6 +21,7 @@ SourceIfNotEmpty $SCRIPTDIR/functions
 MYIFACEDIR=$IFACEDIR/$NAME
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
 
+init_profile
 pickup_options
 
 is_yes "$DISABLED" && {
@@ -48,5 +49,5 @@ else
 	exit 1
 fi
 
-$IFRENAME -c $IFTAB >/dev/null 2>&1 && echo -n '.'
+$IFRENAME -c `profiled_filename $IFTAB` >/dev/null 2>&1 && echo -n '.'
 $SCRIPTDIR/ifup-common $NAME

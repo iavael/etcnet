@@ -26,6 +26,7 @@ case "$CALLER" in
 	;;
 	*)
 		print_error "invalid 2nd arg to $0: '$CALLER'"
+		exit 1
 	;;
 esac
 
@@ -45,6 +46,7 @@ fi
 MYIFACEDIR=$IFACEDIR/$NAME
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
 
+init_profile
 pickup_options
 
 is_yes "$DISABLED" && {
@@ -67,5 +69,5 @@ if [ "$CALLER" = "hotplug" ]; then
 fi
 
 # Now we know that iface should be processed. Let's go.
-[ "$NAME" != "$OLD_NAME" ] && $IFRENAME -c $IFTAB -i $OLD_NAME >/dev/null 2>&1
+[ "$NAME" != "$OLD_NAME" ] && $IFRENAME -c `profiled_filename $IFTAB` -i $OLD_NAME >/dev/null 2>&1
 $SCRIPTDIR/ifup-common $NAME
