@@ -319,6 +319,10 @@ ip{v4,v6}{address,route} are a little useless ATM, because pppd assigns addresse
 on its own. This will be resolved later.
 Note that you will need to place a call to /etc/net/scripts/ifdown-ppp to
 /etc/ppp/ip-down or /etc/ppp/ip-down.d/ for scripts to work as designed.
+Naming conventions:
+PPP links tend to make a considerable mess due to floating indexes. iftab/ifrename
+will not work here, so we will have old ppp%u names. create-ppp will try to guess
+correct unit index from the interface name and pass it to pppd.
 
 7. smart sysctl support
 If there is a sysctl.conf file in interface directory, it will be processed in this
