@@ -10,7 +10,7 @@ WITHOUT_RC_COMPAT=1
 SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 SourceIfNotEmpty /etc/sysconfig/network
-export IFACEDIR SCRIPTDIR PROFILE
+export IFACEDIR SCRIPTDIR PROFILE NETHOST
 LOCKFILE=/var/lock/subsys/network
 
 type2group()
@@ -218,7 +218,6 @@ check()
 	export MYIFACEDIR NAME
 	for MYIFACEDIR in $IFACEDIR/*; do
 		NAME=`basename $MYIFACEDIR`
-		MYIFACEDIR=$IFACEDIR/$NAME
 		# skip default
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE
@@ -398,32 +397,38 @@ is_yes "$NETWORKING" || return 0
 case "$1" in
 	start)
 		[ $# -ne 1 ] && usage
+		init_nethost
 		init_profile
 		start
 		;;
 	startwith)
 		[ $# -ne 2 ] && usage
+		init_nethost
 		init_profile $2
 		start
 		;;
 	stop)
 		[ $# -ne 1 ] && usage
+		init_nethost
 		init_profile
 		stop
 		;;
 	stopwith)
 		[ $# -ne 2 ] && usage
+		init_nethost
 		init_profile $2
 		stop
 		;;
 	reload|restart)
 		[ $# -ne 1 ] && usage
+		init_nethost
 		init_profile
 		stop
 		start
 		;;
 	restartwith)
 		[ $# -ne 2 ] && usage
+		init_nethost
 		init_profile $2
 		stop
 		init_profile $2
@@ -431,12 +436,14 @@ case "$1" in
 		;;
 	switchto)
 		[ $# -ne 2 ] && usage
+		init_nethost
 		init_profile
 		stop
 		init_profile $2
 		start
 		;;
 	check)
+		init_nethost
 		init_profile
 		check
 		;;
