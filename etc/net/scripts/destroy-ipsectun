@@ -3,11 +3,15 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-PHYSLOCAL=${PHYSLOCAL:?missing PHYSLOCAL}
-PHYSREMOTE=${PHYSREMOTE:?missing PHYSREMOTE}
-SPI=${SPI:?missing SPI}
+: ${TUNLOCAL:?missing PHYSLOCAL}
+: ${TUNREMOTE:?missing PHYSREMOTE}
+: ${TUNSPI:?missing SPI}
 
-${IPSECADM:=$DEFAULT_IPSECADM} tunnel del $NAME
-$IPSECADM sa del --src=$PHYSLOCAL --dst=$PHYSREMOTE --spi=$SPI --duplex
+[ -x "${IPSECADM:=$DEFAULT_IPSECADM}" ] || {
+	print_error "$IPSECADM does not exist or is not executable. Try installing ipsecadm RPM."
+	exit 1
+}
 
+$IPSECADM tunnel del $NAME
+$IPSECADM sa del --src=$TUNLOCAL --dst=$TUNREMOTE --spi=$TUNSPI --duplex
 try_rmmod ipsec_tunnel
