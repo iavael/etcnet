@@ -46,7 +46,7 @@ start()
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE
 		pickup_options
-	#	echo "processing $NAME of type $TYPE"
+		is_yes "$DISABLED" && continue
 		GROUP_ID=`type2group $TYPE`
 		[ -z "$GROUP_ID" ] && {
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"

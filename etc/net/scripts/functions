@@ -48,6 +48,7 @@ pickup_options()
 	# we should read global config and type config first.
 	# A workaround here.
 	SourceIfNotEmpty `profiled_filename $MYIFACEDIR/options`
+	is_yes "$DISABLED" && return
 	[ -z "$TYPE" ] && TYPE=`name2type $NAME`
 	[ -z "$TYPE" ] && {
 		print_error "No TYPE is specified for iface '$NAME' and can't guess automatically. Please fix."
@@ -130,7 +131,7 @@ start_vlantab()
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-vlan`
 	egrep -v '^$|^#' $VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
-		setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
+		iface_is_up "$HOST_IFACE" && setup_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME
 		echo -n '.'
 	done
 	# We can't count ifaces right in the while cycle due to pipe.
