@@ -14,3 +14,4 @@ X rp-pppoe support
 - bridge-utils arg order patch
 - kernel patch: support more than one teql interfaces
 ? bluetooth support
+- better ifplugd intergation
