@@ -24,6 +24,7 @@ export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE
 init_profile
 pickup_options
 
+# 1. check constraints
 is_yes "$DISABLED" && {
 	echo -n 'skipped disabled iface '
   exit 1
@@ -44,14 +45,19 @@ if [ "$2" = "boot" ]; then
 	}
 fi
 
-# 1. check if device already exists
+# 2. check if device already exists
 iface_is_up $NAME && {
 	echo -n "'$NAME' skipped, already up "
 	exit 1
 }
 
-# 2. make device appear
+# 3. deps control
+ifup_parent || {
+	print_error "Could not ifup parent '$REQUIRES' for child iface '$NAME'"
+	exit 1
+}
 
+# 4. make device appear
 if ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME; then
 	echo -n '.'
 else
@@ -59,6 +65,10 @@ else
 	exit 1
 fi
 
+# 5. configure iface
 IFTAB_FILE=`profiled_filename $IFTAB`
 [ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -n "$NAME" >/dev/null 2>&1 && echo -n '.'
 $SCRIPTDIR/ifup-common $NAME
+
+# 6. process deps
+is_yes "$RECURSIVE_IFUP" && ifup_children

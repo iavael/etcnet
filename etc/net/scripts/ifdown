@@ -19,17 +19,24 @@ export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
 init_profile
 pickup_options
 
+# 1. check constraints
 is_yes "$DISABLED" && exit 0
+iface_exists $NAME || exit 0
+
+# 2. kill all children :-[ ]
+ifdown_children
+
 if iface_is_up $NAME; then
 	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME
 	$IP link set dev $NAME down
 	ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME
 fi
 
-# get rid of the iface
+
+# 3. get rid of the iface
 if ! is_yes $DONT_FLUSH; then
 	ip address flush dev $NAME > /dev/null 2>&1
 	ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
 fi
 
-# TODO: restore resolv.conf
+# 4. TODO: restore resolv.conf
