@@ -76,7 +76,7 @@ get_vlan_ifname()
 {
 	local HOSTIFACE=${1:?missing 1st arg to $FUNCNAME}
 	local VID=${2:?missing 2nd arg to $FUNCNAME}
-	tr '|' '%' < /proc/net/vlan/config | grep "%\ *$VID\ *%\ *$HOSTIFACE" | awk '{print $1}'
+	grep "|\ *$VID\ *|\ *$HOSTIFACE" /proc/net/vlan/config | awk '{print $1}'
 }
 
 # create VLAN iface <parent iface> <VLAN ID> [name]
@@ -202,7 +202,7 @@ init_profile()
 		elif [ -r "$PROC_CMDLINE" ]; then
 			# try to fetch profile name from kernel options
 			PROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | \
-			tr ' ' '\n' | egrep '^netprof=' | awk -F= '{print $2}'`
+			sed 's/ /\n/g' | egrep '^netprof=' | awk -F= '{print $2}'`
 		fi
 	fi
 }
