@@ -1,4 +1,4 @@
-0.7.0 2005-03-18
+0.7.0 2005-03-21
 	create-ppp minor bugfix
 	renamed iptun/ipsectun/pentanet/ppp options
 	plipconfig support
