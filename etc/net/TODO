@@ -1,4 +1,4 @@
-- resolv.conf audit
+- resolv.conf code audit
 - handle network mounts
 - pptp-client support
 - rp-pppoe support
