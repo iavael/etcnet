@@ -1,4 +1,4 @@
-etcnet version 0.3.0
+etcnet version 0.4.0
 
 1. GENERAL INFORMATION
 
@@ -14,7 +14,7 @@ Supported interface types:
 +/-dummy
 
 Supported protocols:
-IPv4 (static)
+IPv4 (static, DHCP, ZCIP)
 IPv6 (static)
 
 2. QUICK START
@@ -197,15 +197,14 @@ To switch between configurations without editing /etc/net/profile one can use:
 -check REQUIRES for vlantab
 +BOOTPROTOTO other than static
 +LINKDETECT
--ifplugd integration
++ifplugd integration
 +hotplug event handlers
 -ppp hooks
 -control
 +ip rule
 +default prefixes for ip*route/rule
 -same for sysctl.conf files
--move hotplug/ifplugd to BOOTPROTO/ONBOOT?
--handle 'add' in ipv4rule in ifdown
+-handle 'add' in ipv4rule on ifdown
 -analyze zebra and RTPROTO ip option
 -handle network mounts?
 +remove MAPDESCR from PLIP files
