@@ -2,6 +2,7 @@
 
 1. vi /etc/sysconfig/network
 Pay attention to NETWORKING and CONFMETHOD variables
+Note that FORWARD_IPV4, GATEWAY and GATEWAYDEV variables are deprecated.
 
 2. chkconfig --list network
 You may need to run 'chkconfig network reset'
