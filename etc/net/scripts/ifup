@@ -70,6 +70,8 @@ else
 	exit 1
 fi
 
+wait_for_macaddr $NAME
+
 # 5. configure iface
 IFTAB_FILE=`profiled_filename $IFTAB`
 [ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -n "$NAME" >/dev/null 2>&1 && print_message -n '.'
