@@ -5,10 +5,8 @@ pickup_options
 
 PHYSLOCAL=${PHYSLOCAL:?missing PHYSLOCAL}
 PHYSREMOTE=${PHYSREMOTE:?missing PHYSREMOTE}
-TTL=${TTL:=inherit}
-TUNTYPE=${TUNTYPE:=ipip}
 
-case "$TUNTYPE" in
+case "${TUNTYPE:=ipip}" in
 	ipip)
 		MODULE=ipip
 		;;
@@ -24,4 +22,4 @@ case "$TUNTYPE" in
 esac
 $MODPROBE $MODULE
 
-$IP tunnel add $NAME mode $TUNTYPE local $PHYSLOCAL remote $PHYSREMOTE ttl $TTL $MISCOPTIONS
+$IP tunnel add $NAME mode $TUNTYPE local $PHYSLOCAL remote $PHYSREMOTE ttl ${TTL:-inherit} $MISCOPTIONS

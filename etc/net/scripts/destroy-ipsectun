@@ -6,9 +6,8 @@ pickup_options
 PHYSLOCAL=${PHYSLOCAL:?missing PHYSLOCAL}
 PHYSREMOTE=${PHYSREMOTE:?missing PHYSREMOTE}
 SPI=${SPI:?missing SPI}
-IPSECADM=${IPSECADM:=$DEFAULT_IPSECADM}
 
-$IPSECADM tunnel del $NAME
+${IPSECADM:=$DEFAULT_IPSECADM} tunnel del $NAME
 $IPSECADM sa del --src=$PHYSLOCAL --dst=$PHYSREMOTE --spi=$SPI --duplex
 
 try_rmmod ipsec_tunnel
