@@ -1,7 +1,6 @@
 #!/bin/bash
 
 . $SCRIPTDIR/functions
-init_profile
 pickup_options
 
 # Let's hope we manage all TEQLs ourselves :-/

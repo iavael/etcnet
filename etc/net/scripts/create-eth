@@ -1,7 +1,6 @@
 #!/bin/bash
 
 . $SCRIPTDIR/functions
-init_profile
 pickup_options
 
 # If an administrator wishes to rely on modules.conf, let's agree.
