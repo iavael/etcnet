@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # etcnet
 # chkconfig: 2345 10 90
