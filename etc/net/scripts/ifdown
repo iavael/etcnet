@@ -14,27 +14,29 @@ NAME=$1
 SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 MYIFACEDIR=$IFACEDIR/$NAME
-export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME SEEN_IFACES
 init_profile
 pickup_options
 
 # 1. check constraints
 is_yes "$DISABLED" && exit 0
 iface_exists $NAME || exit 0
+seen_iface $NAME && exit 0
+add_seen_iface $NAME
 
-# 1a. prepare for shutdown
+# 2. prepare for shutdown
+# Don't destroy ifplugd iface itself, but children should not receive
+# IN_IFPLUGD=yes so that they can be destroyed.
+ORIG_IN_IFPLUGD=$IN_IFPLUGD
+IN_IFPLUGD=
 if is_yes "$IFDOWN_CHILDREN"; then
 	ifdown_children || {
 		print_error "Could not ifdown children for parent iface '$NAME'"
 		exit 1
 	}
 fi
-ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
 
-# 2. Always kill all children :-[ ]
-ORIG_IN_IFPLUGD=$IN_IFPLUGD
-IN_IFPLUGD=
-IN_IFPLUGD=$ORIG_IN_IFPLUGD
+ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
 
 if iface_is_up $NAME; then
 	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME
@@ -44,6 +46,7 @@ fi
 
 
 # 3. get rid of the iface
+IN_IFPLUGD=$ORIG_IN_IFPLUGD
 if ! is_yes $DONT_FLUSH; then
 	ip address flush dev $NAME > /dev/null 2>&1
 	is_yes "$IN_IFPLUGD" || ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME

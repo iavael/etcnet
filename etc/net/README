@@ -303,6 +303,7 @@ To switch between configurations without editing /etc/net/profile one can use:
 -lockfiles
 +profile vlantab
 -bridge-utils arg order patch
+-ifup-ifplugd
 
 7. CHANGELOG
 

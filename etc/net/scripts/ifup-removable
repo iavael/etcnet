@@ -43,7 +43,7 @@ if [ -n "$MAPPED_NAME" -a "$NAME" != "$MAPPED_NAME" ]; then
 fi
 
 MYIFACEDIR=$IFACEDIR/$NAME
-export IFACEDIR MYIFACEDIR SCRIPTDIR NAME
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME SEEN_IFACES
 
 init_profile
 pickup_options
@@ -72,4 +72,9 @@ if [ "$NAME" != "$OLD_NAME" ]; then
 	IFTAB_FILE=`profiled_filename $IFTAB`
 	[ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -i $OLD_NAME -n $NAME >/dev/null 2>&1
 fi
+
+# avoid cycles
+seen_iface $NAME && exit 0
+add_seen_iface $NAME
+
 $SCRIPTDIR/ifup-common $NAME

@@ -285,3 +285,22 @@ iface_exists ()
 	$IP li sh dev $NAME >/dev/null 2>&1
 	return $?
 }
+
+seen_iface ()
+{
+	local needle=${1:?missing 1st arg to $FUNCNAME}
+	for cand in "$SEEN_IFACES"; do
+		[ "$cand" = "$needle" ] && return 0
+	done
+	return 1
+}
+
+add_seen_iface ()
+{
+	local newname=${1:?missing 1st arg to $FUNCNAME}
+	if [ -z "$SEEN_IFACES" ]; then
+		SEEN_IFACES=$newname
+	else
+		SEEN_IFACES="$SEEN_IFACES $newname"
+	fi
+}

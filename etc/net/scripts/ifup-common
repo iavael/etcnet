@@ -17,7 +17,7 @@ NAME=$1
 SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 MYIFACEDIR=$IFACEDIR/$NAME
-export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE SEEN_IFACES
 
 init_profile
 pickup_options
@@ -73,6 +73,7 @@ iface_is_up $NAME && ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && echo -
 
 # 9. process deps
 if is_yes "$IFUP_CHILDREN"; then
+	IN_IFPLUGD=
 	ifup_children || {
 		print_error "Could not ifup children for parent iface '$NAME'"
 		exit 1

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# This script is intended to be run from /etc/ifplugd/ifplugd.action
+
+is_yes "$DISABLED" && {
+	echo -n 'skipped disabled iface '
+  exit 1
+}
+
+seen_iface $NAME && exit 0
+add_seen_iface $NAME
+export IN_IFPLUGD=yes
+$SCRIPTDIR/ifup-common $NAME
