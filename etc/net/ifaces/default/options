@@ -65,6 +65,7 @@ IFUP_CHILDREN=no
 
 # If set to yes, this variable will cause ifup call for all parent (listed in current
 # REQUIRES list) before the current interface is set up.
+# Note: this will not work for ifplugd-controlled interfaces.
 IFUP_PARENTS=yes
 
 # If set to yes, this variable will cause ifdown call for all child (having current
@@ -73,4 +74,5 @@ IFDOWN_CHILDREN=yes
 
 # If set to yes, this variable will cause ifdown call for all parent (listed in current
 # REQUIRES list) after the current interface is shut down.
+# Note: this will not work for ifplugd-controlled interfaces.
 IFDOWN_PARENTS=no
