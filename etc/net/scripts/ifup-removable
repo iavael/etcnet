@@ -71,7 +71,7 @@ if [ "$CALLER" = "hotplug" ]; then
 	}
 fi
 
-wait_for_macaddr $NAME
+[ -n "$MACADDR_WAITTIME" ] && wait_for_macaddr $NAME
 
 # Now we know that iface should be processed. Let's go.
 if [ "$NAME" != "$OLD_NAME" ]; then
