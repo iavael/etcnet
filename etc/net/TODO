@@ -13,3 +13,4 @@
 - handle dhcp/ipv4ll in ifdown*
 - post-create hook support
 - resolv.conf audit
+- ifdown+ppp
