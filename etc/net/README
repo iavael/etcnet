@@ -271,10 +271,8 @@ To switch between configurations without editing /etc/net/profile one can use:
 -implement -r flag to ifup, handle vlantab
 -IrLAN support?
 -wireless host AP support?
--QoS infrastructure
++QoS infrastructure
 -IPSec (openswan) support?
-+fix logger hang bug
-+check argc in etcnet.init
 +assume ONBOOT=no for removables
 -Elektra support
 +zcip -> ipv4ll
@@ -286,7 +284,7 @@ To switch between configurations without editing /etc/net/profile one can use:
 0.5.0:
 	initial QoS framework
 	initial recursion and dependencies processing framework
-	some fixes
+	logger, DHCP, etcnet.init argc fixes
 	changed ZCIP to IPv4LL
 0.4.2:
 	documentation updates
