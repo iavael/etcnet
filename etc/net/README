@@ -1,4 +1,8 @@
+etcnet version 0.1
+
 1. GENERAL INFORMATION
+
+URL: http://pilot.org.ua/etcnet/
 
 Supported interface types:
 +ethernet (eth)
@@ -42,3 +46,6 @@ $ less /etc/net/ifaces/default/options-*
 
 3. TODO
 check REQUIRES for vlantab
+
+4. CHANGELOG
+0.1: 1st public release
