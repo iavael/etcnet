@@ -1,0 +1,8 @@
+# This file holds aliases for hostnames. If your hostname is long
+# or unconvinient, you can define an alias here. This alias can be used for
+# tagging files. One hostname should be referenced by one alias only.
+#
+# File format:
+#<hostname1><space><alias1>
+#<hostname2><space><alias2>
+#...
