@@ -180,7 +180,7 @@ check()
 }
 usage()
 {
-	msg_usage "${0##*/} {start|stop|restart|reload|restartwith <new profile name>}"
+	msg_usage "${0##*/} {start|startwith|stop|stopwith|restart|reload|restartwith|switchto <new profile name>}"
 	exit 1
 }
 
