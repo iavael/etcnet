@@ -4,4 +4,3 @@
 pickup_options
 
 try_rmmod $NAME
-# TODO: shutdown $REQUIRES?
