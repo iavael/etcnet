@@ -281,7 +281,7 @@ exit 1
 A profile is a configuration superset. E.g. when a notebook boots up in
 several different networks, it's desirable to select current configuration
 by just one parameter. Current profile name can be set via:
- 1. environment variable PROFILE (not a good idea I guess)
+ 1. environment variable NETPROFILE (not a good idea I guess)
  2. file /etc/net/profile (file should contain just one word, e.g. "office" w/o quotes)
  3. kernel boot parameter "netprof", e.g. "LILO: linux netprof=home"
 Specifying a profile does nothing by default. But if etcnet scripts know the

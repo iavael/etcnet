@@ -7,7 +7,7 @@
 	another VLAN code cleanup/speedup
 	netprof kernel arg becomes netprofile a la RedHat
 	imported examples from web-site
-	former REQUIRES becomes HOST for interface group 2 (hosted physical)
+	bugfix: separate REQUIRES and HOST variables for interface group 2 (hosted physical)
 0.6.4 2005-03-05
 	8021q is no more unconditionally loaded, other VLAN code enhancements
 	another print_message()/print_progress() bugfix

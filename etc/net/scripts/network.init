@@ -10,7 +10,7 @@ WITHOUT_RC_COMPAT=1
 SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 SourceIfNotEmpty /etc/sysconfig/network
-export IFACEDIR SCRIPTDIR PROFILE NETHOST
+export IFACEDIR SCRIPTDIR NETPROFILE NETHOST
 LOCKFILE=/var/lock/subsys/network
 
 type2group()

@@ -15,10 +15,9 @@ usage()
 [ -z "$1" ] && usage
 NAME=$1
 
-SCRIPTDIR=/etc/net/scripts
-. $SCRIPTDIR/functions
-if [ -d $IFACEDIR/$NAME@NETHOST ]; then
-	MYIFACEDIR=$IFACEDIR/$NAME@NETHOST
+. ${SCRIPTDIR:=/etc/net/scripts}/functions
+if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
+	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
 else
 	MYIFACEDIR=$IFACEDIR/$NAME
 fi
@@ -27,7 +26,7 @@ fi
 	print_error "interface configuration directory '$MYIFACEDIR' not found"
 	exit 1
 }
-export IFACEDIR MYIFACEDIR SCRIPTDIR NAME PROFILE SEEN_IFACES
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE SEEN_IFACES
 
 init_profile
 pickup_options

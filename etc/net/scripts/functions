@@ -156,9 +156,9 @@ get_mapped_ifname()
 profiled_filename()
 {
 	local BASE=${1:?missing 1st arg to $FUNCNAME}
-	local CAND1=$BASE${PROFILE:+#$PROFILE}${NETHOST:+@$NETHOST}
+	local CAND1=$BASE${NETPROFILE:+#$NETPROFILE}${NETHOST:+@$NETHOST}
 	local CAND2=$BASE${NETHOST:+@$NETHOST}
-	local CAND3=$BASE${PROFILE:+#$PROFILE}
+	local CAND3=$BASE${NETPROFILE:+#$NETPROFILE}
 	local CAND4=$BASE
 	if [ -e $CAND1 ]; then
 		echo $CAND1
@@ -179,15 +179,15 @@ profiled_filename()
 init_profile()
 {
 	if [ -n "$1" ]; then
-		PROFILE="$1"
+		NETPROFILE="$1"
 	elif [ -n "$MYIFACEDIR" -a -s "$MYIFACEDIR/selectprofile" -a -x "$MYIFACEDIR/selectprofile" ]; then
-		PROFILE=`$MYIFACEDIR/selectprofile $0 | head -1 | cut -d' ' -f1`
-	elif [ -z "$PROFILE" ]; then
+		NETPROFILE=`$MYIFACEDIR/selectprofile $0 | head -1 | cut -d' ' -f1`
+	elif [ -z "$NETPROFILE" ]; then
 		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
-			PROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | cut -d' ' -f1`
+			NETPROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | cut -d' ' -f1`
 		elif [ -r "$PROC_CMDLINE" ]; then
 			# try to fetch profile name from kernel options
-			PROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | \
+			NETPROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | \
 			sed 's/ /\n/g' | egrep '^netprofile=' | cut -d'=' -f2`
 		fi
 	fi

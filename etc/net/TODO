@@ -7,7 +7,6 @@ X rp-pppoe support
 - Elektra support
 - handle 'add' in ipv4rule on ifdown
 - analyze zebra and RTPROTO ip option
-- check exit codes
 - implement -r flag to ifup
 ? SNMP bridge workaround
 - lockfiles
