@@ -8,6 +8,10 @@
 WITHOUT_RC_COMPAT=1
 
 SCRIPTDIR=/etc/net/scripts
+if [ ! -s $SCRIPTDIR/functions ]; then
+	echo "Error: $SCRIPTDIR/functions not found!"
+	exit 1
+fi
 . $SCRIPTDIR/functions
 SourceIfNotEmpty /etc/sysconfig/network
 export IFACEDIR SCRIPTDIR NETPROFILE NETHOST
@@ -401,9 +405,10 @@ check()
 		fi
 	done
 }
+
 usage()
 {
-	msg_usage "${0##*/} {start|startwith|stop|stopwith|restart|reload|restartwith|switchto <new profile name>}"
+	echo "${0##*/} {start|startwith|stop|stopwith|restart|reload|restartwith|switchto <new profile name>}"
 	exit 1
 }
 
