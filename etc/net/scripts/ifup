@@ -49,5 +49,8 @@ else
 	exit 1
 fi
 
-grep "^$NAME" `profiled_filename $IFTAB` | $IFRENAME -c - >/dev/null 2>&1 && echo -n '.'
+IFTAB_FILE=`profiled_filename $IFTAB`
+[ -s "$IFTAB_FILE" ] && {
+	grep "^$NAME" "$IFTAB_FILE" | $IFRENAME -c - >/dev/null 2>&1 && echo -n '.'
+}
 $SCRIPTDIR/ifup-common $NAME
