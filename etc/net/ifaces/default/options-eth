@@ -1,3 +1,4 @@
 # Optional now.
 #MODULE=
-#LINKDETECT=
+# Requires ifplugstatus.
+#LINKDETECT={yes|no}
