@@ -1,4 +1,4 @@
-etcnet version 0.2.0
+etcnet version 0.2.1
 
 1. GENERAL INFORMATION
 
@@ -139,7 +139,15 @@ Each interface has its type. Several types form a group. Groups are brought up
 in a fixed order to avoid broken dependencies (say, you will not want your VLAN
 interface tried to be setup before its host interface ever exists).
 
-4. TODO
+
+4. SYSTEM CONFIGURATION
+4.1 Edit /etc/sysctl.conf so that it does not intersect with /etc/net/sysctl.conf
+4.2 pcmcia_cs configuration
+Edit /etc/pcmcia/network.opts and replace calls to /sbin/ifup and 
+/sbin/ifdown to '/etc/net/scripts/ifup-removable $1 pcmcia_cs' and
+'/etc/net/scripts/ifdown-removable $1 pcmcia_cs' respectively.
+
+5. TODO
 -check REQUIRES for vlantab
 -BOOTPROTOTO other than static
 -LINKDETECT and ifplugd integration
@@ -154,7 +162,9 @@ interface tried to be setup before its host interface ever exists).
 -handle 'add' in ipv4rule in ifdown
 -analyze zebra and RTPROTO ip option
 
-5. CHANGELOG
+6. CHANGELOG
+
+0.2.1: PCMCIA now works (see above)
 0.2.0:
 	ip rule support
 	experimental hotplug support (no time to check, but should work)
