@@ -121,11 +121,13 @@ start_group()
 	for i in `seq 1 $GROUP_SIZE`; do
 		IFNAME=`echo "${GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStarting $IFNAME: "
-		if $SCRIPTDIR/ifup $IFNAME boot; then
-			print_message "OK"
-		else
-			print_message "FAILED"
-		fi
+		$SCRIPTDIR/ifup $IFNAME boot
+		local rc=$?
+		case $rc in
+			0) print_message "OK" ;;
+			1) print_message "FAILED" ;;
+			2) print_message "SKIPPED" ;;
+		esac
 	done
 }
 
@@ -142,11 +144,13 @@ stop_group()
 	for i in `seq 1 $GROUP_SIZE`; do
 		IFNAME=`echo "${GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStopping $IFNAME: "
-		if $SCRIPTDIR/ifdown $IFNAME; then
-			print_message "OK"
-		else
-			print_message "FAILED"
-		fi
+		$SCRIPTDIR/ifdown $IFNAME
+		local rc=$?
+		case $rc in
+			0) print_message "OK" ;;
+			1) print_message "FAILED" ;;
+			2) print_message "SKIPPED" ;;
+		esac
 	done
 }
 

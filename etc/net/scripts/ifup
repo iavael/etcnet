@@ -29,29 +29,29 @@ pickup_options
 
 # 1. check constraints
 is_yes "$DISABLED" && {
-	print_message -n 'skipped disabled iface '$NAME''
-  exit 1
+	print_message -n " '$NAME' is disabled"
+  exit 2
 }
 
 if [ "$2" = "boot" ]; then
 	is_no "$ONBOOT" && {
-		print_message -n 'skipped '$NAME' on boot '
-	  exit 0
+		print_message -n ' on boot '
+	  exit 2
 	}
 	is_yes "$USE_HOTPLUG" && {
-		print_message -n 'skipped hotplug iface '$NAME' on boot '
-	  exit 0
+		print_message -n " hotplug iface '$NAME' on boot "
+	  exit 2
 	}
 	is_yes "$USE_PCMCIA" && {
-		print_message -n 'skipped PCMCIA iface '$NAME' on boot '
-	  exit 0
+		print_message -n " PCMCIA iface '$NAME' on boot "
+	  exit 2
 	}
 fi
 
 # 2. check if device already exists
 iface_is_up $NAME && {
-	print_message -n "'$NAME' skipped, already up "
-	exit 0
+	print_message -n " '$NAME' is already up "
+	exit 2
 }
 
 # 3a. avoid cycles
