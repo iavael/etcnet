@@ -164,7 +164,7 @@ Edit /etc/pcmcia/network.opts and replace calls to /sbin/ifup and
 
 6. CHANGELOG
 
-0.2.2: experimental wireless support
+0.2.2: experimental wireless support, some fixes
 0.2.1: PCMCIA now works (see above)
 0.2.0:
 	ip rule support
