@@ -1,16 +1,14 @@
+- resolv.conf audit
+- handle network mounts
 - pptp-client support
+- rp-pppoe support
+- Elektra support
 - handle 'add' in ipv4rule on ifdown
 - analyze zebra and RTPROTO ip option
-- handle network mounts
 - check exit codes
 - implement -r flag to ifup
-- Elektra support
 ? SNMP bridge workaround
 - lockfiles
 - bridge-utils arg order patch
 - support more than one teql interfaces
 - bluetooth support
-- handle dhcp/ipv4ll in ifdown*
-- resolv.conf audit
-- rp-pppoe support
-- ipneigh file
