@@ -1,18 +1,14 @@
-/etc/net 0.5.0
+/etc/net 0.5.1
 ALTLinux Sisyphus
 
-apt-get install etcnet
-edit CONFMETHOD in /etc/sysconfig/pcmcia
-edit CONFMETHOD in /etc/sysconfig/hotplug (broken for now, wait for Rider to fix)
-edit CONFMETHOD in /etc/ifplugd/ifplugd.conf
+just apt-get install etcnet and make sure CONFMETHOD in /etc/sysconfig/network
+is set to etcnet
 
-Version requirements for /etc/net 0.4.2:
+Version requirements for /etc/net 0.5.1:
 hotplug >= 2004_03_29-alt13 (?)
 ifrename >= 28-alt1.pre1
 pcmcia-cs >= 3.2.7-alt7
 ifplugd >= 0.25-alt3
-
-Don't forget to review /etc/sysconfig/network.
 
 Note on network-config-subsystem:
 /sbin/ifup

@@ -1,4 +1,4 @@
-etcnet version 0.5.0
+etcnet version 0.5.1
 
 1. GENERAL INFORMATION
 
@@ -277,9 +277,13 @@ To switch between configurations without editing /etc/net/profile one can use:
 -Elektra support
 +zcip -> ipv4ll
 -extend start_vlantab ans stop_vlantab for iface deps
++don't rmmod ifplugd'd ifaces
 
 7. CHANGELOG
 
+0.5.1:
+	ifplugd+ifdown fix
+	ALT docs update
 0.5.0:
 	initial QoS framework
 	initial recursion and dependencies processing framework
