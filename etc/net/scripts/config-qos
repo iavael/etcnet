@@ -33,12 +33,10 @@ process_qos_dir ()
 		print_error "Unknown node type in $FUNCNAME, TDIR=$NODEDIR"
 		return 1
 	fi
-#	echo "$TC $NODETYPE add dev $NAME $PARENTNODE $NODEIDPREFIX $NODEID $EXTRAATTRS $NODEATTRS"
 	$TC $NODETYPE add dev $NAME $PARENTNODE $NODEIDPREFIX $NODEID $EXTRAATTRS $NODEATTRS
 # setup filters
 	if [ $NODETYPE = class -a -s $NODEDIR/filter ]; then
 		egrep -v '^$|^#' $NODEDIR/filter | while read FILTEREXPR; do
-#			echo "$TC filter add dev $NAME $PARENTNODE `head -1 $NODEDIR/extra.filter 2>/dev/null` $FILTEREXPR flowid $NODEID"
 			$TC filter add dev $NAME $PARENTNODE `head -1 $NODEDIR/extra.filter 2>/dev/null` $FILTEREXPR flowid $NODEID
 		done
 	fi
