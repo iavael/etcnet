@@ -17,6 +17,7 @@ try_dhcp()
 		print_error "$DHCP_CLIENT does not exist or is not executable. Try installing dhcpcd RPM."
 		return 1
 	}
+	[ is_yes "$LINKDETECT" ] && check_eth_link $NAME || return 1
 	$DHCP_CLIENT -d -t $DHCP_TIMEOUT $NAME >/dev/null
 	return $?
 }
@@ -27,6 +28,7 @@ try_zcip()
 		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing dhcpcd RPM."
 		return 1
 	}
+	[ is_yes "$LINKDETECT" ] && check_eth_link $NAME || return 1
 	$ZCIP_CLIENT -s -i $NAME
 	return $?
 }

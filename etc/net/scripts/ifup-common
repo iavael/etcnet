@@ -36,6 +36,9 @@ pickup_options
 [ -s `profiled_filename $IFACEDIR/default/iplink-$TYPE` ] && ( egrep -v '^$|^#' `profiled_filename $IFACEDIR/default/iplink-$TYPE` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
 [ -s `profiled_filename $MYIFACEDIR/iplink` ] && ( egrep -v '^$|^#' `profiled_filename $MYIFACEDIR/iplink` | xargs --max-lines=1 $IP link set dev $NAME ) && echo -n '.'
 
+# Up to this line should be enough for ifplugd to run.
+[ is_yes "$USE_IFPLUGD" ] && exit 0
+
 # 5. bring iface up
 if ! is_yes $KEEP_DOWN; then
 	ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && echo -n '.'

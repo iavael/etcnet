@@ -6,7 +6,7 @@ SourceIfNotEmpty /etc/net/options
 
 supported_type()
 {
-	local TYPE=${1:?supported_type: missing 1st arg}
+	local TYPE=${1:?missing 1st arg to $FUNCNAME}
 	[ -x $SCRIPTDIR/create-$TYPE -o -x $SCRIPTDIR/destroy-$TYPE ] && return 0
 	return 1
 }
@@ -14,14 +14,14 @@ supported_type()
 # translate iface name into corresponding type
 name2type()
 {
-	local NAME=${1:?name2type: missing 1st arg}
+	local NAME=${1:?missing 1st arg to $FUNCNAME}
 	local CAND=`echo "$NAME" | sed "s/[0-9]*$//"`
 	supported_type $CAND && echo $CAND
 }
 
 type2group()
 {
-	local TYPE=${1:?type2group: missing 1st arg}
+	local TYPE=${1:?missing 1st arg to $FUNCNAME}
 	case "$TYPE" in
 		lo|dummy)
 			echo '0'
@@ -73,8 +73,8 @@ print_error()
 # get VLAN iface name by host iface and VLAN ID
 get_vlan_ifname()
 {
-	local HOSTIFACE=${1:?get_vlan_ifname: missing 1st arg}
-	local VID=${2:?get_vlan_ifname: missing 2nd arg}
+	local HOSTIFACE=${1:?missing 1st arg to $FUNCNAME}
+	local VID=${2:?missing 2nd arg to $FUNCNAME}
 	tr '|' '%' < /proc/net/vlan/config | grep "%\ *$VID\ *%\ *$HOSTIFACE" | awk '{print $1}'
 }
 
@@ -91,8 +91,8 @@ setup_vlan_iface()
 		print_error "8021q kernel module not found"
 		exit 2
 	}
-	local HOST_IFACE=${1:?setup_vlan_iface: missing 1st arg}
-	local VID=${2:?setup_vlan_iface: missing 2nd arg}
+	local HOST_IFACE=${1:?missing 1st arg to $FUNCNAME}
+	local VID=${2:?missing 2nd arg to $FUNCNAME}
 	local NAME=$3
 	local ADDRESS=$4
 	$VCONFIG set_name_type $NAMETYPE >/dev/null 2>&1
@@ -113,8 +113,8 @@ shutdown_vlan_iface()
 		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
 		exit 1
 	}
-	local HOST_IFACE=${1:?setup_vlan_iface: missing 1st arg}
-	local VID=${2:?setup_vlan_iface: missing 2nd arg}
+	local HOST_IFACE=${1:?missing 1st arg to $FUNCNAME}
+	local VID=${2:?missing 2nd arg to $FUNCNAME}
 	local NAME=`get_vlan_ifname $HOST_IFACE $VID`
 	$IP address flush dev $NAME >/dev/null 2>&1
 	$VCONFIG rem $NAME >/dev/null 2>&1
@@ -157,14 +157,14 @@ stop_vlantab()
 
 iface_is_up()
 {
-	local NAME=${1:?missing 1st argument to iface_is_up}
+	local NAME=${1:?missing 1st argument to $FUNCNAME}
 	$IP link show dev $NAME 2>/dev/null | awk '{print $3}' | grep -qs '[<,]UP[,>]'
 	return $?
 }
 
 try_rmmod()
 {
-	local MODNAME=${1:?try_rmmod: missing 1st argument}
+	local MODNAME=${1:?missing 1st argument to $FUNCNAME}
 	$LSMOD | egrep -qs "^$MODNAME +[0-9]+ +0 " && rmmod $MODNAME
 }
 
@@ -183,7 +183,7 @@ get_mapped_ifname()
 
 profiled_filename()
 {
-	local BASE=${1:?$FUNCNAME: missing 1st arg}
+	local BASE=${1:?missing 1st arg to $FUNCNAME}
 	local CAND=$BASE${PROFILE:+.$PROFILE}
 	[ -e $CAND ] && echo $CAND || echo $BASE
 }
@@ -201,3 +201,19 @@ init_profile()
 		fi
 	fi
 }
+
+# taken directly from net-scripts
+check_eth_link ()
+{
+	local NAME=${1:?missing 1st argument to $FUNCNAME}
+	local res
+	[ -x $IFPLUGSTATUS ] || {
+		print_error "$IFPLUGSTATUS does not exist or is not executable. Try installing ifplugd RPM."
+		return 1
+	}
+	$IFPLUGSTATUS -q $NAME
+	res=$?
+	[ "$res" = 3 ] && return 1
+	return 0
+}
+
