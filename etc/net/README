@@ -98,12 +98,10 @@ ifrename (part of recent wireless-utils package) is a must for interface
 name maps. NOTE: /etc/net 0.4.2 requires ifrename-28!
 vlan-utils24 are required to setup VLAN interfaces.
 Your kernel must have CryptoAPI patch applied to setup PSK IPSec tunnels.
-When LINKDETECT is implemented, you will need ifplugstatus from
-ifplugd package.
-When BOOTPROTO is implemented, you will need a DHCP and (optionally)
+When LINKDETECT is used, you will need ifplugstatus from ifplugd package.
+When BOOTPROTO is other than 'static', you will need a DHCP and (optionally)
 IPv4LL client (zcip).
 iproute2 is a must
-See 
 
 3.1 FILES
 /etc/net/iface/default
@@ -125,6 +123,7 @@ ipv4route: 1 IPv4 route per line
 ipv6address: 1 IPv6 address per line
 ipv6route: 1 IPv6 route per line
 iplink: 1 ip link option per line
+ipneigh: 1 ip neigh option per line
 ipv4rule: 1 ip -4 rule option per line
 brctl: 1 'brctl set' arg set per line
 ipxinterface: 1 'ipx_interface add' arg set per line
