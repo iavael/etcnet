@@ -1,4 +1,4 @@
-etcnet version 0.4.1
+etcnet version 0.4.2
 
 1. GENERAL INFORMATION
 
@@ -85,11 +85,10 @@ default via 10.0.0.254
 ---8<---8<---
 
 2B. REQUIREMENTS
-Get the latest wireless-utils, compile it and install
-/usr/local/sbin/ifrename and /usr/local/lib/libiw.so.27
-Otherwise MAPDESCR will not work.
+ifrename (part of recent wireless-utils package) is a must for interface
+name maps.
 vlan-utils24 are required to setup VLAN interfaces.
-Your kernel must have CryptoAPI patch applied to setup IPSec tunnels.
+Your kernel must have CryptoAPI patch applied to setup PSK IPSec tunnels.
 When LINKDETECT is implemented, you will need ifplugstatus from
 ifplugd package.
 When BOOTPROTO is implemented, you will need a DHCP and (optionally)
@@ -165,17 +164,18 @@ interface tried to be setup before its host interface ever exists).
 4. SYSTEM CONFIGURATION
 4.1 Edit /etc/sysctl.conf so that it does not intersect with /etc/net/sysctl.conf
 
-4.2 pcmcia_cs configuration
+4.2 pcmcia_cs configuration (already done in ALTLinux)
 Edit /etc/pcmcia/network.opts and replace calls to /sbin/ifup and 
 /sbin/ifdown to '/etc/net/scripts/ifup-removable $1 pcmcia_cs' and
 '/etc/net/scripts/ifdown-removable $1 pcmcia_cs' respectively.
+Apply patch for interface name change support to cardmgr.
 
-4.3 hotplug configuration
+4.3 hotplug configuration (already done in ALTLinux)
 Edit /etc/hotplug/net.agent and change 
 /sbin/ifdown to '/etc/net/scripts/ifdown-removable $1 hotplug' and
 /sbin/ifup to '/etc/net/scripts/ifup-removable $1 hotplug'.
 
-4.4 ifplugd configuration
+4.4 ifplugd configuration (already done in ALTLinux)
 my /etc/ifplugd/ifplugd.conf:
 INTERFACES="ether"
 ARGS="--wait-on-fork --no-auto --monitor --no-shutdown --ignore-retval --delay-up=0 --delay-down=2"
@@ -221,25 +221,20 @@ To switch between configurations without editing /etc/net/profile one can use:
 
 6. TODO
 +handle host iface down for vlantab
-+BOOTPROTOTO other than static
-+LINKDETECT
-+ifplugd integration
 -ppp hooks
 -control
--same for sysctl.conf files
+-default prefixes for sysctl.conf files
 -handle 'add' in ipv4rule on ifdown
 -analyze zebra and RTPROTO ip option
 -handle network mounts?
 -check exit codes
--handle dependant interfaces for ifplugd-controlled links
-+allow runtime profile selection by external script (e.g.
- by discovered WAP address)
--implement recursion for ifup (e.g. by vlantab)
--use only /bin & /sbin programs to survive w/o /usr (/usr on NFS)
-+don't require TYPE for disabled interfaces
+-handle dependant interfaces for ifplugd-controlled links !!!
+-implement recursion for ifup (e.g. by vlantab) !!!
+-introduce /etc/ppp/ ?
 
 7. CHANGELOG
 
+0.4.2: documentation updates, sync with recent wireless-utils
 0.4.1: ifrename call fix, did some ALTLinux integration
 0.4.0: DHCP/ZCIP/LINKDETECT/ifplugd support
 0.3.0: network profiles framework (see section 5)

@@ -7,4 +7,3 @@ options-$TYPE
 sysctl.conf
 	Processed each time any interface goes up before interfaces-specific
 	sysctl.conf.
-ifrename requires libiw.27.so from wireless-tools
