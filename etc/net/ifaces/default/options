@@ -28,8 +28,8 @@ ONBOOT=yes
 
 # If set to yes, iface will be skipped during boot.
 # Note that standard hotplug calls /sbin/ifup and /sbin/ifdown.
-# This should be changed to /etc/net/scripts/ifup and
-# /etc/net/scripts/ifdown respectively, if you wish to use
+# This should be changed to /etc/net/scripts/ifup-removable and
+# /etc/net/scripts/ifdown-removable respectively, if you wish to use
 # etcnet from hotplug.
 USE_HOTPLUG=no
 
