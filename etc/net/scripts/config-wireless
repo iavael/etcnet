@@ -14,11 +14,7 @@ NAME=$1
 . $SCRIPTDIR/functions
 pickup_options
 
-[ -x "$IWCONFIG" ] || {
-	print_error "$IWCONFIG does not exist or is not executable. Try installing wireless-utils RPM."
-	exit 1
-}
-
+[ -x "${IWCONFIG:=$DEFAULT_IWCONFIG}" ] || exit 0
 # Dunno if $IFACEDIR/default/iwconfig can be of any use
 xargise_file $IFACEDIR/default/iwconfig "$IWCONFIG $NAME"
 xargise_file $MYIFACEDIR/iwconfig "$IWCONFIG $NAME"
