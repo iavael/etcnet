@@ -1,2 +1,3 @@
-#NETWORKING=
+# When set to no, this may cause most daemons' initscripts skip starting.
+NETWORKING=yes
 CONFMETHOD=etcnet
