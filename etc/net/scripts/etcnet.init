@@ -32,6 +32,26 @@ start_group()
 	done
 }
 
+# clone
+stop_group()
+{
+	local GROUP_ID=${1:?start_group: missing 1st arg}
+	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
+	[ $GROUP_ID -eq 2 ] && {
+		# hosted physical
+		stop_vlantab
+	}
+	for i in `seq 0 $((GROUP_SIZE-1))`; do
+		IFNAME=`echo ${GROUP[$GROUP_ID]} | awk "{print \\$$((i+1))}"`
+		echo -n "Stopping $IFNAME: "
+		if $SCRIPTDIR/ifdown $IFNAME; then
+			echo "OK"
+		else
+			echo ""
+		fi
+	done
+}
+
 start()
 {
 	$SYSCTL -p `profiled_filename /etc/net/sysctl.conf`
@@ -64,18 +84,35 @@ start()
 	done
 }
 
-# TODO: fix group order
+# clone
 stop()
 {
+	declare -a GROUP
+	# 1. fill in the groups
+	GROUPCOUNT=0
+	echo -n "Computing interface groups: "
+	export MYIFACEDIR NAME
 	for IFACEPATH in $IFACEDIR/*; do
-		IFACE=${IFACEPATH//*\//}
-		# don't do bad things
-		[ "$IFACE" = "default" -o "$IFACE" = "lo" -o "$IFACE" = "CVS" ] && continue
-		echo -n "Stopping $IFACE: "
-		$SCRIPTDIR/ifdown $IFACE
-		echo "done"
+		NAME=${IFACEPATH//*\//}
+		MYIFACEDIR=$IFACEDIR/$NAME
+		[ "$NAME" = "default" -o "$NAME" = "CVS" -o "$NAME" = "lo" ] && continue
+		unset TYPE DISABLED
+		pickup_options
+		is_yes "$DISABLED" && continue
+		GROUP_ID=`type2group $TYPE`
+		[ -z "$GROUP_ID" ] && {
+			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
+			continue
+		}
+		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
+		GROUPCOUNT=$((GROUPCOUNT + 1))
+		echo -n '.'
 	done
-	stop_vlantab
+	echo " $GROUPCOUNT found"
+	# 2. process each group
+	for i in 4 3 2 1 0; do
+		[ -n "$GROUP[$i]" ] && stop_group $i
+	done
 }
 
 usage()
