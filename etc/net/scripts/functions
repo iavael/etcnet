@@ -26,7 +26,7 @@ type2group()
 		lo|dummy)
 			echo '0'
 		;;
-		eth|plip)
+		eth|plip|usb)
 			echo '1'
 		;;
 		vlan|bond|bri|teql)
@@ -347,4 +347,19 @@ xargise_file()
 	if [ -s $REALFILE ]; then
 		egrep -v '^$|^#' $REALFILE | xargs --max-lines=1 $PROCESSOR && print_message -n '.'
 	fi
+}
+
+wait_for_macaddr()
+{
+	local TARGET="${1:?missing 1st arg to $FUNCNAME}"
+	[ -z "$MACADDR_WAITTIME" ] && return
+	[ "$MACADDR_WAITTIME" -gt "0" -a "$MACADDR_WAITTIME" -le "1000" ] || {
+		print_error "MACADDR_WAITTIME exceeds 1000 (100 seconds)"
+		return
+	}
+	local i
+	for i in `seq 1 $MACADDR_WAITTIME`; do
+		usleep 100000
+		echo $i
+	done
 }
