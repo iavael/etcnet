@@ -7,8 +7,7 @@ DENOISE="egrep '^[^#]'"
 # Stolen from /etc/init.d/functions and improved.
 is_yes()
 {
-	local TESTVAL=${1:?missing 1st arg to $FUNCNAME}
-	case "$TESTVAL" in
+	case "$1" in
 		[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
 			# true returns zero
 			return 0
@@ -22,8 +21,7 @@ is_yes()
 
 is_no()
 {
-	local TESTVAL=${1:?missing 1st arg to $FUNCNAME}
-	case "$TESTVAL" in
+	case "$1" in
 		[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|[Nn]|0)
 			# true returns zero
 			return 0
