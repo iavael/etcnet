@@ -36,7 +36,7 @@ if is_yes "$IFDOWN_CHILDREN"; then
 	}
 fi
 IN_IFPLUGD=$ORIG_IN_IFPLUGD
-
+xargise_file $MYIFACEDIR/ipneigh "$IP neigh del dev $NAME"
 ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
 
 if iface_is_up $NAME; then

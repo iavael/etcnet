@@ -68,6 +68,7 @@ fi
 # common part
 ifdown_children
 if iface_is_up $NAME; then
+	xargise_file $MYIFACEDIR/ipneigh "$IP neigh del dev $NAME"
 	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME
 	$IP link set dev $NAME down
 	ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME

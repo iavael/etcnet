@@ -26,6 +26,7 @@ pickup_options
 	xargise_file $IFACEDIR/default/iplink "$IP link set dev $NAME"
 	xargise_file $IFACEDIR/default/iplink-$TYPE "$IP link set dev $NAME"
 	xargise_file $MYIFACEDIR/iplink "$IP link set dev $NAME"
+	xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
 }
 
 is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
