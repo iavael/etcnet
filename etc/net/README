@@ -341,3 +341,8 @@ type-specific sysctl.conf (/etc/net/scripts/sysctl.conf-$TYPE). Order of process
 /etc/net/ifaces/default/sysctl.conf (at ifup w/o auto-prefix)
 /etc/net/ifaces/default/sysctl.conf-$TYPE (at ifup with auto-prefix)
 /etc/net/ifaces/XXXXXX/sysctl.conf (at ifup with auto-prefix)
+
+8. FIXME: Multiple hosts configuration
+file#profile@host
+file#profile@alias
+
