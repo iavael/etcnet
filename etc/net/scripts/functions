@@ -289,7 +289,7 @@ iface_exists ()
 seen_iface ()
 {
 	local needle=${1:?missing 1st arg to $FUNCNAME}
-	for cand in "$SEEN_IFACES"; do
+	for cand in $SEEN_IFACES; do
 		[ "$cand" = "$needle" ] && return 0
 	done
 	return 1
