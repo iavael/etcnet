@@ -205,6 +205,7 @@ To switch between configurations without editing /etc/net/profile one can use:
 -analyze zebra and RTPROTO ip option
 -handle network mounts?
 -check exit codes
+-handle dependant interfaces for ifplugd-controlled links
 
 7. CHANGELOG
 

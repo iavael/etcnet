@@ -29,8 +29,7 @@ fi
 # get rid of the iface
 if ! is_yes $DONT_FLUSH; then
 	ip address flush dev $NAME > /dev/null 2>&1
-	# Don't remove the iface, if it's controlled by ifplugd
-	is_yes "$USE_IFPLUGD" || ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
+	ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
 fi
 
 # TODO: restore resolv.conf
