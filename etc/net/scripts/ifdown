@@ -40,7 +40,7 @@ xargise_file $MYIFACEDIR/ipneigh "$IP neigh del dev $NAME"
 
 # Look if there is DHCP agent hanging around. zcip should die w/o our help.
 case "$BOOTPROTO" in
-	dhcp)
+	dhcp|dhcp-static|dhcp-ipv4ll-static)
 		stop_dhcp_client
 	;;
 	*)
