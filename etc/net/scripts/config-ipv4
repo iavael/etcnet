@@ -13,12 +13,20 @@ try_static()
 
 try_dhcp()
 {
+	[ -x "$DHCP_CLIENT" ] || {
+		print_error "$DHCP_CLIENT does not exist or is not executable. Try installing dhcpcd RPM."
+		return 1
+	}
 	$DHCP_CLIENT -d -t $DHCP_TIMEOUT $NAME >/dev/null
 	return $?
 }
 
 try_zcip()
 {
+	[ -x "$ZCIP_CLIENT" ] || {
+		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing dhcpcd RPM."
+		return 1
+	}
 	$ZCIP_CLIENT -s -i $NAME
 	return $?
 }
