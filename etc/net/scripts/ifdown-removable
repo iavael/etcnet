@@ -33,7 +33,7 @@ SourceIfNotEmpty $SCRIPTDIR/functions
 # Deal with ifrename and mappings before we try to read options,
 # because iface name may change.
 
-MAPPED_NAME=get_mapped_ifname $NAME
+MAPPED_NAME=`get_mapped_ifname $NAME`
 if [ "$NAME" != "$MAPPED_NAME" ]; then
 	NAME=$MAPPED_NAME
 	echo -n '.'
