@@ -103,6 +103,12 @@ else
 	print_message() { return; }
 fi
 
+print_progress()
+{
+	local SYMBOL=${1:-.}
+	is_yes "$PRINT_PROGRESS" && print_message -n "$SYMBOL"
+}
+
 # get VLAN iface name by host iface and VLAN ID
 get_vlan_ifname()
 {
