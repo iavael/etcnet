@@ -1,5 +1,6 @@
 0.6.2:
-	dhcp-static BOOTPROTO and dhcpcd bugfix
+	dhcp-static BOOTPROTO and dhcpcd workaround
+	'service network check' enhancement
 0.6.1:
 	print_progress() bugfix (error with ipv4route ignorance)
 	by default wireless extensions are now configured for 'eth' interfaces only

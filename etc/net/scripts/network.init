@@ -130,6 +130,10 @@ check()
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE
 		pickup_options
+		is_yes "$DISABLED" && {
+			print_message ' SKIPPED'
+			continue
+		}
 		GROUP_ID=`type2group $TYPE`
 		GROUP=`group2name $GROUP_ID`
 		print_message -n "$NAME: ${TYPE:-unknown type}/${GROUP:-unknown group}"
@@ -137,7 +141,31 @@ check()
 			print_message ' ERROR: unsupported interface!'
 			continue
 		fi
-		print_message ' PASSED'
+		# check for required utils
+		case "$TYPE" in
+			pentanet)
+				[ -x "${PENTANETT:-$DEFAULT_PENTANETT}" ] || print_message " WARNING: ${PENTANETT:-$DEFAULT_PENTANETT} is not executable"
+			;;
+			vlan)
+				[ -x "${VCONFIG:-$DEFAULT_VCONFIG}" ] || print_message " WARNING: ${VCONFIG:-$DEFAULT_VCONFIG} is not executable"
+			;;
+			bond)
+				[ -x "${IFENSLAVE:-$DEFAULT_IFENSLAVE}" ] || print_message " WARNING: ${IFENSLAVE:-$DEFAULT_IFENSLAVE} is not executable"
+			;;
+			bri)
+				[ -x "${BRCTL:-$DEFAULT_BRCTL}" ] || print_message " WARNING: ${BRCTL:-$DEFAULT_BRCTL} is not executable"
+			;;
+			ipsectun)
+				[ -x "${IPSECADM:-$DEFAULT_IPSECADM}" ] || print_message " WARNING: ${IPSECADM:-$DEFAULT_IPSECADM} is not executable"
+			;;
+			ppp)
+				[ -x "${PPPD:-$DEFAULT_PPPD}" ] || print_message " WARNING: ${PPPD:-$DEFAULT_PPPD} is not executable"
+				[ -x "${CHAT:-$DEFAULT_CHAT}" ] || print_message " WARNING: ${CHAT:-$DEFAULT_CHAT} is not executable"
+			;;
+			*)
+				print_message ' PASSED'
+			;;
+		esac
 		# examine all files
 		for IFACEFILE in $MYIFACEDIR/*; do
 			TESTFILE=${IFACEFILE//*\//}
@@ -163,6 +191,7 @@ check()
 						print_message -n ' WARNING: missing ipv6address?'
 					fi
 					;;
+				# TODO: look up all referenced files
 				pppoptions|pppinit|pppconnect|pppdisconnect)
 					if [ "$TYPE" = "ppp" ]; then
 						print_message -n ' seems OK'
@@ -175,6 +204,25 @@ check()
 					;;
 			esac
 			print_message ''
+		done
+		# TODO: improve iface name regexp
+		# check iftab(s)
+		for iftab in /etc/net/iftab /etc/net/iftab.*; do
+			print_message -n "$iftab: "
+			if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]]*[[:space:]]+mac|arp|driver|businfo|firmware|baseaddress|irq|iwproto|pcmciaslot[[:space:]]+.+$)' $iftab; then
+				print_message " WARNING: unrecognised line(s)"
+			else
+				print_message " IS OK"
+			fi
+		done
+		# check iftab(s)
+		for vlantab in /etc/net/vlantab /etc/net/vlantab.*; do
+			print_message -n "$vlantab: "
+			if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]]*[[:space:]]+[[:digit:]]+([[:space:]]+[[:alpha:]][[:alnum:]]*([[:space:]].*)?)?$)' $vlantab; then
+				print_message " WARNING: unrecognised line(s)"
+			else
+				print_message " IS OK"
+			fi
 		done
 	done
 }
