@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# taken directly from net-scripts
+check_eth_link ()
+{
+	local NAME=${1:?missing 1st argument to $FUNCNAME}
+	local res
+	[ -x $IFPLUGSTATUS ] || {
+		print_error "$IFPLUGSTATUS does not exist or is not executable. Try installing ifplugd RPM."
+		return 1
+	}
+	$IFPLUGSTATUS -q $NAME
+	res=$?
+	[ "$res" = 3 ] && return 1
+	return 0
+}
+
+# see ifaces/default/options-eth
+wait_for_macaddr()
+{
+	local TARGET="${1:?missing 1st arg to $FUNCNAME}"
+	[ -z "$MACADDR_WAITTIME" ] && return
+	[ "$MACADDR_WAITTIME" -gt "0" -a "$MACADDR_WAITTIME" -le "1000" ] || {
+		print_error "MACADDR_WAITTIME exceeds 1000 (100 seconds)"
+		return
+	}
+	local i
+	for i in `seq 1 $MACADDR_WAITTIME`; do
+		if $IP li sh dev $TARGET 2>/dev/null | fgrep -q 'link/ether 00:00:00:00:00:00'; then
+			usleep 100000
+		else
+			break
+		fi
+	done
+}
