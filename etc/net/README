@@ -1,4 +1,4 @@
-etcnet version 0.5.3
+etcnet version 0.6.0
 
 1. GENERAL INFORMATION
 
@@ -319,16 +319,18 @@ As for /etc/net-0.5.3 init_profile is called only from {ifup,ifdown}.*,
 - bridge-utils arg order patch
 - support more than one teql interfaces
 - bluetooth support
-- 'check' arg for network.init
 - handle dhcp/ipv4ll in ifdown*
 - post-create hook support
-- type-specific files profiling
+- determine ppp unit from interface name
 
 7. CHANGELOG
 
 0.6.0:
 	PPP support
 	smart sysctl.conf handling (variable auto-completion, global and type-specific defaults)
+	Pent@NET bugfix
+	QoS configuration is on by default
+	configuration checker
 0.5.3:
 	fixed ifplugd support
 	code cleanup (optimized profile detection, config processing)
