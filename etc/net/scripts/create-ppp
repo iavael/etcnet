@@ -23,7 +23,7 @@ pickup_options
 	print_error "$CHAT does not exist or is not executable. Try installing ppp RPM."
 	exit 1
 }
-CHAT_CMD="$CHAT -t ${CHAT_TIMEOUT:=$DEFAULT_CHAT_TIMEOUT} -f"
+CHAT_CMD="$CHAT ${CHAT_OPTIONS:-$DEFAULT_CHAT_OPTIONS} -f"
 
 # This one is a must.
 BASIC_PPPOPTIONS="updetach unit ${NAME//ppp/}"

@@ -10,6 +10,9 @@ ONBOOT=no
 # chat location, optional
 #CHAT=<string>
 
+# chat options (timeout, verbose mode etc)
+#CHAT_OPTIONS=<string>
+
 # Terminate after n consecutive  failed  connection  attempts.   A
 # value of 0 means no limit.  The default value is 10.
 #MAXFAIL=<integer>
@@ -54,6 +57,3 @@ ONBOOT=no
 
 # ...and disconnect script
 #PPPDISCONNECTCHAT=<script>
-
-# -t chat option
-#CHAT_TIMEOUT=<integer>
