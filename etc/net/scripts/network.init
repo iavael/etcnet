@@ -11,6 +11,7 @@ SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 SourceIfNotEmpty /etc/sysconfig/network
 export IFACEDIR SCRIPTDIR PROFILE
+LOCKFILE=/var/lock/subsys/network
 
 start_group()
 {
@@ -80,9 +81,9 @@ start()
 	print_message " $GROUPCOUNT interfaces found"
 	# 2. process each group
 	for i in 0 1 2 3 4; do
-	#	echo "group $i: ${GROUP[$i]}"
 		[ -n "$GROUP[$i]" ] && start_group $i
 	done
+	touch "$LOCKFILE"
 }
 
 # clone
@@ -114,6 +115,7 @@ stop()
 	for i in 4 3 2 1 0; do
 		[ -n "$GROUP[$i]" ] && stop_group $i
 	done
+	rm -f "$LOCKFILE"
 }
 
 usage()
