@@ -25,8 +25,11 @@ add_seen_iface $NAME
 
 # common part
 ifdown_children
+
 if iface_is_up $NAME; then
-	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME
+	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME && print_message -n '.'
+	ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_message -n '.'
 	$IP link set dev $NAME down
-	ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME
 fi
+ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME && print_message -n '.'
+ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_message -n '.'

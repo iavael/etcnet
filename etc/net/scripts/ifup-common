@@ -34,6 +34,7 @@ is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
 # 5. bring iface up
 if ! is_yes $KEEP_DOWN; then
 	ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && print_message -n '.'
+	ExecIfExecutable $MYIFACEDIR/ifup-pre $NAME && print_message -n '.'
 	$IP link set dev $NAME up && print_message -n '.'
 	MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`
 	if [ -s $MYRESOLVCONF ]; then
@@ -68,7 +69,10 @@ MY_SYSCTL=`profiled_filename $MYIFACEDIR/sysctl.conf`
 ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && print_message -n '.'
 
 # 8. ifup-post
-iface_is_up $NAME && ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && print_message -n '.'
+iface_is_up $NAME && {
+	ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && print_message -n '.'
+	ExecIfExecutable $MYIFACEDIR/ifup-post $NAME && print_message -n '.'
+}
 
 # 9. process deps
 if is_yes "$IFUP_CHILDREN"; then
