@@ -234,8 +234,9 @@ ifup_children ()
 # check if parent iface(s) (REQUIRES/HOST) is up and ifup if needed
 ifup_parents ()
 {
+	[ -z "$REQUIRES" -a -z "$HOST" ] && return 0
 	local parent ret=0
-	for parent in "$REQUIRES $HOST"; do
+	for parent in $REQUIRES${HOST:+ $HOST}; do
 		if ! iface_is_up $parent; then
 			$SCRIPTDIR/ifup $parent || {
 				ret=$?
@@ -248,8 +249,9 @@ ifup_parents ()
 
 ifdown_parents ()
 {
+	[ -z "$REQUIRES" -a -z "$HOST" ] && return 0
 	local parent ret=0
-	for parent in "$REQUIRES $HOST"; do
+	for parent in $REQUIRES${HOST:+ $HOST}; do
 		if iface_is_up $parent; then
 			$SCRIPTDIR/ifdown $parent || {
 				ret=$?
