@@ -11,7 +11,6 @@ DEFAULT_IPV4RULE_CMD='add'
 IFACEDIR=/etc/net/ifaces
 VLANTAB=/etc/net/vlantab
 IFTAB=/etc/net/iftab
-IPRULETAB=/etc/net/ipv6rule
 
 # programs
 IP=/sbin/ip
