@@ -30,7 +30,7 @@ if [ -n "$CIPHER" -o -n "$CIPHERFILE" ]; then
 		exit 1
 	fi
 	if [ ! -s "$MYIFACEDIR/$CIPHERFILE" ]; then
-		print_error "bad digest file $MYIFACEDIR/$CIPHERFILE"
+		print_error "bad cipher file $MYIFACEDIR/$CIPHERFILE"
 		exit 1
 	fi
 	CIPHER_OPTIONS="--cipher=$CIPHER --cipher-keyfile=$MYIFACEDIR/$CIPHERFILE"
