@@ -345,6 +345,6 @@ xargise_file()
 	local PROCESSOR="${2:?missing 2nd arg to $FUNCNAME}"
 	local REALFILE=`profiled_filename $BASEFILE`
 	if [ -s $REALFILE ]; then
-		egrep -v '^$|^#' $REALFILE | xargs --max-lines=1 "$PROCESSOR" && print_message -n '.'
+		egrep -v '^$|^#' $REALFILE | xargs --max-lines=1 $PROCESSOR && print_message -n '.'
 	fi
 }
