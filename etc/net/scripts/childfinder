@@ -15,17 +15,22 @@ usage()
 PARENTNAME=$1
 CHILDREN=""
 . $SCRIPTDIR/functions
-export MYIFACEDIR NAME
 
-# same code as in etcnet.init
-for IFACEPATH in $IFACEDIR/*; do
-	NAME=${IFACEPATH//*\//}
+# same code as in network.init
+for MYIFACEDIR in $IFACEDIR/*; do
+	BNAME=`basename $MYIFACEDIR`
+	NAME=${BNAME/%@*/}
+	[ "${NAME/%@*/}" = "${BNAME/%@$NETHOST/}" ] || continue
 	[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
-	MYIFACEDIR=$IFACEDIR/$NAME
 	unset DISABLED
 	pickup_options
 	is_yes "$DISABLED" && continue
-	[ "$REQUIRES" = "$PARENTNAME" ] && CHILDREN="$CHILDREN $NAME"
+	# absent quotes effectively normalize field separator to space
+	if echo $REQUIRES | tr ' ' '\n' | grep -q ^$NAME$; then
+		CHILDREN="${CHILDREN:+$CHILDREN }$NAME"
+	elif echo $REQUIRES | tr ' ' '\n' | grep -q ^$NAME$; then
+		CHILDREN="${CHILDREN:+$CHILDREN }$NAME"
+	fi
 done
 
 echo $CHILDREN
