@@ -14,7 +14,15 @@ NAME=$1
 . $SCRIPTDIR/functions
 pickup_options
 
-[ -x "${IWCONFIG:=$DEFAULT_IWCONFIG}" ] || exit 0
-# Dunno if $IFACEDIR/default/iwconfig can be of any use
-xargise_file $IFACEDIR/default/iwconfig "$IWCONFIG $NAME"
-xargise_file $MYIFACEDIR/iwconfig "$IWCONFIG $NAME"
+# configure WEP
+if [ -x "${IWCONFIG:=$DEFAULT_IWCONFIG}" ]; then
+	# Dunno if $IFACEDIR/default/iwconfig can be of any use
+	xargise_file $IFACEDIR/default/iwconfig "$IWCONFIG $NAME"
+	xargise_file $MYIFACEDIR/iwconfig "$IWCONFIG $NAME"
+fi
+
+# TODO: look up the latest wpa_supplicant version
+#configure WPA
+#if [ -x "${WPA_SUPPLICANT:=$DEFAULT_WPA_SUPPLICANT}" ]; then
+#	$WPA_SUPPLICANT -i$NAME ${WPA_DRIVER:?-D$WPA_DRIVER}
+#fi

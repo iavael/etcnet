@@ -17,4 +17,13 @@ LINKDETECT=no
 # WARNING: EXPERIMENTAL FEATURE !!!
 # MACADDR_WAITTIME=10
 
+# Wireless options
 CONFIG_WIRELESS=yes
+
+# optional override
+#IWCONFIG=<string>
+
+# optional override
+#WPA_SUPPLICANT=<string>
+
+#WPA_DRIVER=<string>
