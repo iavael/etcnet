@@ -1,2 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
+. $SCRIPTDIR/functions
+init_profile
+pickup_options
+
+# Let's hope we manage all TEQLs ourselves :-/
+$INSMOD -o $NAME sch_teql >/dev/null
+$IP link set dev teql0 name $NAME
+
+for parent in $REQUIRES; do
+	$TC qdisc add dev $parent root $NAME
+done
