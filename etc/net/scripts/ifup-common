@@ -97,10 +97,7 @@ xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
 # setup addresses and (only if iface is up) routes
 # don't flush IPv6 auto-generated link-level addresses
 is_yes $DONT_FLUSH || {
-	$IP -4 address flush dev $NAME >/dev/null 2>&1
-	$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
-	$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
-	$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
+	flush_addresses $NAME
 	print_progress
 }
 is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME
