@@ -1,3 +1,6 @@
+0.7.2
+	cleaner ppp/progress output
+	DONT_FLUSH variable semantics fix
 0.7.1 2005-03-25
 	network.init minor bugfix
 	flushed ppp address bugfix
