@@ -106,6 +106,7 @@ if is_yes "$VERBOSE"; then
 
 	print_progress()
 	{
+		is_yes "$VERBOSE" || return 0
 		local SYMBOL=${1:-.}
 		is_yes "$PROGRESS" && print_message -n "$SYMBOL"
 		return 0
@@ -298,4 +299,13 @@ xargise_file()
 		$DENOISE $REALFILE | xargs --max-lines=1 $PROCESSOR && print_progress
 	fi
 	return 0
+}
+
+flush_addresses()
+{
+	local NAME=${1:?missing 1st arg to $FUNCNAME}
+	$IP -4 address flush dev $NAME >/dev/null 2>&1
+	$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
+	$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
+	$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
 }
