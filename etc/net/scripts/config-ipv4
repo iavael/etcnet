@@ -22,7 +22,7 @@ try_dhcp()
 			return 1
 		fi
 	fi
-	$DHCP_CLIENT -d -t $DHCP_TIMEOUT $NAME >/dev/null
+	$DHCP_CLIENT ${DHCP_ARGS:+ $DHCP_ARGS} -d -t $DHCP_TIMEOUT $NAME >/dev/null
 	local RET=$?
 	# dhcpcd sets iface down on failure, breaking dhcp-* BOOTPROTOs
 	if [ "$RET" != "0" ]; then

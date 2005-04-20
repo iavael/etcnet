@@ -27,3 +27,6 @@ CONFIG_WIRELESS=yes
 #WPA_SUPPLICANT=<string>
 
 #WPA_DRIVER=<string>
+
+# Optional additional DHCP client arguments.
+#DHCP_ARGS=<string>

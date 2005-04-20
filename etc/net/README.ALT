@@ -13,3 +13,5 @@ in /etc/net/sysctl.conf.
 
 3. chkconfig --list network
 You may need to run 'chkconfig network reset' (known bug).
+
+4. /etc/net is compatible with dhcpcd ONLY
