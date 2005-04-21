@@ -189,7 +189,7 @@ start()
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 			continue
 		}
-		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+$GROUP[$GROUP_ID] }$NAME"
+		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+${GROUP[$GROUP_ID]} }$NAME"
 		: $((IFACECOUNT++))
 		print_progress
 	done
@@ -221,7 +221,7 @@ stop()
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 			continue
 		}
-		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+$GROUP[$GROUP_ID] }$NAME"
+		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+${GROUP[$GROUP_ID]} }$NAME"
 		: $((IFACECOUNT++))
 		print_progress
 	done
