@@ -12,4 +12,3 @@ X rp-pppoe support
 - kernel patch: support more than one teql interfaces
 - bluetooth support
 - better ifplugd intergation
-- ifdown and removable interfaces

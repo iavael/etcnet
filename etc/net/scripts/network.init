@@ -125,7 +125,7 @@ start_group()
 	for i in `seq 1 $GROUP_SIZE`; do
 		IFNAME=`echo "${GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStarting $IFNAME: "
-		$SCRIPTDIR/ifup $IFNAME boot
+		$SCRIPTDIR/ifup $IFNAME $*
 		local rc=$?
 		case $rc in
 			0) print_message "OK" ;;
@@ -148,7 +148,7 @@ stop_group()
 	for i in `seq 1 $GROUP_SIZE`; do
 		IFNAME=`echo "${GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStopping $IFNAME: "
-		$SCRIPTDIR/ifdown $IFNAME
+		$SCRIPTDIR/ifdown $IFNAME $*
 		local rc=$?
 		case $rc in
 			0) print_message "OK" ;;
@@ -163,7 +163,7 @@ start()
 	$SYSCTL -p `profiled_filename /etc/net/sysctl.conf`
 	declare -a GROUP
 	# 1. fill in the groups
-	IFACECOUNT=0
+	local IFACECOUNT=0
 	print_message -n "Computing interface groups: "
 	export MYIFACEDIR NAME
 	for MYIFACEDIR in $IFACEDIR/*; do
@@ -179,11 +179,7 @@ start()
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 			continue
 		}
-		if [ -z "${GROUP[$GROUP_ID]}" ]; then
-			GROUP[$GROUP_ID]=$NAME
-		else
-			GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
-		fi
+		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+$GROUP[$GROUP_ID] }$NAME"
 		: $((IFACECOUNT++))
 		print_progress
 	done
@@ -195,16 +191,17 @@ start()
 	touch "$LOCKFILE"
 }
 
-# clone
+# almost clone
 stop()
 {
 	declare -a GROUP
-	# 1. fill in the groups
-	GROUPCOUNT=0
+	local IFACECOUNT=0
 	print_message -n "Computing interface groups: "
 	export MYIFACEDIR NAME
 	for MYIFACEDIR in $IFACEDIR/*; do
-		NAME=`basename $MYIFACEDIR`
+		BNAME=`basename $MYIFACEDIR`
+		NAME=${BNAME/%@*/}
+		[ "${NAME/%@*/}" = "${BNAME/%@$NETHOST/}" ] || continue
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE DISABLED
 		pickup_options
@@ -214,23 +211,54 @@ stop()
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 			continue
 		}
-		if [ -z "${GROUP[$GROUP_ID]}" ]; then
-			GROUP[$GROUP_ID]=$NAME
-		else
-			GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]} $NAME"
-		fi
-		: $((GROUPCOUNT++))
+		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+$GROUP[$GROUP_ID] }$NAME"
+		: $((IFACECOUNT++))
 		print_progress
 	done
-	print_message " $GROUPCOUNT interfaces found"
-	# 2. process each group
+	print_message " $IFACECOUNT interfaces found"
+	# reverse order
 	for i in 4 3 2 1 0; do
-		[ -n "$GROUP[$i]" ] && stop_group $i
+		[ -n "$GROUP[$i]" ] && stop_group $i $*
 	done
 	rm -f "$LOCKFILE"
 }
 
-# first-look ifaces checker
+reload()
+{
+	declare -a GROUP
+	local IFACECOUNT=0
+	print_message -n "Computing interface groups: "
+	export MYIFACEDIR NAME
+	for MYIFACEDIR in $IFACEDIR/*; do
+		BNAME=`basename $MYIFACEDIR`
+		NAME=${BNAME/%@*/}
+		[ "${NAME/%@*/}" = "${BNAME/%@$NETHOST/}" ] || continue
+		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
+		unset TYPE DISABLED
+		pickup_options
+		iface_is_up $NAME || continue
+		is_yes "$DISABLED" && continue
+		GROUP_ID=`type2group $TYPE`
+		[ -z "$GROUP_ID" ] && {
+			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
+			continue
+		}
+		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+$GROUP[$GROUP_ID] }$NAME"
+		: $((IFACECOUNT++))
+		print_progress
+	done
+	print_message " $IFACECOUNT interfaces found"
+	# reverse order for stop, direct order for start
+	for i in 4 3 2 1 0; do
+		[ -n "$GROUP[$i]" ] && stop_group $i $*
+	done
+	rm -f "$LOCKFILE"
+	for i in 0 1 2 3 4; do
+		[ -n "$GROUP[$i]" ] && start_group $i $*
+	done
+	touch "$LOCKFILE"
+}
+
 check()
 {
 	print_message "Checking interfaces in $IFACEDIR:"
@@ -419,13 +447,13 @@ case "$1" in
 		[ $# -ne 1 ] && usage
 		init_nethost
 		init_netprofile
-		start
+		start boot
 		;;
 	startwith)
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile $2
-		start
+		start boot
 		;;
 	stop)
 		[ $# -ne 1 ] && usage
@@ -439,18 +467,24 @@ case "$1" in
 		init_netprofile $2
 		stop
 		;;
-	reload|restart)
+	restart)
 		[ $# -ne 1 ] && usage
 		init_nethost
 		init_netprofile
-		stop
+		stop skiphot
 		start
+		;;
+	reload)
+		[ $# -ne 1 ] && usage
+		init_nethost
+		init_netprofile
+		reload
 		;;
 	restartwith)
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile $2
-		stop
+		stop skiphot
 		init_netprofile $2
 		start
 		;;
@@ -458,7 +492,7 @@ case "$1" in
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile
-		stop
+		stop skiphot
 		init_netprofile $2
 		start
 		;;

@@ -2,6 +2,8 @@
 	cleaner ppp/progress output
 	DONT_FLUSH variable semantics fix
 	new DHCP_ARGS option
+	fixed multihost support for stop operation
+	new reload operation
 0.7.1 2005-03-25
 	network.init minor bugfix
 	flushed ppp address bugfix

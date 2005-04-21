@@ -23,6 +23,18 @@ export IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE SEEN_IFACES
 init_netprofile
 pickup_options
 
+if [ "$2" = "skiphot" ]; then
+	is_yes "$USE_HOTPLUG" && {
+		print_message -n " skipping hotplug iface '$NAME' "
+		exit 2
+	}
+
+	is_yes "$USE_PCMCIA" && {
+		print_message -n " skipping PCMCIA iface '$NAME' "
+		exit 2
+	}
+fi
+
 # 1. check constraints
 is_yes "$DISABLED" && exit 0
 iface_exists $NAME || exit 0
