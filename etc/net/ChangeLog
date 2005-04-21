@@ -1,4 +1,4 @@
-0.7.2
+0.7.2 2005-04-21
 	cleaner ppp/progress output
 	DONT_FLUSH variable semantics fix
 	new DHCP_ARGS option
