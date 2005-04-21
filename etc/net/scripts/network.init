@@ -69,12 +69,17 @@ start_vlantab()
 		print_message empty.
 		return
 	}
+	[ -x "${VCONFIG:=$DEFAULT_VCONFIG}" ] || {
+		print_message "missing $VCONFIG"
+		return 1
+	}
 	local HOST_IFACE CHILD_VID CHILD_NAME PROBED_8021Q=no
 	$VCONFIG set_name_type $VLAN_NAMETYPE >/dev/null 2>&1 ||
 	{
 		print_error 'error setting VLAN naming type, aborting'
 		return 1
 	}
+	SourceIfNotEmpty $SCRIPTDIR/functions-vlan
 	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		if [ "$PROBED_8021Q" = "no" ]; then
 			PROBED_8021Q=yes
@@ -105,6 +110,7 @@ stop_vlantab()
 		return 0
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
+	SourceIfNotEmpty $SCRIPTDIR/functions-vlan
 	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		if destroy_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
 			print_progress
