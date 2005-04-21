@@ -27,7 +27,7 @@ DISABLED=no
 BOOTPROTO=static
 
 # Defines if the interface will be automatically brought up during
-# system startup or 'service etcnet start' invocation.
+# system startup or 'service network start' invocation.
 ONBOOT=yes
 
 # If set to yes, iface will be skipped during boot.
