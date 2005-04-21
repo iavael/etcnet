@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # get VLAN iface name by host iface and VLAN ID
-# Used by {setup,shutdown}_vlan_iface()
+# Used by {create,destroy}_vlan_iface()
 get_vlan_ifname()
 {
 	local HOSTIFACE=${1:?missing 1st arg to $FUNCNAME}
