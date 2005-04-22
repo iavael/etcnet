@@ -253,18 +253,18 @@ reload()
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 			continue
 		}
-		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+$GROUP[$GROUP_ID] }$NAME"
+		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+${GROUP[$GROUP_ID]} }$NAME"
 		: $((IFACECOUNT++))
 		print_progress
 	done
 	print_message " $IFACECOUNT interfaces found"
 	# reverse order for stop, direct order for start
 	for i in 4 3 2 1 0; do
-		[ -n "$GROUP[$i]" ] && stop_group $i $*
+		[ -n "$GROUP[$i]" ] && stop_group $i
 	done
 	rm -f "$LOCKFILE"
 	for i in 0 1 2 3 4; do
-		[ -n "$GROUP[$i]" ] && start_group $i $*
+		[ -n "$GROUP[$i]" ] && start_group $i
 	done
 	touch "$LOCKFILE"
 }

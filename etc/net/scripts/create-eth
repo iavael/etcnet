@@ -4,4 +4,8 @@
 pickup_options
 
 # If an administrator wishes to rely on modules.conf, let's agree.
-$MODPROBE ${MODULE:-$NAME}
+if [ -n "$MODULE" ]; then
+	$MODPROBE $MODULE
+else
+	$IP link set dev $NAME down
+fi

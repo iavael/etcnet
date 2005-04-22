@@ -3,4 +3,4 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-try_rmmod ${MODULE:-$NAME}
+[ -n "$MODULE" ] && try_rmmod $MODULE
