@@ -4,7 +4,7 @@
 
 usage()
 {
-	echo "Usage: $0 <interface>" > /dev/stderr
+	echo "Usage: $0 <interface> [skiphot]" > /dev/stderr
 	exit 1
 }
 

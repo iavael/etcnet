@@ -196,7 +196,7 @@ start()
 	print_message " $IFACECOUNT interfaces found"
 	# 2. process each group
 	for i in 0 1 2 3 4; do
-		[ -n "$GROUP[$i]" ] && start_group $i
+		[ -n "$GROUP[$i]" ] && start_group $i boot skiphot
 	done
 	touch "$LOCKFILE"
 }
@@ -228,7 +228,7 @@ stop()
 	print_message " $IFACECOUNT interfaces found"
 	# reverse order
 	for i in 4 3 2 1 0; do
-		[ -n "$GROUP[$i]" ] && stop_group $i $*
+		[ -n "$GROUP[$i]" ] && stop_group $i skiphot
 	done
 	rm -f "$LOCKFILE"
 }
@@ -264,7 +264,7 @@ reload()
 	done
 	rm -f "$LOCKFILE"
 	for i in 0 1 2 3 4; do
-		[ -n "$GROUP[$i]" ] && start_group $i
+		[ -n "$GROUP[$i]" ] && start_group $i boot
 	done
 	touch "$LOCKFILE"
 }
@@ -457,13 +457,13 @@ case "$1" in
 		[ $# -ne 1 ] && usage
 		init_nethost
 		init_netprofile
-		start boot
+		start
 		;;
 	startwith)
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile $2
-		start boot
+		start
 		;;
 	stop)
 		[ $# -ne 1 ] && usage
@@ -481,7 +481,7 @@ case "$1" in
 		[ $# -ne 1 ] && usage
 		init_nethost
 		init_netprofile
-		stop skiphot
+		stop
 		start
 		;;
 	reload)
@@ -494,7 +494,7 @@ case "$1" in
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile $2
-		stop skiphot
+		stop
 		init_netprofile $2
 		start
 		;;
@@ -502,7 +502,7 @@ case "$1" in
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile
-		stop skiphot
+		stop
 		init_netprofile $2
 		start
 		;;

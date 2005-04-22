@@ -8,7 +8,7 @@
 
 usage()
 {
-	echo "Usage: $0 <interface>" > /dev/stderr
+	echo "Usage: $0 <interface> [boot [skiphot]]" > /dev/stderr
 	exit 1
 }
 
@@ -42,17 +42,16 @@ if [ "$2" = "boot" ]; then
 		print_message -n ' on boot '
 	  exit 2
 	}
-fi
-
-if [ "$2" = "skiphot" ]; then
-	is_yes "$USE_HOTPLUG" && {
-		print_message -n " skipping hotplug iface '$NAME' "
-		exit 2
-	}
-	is_yes "$USE_PCMCIA" && {
-		print_message -n " skipping PCMCIA iface '$NAME' "
-		exit 2
-	}
+	if [ "$3" = "skiphot" ]; then
+		is_yes "$USE_HOTPLUG" && {
+			print_message -n " skipping hotplug iface '$NAME' "
+			exit 2
+		}
+		is_yes "$USE_PCMCIA" && {
+			print_message -n " skipping PCMCIA iface '$NAME' "
+			exit 2
+		}
+	fi
 fi
 
 # 2. check if device already exists
