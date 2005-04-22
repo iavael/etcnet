@@ -126,6 +126,7 @@ stop_vlantab()
 start_group()
 {
 	local GROUP_ID=${1:?missing 1st argument to $FUNCNAME}
+	shift
 	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
 	print_message "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
@@ -149,6 +150,7 @@ start_group()
 stop_group()
 {
 	local GROUP_ID=${1:?missing 1st argument to $FUNCNAME}
+	shift
 	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
 	print_message "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
