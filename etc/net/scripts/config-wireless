@@ -21,8 +21,7 @@ if [ -x "${IWCONFIG:=$DEFAULT_IWCONFIG}" ]; then
 	xargise_file $MYIFACEDIR/iwconfig "$IWCONFIG $NAME"
 fi
 
-# TODO: look up the latest wpa_supplicant version
 #configure WPA
-#if [ -x "${WPA_SUPPLICANT:=$DEFAULT_WPA_SUPPLICANT}" ]; then
-#	$WPA_SUPPLICANT -i$NAME ${WPA_DRIVER:?-D$WPA_DRIVER}
-#fi
+if [ -x "${WPA_SUPPLICANT:=$DEFAULT_WPA_SUPPLICANT}" ]; then
+	$WPA_SUPPLICANT -i$NAME ${WPA_DRIVER:?-D$WPA_DRIVER}
+fi
