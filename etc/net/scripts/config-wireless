@@ -23,5 +23,6 @@ fi
 
 #configure WPA
 if [ -x "${WPA_SUPPLICANT:=$DEFAULT_WPA_SUPPLICANT}" ]; then
-	$WPA_SUPPLICANT -i$NAME ${WPA_DRIVER:?-D$WPA_DRIVER}
+	prof_conf=`profiled_filename $MYIFACEDIR/wpa_supplicant.conf`
+	$WPA_SUPPLICANT -B -i$NAME${WPA_DRIVER:+ -D$WPA_DRIVER}${prof_conf:+ -c $prof_conf}
 fi
