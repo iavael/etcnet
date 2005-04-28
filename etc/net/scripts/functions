@@ -281,11 +281,7 @@ seen_iface ()
 add_seen_iface ()
 {
 	local newname=${1:?missing 1st arg to $FUNCNAME}
-	if [ -z "$SEEN_IFACES" ]; then
-		SEEN_IFACES=$newname
-	else
-		SEEN_IFACES="$SEEN_IFACES $newname"
-	fi
+	SEEN_IFACES="${SEEN_IFACES:+$SEEN_IFACES }$newname"
 }
 
 # Universal configuration processor. Automatically does profiling,
