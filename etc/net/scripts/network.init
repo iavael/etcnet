@@ -127,14 +127,14 @@ start_group()
 {
 	local GROUP_ID=${1:?missing 1st argument to $FUNCNAME}
 	shift
-	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
+	local GROUP_SIZE=`echo "${START_GROUP[$GROUP_ID]}" | wc -w`
 	print_message "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
 		# hosted physical
 		start_vlantab
 	}
 	for i in `seq 1 $GROUP_SIZE`; do
-		IFNAME=`echo "${GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
+		IFNAME=`echo "${START_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStarting $IFNAME: "
 		$SCRIPTDIR/ifup $IFNAME $*
 		local rc=$?
@@ -151,14 +151,14 @@ stop_group()
 {
 	local GROUP_ID=${1:?missing 1st argument to $FUNCNAME}
 	shift
-	local GROUP_SIZE=`echo "${GROUP[$GROUP_ID]}" | wc -w`
+	local GROUP_SIZE=`echo "${STOP_GROUP[$GROUP_ID]}" | wc -w`
 	print_message "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	[ $GROUP_ID -eq 2 ] && {
 		# hosted physical
 		stop_vlantab
 	}
 	for i in `seq 1 $GROUP_SIZE`; do
-		IFNAME=`echo "${GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
+		IFNAME=`echo "${STOP_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStopping $IFNAME: "
 		$SCRIPTDIR/ifdown $IFNAME $*
 		local rc=$?
@@ -173,7 +173,7 @@ stop_group()
 start()
 {
 	$SYSCTL -p `profiled_filename /etc/net/sysctl.conf`
-	declare -a GROUP
+	declare -a START_GROUP
 	# 1. fill in the groups
 	local IFACECOUNT=0
 	print_message -n "Computing interface groups: "
@@ -191,14 +191,14 @@ start()
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 			continue
 		}
-		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+${GROUP[$GROUP_ID]} }$NAME"
+		START_GROUP[$GROUP_ID]="${START_GROUP[$GROUP_ID]:+${START_GROUP[$GROUP_ID]} }$NAME"
 		: $((IFACECOUNT++))
 		print_progress
 	done
 	print_message " $IFACECOUNT interfaces found"
 	# 2. process each group
 	for i in 0 1 2 3 4; do
-		[ -n "$GROUP[$i]" ] && start_group $i boot skiphot
+		[ -n "$START_GROUP[$i]" ] && start_group $i boot skiphot
 	done
 	touch "$LOCKFILE"
 }
@@ -206,7 +206,7 @@ start()
 # almost clone
 stop()
 {
-	declare -a GROUP
+	declare -a STOP_GROUP
 	local IFACECOUNT=0
 	print_message -n "Computing interface groups: "
 	export MYIFACEDIR NAME
@@ -223,24 +223,24 @@ stop()
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 			continue
 		}
-		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+${GROUP[$GROUP_ID]} }$NAME"
+		STOP_GROUP[$GROUP_ID]="${STOP_GROUP[$GROUP_ID]:+${STOP_GROUP[$GROUP_ID]} }$NAME"
 		: $((IFACECOUNT++))
 		print_progress
 	done
 	print_message " $IFACECOUNT interfaces found"
 	# reverse order
 	for i in 4 3 2 1 0; do
-		[ -n "$GROUP[$i]" ] && stop_group $i skiphot
+		[ -n "$STOP_GROUP[$i]" ] && stop_group $i skiphot
 	done
 	rm -f "$LOCKFILE"
 }
 
 reload()
 {
-	declare -a GROUP
+	declare -a STOP_GROUP START_GROUP
 	local IFACECOUNT=0
-	print_message -n "Computing interface groups: "
 	export MYIFACEDIR NAME
+	print_message -n "Computing interface groups: "
 	for MYIFACEDIR in $IFACEDIR/*; do
 		BNAME=`basename $MYIFACEDIR`
 		NAME=${BNAME/%@*/}
@@ -248,25 +248,26 @@ reload()
 		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
 		unset TYPE DISABLED
 		pickup_options
-		iface_is_up $NAME || continue
 		is_yes "$DISABLED" && continue
 		GROUP_ID=`type2group $TYPE`
 		[ -z "$GROUP_ID" ] && {
 			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
 			continue
 		}
-		GROUP[$GROUP_ID]="${GROUP[$GROUP_ID]:+${GROUP[$GROUP_ID]} }$NAME"
+		# don't stop those which are already down
+		iface_is_up $NAME && STOP_GROUP[$GROUP_ID]="${STOP_GROUP[$GROUP_ID]:+${STOP_GROUP[$GROUP_ID]} }$NAME"
+		START_GROUP[$GROUP_ID]="${START_GROUP[$GROUP_ID]:+${START_GROUP[$GROUP_ID]} }$NAME"
 		: $((IFACECOUNT++))
 		print_progress
 	done
-	print_message " $IFACECOUNT interfaces found"
+	print_message " $IFACECOUNT interfaces to process"
 	# reverse order for stop, direct order for start
 	for i in 4 3 2 1 0; do
-		[ -n "$GROUP[$i]" ] && stop_group $i
+		[ -n "$STOP_GROUP[$i]" ] && stop_group $i
 	done
 	rm -f "$LOCKFILE"
 	for i in 0 1 2 3 4; do
-		[ -n "$GROUP[$i]" ] && start_group $i boot
+		[ -n "$START_GROUP[$i]" ] && start_group $i boot
 	done
 	touch "$LOCKFILE"
 }
