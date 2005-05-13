@@ -240,6 +240,7 @@ reload()
 	declare -a STOP_GROUP START_GROUP
 	local IFACECOUNT=0
 	export MYIFACEDIR NAME
+	$SYSCTL -p `profiled_filename /etc/net/sysctl.conf`
 	print_message -n "Computing interface groups: "
 	for MYIFACEDIR in $IFACEDIR/*; do
 		BNAME=`basename $MYIFACEDIR`
