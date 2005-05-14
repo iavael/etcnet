@@ -42,6 +42,8 @@ DEFAULT_PENTANET_CONF=pentanet.conf
 DEFAULT_IPSECADM=/usr/sbin/ipsecadm
 DEFAULT_IFENSLAVE=/sbin/ifenslave
 DEFAULT_BRCTL=/sbin/brctl
+DEFAULT_ETHTOOL=/usr/sbin/ethtool
+
 # profiles
 PROFILE_FILE=/etc/net/profile
 PROC_CMDLINE=/proc/cmdline

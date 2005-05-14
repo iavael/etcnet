@@ -1,5 +1,6 @@
 0.7.4
 	treat sysctl.conf at reload too
+	initial auto-linkdetect whitelist
 0.7.3 2005-04-26
 	service network bugfix
 	ifplugd start bugfix
