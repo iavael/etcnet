@@ -24,5 +24,8 @@ fi
 #configure WPA
 if [ -x "${WPA_SUPPLICANT:=$DEFAULT_WPA_SUPPLICANT}" ]; then
 	prof_conf=`profiled_filename $MYIFACEDIR/wpa_supplicant.conf`
-	$WPA_SUPPLICANT -B -i$NAME${WPA_DRIVER:+ -D$WPA_DRIVER}${prof_conf:+ -c $prof_conf}
+	if [ -s "$prof_conf" ]; then
+		$WPA_SUPPLICANT -i$NAME${WPA_DRIVER:+ -D$WPA_DRIVER} -c $prof_conf &
+		echo $! >/var/run/wpa_supplicant-$NAME.pid
+	fi
 fi
