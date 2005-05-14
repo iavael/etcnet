@@ -10,8 +10,7 @@ try_static()
 
 need_detection()
 {
-	is_yes "$LINKDETECT" && return 0
-	case "$1" in
+	case "$LINKDETECT" in
 		[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
 			return 0
 		;;
@@ -26,7 +25,7 @@ need_detection()
 			[ -x "${ETHTOOL:=$DEFAULT_ETHTOOL}" ] && driver=`$ETHTOOL -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
 		fi
 		case "$driver" in
-			eepro100|e100|8139too|tulip|3c59x|hostap)
+			eepro100|e100|8139too|tulip|3c59x|hostap|via-rhine)
 				return 0
 			;;
 			*)
