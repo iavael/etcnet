@@ -24,7 +24,7 @@ is_no()
 		[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|[Nn]|0)
 			# true returns zero
 			return 0
-			;;
+		;;
 		*)
 			# false returns one
 			return 1
