@@ -1,4 +1,5 @@
-0. apt-get install etcnet
+0A. apt-get install etcnet
+0B. apt-get install etcnet-full
 
 1. vi /etc/sysconfig/network
 Pay attention to NETWORKING and CONFMETHOD variables:
