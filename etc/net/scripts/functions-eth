@@ -5,7 +5,7 @@ check_eth_link ()
 {
 	local NAME=${1:?missing 1st argument to $FUNCNAME}
 	local res
-	[ -x $IFPLUGSTATUS ] || {
+	[ -x "${IFPLUGSTATUS:=$DEFAULT_IFPLUGSTATUS}" ] || {
 		print_error "$IFPLUGSTATUS does not exist or is not executable. Try installing ifplugd RPM."
 		return 1
 	}
