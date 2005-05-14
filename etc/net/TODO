@@ -14,3 +14,4 @@ X rp-pppoe support
 - smart ifplugd autodetection
 - service network status
 - auto broadcast option
+- xsupplicant support
