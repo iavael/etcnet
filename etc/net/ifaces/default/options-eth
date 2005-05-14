@@ -5,8 +5,10 @@
 # not plugged in during startup. This feature requires ifplugstatus
 # and is off by default, because not all network cards report correct link
 # status.
-#LINKDETECT={yes|no}
-LINKDETECT=no
+# 'auto' is a special value. If your network card is known to report right
+# link status, LINKDETECT feature will take effect.
+#LINKDETECT={yes|no|auto}
+LINKDETECT=auto
 
 # Some network card modules create network device first, then perform
 # some initialization and after some time fill in MAC address data.
