@@ -33,6 +33,7 @@ need_detection()
 				return 1
 			;;
 		esac
+		;;
 		*)
 			print_error "invalid LINKDETECT value"
 			return 2
