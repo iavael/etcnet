@@ -13,3 +13,4 @@ X rp-pppoe support
 - bluetooth support
 - smart ifplugd autodetection
 - service network status
+- auto broadcast option
