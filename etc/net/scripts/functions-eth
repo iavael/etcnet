@@ -41,5 +41,8 @@ stop_dhcp_client()
 		kill -SIGHUP `cat $PIDFILE`
 		# There probably should be a delay/wait loop here, dhcpcd doesn't die fast.
 		sleep ${DHCPCD_GRACE_TIME:-0}
+		# dhcpcd will bring down the interface when stopping. To keep etcnet logics
+		# to work (running shutdown scripts for example) we should bring it up again
+		$IP link set dev $NAME up
 	fi
 }
