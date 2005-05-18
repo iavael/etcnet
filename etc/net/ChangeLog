@@ -1,3 +1,5 @@
+0.7.5
+	custom resolv.conf+DHCP bugfix
 0.7.4 2005-05-14
 	treat sysctl.conf at reload too
 	initial auto-linkdetect whitelist
