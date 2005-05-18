@@ -1,17 +1,14 @@
-- resolv.conf code audit
+- bluetooth support
+- smart ifplugd autodetection
+- auto broadcast option
+- xsupplicant support
 - Linux 2.6 IPSec support
 X rp-pppoe support
-- WiFi/WPA support
 - Elektra support
 - handle 'add' in ipv4rule on ifdown
 - analyze zebra and RTPROTO ip option
-- implement -r flag to ifup
 ? SNMP bridge workaround
 - lockfiles
 - bridge-utils arg order patch
 - kernel patch: support more than one teql interfaces
-- bluetooth support
-- smart ifplugd autodetection
 - service network status
-- auto broadcast option
-- xsupplicant support
