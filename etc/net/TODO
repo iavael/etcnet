@@ -12,3 +12,6 @@ X rp-pppoe support
 - bridge-utils arg order patch
 - kernel patch: support more than one teql interfaces
 - service network status
+- update_chrooted
+- options-{host,site,dist}
+- 'auto' interface
