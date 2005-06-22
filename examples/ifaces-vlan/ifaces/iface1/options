@@ -1,0 +1,3 @@
+TYPE=vlan
+HOST=eth0
+VID=319

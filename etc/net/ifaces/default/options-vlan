@@ -6,8 +6,9 @@
 # VLAN_PLUS_VID, VLAN_PLUS_VID_NO_PAD, DEV_PLUS_VID, DEV_PLUS_VID_NO_PAD (default)
 #NAMETYPE=
 
-# (required) Parent iface name.
-#REQUIRES=
+# (required) Parent iface name. Note that REQUIRES is used for logical
+# dependency.
+#HOST=
 
 # (required) VLAN ID
 #VID=
