@@ -32,3 +32,12 @@ CONFIG_WIRELESS=yes
 
 # Optional additional DHCP client arguments.
 #DHCP_ARGS=<string>
+
+# Compute a valid hostname and send it to DHCP server.
+DHCP_HOSTNAME=localhost
+
+# Get a hostname from DHCP server.
+#DHCP_HOSTNAME=AUTO
+
+# Send this string as a hostname.
+#DHCP_HOSTNAME=<string>
