@@ -1,5 +1,6 @@
 0.7.6
 	VLAN: fixed comments, added example
+	bridge fixes from Nigel Kukard
 0.7.5 2005-06-16
 	custom resolv.conf+DHCP bugfix
 	dhcpcd IFF_UP workaround
