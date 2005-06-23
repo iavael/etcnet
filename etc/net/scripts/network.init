@@ -127,23 +127,26 @@ start_group()
 {
 	local GROUP_ID=${1:?missing 1st argument to $FUNCNAME}
 	shift
-	local GROUP_SIZE=`echo "${START_GROUP[$GROUP_ID]}" | wc -w`
-	print_message "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
-	[ $GROUP_ID -eq 2 ] && {
-		# hosted physical
-		start_vlantab
-	}
-	for i in `seq 1 $GROUP_SIZE`; do
-		IFNAME=`echo "${START_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
-		print_message -n -e "\tStarting $IFNAME: "
-		$SCRIPTDIR/ifup $IFNAME $*
-		local rc=$?
-		case $rc in
-			0) print_message "OK" ;;
-			1) print_message "FAILED" ;;
-			2) print_message "SKIPPED" ;;
-		esac
-	done
+# wc can sometimes output extra spaces
+	local GROUP_SIZE=`echo "${START_GROUP[$GROUP_ID]}" | wc -w | sed 's/ *//'`
+	if [ ${GROUP_SIZE:=0} -ne 0 ]; then
+		print_message "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
+		[ $GROUP_ID -eq 2 ] && {
+			# hosted physical
+			start_vlantab
+		}
+		for i in `seq 1 $GROUP_SIZE`; do
+			IFNAME=`echo "${START_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
+			print_message -n -e "\tStarting $IFNAME: "
+			$SCRIPTDIR/ifup $IFNAME $*
+			local rc=$?
+			case $rc in
+				0) print_message "OK" ;;
+				1) print_message "FAILED" ;;
+				2) print_message "SKIPPED" ;;
+			esac
+		done
+	fi
 }
 
 # clone
@@ -151,23 +154,26 @@ stop_group()
 {
 	local GROUP_ID=${1:?missing 1st argument to $FUNCNAME}
 	shift
-	local GROUP_SIZE=`echo "${STOP_GROUP[$GROUP_ID]}" | wc -w`
-	print_message "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
-	[ $GROUP_ID -eq 2 ] && {
-		# hosted physical
-		stop_vlantab
-	}
-	for i in `seq 1 $GROUP_SIZE`; do
-		IFNAME=`echo "${STOP_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
-		print_message -n -e "\tStopping $IFNAME: "
-		$SCRIPTDIR/ifdown $IFNAME $*
-		local rc=$?
-		case $rc in
-			0) print_message "OK" ;;
-			1) print_message "FAILED" ;;
-			2) print_message "SKIPPED" ;;
-		esac
-	done
+# wc can sometimes output extra spaces
+	local GROUP_SIZE=`echo "${STOP_GROUP[$GROUP_ID]}" | wc -w | sed 's/ *//'`
+	if [ ${GROUP_SIZE:=0} -ne 0 ]; then
+		print_message "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
+		[ $GROUP_ID -eq 2 ] && {
+			# hosted physical
+			stop_vlantab
+		}
+		for i in `seq 1 $GROUP_SIZE`; do
+			IFNAME=`echo "${STOP_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
+			print_message -n -e "\tStopping $IFNAME: "
+			$SCRIPTDIR/ifdown $IFNAME $*
+			local rc=$?
+			case $rc in
+				0) print_message "OK" ;;
+				1) print_message "FAILED" ;;
+				2) print_message "SKIPPED" ;;
+			esac
+		done
+	fi
 }
 
 start()
