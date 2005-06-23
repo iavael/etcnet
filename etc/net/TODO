@@ -13,5 +13,4 @@ X rp-pppoe support
 - kernel patch: support more than one teql interfaces
 - service network status
 - update_chrooted
-- options-{host,site,dist}
 - 'auto' interface

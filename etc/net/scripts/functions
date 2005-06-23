@@ -1,6 +1,9 @@
 #!/bin/bash
 
-. /etc/net/options
+for optionsfile in /etc/net/options /etc/net/options.d/*; do
+	[ -s "$optionsfile" ] && . $optionsfile
+done
+
 DENOISE="egrep ^[^#]"
 
 # Stolen from /etc/init.d/functions and improved.
