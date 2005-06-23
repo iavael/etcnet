@@ -69,3 +69,6 @@ DEFAULT_PPPINITCHAT=pppinit
 DEFAULT_PPPCONNECTCHAT=pppconnect
 DEFAULT_PPPDISCONNECTCHAT=pppdisconnect
 DEFAULT_CHATOPTIONS='-t 120'
+
+# resolv.conf post-install command
+#RESOLV_POSTIN_CMD=
