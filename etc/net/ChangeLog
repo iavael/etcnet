@@ -6,6 +6,7 @@
 	enhanced style according to Dmitry Levin's notes
 	new feature: resolver postinstall command
 	new feature: DHCP_HOSTNAME
+	changed default ifplugstatus location
 0.7.5 2005-06-16
 	custom resolv.conf+DHCP bugfix
 	dhcpcd IFF_UP workaround
