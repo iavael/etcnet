@@ -62,7 +62,7 @@ supported_type()
 name2type()
 {
 	local NAME=${1:?missing 1st arg to $FUNCNAME}
-	local CAND=${NAME//[0-9]*/}
+	local CAND=${NAME%%[0-9]*}
 	supported_type $CAND && echo $CAND
 }
 
@@ -94,7 +94,7 @@ pickup_options()
 
 print_error()
 {
-	echo "ERROR: $0: $@" > /dev/stderr
+	echo "ERROR: $0: $@" >&2
 	# don't hang if logger hangs
 	logger -p daemon.info -t "ERROR: $0: $@" &
 }
@@ -131,7 +131,6 @@ iface_is_up()
 {
 	local NAME=${1:?missing 1st argument to $FUNCNAME}
 	$IP -o link show dev $NAME 2>/dev/null | cut -d' ' -f3 | grep -qs '[<,]UP[,>]'
-	return $?
 }
 
 try_rmmod()
@@ -269,7 +268,6 @@ iface_exists ()
 {
 	local NAME=${1:?missing 1st argument to $FUNCNAME}
 	$IP li sh dev $NAME >/dev/null 2>&1
-	return $?
 }
 
 seen_iface ()

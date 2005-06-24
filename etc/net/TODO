@@ -14,3 +14,5 @@ X rp-pppoe support
 - service network status
 - update_chrooted
 - 'auto' interface
+- consider using $* instead of $@
+- don't use uninitialised/unquoted values
