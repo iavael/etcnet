@@ -1,4 +1,4 @@
-0.7.6
+0.7.6 2005-06-24
 	VLAN: fixed comments, added new example
 	bridge fixes from Nigel Kukard
 	network.init patch from Mitch

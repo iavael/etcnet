@@ -1,5 +1,6 @@
 - bluetooth support
 - smart ifplugd autodetection
+- 'auto' interface
 - auto broadcast option
 - xsupplicant support
 - Linux 2.6 IPSec support
@@ -12,6 +13,5 @@ X rp-pppoe support
 - bridge-utils arg order patch
 - kernel patch: support more than one teql interfaces
 - service network status
-- 'auto' interface
 - consider using $* instead of $@
 - don't use uninitialised/unquoted values
