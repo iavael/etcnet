@@ -2,8 +2,9 @@
 	VLAN: fixed comments, added new example
 	bridge fixes from Nigel Kukard
 	network.init patch from Mitch
-	new options.d feature
+	new feature: options.d
 	enhanced style according to Dmitry Levin's notes
+	new feature: resolver postinstall command
 0.7.5 2005-06-16
 	custom resolv.conf+DHCP bugfix
 	dhcpcd IFF_UP workaround

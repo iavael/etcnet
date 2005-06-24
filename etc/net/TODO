@@ -12,7 +12,6 @@ X rp-pppoe support
 - bridge-utils arg order patch
 - kernel patch: support more than one teql interfaces
 - service network status
-- update_chrooted
 - 'auto' interface
 - consider using $* instead of $@
 - don't use uninitialised/unquoted values

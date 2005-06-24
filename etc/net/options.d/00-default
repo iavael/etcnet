@@ -70,5 +70,6 @@ DEFAULT_PPPCONNECTCHAT=pppconnect
 DEFAULT_PPPDISCONNECTCHAT=pppdisconnect
 DEFAULT_CHATOPTIONS='-t 120'
 
-# resolv.conf post-install command
+# resolv.conf post-install command. Usually you don't want to define this
+# variable here, but place distribution-specific options file to options.d.
 #RESOLV_POSTIN_CMD=

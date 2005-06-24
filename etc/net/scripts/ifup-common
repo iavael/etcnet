@@ -103,7 +103,8 @@ is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME
 MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`
 if [ -s $MYRESOLVCONF ]; then
 	rm -f /etc/resolv.conf
-	ln -s $MYRESOLVCONF /etc/resolv.conf
+	cp $MYRESOLVCONF /etc/resolv.conf
+	[ -x "$RESOLV_POSTIN_CMD" ] && $RESOLV_POSTIN_CMD
 	print_progress
 fi
 
