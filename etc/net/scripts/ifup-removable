@@ -50,7 +50,13 @@ fi
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE SEEN_IFACES
 
 init_netprofile
-pickup_options
+if [ -d "$MYIFACEDIR" ]; then
+	pickup_options
+elif is_yes "$ALLOW_ORPHANS"; then
+	pickup_options_orph
+else
+	print_error "ignored orphan '$NAME' (lookup ALLOW_ORPHANS option or create a usable configuration)"
+fi
 
 is_yes "$DISABLED" && {
 	print_message -n "skipped disabled iface $NAME"

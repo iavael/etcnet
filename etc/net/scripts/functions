@@ -92,6 +92,22 @@ pickup_options()
 	SourceIfNotEmpty $SCRIPTDIR/functions-$TYPE
 }
 
+# same for orphan hot-plugged interfaces
+pickup_options_orph()
+{
+	TYPE=`name2type $NAME`
+	[ -z "$TYPE" ] && {
+		print_error "No TYPE is specified for iface '$NAME' and can't guess automatically. Please fix."
+		return 1
+	}
+	if ! supported_type $TYPE; then
+		print_error "iface type '$TYPE' is not supported"
+	fi
+	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options`
+	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-$TYPE`
+	SourceIfNotEmpty $SCRIPTDIR/functions-$TYPE
+}
+
 print_error()
 {
 	echo "ERROR: $0: $@" >&2
