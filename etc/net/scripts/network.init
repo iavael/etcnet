@@ -129,24 +129,23 @@ start_group()
 	shift
 # wc can sometimes output extra spaces
 	local GROUP_SIZE=`echo "${START_GROUP[$GROUP_ID]}" | wc -w | sed 's/ *//'`
-	if [ ${GROUP_SIZE:=0} -ne 0 ]; then
-		print_message "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
-		[ $GROUP_ID -eq 2 ] && {
-			# hosted physical
-			start_vlantab
-		}
-		for i in `seq 1 $GROUP_SIZE`; do
-			IFNAME=`echo "${START_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
-			print_message -n -e "\tStarting $IFNAME: "
-			$SCRIPTDIR/ifup $IFNAME $*
-			local rc=$?
-			case $rc in
-				0) print_message "OK" ;;
-				1) print_message "FAILED" ;;
-				2) print_message "SKIPPED" ;;
-			esac
-		done
-	fi
+# GROUP_SIZE is always not zero
+	print_message "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
+	[ $GROUP_ID -eq 2 ] && {
+		# hosted physical
+		start_vlantab
+	}
+	for i in `seq 1 $GROUP_SIZE`; do
+		IFNAME=`echo "${START_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
+		print_message -n -e "\tStarting $IFNAME: "
+		$SCRIPTDIR/ifup $IFNAME $*
+		local rc=$?
+		case $rc in
+			0) print_message "OK" ;;
+			1) print_message "FAILED" ;;
+			2) print_message "SKIPPED" ;;
+		esac
+	done
 }
 
 # clone
@@ -156,24 +155,23 @@ stop_group()
 	shift
 # wc can sometimes output extra spaces
 	local GROUP_SIZE=`echo "${STOP_GROUP[$GROUP_ID]}" | wc -w | sed 's/ *//'`
-	if [ ${GROUP_SIZE:=0} -ne 0 ]; then
-		print_message "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
-		[ $GROUP_ID -eq 2 ] && {
-			# hosted physical
-			stop_vlantab
-		}
-		for i in `seq 1 $GROUP_SIZE`; do
-			IFNAME=`echo "${STOP_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
-			print_message -n -e "\tStopping $IFNAME: "
-			$SCRIPTDIR/ifdown $IFNAME $*
-			local rc=$?
-			case $rc in
-				0) print_message "OK" ;;
-				1) print_message "FAILED" ;;
-				2) print_message "SKIPPED" ;;
-			esac
-		done
-	fi
+# GROUP_SIZE is always not zero
+	print_message "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
+	[ $GROUP_ID -eq 2 ] && {
+		# hosted physical
+		stop_vlantab
+	}
+	for i in `seq 1 $GROUP_SIZE`; do
+		IFNAME=`echo "${STOP_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
+		print_message -n -e "\tStopping $IFNAME: "
+		$SCRIPTDIR/ifdown $IFNAME $*
+		local rc=$?
+		case $rc in
+			0) print_message "OK" ;;
+			1) print_message "FAILED" ;;
+			2) print_message "SKIPPED" ;;
+		esac
+	done
 }
 
 start()
@@ -204,7 +202,7 @@ start()
 	print_message " $IFACECOUNT interfaces found"
 	# 2. process each group
 	for i in 0 1 2 3 4; do
-		[ -n "$START_GROUP[$i]" ] && start_group $i boot skiphot
+		[ -n "${START_GROUP[$i]}" ] && start_group $i boot skiphot
 	done
 	touch "$LOCKFILE"
 }
@@ -236,7 +234,7 @@ stop()
 	print_message " $IFACECOUNT interfaces found"
 	# reverse order
 	for i in 4 3 2 1 0; do
-		[ -n "$STOP_GROUP[$i]" ] && stop_group $i skiphot
+		[ -n "${STOP_GROUP[$i]}" ] && stop_group $i skiphot
 	done
 	rm -f "$LOCKFILE"
 }
