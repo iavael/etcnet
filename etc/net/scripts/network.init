@@ -69,35 +69,37 @@ start_vlantab()
 		print_message empty.
 		return
 	}
-	[ -x "${VCONFIG:=$DEFAULT_VCONFIG}" ] || {
-		print_message "missing $VCONFIG"
-		return 1
-	}
-	local HOST_IFACE CHILD_VID CHILD_NAME PROBED_8021Q=no
-	$VCONFIG set_name_type $VLAN_NAMETYPE >/dev/null 2>&1 ||
-	{
-		print_error 'error setting VLAN naming type, aborting'
-		return 1
-	}
-	SourceIfNotEmpty $SCRIPTDIR/functions-vlan
-	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
-		if [ "$PROBED_8021Q" = "no" ]; then
-			PROBED_8021Q=yes
-			$MODPROBE 8021q || {
-				print_error 'error inserting 8021q kernel module'
-				return 1
-			}
-		fi
-		if iface_is_up "$HOST_IFACE"; then
-			if create_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
-				print_progress
-			else
-				print_nack
+	local LCNT=`$DENOISE -c $PROFILED_VLANTAB`
+	if [ "$LCNT" != "0" ]; then
+		[ -x "${VCONFIG:=$DEFAULT_VCONFIG}" ] || {
+			print_message "missing $VCONFIG"
+			return 1
+		}
+		local HOST_IFACE CHILD_VID CHILD_NAME PROBED_8021Q=no
+		$VCONFIG set_name_type $VLAN_NAMETYPE >/dev/null 2>&1 ||
+		{
+			print_error 'error setting VLAN naming type, aborting'
+			return 1
+		}
+		SourceIfNotEmpty $SCRIPTDIR/functions-vlan
+		$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+			if [ "$PROBED_8021Q" = "no" ]; then
+				PROBED_8021Q=yes
+				$MODPROBE 8021q || {
+					print_error 'error inserting 8021q kernel module'
+					return 1
+				}
 			fi
-		fi
-	done
-	# We can't count ifaces right in the while cycle due to pipe causing new process
-	print_message "`$DENOISE -c $PROFILED_VLANTAB` lines processed."
+			if iface_is_up "$HOST_IFACE"; then
+				if create_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
+					print_progress
+				else
+					print_nack
+				fi
+			fi
+		done
+	fi
+	print_message "$LCNT lines processed."
 	return 0
 }
 
