@@ -1,0 +1,18 @@
+pty '/usr/sbin/pppoe -I eth0 -T 80 -U'
+noipdefault
+noauth
+default-asyncmap
+defaultroute
+hide-password
+mtu 1492
+mru 1492
+noaccomp
+noccp
+nobsdcomp
+nodeflate
+nopcomp
+novj
+novjccomp
+user _USERNAME_
+lcp-echo-interval 20
+lcp-echo-failure 3

@@ -1,0 +1,13 @@
+ALTLinux, PPPoE and /etc/net pico-HOWTO
+
+# apt-get install ppp rp-pppoe-client
+# chkconfig adsl off
+# service adsl stop
+# echo ppp_generic >> /etc/modules
+# echo ppp_async >> /etc/modules
+# echo ppp_synctty >> /etc/modules
+
+To enable syncronous mode:
+1. add '-s' to pppoe options
+2. add 'sync' to ppp options
+3. echo n_hdlc >> /etc/modules
