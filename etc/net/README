@@ -286,16 +286,16 @@ by just one parameter. Current profile name can be set via:
  3. kernel boot parameter "netprof", e.g. "LILO: linux netprof=home"
 Specifying a profile does nothing by default. But if etcnet scripts know the
 current profile name (e.g. "home") and look for a configuration file (e.g. "options"
-and "options.home" exists, then "options.home" will be used instead of "options".
+and "options#home" exists, then "options#home" will be used instead of "options".
 The same for ipv4address, ipv4route, ipv4rule, ipv6address, iplink and so on).
 
 Now if you want to boot the same host in two different networks, you will most
-probably have to create additional ipv4address.yourprofilename for another address
-and ipv4route.yourprofilename for another default route. Same for resolv.conf,
+probably have to create additional ipv4address#yourprofilename for another address
+and ipv4route#yourprofilename for another default route. Same for resolv.conf,
 I guess.
 
 Next example: booting two different hosts from the same HDD (root fs). The same as
-previous, but additional options.yourprofilename and iftab.yourprofilename for the
+previous, but additional options#yourprofilename and iftab#yourprofilename for the
 different network card.
 
 To switch between configurations without editing /etc/net/profile one can use:
