@@ -145,9 +145,14 @@ options: default options
 options: global options and defaults
 ipv4rule: ip rules startup table ('ip -4 rule add' args)
 sysctl.conf: sysctl startup
-vlantab: VLAN mass-configuration
-
+vlantab: VLAN mass-configuration table
 iftab: interface mappings table, processed each time ifup is run
+iftab file format is described in iftab manpage. Please note that we don't
+use /etc/iftab, but keep our own /etc/net/iftab. This difference allows to
+keep /etc/net-specific filenames with profile and host suffixes under a
+single directory without creating additional mess in /etc. Additionally
+it prevents the system from accidental interface name change after ifrename
+invocation.
 
 3.2 Interface groups:
 0/virtual: dummy, lo (tun/tuntap?)
