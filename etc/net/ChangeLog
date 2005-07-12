@@ -3,9 +3,10 @@
 	initial "unknown" interfaces support
 	vlantab code cleanup
 	added PPPoE config example by Alexey I. Froloff
-	more iftab info
+	more iftab info in README
 	logger enhancements by Andrew Kornilov
 	multiple network modules support
+	PPtP config example
 0.7.6 2005-06-24
 	VLAN: fixed comments, added new example
 	bridge fixes from Nigel Kukard
