@@ -66,7 +66,7 @@ name2type()
 	supported_type $CAND && echo $CAND
 }
 
-# read options hierarchy
+# Read options hierarchy. Should work for unknown interfaces too.
 pickup_options()
 {
 	# to determine iface type we must read it's config, but
@@ -89,22 +89,6 @@ pickup_options()
 	# and finally source iface options
 	SourceIfNotEmpty `profiled_filename $MYIFACEDIR/options`
 	# Load type-specific functions
-	SourceIfNotEmpty $SCRIPTDIR/functions-$TYPE
-}
-
-# same for orphan hot-plugged interfaces
-pickup_options_orph()
-{
-	TYPE=`name2type $NAME`
-	[ -z "$TYPE" ] && {
-		print_error "No TYPE is specified for iface '$NAME' and can't guess automatically. Please fix."
-		return 1
-	}
-	if ! supported_type $TYPE; then
-		print_error "iface type '$TYPE' is not supported"
-	fi
-	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options`
-	SourceIfNotEmpty `profiled_filename $IFACEDIR/default/options-$TYPE`
 	SourceIfNotEmpty $SCRIPTDIR/functions-$TYPE
 }
 

@@ -50,14 +50,20 @@ fi
 export IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE SEEN_IFACES
 
 init_netprofile
-if [ -d "$MYIFACEDIR" ]; then
-	pickup_options
-elif is_yes "$ALLOW_ORPHANS"; then
-	pickup_options_orph
-else
-	print_error "ignored orphan '$NAME' (lookup ALLOW_ORPHANS option or create a usable configuration)"
+if [ ! -d "$MYIFACEDIR" ]; then
+	if is_yes "$ALLOW_UNKNOWN"; then
+		if [ -d $IFACEDIR/unknown@$NETHOST ]; then
+			MYIFACEDIR=$IFACEDIR/unknown@$NETHOST
+		else
+			# Let's hope it exists.
+			MYIFACEDIR=$IFACEDIR/unknown
+		fi
+	else
+		print_error "ignored unknown interface '$NAME' (lookup ALLOW_UNKNOWN option or create a usable configuration)"
+	fi
 fi
 
+pickup_options
 is_yes "$DISABLED" && {
 	print_message -n "skipped disabled iface $NAME"
   exit 1
