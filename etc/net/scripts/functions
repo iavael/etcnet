@@ -112,7 +112,7 @@ print_error()
 {
 	echo "ERROR: $0: $@" >&2
 	# don't hang if logger hangs
-	logger -p daemon.info -t "ERROR: $0: $@" &
+	logger -p daemon.info -t /etc/net -- "ERROR: $0: $@" &
 }
 
 # Don't display progress if not verbose.
