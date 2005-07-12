@@ -4,7 +4,7 @@
 - auto broadcast option
 - xsupplicant support
 - Linux 2.6 IPSec support
-X rp-pppoe support
++ rp-pppoe support
 - Elektra support
 - handle 'add' in ipv4rule on ifdown
 - analyze zebra and RTPROTO ip option

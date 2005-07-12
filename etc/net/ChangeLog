@@ -1,6 +1,11 @@
 0.7.7
 	finally fixed bug with interface group size
-	initial orphan interfaces support
+	initial "unknown" interfaces support
+	vlantab code cleanup
+	added PPPoE config example by Alexey I. Froloff
+	more iftab info
+	logger enhancements by Andrew Kornilov
+	multiple network modules support
 0.7.6 2005-06-24
 	VLAN: fixed comments, added new example
 	bridge fixes from Nigel Kukard
