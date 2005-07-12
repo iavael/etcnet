@@ -1,4 +1,4 @@
-0.7.7
+0.7.7 2005-07-12
 	finally fixed bug with interface group size
 	initial "unknown" interfaces support
 	vlantab code cleanup
