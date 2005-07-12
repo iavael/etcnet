@@ -15,3 +15,5 @@ X rp-pppoe support
 - service network status
 - consider using $* instead of $@
 - don't use uninitialised/unquoted values
++ multiple network modules
++ logger --
