@@ -4,7 +4,6 @@
 - auto broadcast option
 - xsupplicant support
 - Linux 2.6 IPSec support
-+ rp-pppoe support
 - Elektra support
 - handle 'add' in ipv4rule on ifdown
 - analyze zebra and RTPROTO ip option
@@ -15,5 +14,3 @@
 - service network status
 - consider using $* instead of $@
 - don't use uninitialised/unquoted values
-+ multiple network modules
-+ logger --
