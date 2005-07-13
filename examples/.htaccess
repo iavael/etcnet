@@ -3,5 +3,6 @@ AddDescription "HTB/SFQ QoS example" qos-raorn
 AddDescription "trivial example" ifaces-simple
 AddDescription "PPP examples" ifaces-ppp
 AddDescription "some more complex example" ifaces-3ethers
+AddDescription "VLAN config example" ifaces-vlan
+AddDescription "wireless config example" ifaces-wireless
 ForceType text/plain
-
