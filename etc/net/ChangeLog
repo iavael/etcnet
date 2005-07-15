@@ -1,5 +1,5 @@
-0.7.8
-	fixed several minor bugs introduced in 0.7.7 release
+0.7.8 2005-07-15
+	fixed several minor bugs introduced by 0.7.7 release
 0.7.7 2005-07-12
 	finally fixed bug with interface group size
 	initial "unknown" interfaces support
