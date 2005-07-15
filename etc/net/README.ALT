@@ -16,3 +16,7 @@ in /etc/net/sysctl.conf.
 You may need to run 'chkconfig network reset' (known bug).
 
 4. /etc/net is compatible with dhcpcd ONLY
+
+5. ALLOW_UNKNOWN feature
+Please note that USE_HOTPLUG is useless for PCMCIA cards w/o USE_PCMCIA
+enabled.
