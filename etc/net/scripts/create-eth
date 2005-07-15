@@ -5,7 +5,6 @@ pickup_options
 
 # If an administrator wishes to rely on modules.conf, let's agree.
 if [ -n "$MODULE" ]; then
-	local oneword
 	for oneword in $MODULE; do
 		$MODPROBE $oneword
 	done
