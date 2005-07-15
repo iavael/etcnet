@@ -188,7 +188,7 @@ start()
 		BNAME=`basename $MYIFACEDIR`
 		NAME=${BNAME/%@*/}
 		[ "${NAME/%@*/}" = "${BNAME/%@$NETHOST/}" ] || continue
-		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
+		[ "$NAME" = "default" -o "$NAME" = "unknown" -o "$NAME" = "CVS" ] && continue
 		unset TYPE DISABLED
 		pickup_options
 		is_yes "$DISABLED" && continue
@@ -220,7 +220,7 @@ stop()
 		BNAME=`basename $MYIFACEDIR`
 		NAME=${BNAME/%@*/}
 		[ "${NAME/%@*/}" = "${BNAME/%@$NETHOST/}" ] || continue
-		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
+		[ "$NAME" = "default" -o "$NAME" = "unknown" -o "$NAME" = "CVS" ] && continue
 		unset TYPE DISABLED
 		pickup_options
 		is_yes "$DISABLED" && continue
