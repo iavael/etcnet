@@ -1,6 +1,5 @@
 - bluetooth support
 - smart ifplugd autodetection
-- 'auto' interface
 - auto broadcast option
 - xsupplicant support
 - Linux 2.6 IPSec support
