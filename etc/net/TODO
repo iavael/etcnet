@@ -13,3 +13,4 @@
 - service network status
 - consider using $* instead of $@
 - don't use uninitialised/unquoted values
+- PPPoE parent interface handling
