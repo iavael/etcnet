@@ -1,0 +1,357 @@
+#!/bin/bash
+
+# FIXME
+# move to another place
+is_dir_ok()
+{
+	if [ -d "$1" -a -x "$1" ]; then 
+		return 0
+	else
+		return 1
+	fi
+}
+# FIXME
+# move to another place
+is_file_ok()
+{
+	if [ -f "$1" -a -r "$1" ]; then 
+		return 0
+	else
+		return 1
+	fi
+}
+# FIXME
+# move to another place
+is_comment()
+{
+	echo "$1"|egrep -q '^\ *#' && return 0
+	echo "$1"|egrep -q '^\ *\;' && return 0
+	return 1
+}
+# FIXME
+# move to another place
+is_empty_file()
+{
+	if [ -s "$1" ]; then 
+		return 1
+	else
+		return 0
+	fi
+}
+
+# FIXME
+# move to another place
+is_empty_string()
+{
+	echo "$1"|egrep -qv ".*[a-zA-Z].*"
+	return $?
+}
+
+# FIXME
+# move to another place
+in_list()
+{
+	OLDIFS=$IFS
+	IFS=" "
+	for element in $1; do
+		if [ "$element" = "`basename $2`" ]; then
+			IFS=$OLDIFS
+			return 0
+		fi	
+	done
+	IFS=$OLDIFS
+	return 1
+}
+
+iptables_chain_policy()
+{
+	eval "$IPTABLES -P $@" || print_error "$IPTABLES -P $@"
+}
+
+iptables_create_chain()
+{
+	eval "$IPTABLES -N $@" || print_error "$IPTABLES -N $@"
+}
+
+iptables_delete_chain()
+{
+	eval "$IPTABLES -X $@" || print_error "$IPTABLES -X $@"
+}
+
+iptables_flush_chain()
+{
+	eval "$IPTABLES -F $@" || print_error "$IPTABLES -F $@"
+}
+
+
+iptables_add_rule()
+{
+	eval "$IPTABLES -A $@" || print_error "$IPTABLES -A $@"
+}
+
+iptables_insert_rule()
+{
+	eval "$IPTABLES -I $@" || print_error "$IPTABLES -I $@"
+}
+
+iptables_delete_rule()
+{
+	eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"
+}
+
+iptables_load_syntax()
+{
+	export iptables_syntax=
+	[ -z "$1" ] || ! is_file_ok "$1" || is_empty_file "$1" && return 1
+	# FIXME
+	#OLDIFS=$IFS
+	IFS=
+	export iptables_syntax=$(< "$1")
+	#IFS=$OLDIFS
+}
+
+iptables_create_sed_rules()
+{
+	export iptables_sed_rules=
+	[ $# -lt 1 -o -z "$1" ] && return 1
+	replaces="$1"
+	OLDIFS=$IFS
+	# FIXME How to put newline here? :-/
+	IFS="
+	"
+	is_yes "$VERBOSE" && print_message "Loading iptables data"
+	for rule in $replaces; do
+		is_yes "$VERBOSE" && print_progress
+		[ -z $rule ] || is_comment "$rule"  && continue
+		search=$(echo $rule|cut -f1 -d:|sed -e 's/\//\\\//g')
+		replace=$(echo $rule|cut -f2 -d:|sed -e 's/\//\\\//g')
+		# FIXME  Still remove spaces so add it
+		#iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/$replace /g;"
+		iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/\1$replace\2/gi;"
+	done
+	is_yes "$VERBOSE" && print_message
+	IFS=$OLDIFS
+	export iptables_sed_rules
+}
+
+iptables_expand_string()
+{
+	[ -z "$1" ] && return 1
+	if is_yes "$IPTABLES_HUMAN_SYNTAX"; then
+		[ -z "$iptables_sed_rules" ] && print_error "Human syntax is enabled but no syntax file is loaded"
+		rule=$(eval "echo $1"|sed  -e "$iptables_sed_rules;s/\ \ /\ /g;")
+	else
+		rule=$(eval "echo $1")
+	fi
+ 	if is_empty_string "$rule"; then
+		echo ""
+	else
+		echo "$rule"
+	fi
+		
+}
+
+iptables_preload()
+{
+	is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$iptables_syntax" ] && { 
+		iptables_load_syntax ${IPTABLES_SYNTAX_DIR:=/etc/net/ifaces/default/fw/iptables}/syntax
+		iptables_create_sed_rules "$iptables_syntax"
+		}			
+}
+
+iptables_load_rules_from_file()
+{
+	if is_file_ok "$chain" && ! is_empty_file "$chain"; then
+		is_yes "$VERBOSE" && print_message "Loading rules for chain `basename $chain` in table `basename $table`"
+		cat "$chain" | while read rule; do
+			[ ! -z "$rule" ] && ! is_comment "$rule" && {
+				rule=`iptables_expand_string "$rule"`
+				[ -z "$rule" ] || iptables_add_rule `basename $chain` -t `basename $table` $rule
+				print_progress
+			}
+		done
+		print_message
+	fi
+}
+
+iptables_flush_rules_from_file()
+{
+	if is_file_ok "$chain" && ! is_empty_file "$chain"; then
+		is_yes "$VERBOSE" && print_message "Flushing rules for chain `basename $chain` in table `basename $table`"
+		# Flush rules only when stop networking
+		if [ "$NAME" != "default" ]; then
+			tac "$chain" | while read rule; do
+			[ ! -z "$rule" ] && ! is_comment "$rule" && {
+				rule=`iptables_expand_string "$rule"`
+				[ -z "$rule" ] || iptables_delete_rule `basename $chain` -t `basename $table` $rule
+				print_progress
+			}
+			done
+			print_message
+		else
+			iptables_flush_chain `basename $chain` -t `basename $table`
+		fi
+	fi
+}
+
+
+iptables_start()
+{
+	[ -z "$1" ] && return 1	
+	NAME="$1"
+	is_yes "$VERBOSE" && print_message "Starting iptables for $NAME"
+	# Set defaut policy
+	if [ "$NAME" = "default" ]; then
+		[ -z "$IPTABLES_INPUT_POLICY" ] || {
+			is_yes "$VERBOSE" && print_message "Set $IPTABLES_INPUT_POLICY policy for INPUT chain"
+			iptables_chain_policy INPUT "$IPTABLES_INPUT_POLICY"
+		}
+		[ -z "$IPTABLES_FORWARD_POLICY" ] || {
+			is_yes "$VERBOSE" && print_message "Set $IPTABLES_FORWARD_POLICY policy for FORWARD chain"
+			iptables_chain_policy FORWARD "$IPTABLES_FORWARD_POLICY"
+		}
+		[ -z "$IPTABLES_OUTPUT_POLICY" ] || {
+			is_yes "$VERBOSE" && print_message "Set $IPTABLES_OUTPUT_POLICY policy for OUTPUT chain"
+			iptables_chain_policy OUTPUT "$IPTABLES_OUTPUT_POLICY"
+		}
+	fi
+	cd "$MYIFACEDIR/fw/$FW_TYPE"
+	# Load modules
+	if is_file_ok "modules" && ! is_empty_file "modules"; then
+		cat modules | while read module; do
+			[ ! -z "$module" ] && ! is_comment "$module" && {
+				is_yes "$VERBOSE" && print_message "Loading module $module"
+				$MODPROBE "$module" || print_error "Can't load module $module"
+			}
+		done
+	fi
+	# Create user chains
+	for table in *; do
+		[ "`basename $table`" = "loadorder" ] && continue
+		! is_dir_ok "$table" && continue
+		for chain in "$table"/*; do
+			[ "`basename $chain`" = "loadorder" ] && continue
+			if is_file_ok "$chain" && ! is_empty_file "$chain" ; then
+				if ! in_list "$IPTABLES_SYSTEM_CHAINS"  "$chain"; then
+					is_yes "$VERBOSE" && print_message "Creating chain `basename $chain` in table `basename $table`"
+					iptables_create_chain `basename $chain` -t `basename $table`
+				fi
+			fi
+		done
+	done
+
+	# FIXME  Double code
+	# Load rules after creating _all_ chains
+	if is_file_ok "loadorder" && ! is_empty_file "loadorder"; then
+		cat "loadorder"|while read table; do
+			is_empty_string "$table" && continue
+			! is_dir_ok "$table" && continue
+			if is_file_ok "$table/loadorder" && ! is_empty_file "$table/loadorder"; then
+				cat "$table/loadorder"|while read chain; do
+					is_empty_string "$chain" && continue
+					chain="$table/$chain"
+					iptables_load_rules_from_file
+				done
+			else
+				for chain in "$table"/*; do
+					iptables_load_rules_from_file
+				done
+			fi
+		done
+	else
+		for table in *; do
+			[ "`basename $table`" = "loadorder" ] && continue
+			! is_dir_ok "$table" && continue
+			if is_file_ok "$table/loadorder" && ! is_empty_file "$table/loadorder"; then
+				cat "$table/loadorder"|while read chain; do
+					is_empty_string "$chain" && continue
+					chain="$table/$chain"
+					iptables_load_rules_from_file
+				done
+			else
+				for chain in "$table"/*; do
+					iptables_load_rules_from_file
+				done
+			fi
+		done
+	fi
+}
+
+iptables_stop()
+{
+	[ -z "$1" ] && return 1	
+	NAME="$1"
+	print_message "Stopping iptables for $NAME"
+	cd "$MYIFACEDIR/fw/$FW_TYPE"
+
+	# FIXME  Double code
+	# Flush rules
+	if is_file_ok "loadorder" && ! is_empty_file "loadorder"; then
+		tac "loadorder"|while read table; do
+			is_empty_string "$table" && continue
+			! is_dir_ok "$table" && continue
+			if is_file_ok "$table/loadorder" && ! is_empty_file "$table/loadorder"; then
+				tac "$table/loadorder"|while read chain; do
+					is_empty_string "$chain" && continue
+					chain="$table/$chain"
+					iptables_flush_rules_from_file
+				done
+			else
+				for chain in "$table"/*; do
+					iptables_flush_rules_from_file
+				done
+			fi
+		done
+	else
+		for table in *; do
+			[ "`basename $table`" = "loadorder" ] && continue
+			! is_dir_ok "$table" && continue
+			if is_file_ok "$table/loadorder" && ! is_empty_file "$table/loadorder"; then
+				chainsorder=$(tac "$table/loadorder")
+				tac "$table/loadorder"|while read chain; do
+					is_empty_string "$chain" && continue
+					chain="$table/$chain"
+					iptables_flush_rules_from_file
+				done
+			else
+				for chain in "$table"/*; do
+					iptables_flush_rules_from_file
+				done
+			fi
+		done
+	fi
+
+	# Delete user chains
+	for table in *; do
+		[ "`basename $table`" = "loadorder" ] && continue
+		! is_dir_ok "$table" && continue
+		for chain in "$table"/*; do
+			[ "`basename $chain`" = "loadorder" ] && continue
+			if is_file_ok "$chain" && ! is_empty_file "$chain"; then
+				if ! in_list "$IPTABLES_SYSTEM_CHAINS"  "$chain"; then
+					is_yes "$VERBOSE" && print_message "Deleting chain `basename $chain` from table `basename $table`"
+					iptables_delete_chain `basename $chain` -t `basename $table`
+				fi
+			fi
+		done
+	done
+
+	# Unload modules
+	if is_file_ok "modules" && ! is_empty_file "modules"; then
+		tac modules | while read module; do
+			[ ! -z "$module" ] && ! is_comment "$module" && {
+				is_yes "$VERBOSE" && print_message "Unloading module $module"
+				$MODPROBE -r "$module" || print_error "Can't unload module $module"
+			}
+		done
+	fi
+	# Set ACCEPT policy
+	if [ "$NAME" = "default" ]; then
+		is_yes "$VERBOSE" && print_message "Set ACCEPT policy for INPUT chain"
+		iptables_chain_policy INPUT ACCEPT
+		is_yes "$VERBOSE" && print_message "Set ACCEPT policy for FORWARD chain"
+		iptables_chain_policy FORWARD ACCEPT
+		is_yes "$VERBOSE" && print_message "Set ACCEPT policy for OUTPUT chain"
+		iptables_chain_policy OUTPUT ACCEPT
+	fi
+}

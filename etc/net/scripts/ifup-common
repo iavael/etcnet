@@ -94,6 +94,8 @@ is_yes $DONT_FLUSH || {
 	flush_addresses $NAME
 	print_progress
 }
+# Start firewall before all
+is_yes "$CONFIG_FW"  && ExecIfExecutable $SCRIPTDIR/config-fw $NAME start
 is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME
 is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME
 is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME

@@ -1,0 +1,59 @@
+# All chains and targes are case-sensitive !
+policy: 
+# Targets
+accept: -j ACCEPT
+pass: -j ACCEPT
+drop: -j DROP
+reject: -j REJECT
+deny: -j DROP
+return: -j RETURN
+reject-with: -j REJECT --reject-with
+snat: -j SNAT --to-source
+snat-to: -j SNAT --to-source
+dnat: -j DNAT --to-destination
+dnat-to: -j DNAT --to-destination
+mark: -j MARK --set-mark
+log: -j LOG
+
+# Directions
+from: -s
+to: -d
+sport: --sport
+from-port: --sport
+dport: --dport
+to-port: --dport
+in-iface: -i
+from-iface: -i
+out-iface: -o
+to-iface: -o
+
+# Protocols
+all: -p ALL
+tcp: -p TCP
+udp: -p UDP
+icmp: -p ICMP
+
+# Misc
+jump: -j 
+jump-to: -j
+any: 0.0.0.0/0
+with: 
+and: 
+as: 
+is: 
+if: 
+proto: 
+net: 
+host: 
+
+# Match extensions
+state: -m state --state
+mac: -m mac --mac-source
+limit: -m limit --limit
+marked: -m mark --mark
+sports: -m mport --source-ports
+from-ports: -m mport --source-ports
+dports: -m mport --destination-ports
+to-ports: -m mport --destination-ports
+ports: -m mport --ports
+

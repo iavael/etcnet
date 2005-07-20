@@ -1,0 +1,1 @@
+accept tcp from net 1.2.3.4/24 to net 4.3.2.1/24

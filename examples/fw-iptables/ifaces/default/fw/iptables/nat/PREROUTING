@@ -1,0 +1,1 @@
+dnat-to 1.2.3.4 if proto tcp from any to 4.3.2.1

@@ -51,6 +51,7 @@ CONFIG_IPV6=no
 CONFIG_IPX=no
 CONFIG_QOS=yes
 CONFIG_WIRELESS=no
+CONFIG_FW=no
 
 # If set to yes, interface will not be set UP, but configured.
 KEEP_DOWN=no

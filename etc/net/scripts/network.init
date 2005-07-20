@@ -13,6 +13,7 @@ if [ ! -s $SCRIPTDIR/functions ]; then
 	exit 1
 fi
 . $SCRIPTDIR/functions
+. $SCRIPTDIR/functions-fw
 SourceIfNotEmpty /etc/sysconfig/network
 export IFACEDIR SCRIPTDIR NETPROFILE NETHOST
 LOCKFILE=/var/lock/subsys/network
@@ -178,6 +179,14 @@ stop_group()
 
 start()
 {
+	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
+	is_yes "$CONFIG_FW" && {
+		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options-fw`
+		export CONFIG_FW FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX IPTABLES_INPUT_POLICY \
+				IPTABLES_FORWARD_POLICY IPTABLES_OUTPUT_POLICY
+		iptables_preload
+	 	ExecIfExecutable `profiled_filename /etc/net/scripts/config-fw` default start
+	}
 	$SYSCTL -p `profiled_filename /etc/net/sysctl.conf`
 	declare -a START_GROUP
 	# 1. fill in the groups
@@ -212,6 +221,12 @@ start()
 # almost clone
 stop()
 {
+	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
+	is_yes "$CONFIG_FW" && {
+		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options-fw`
+		export CONFIG_FW FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX
+		iptables_preload
+	}
 	declare -a STOP_GROUP
 	local IFACECOUNT=0
 	print_message -n "Computing interface groups: "
@@ -238,6 +253,7 @@ stop()
 	for i in 4 3 2 1 0; do
 		[ -n "${STOP_GROUP[$i]}" ] && stop_group $i skiphot
 	done
+	is_yes "$CONFIG_FW" && 	ExecIfExecutable `profiled_filename /etc/net/scripts/config-fw` default stop
 	rm -f "$LOCKFILE"
 }
 

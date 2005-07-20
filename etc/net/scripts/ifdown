@@ -73,6 +73,9 @@ fi
 ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
 
+# Stop firewall after all
+is_yes "$CONFIG_FW"  && ExecIfExecutable $SCRIPTDIR/config-fw $NAME stop && print_progress 
+
 # 3. get rid of the iface
 flush_addresses $NAME
 is_yes "$IN_IFPLUGD" || ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME

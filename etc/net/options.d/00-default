@@ -77,3 +77,6 @@ DEFAULT_CHATOPTIONS='-t 120'
 # If set to yes, makes /etc/net treat new interfaces w/o configuration directory
 # as other normal interfaces.
 ALLOW_UNKNOWN=no
+
+# FireWall defaults
+IPTABLES=/sbin/iptables

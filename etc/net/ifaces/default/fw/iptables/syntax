@@ -1,0 +1,263 @@
+# All chains and targets are case-sensitive !
+policy: 
+# Targets
+accept: -j ACCEPT
+pass: -j ACCEPT
+drop: -j DROP
+reject: -j REJECT
+deny: -j DROP
+return: -j RETURN
+reject-with: -j REJECT --reject-with
+snat: -j SNAT --to-source
+snat-to: -j SNAT --to-source
+dnat: -j DNAT --to-destination
+dnat-to: -j DNAT --to-destination
+mark: -j MARK --set-mark
+log: -j LOG
+balance: -j BALANCE --to-destination
+classify: -j CLASSIFY --set-class
+# FIXME not full support
+clusterip: -j CLUSTERIP
+connmark: -j CONNMARK --set-mark
+connmark-save: -j CONNMARK --save-mark
+save-connmark: -j CONNMARK --save-mark
+connmark-restore: -j CONNMARK --restore-mark
+restore-connmark: -j CONNMARK --restore-mark
+set-dscp: -j DSCP --set-dscp
+set-dscp-class: -j DSCP --set-dscp-class
+ecn: -j ECN --ecn-tcp-remove
+ecn-tcp-remove: -j ECN --ecn-tcp-remove
+masquerade: -j MASQUERADE
+masquerade-to-ports: -j MASQUERADE --to-ports
+mirror: -j MIRROR
+netmap: -j NETMAP --to
+netmap-to: -j NETMAP --to
+notrack: -j NOTRACK
+redirect: -j REDIRECT
+redirect-to-ports: -j REDIRECT --to-ports
+route-to: -j ROUTE --oif
+route-from: -j ROUTE --iif
+route-gw: -j ROUTE --gw
+route-continue: -j ROUTE --continue
+route-tee: -j ROUTE --tee
+add-set: -j SET --add-set
+del-set: -j SET --del-set
+set-mss: -j TCPMSS -set-mss
+clamp-mss-to-pmtu: -j TCPMSS --clamp-mss-to-pmtu
+set-tos: -j TOS --set-tos
+trace: -j TRACE
+ttl-set: -j TTL --ttl-set
+set-ttl: -j TTL --ttl-set
+ttl-dec: -j TTL --ttl-dec
+dec-ttl: -j TTL --ttl-dec
+ttl-inc: -j TTL --ttl-inc
+inc-ttl: -j TTL --ttl-inc
+ulog: -j ULOG
+
+# Directions
+from: --src
+src: --src
+source: --src
+to: --dst
+dst: --dst
+destination: --dst
+sport: --source-port
+from-port: --source-port
+dport: --destination-port
+to-port: --destination-port
+in-iface: -i
+from-iface: -i
+siface: -i
+out-iface: -o
+to-iface: -o
+diface: -o
+
+# Protocols
+all: --protocol ALL
+tcp: --protocol TCP
+udp: --protocol UDP
+icmp: --protocol ICMP
+
+# Misc
+jump: -j 
+jump-to: -j
+any: 0.0.0.0/0
+with: 
+and: 
+as: 
+if: 
+net: 
+host: 
+is: 
+proto: 
+not: !
+fragment: --fragment
+counters: --set-counters
+unspec: UNPSEC
+unicast: UNICAST
+local: LOCAL
+broadcast: BROADCAST
+anycast: ANYCAST
+multicast: MULTICAST
+blackhole: BLACKHOLE
+unreachable: UNREACHABLE
+unreach: UNREACHABLE
+prohibit: PROHIBIT
+throw: THROW
+nat: NAT
+xresolve: XRESOLVE
+invalid: INVALID
+established: ESTABLISHED
+new: NEW
+related: RELATED
+ssnat: SNAT
+sdnat: DNAT
+none: NONE
+expected: EXPECTED
+seen_reply: SEEN_REPLY
+assured: ASSURED
+mask: --mask
+log-level: --log-level
+log-prefix: --log-prefix
+log-tcp-sequence: --log-tcp-sequence
+log-tcp-options: --log-tcp-options
+log-ip-options: --log-ip-options
+log-uid: --log-uid
+net-unreachable: icmp-net-unreachable
+net-unreach: icmp-net-unreachable
+port-unreachable: icmp-port-unreachable
+port-unreach: icmp-port-unreachable
+proto-unreachable: icmp-proto-unreachable
+proto-unreach: icmp-proto-unreachable
+net-prohibited: icmp-net-prohibited
+net-prohibit: icmp-net-prohibited
+host-prohibited: icmp-host-prohibited
+host-prohibit: icmp-host-prohibited
+admin-prohibited: icmp-admin-prohibited
+admin-prohibit: icmp-admin-prohibited
+ulog-nlgroup: --ulog-nlgroup
+ulog-prefix: --ulog-prefix
+ulog-cprange: --ulog-cprange
+ulog-qthreshold: --ulog-qthreshold
+
+# Match extensions
+addrtype: -m addrtype
+addr-type: -m addrtype
+srctype: --src-type
+src-type: --src-type
+dsttype: --dst-type
+dst-type: --dst-type
+ah: --ahspi
+childlevel: --childlevel
+condition: --condition
+cond: --condition
+connmarked: -m connmark --mark
+connrate: --connrate
+conntrack: -m conntrack
+ctstate: --ctstate
+ctproto: --ctproto
+ctorigsrc: --ctorigsrc
+ctorigdst: --ctorigdst
+ctreplsrc: --ctreplsrc
+ctrepldst: --ctrepldst
+ctstatus: --ctstatus
+ctexpire: --ctexpire
+dscp: --dscp
+dscp-class: --dscp-class
+dstlimit: --dstlimit
+dstlimit-mode: --dstlimit-mode
+dstlimit-name: --dstlimit-name
+dstlimit-durst: --dstlimit-burst
+dstlimit-htable-size: --dstlimit-htable-size
+dstlimit-htable-max: --dstlimit-htable-max
+dstlimit-htable-gcinterval: --dstlimit-htable-gcinterval
+dstlimit-htable-expire: --dstlimit-htable-expire
+ecn-tcp-cwr: --ecn-tcp-cwr
+tcp-cwr: --ecn-tcp-cwr
+ecn-tcp-ece: --ecn-tcp-ece
+tcp-ece: --ecn-tcp-ece
+ecn-ip-ect: --ecn-ip-ect
+ip-ect: --ecn-ip-ect
+esp: -m esp
+espspi: --espspi
+fuzzy: -m fuzzy
+fuzzy-lower-limit: --lower-limit
+lower-limit: --lower-limit
+fuzzy-upper-limit: --upper-limit
+upper-limit: --upper-limit
+helper: --helper
+helper-string: --helper
+icmp-type: --icmp-type
+iprange: -m iprange
+iprange-src-range: --src-range
+iprange-src: --src-range
+src-range: --src-range
+iprange-dst-range: --dst-range
+iprange-dst: --dst-range
+dst-range: --dst-range
+length: --length
+limit: -m limit
+limit-rate: --limit
+rate: --limit
+limit-burst: --limit-burst
+burst: --limit-burst
+mac: --mac-source
+marked: -m mark --mark
+mport: -m mport
+sports: --source-ports
+from-ports: --source-ports
+source-ports: --source-ports
+dports: --destionation-ports
+to-ports: --destionation-ports
+destination-ports: --destination-ports
+ports: --ports
+nth: -m nth
+nth-every: --every
+nth-counter: --counter
+nth-start: --start
+nth-packet: --packet
+owner: -m owner
+owner-uid: --uid-owner
+uid-owner: --uid-owner
+owner-gid: --gid-owner
+gid-owner: --gid-owner
+owner-pid: --pid-owner
+pid-owner: --pid-owner
+owner-sid: --sid-owner
+sid-owner: --sid-owner
+owner-cmd: --cmd-owner
+cmd-owner: --cmd-owner
+physdev: -m physdev
+physdev-in: --physdev-in
+physdev-is-in: --physdev-is-in
+physdev-out: --physdev-out
+physdev-is-out: --physdev-is-out
+physdev-is-bridged: --physdev-is-bridged
+pkttype: --pkt-type
+random: --average 
+realm: --realm
+set: --set
+state: --state
+tcp-flags: --tcp-flags
+flags: --tcp-flags
+syn: --syn
+tcp-option: --tcp-option
+mss: -m tcp --mss
+tcpmss: -m tcpmss --mss
+tcp-mss: -m tcpmss --mss
+time: -m time
+timestart: --timestart
+time-start: --timestart
+timestop: --timestop
+time-stop: --timestop
+days: --days
+datestart: --datestart
+date-start: --datestart
+datestop: --datestop
+date-stop: --datestop
+tos-is: --tos
+ttl: -m ttl
+ttl-eq: --ttl-eq
+ttl-gt: --ttl-gt
+ttl-lt: --ttl-lt
+

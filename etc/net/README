@@ -1,4 +1,4 @@
-/etc/net version 0.7.7
+/etc/net version 0.7.9
 http://pilot.org.ua/etcnet/
 
 Copyright (c) 2004-2005 Denis Ovsienko (info#pilot_org_ua)
@@ -26,12 +26,14 @@ Supported interface types:
 +/-dummy
 +Pent@NET
 +usbnet
-+PPP (see below for PPtP)
++PPP (see below for PPtP, PPPoE)
 
 Supported protocols:
 IPv4 (static, DHCP, IPv4LL)
 IPv6 (static)
 IPX
+
+Extra features: QoS, sysctl, firewall.
 
 2. QUICK START
 # mkdir /etc/net/ifaces/myinterface1
@@ -361,3 +363,103 @@ main difference is that one has to put
 pty 'pptp --nolaunchpppd 1.2.3.4'
 --
 line into pppoptions file. 1.2.3.4 is IP address of PPTP server.
+
+10. Firewall support
+10.1. Iptables configs structure
+
+/etc/net/ifaces/default/options: You'd set CONFIG_FW to "yes" for firewall support
+/etc/net/ifaces/default/options-fw: Some options for firewall (type, syntax,
+default policy for chains)
+
+/etc/net/ifaces/<IFACE>/fw/iptables:
+modules: file with list of modules to load when firewall starting
+syntax: file with syntax of firewall rules if you've enabled
+IPTABLES_HUMAN_SYNTAX
+
+filter: directory with chains for table filter
+   |
+   --INPUT: File with rules for chain INPUT
+   |
+   --FORWARD: File with rules for chain FORWARD
+   |
+   --OUTPUT: File with rules for chain OUTPUT
+  
+nat: directory with chains for table nat
+   |
+   --PREROUTING: File with rules for chain PREROUTING
+   |
+   --POSTROUTING: File with rules for chain POSTROUTING
+   |
+   --OUTPUT: File with rules for chain OUTPUT
+   
+mangle: directory with chains for table mangle
+   |
+   --PREROUTING: File with rules for chain PREROUTING
+   |
+   --INPUT: File with rules for chain INPUT
+   |
+   --FORWARD: File with rules for chain FORWARD
+   |
+   --OUTPUT: File with rules for chain OUTPUT
+   |
+   --POSTROUTING: File with rules for chain POSTROUTING
+
+You can create your own chain by adding new file to directory. Chain name is
+case-sensitive!
+
+Each directory may contains special file "loadorder". In this case tables and
+chains processed in order from this file (ony by one)
+
+10.2. Rules syntax
+Supported  two type of syntax:
+	- raw iptables syntax
+	- new "human" syntax a la ipfw
+	
+If you've enabled IPTABLES_HUMAN_SYNTAX in options-fw, then you can use rules
+like ipfw (see examples and syntax file)
+
+In both types of syntax you'd not to include chain or table name to rule.
+
+You can use environment variables and even run one-string commands by using $(cmd).
+If there is now output from commnd rule will not be added (this can be used
+for including some configs or files with functions).
+
+System environment variable $NAME contains current interface name.
+
+Comments in all files must begins with #
+
+10.3. How it works
+
+When you start service network:
+interface "default":
+- If CONFIG_FW is yes then go step 2 otherwise go out :)
+- Apply chains policy before any interface start and before forwarding is enabled
+  sysctl
+- Load all modules from first to last from "module" file if any
+- Create all user-defined chains in all tables if any
+- From each chain in each table read rules one by one, parse it (if IPTABLES_HUMAN_SYNTAX)
+  and pass it to iptables
+each other interface:
+- Do same work except chains policy
+
+When you stop service network:
+ Do same work in case of start with some diffrences:
+- All steps goes in reverse order
+- If interface is not "default" then rules deleted one by one from last to first
+  otherwise chain just flushed
+- Modules unloads from last to first
+- Reset chains policy to ACCEPT
+
+You don't need to have all configs for all interfaces. Default rules (in
+virtual "default" interface directory) are enough to setup firewall.
+But you can have and start some special firewall rules for given interface
+or just for clean kernel rules tables (i.e. if you have down some interface
+there is no reason to have hundreds of rules for it)
+
+There is special script /sbin/fw which can manage firewall without restarting
+interface. Just run: /sbin/fw default stop and your firewall will be stopped :)
+
+ Bugs and limitations
+1. All chains and tables processed in sort of date of file/directory creation
+2. Syntax file is not completed. Only few rules :)
+3. Many other limitations :)
