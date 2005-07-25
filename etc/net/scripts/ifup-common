@@ -106,7 +106,7 @@ MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`
 if [ -s $MYRESOLVCONF ]; then
 	rm -f /etc/resolv.conf
 	cp $MYRESOLVCONF /etc/resolv.conf
-	[ -x "$RESOLV_POSTIN_CMD" ] && $RESOLV_POSTIN_CMD
+	[ -x "$RESOLV_POSTIN_CMD" ] && $RESOLV_POSTIN_CMD $RESOLV_POSTIN_ARGS
 	print_progress
 fi
 
