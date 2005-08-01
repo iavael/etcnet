@@ -8,8 +8,8 @@ case "${SUBTYPE:?missing SUBTYPE option for $NAME, please fix}" in
 		# we don't rmmod skystar2 module to keep our kernel running
 	;;
 	pentanet)
-	;;
 		try_rmmod pentanet
+	;;
 	*)
 		print_error "unknown DVB subtype '$SUBTYPE' for interface $NAME"
 	;;
