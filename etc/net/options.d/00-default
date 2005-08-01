@@ -68,6 +68,9 @@ DEFAULT_PPPINITCHAT=pppinit
 DEFAULT_PPPCONNECTCHAT=pppconnect
 DEFAULT_PPPDISCONNECTCHAT=pppdisconnect
 DEFAULT_CHATOPTIONS='-t 120'
+DEFAULT_PPPOE=/usr/sbin/pppoe
+DEFAULT_PPPOEOPTIONS='-U'
+DEFAULT_PPTP=/usr/sbin/pptp
 
 # resolv.conf post-install command. Usually you don't want to define this
 # variable here, but place distribution-specific options file to options.d.

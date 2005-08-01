@@ -45,10 +45,40 @@ is_yes "$PPPPERSIST" && BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS persist"
 BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS${PPPHOLDOFF:+ holdoff $PPPHOLDOFF}"
 BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS${PPPIDLE:+ idle $PPPIDLE}"
 
+case "$SUBTYPE" in
+	pptp)
+		[ -x "${PPTP:=$DEFAULT_PPTP}" ] || {
+			print_error "$PPTP does not exist or is not executable. Try installing pptp-client RPM."
+			exit 1
+		}
+		[ -n "$PPTP_SERVER" ] || {
+			print_error "ERROR: PPTP_SERVER is not set for interface $NAME with subtype $SUBTYPE"
+			exit 1
+		}
+		$SUBTYPEOPTIONS="local pty '$PPTP --nolaunchpppd $PPTP_SERVER'"
+	;;
+	pppoe)
+		[ -x "${PPPOE:=$DEFAULT_PPPOE}" ] || {
+			print_error "$PPPOE does not exist or is not executable. Try installing rp-pppoe-client RPM."
+			exit 1
+		}
+		[ -n "$HOST" ] || {
+			print_error "WARNING: HOST is not set for interface $NAME with subtype $SUBTYPE"
+			exit 1
+		}
+		$SUBTYPEOPTIONS="local pty '$PPPOE -I $HOST -U'"
+	;;
+	dialup)
+		$SUBTYPEOPTIONS='modem'
+	;;
+	*)
+		print_error "unknown SUBTYPE '$SUBTYPE' for interface $NAME"
+	;;
+esac
+
 # Let the show start...
-$PPPD $BASIC_PPPOPTIONS $PPPOPTIONS \
+$PPPD $BASIC_PPPOPTIONS $PPPOPTIONS $SUBTYPEOPTIONS \
 ${PROF_PPPOPTIONSFILE:+ file $PROF_PPPOPTIONSFILE} \
 ${PROF_PPPINITCHAT:+ init "$CHAT_CMD $PROF_PPPINITCHAT"} \
 ${PROF_PPPCONNECTCHAT:+ connect "$CHAT_CMD $PROF_PPPCONNECTCHAT"} \
 ${PROF_PPPDISCONNECTCHAT:+ disconnect "$CHAT_CMD $PROF_PPPDISCONNECTCHAT"}
-
