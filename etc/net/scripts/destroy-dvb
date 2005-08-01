@@ -3,10 +3,13 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-case "${SUBTYPE:?missing SUBTYPE option for $NAME, please fix}"; in
+case "${SUBTYPE:?missing SUBTYPE option for $NAME, please fix}" in
 	ss223|ss226)
 		# we don't rmmod skystar2 module to keep our kernel running
 	;;
+	pentanet)
+	;;
+		try_rmmod pentanet
 	*)
 		print_error "unknown DVB subtype '$SUBTYPE' for interface $NAME"
 	;;
