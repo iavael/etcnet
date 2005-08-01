@@ -3,7 +3,7 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-case "${SUBTYPE:?missing SUBTYPE option for $NAME}, please fix"; in
+case "${SUBTYPE:?missing SUBTYPE option for $NAME, please fix}"; in
 	ss223|ss226)
 		$MODPROBE dvb-core dvb_shutdown_timeout=0
 		[ "$SUBTYPE" = "ss223" ] && $MODPROBE mt312

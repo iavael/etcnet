@@ -8,7 +8,7 @@ pickup_options
 	exit 1
 }
 
-case "${SUBTYPE:?missing SUBTYPE option for $NAME}, please fix"; in
+case "${SUBTYPE:?missing SUBTYPE option for $NAME, please fix}"; in
 	ss223|ss226)
 		# FIXME
 		${DVBNET:=$DEFAULT_DVBNET} -d 0
