@@ -124,20 +124,7 @@ config_routes_rules()
 	# As for now, you will have to place both 'del' and 'add'
 	# records for the same rule to prevent multiple records in
 	# kernel rule table.
-	SRCFILE=`profiled_filename $MYIFACEDIR/ipv4rule`
-	[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
-	while read FIRST REST; do
-	# If there is no operation, substitute default, otherwise keep.
-		case "$FIRST" in
-			add|del)
-				$IP -4 rule $FIRST $REST
-			;;
-			*)
-				$IP -4 rule $DEFAULT_IPV4RULE_CMD $FIRST $REST
-			;;
-		esac
-		print_progress
-	done
+	process_ipv4rules add
 }
 
 if iface_is_up $NAME; then

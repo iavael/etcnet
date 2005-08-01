@@ -4,7 +4,6 @@
 - xsupplicant support
 - Linux 2.6 IPSec support
 - Elektra support
-- handle 'add' in ipv4rule on ifdown
 - analyze zebra and RTPROTO ip option
 ? SNMP bridge workaround
 - lockfiles
