@@ -181,7 +181,7 @@ start()
 {
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
 	is_yes "$CONFIG_FW" && {
-		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options-fw`
+		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
 		export CONFIG_FW FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX IPTABLES_INPUT_POLICY \
 				IPTABLES_FORWARD_POLICY IPTABLES_OUTPUT_POLICY
 		iptables_preload
@@ -223,7 +223,7 @@ stop()
 {
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
 	is_yes "$CONFIG_FW" && {
-		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options-fw`
+		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
 		export CONFIG_FW FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX
 		iptables_preload
 	}

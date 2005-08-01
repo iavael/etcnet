@@ -368,7 +368,7 @@ line into pppoptions file. 1.2.3.4 is IP address of PPTP server.
 10.1. Iptables configs structure
 
 /etc/net/ifaces/default/options: You'd set CONFIG_FW to "yes" for firewall support
-/etc/net/ifaces/default/options-fw: Some options for firewall (type, syntax,
+/etc/net/ifaces/default/fw/options: Some options for firewall (type, syntax,
 default policy for chains)
 
 /etc/net/ifaces/<IFACE>/fw/iptables:
@@ -415,7 +415,7 @@ Supported  two type of syntax:
 	- raw iptables syntax
 	- new "human" syntax a la ipfw
 	
-If you've enabled IPTABLES_HUMAN_SYNTAX in options-fw, then you can use rules
+If you've enabled IPTABLES_HUMAN_SYNTAX in fw/options, then you can use rules
 like ipfw (see examples and syntax file)
 
 In both types of syntax you'd not to include chain or table name to rule.

@@ -32,7 +32,7 @@ fi
 
 [ -z "$CONFIG_FW" ] && {
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
-	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options-fw`
+	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
 }
 
 if  ! is_yes "$CONFIG_FW";  then
@@ -40,7 +40,7 @@ if  ! is_yes "$CONFIG_FW";  then
 	exit 1
 fi
 
-SourceIfNotEmpty "$MYIFACEDIR/options-fw"
+SourceIfNotEmpty "$MYIFACEDIR/fw/options"
 
 # FIXME
 #init_netprofile
