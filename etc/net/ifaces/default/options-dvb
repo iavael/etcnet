@@ -1,0 +1,16 @@
+# This is a mandatory option. Currently supported values are:
+# ss223 for SkyStar-2 rev. 2.3
+# ss226 for SkyStar-2 rev. 2.3
+# FIXME: ss1-stv for SkyStar-1
+# FIXME: pentanet for Pent@Net
+#SUBTYPE=
+
+#PID=
+
+#SZAP=
+#SZAP_ARGS=
+#DVBNET=
+
+# For SkyStar cards you can override channels.conf location (default is
+# $MYIFACEDIR/channels.conf
+#CHANNELS_CONF=

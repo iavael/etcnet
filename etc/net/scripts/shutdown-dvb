@@ -1,0 +1,19 @@
+#!/bin/bash
+
+. $SCRIPTDIR/functions
+pickup_options
+
+[ -x "${DVBNET:=$DEFAULT_DVBNET}" ] || {
+	print_error "$DVBNET does not exist or is not executable for $NAME"
+	exit 1
+}
+
+case "${SUBTYPE:?missing SUBTYPE option for $NAME}, please fix"; in
+	ss223|ss226)
+		# FIXME
+		${DVBNET:=$DEFAULT_DVBNET} -d 0
+	;;
+	*)
+		print_error "unknown DVB subtype '$SUBTYPE' for interface $NAME"
+	;;
+esac

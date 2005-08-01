@@ -1,6 +1,7 @@
 0.7.10
 	fixed RESOLV_POSTIN_CMD handling
 	removed DEFAULT_IPV4RULE_CMD to improve IP rule processing
+	initial SkyStar-2 DVB cards support
 0.7.9 2005-07-20
 	initial iptables support by Andrew Kornilov
 0.7.8 2005-07-15

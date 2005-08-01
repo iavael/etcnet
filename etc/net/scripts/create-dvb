@@ -1,0 +1,16 @@
+#!/bin/bash
+
+. $SCRIPTDIR/functions
+pickup_options
+
+case "${SUBTYPE:?missing SUBTYPE option for $NAME}, please fix"; in
+	ss223|ss226)
+		$MODPROBE dvb-core dvb_shutdown_timeout=0
+		[ "$SUBTYPE" = "ss223" ] && $MODPROBE mt312
+		[ "$SUBTYPE" = "ss226" ] && $MODPROBE stv0299
+		$MODPROBE skystar2
+	;;
+	*)
+		print_error "unknown DVB subtype '$SUBTYPE' for interface $NAME"
+	;;
+esac
