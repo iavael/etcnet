@@ -1,17 +1,14 @@
 - bluetooth support
-- smart ifplugd autodetection
+- new ifplugd management logic
 - auto broadcast option
 - xsupplicant support
-- Linux 2.6 IPSec support
 - Elektra support
 - analyze zebra and RTPROTO ip option
 ? SNMP bridge workaround
-- lockfiles
-- bridge-utils arg order patch
-- kernel patch: support more than one teql interfaces
-- service network status
+- patch: bridge-utils arg order
+- patch: kernel: support more than one teql interfaces
+- lockfiles and service network status
 - consider using $* instead of $@
 - don't use uninitialised/unquoted values
-- PPPoE parent interface handling
-- SkyStar 1 and 2 support
-? ZyXEL support
+- SkyStar 1 support
+- ZyXEL support
