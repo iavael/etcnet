@@ -103,11 +103,7 @@ iptables_load_syntax()
 {
 	export iptables_syntax=
 	[ -z "$1" ] || ! is_file_ok "$1" || is_empty_file "$1" && return 1
-	# FIXME
-	#OLDIFS=$IFS
-	IFS=
 	export iptables_syntax=$(< "$1")
-	#IFS=$OLDIFS
 }
 
 iptables_create_sed_rules()
