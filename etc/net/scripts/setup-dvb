@@ -13,7 +13,7 @@ pickup_options
 	exit 1
 }
 
-[-s "${CHANNELS_CONF:=$MYIFACEDIR/channels.conf}" ] || {
+[ -s "${CHANNELS_CONF:=$MYIFACEDIR/channels.conf}" ] || {
 	print_error "empty or non-existent $CHANNELS_CONF for $NAME"
 	exit 1
 }
