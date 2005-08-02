@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-# ifdown script for usual interfaces
+# ifdown script for usual, removable and ifplugd interfaces
 
 usage()
 {
@@ -44,15 +44,12 @@ add_seen_iface $NAME
 # 2. prepare for shutdown
 # Don't destroy ifplugd iface itself, but children should not receive
 # IN_IFPLUGD=yes so that they can be destroyed.
-ORIG_IN_IFPLUGD=$IN_IFPLUGD
-IN_IFPLUGD=
 if is_yes "$IFDOWN_CHILDREN"; then
 	ifdown_children || {
 		print_error "Could not ifdown children for parent iface '$NAME'"
 		exit 1
 	}
 fi
-IN_IFPLUGD=$ORIG_IN_IFPLUGD
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh del dev $NAME"
 
 # Look if there is DHCP agent hanging around. zcip should die w/o our help.
@@ -66,7 +63,9 @@ esac
 
 case "$USE_IFPLUGD" in
 	[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
-		#! is_yes "$IN_IFPLUGD" && exit 0
+		# User has forced us to shutdown a running interface. We hope that (possibly)
+		# running ifplugd will survive interface absence, because we didn't start it
+		# and will not shut it down.
 	;;
 	[Aa][Uu][Tt][Oo])
 		# Look if (possibly) running ifplugd could be run by ifup-common.
@@ -82,33 +81,25 @@ case "$USE_IFPLUGD" in
 			fi
 		fi
 	;;
-	*)
-		if is_yes "$IN_IFPLUGD"; then
-			print_error "ERROR: USE_IFPLUGD is not enabled for $NAME, but IN_IFPLUGD is set"
-			return 1
-		fi
-	;;
 esac
 
 if iface_is_up $NAME; then
 	ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
 	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME && print_progress
 	ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
-	! is_yes "$IN_IFPLUGD" && $IP link set dev $NAME down
+	$IP link set dev $NAME down
 fi
 ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
 
-# Stop firewall after all
-is_yes "$CONFIG_FW"  && ExecIfExecutable $SCRIPTDIR/config-fw $NAME stop && print_progress
+# Stop firewall after all.
+is_yes "$CONFIG_FW" && ExecIfExecutable $SCRIPTDIR/config-fw $NAME stop && print_progress
 
-# 3. get rid of the iface
+# Get rid of the iface.
 flush_addresses $NAME
-is_yes "$IN_IFPLUGD" || ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
+ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
 
-# 4. TODO: restore resolv.conf
-
-# 5. Shutdown parent only if requested.
+# Shutdown parent only if requested.
 if is_yes "$IFDOWN_PARENTS"; then
 	ifdown_parents || {
 		print_error "Could not ifdown dependency for interface '$NAME'"

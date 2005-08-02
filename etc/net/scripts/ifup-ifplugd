@@ -32,5 +32,5 @@ is_yes "$DISABLED" && {
 
 seen_iface $NAME && exit 0
 add_seen_iface $NAME
-export IN_IFPLUGD=yes HAVE_IFPLUGD=yes
+export HAVE_IFPLUGD=yes
 $SCRIPTDIR/ifup-common $NAME
