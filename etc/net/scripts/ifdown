@@ -42,8 +42,7 @@ seen_iface $NAME && exit 0
 add_seen_iface $NAME
 
 # 2. prepare for shutdown
-# Don't destroy ifplugd iface itself, but children should not receive
-# IN_IFPLUGD=yes so that they can be destroyed.
+# Don't destroy ifplugd iface itself, but process children.
 if is_yes "$IFDOWN_CHILDREN"; then
 	ifdown_children || {
 		print_error "Could not ifdown children for parent iface '$NAME'"

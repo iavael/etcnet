@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# This script performs continues configuration of an interface started
-# by ifup, ifup-removable or ifup-ifplugd scripts. We assume that all
-# necessary checks are done yet.
+# This script continues configuration of an interface started by ifup,
+# ifup-removable or ifup-ifplugd scripts. We assume that all necessary
+# checks are done yet.
 
 usage()
 {
@@ -30,23 +30,26 @@ case "$USE_IFPLUGD" in
 		# Look if card module is good.
 		. $SCRIPTDIR/functions-eth
 		need_detection auto || exit 0
-		# Let's deal with ifplugd
-		if is_yes "$PERSISTENT_IFPLUGD"; then
-			if ! ifplugd_runs; then
-				start_ifplugd
+		# If we are here, we shouldn't continue until ifup-ifplugd calls us,
+		# but don't forget to run ifplugd.
+		if ! is_yes "$IN_IFPLUGD"; then
+			if is_yes "$PERSISTENT_IFPLUGD"; then
+				if ! ifplugd_runs; then
+					start_ifplugd
+				else
+					resume_ifplugd
+				fi
 			else
-				resume_ifplugd
+				ifplugd_runs && stop_ifplugd
+				start_ifplugd
 			fi
-		else
-			ifplugd_runs && stop_ifplugd
-			start_ifplugd
+			exit 0
 		fi
-		return 0
 	;;
 	*)
 		if is_yes "$IN_IFPLUGD"; then
 			print_error "ERROR: USE_IFPLUGD is not enabled for $NAME, but IN_IFPLUGD is set"
-			return 1
+			exit 1
 		fi
 	;;
 esac
