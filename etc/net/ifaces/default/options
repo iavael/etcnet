@@ -40,12 +40,7 @@ USE_HOTPLUG=no
 # Same for pcmcia_cs
 USE_PCMCIA=no
 
-# A special configuration method. The interface will be
-# created, but no configuration will be done. When ifplugd detects cable
-# presence on the interface, it will run ifup-common to finish configuration.
-# protocols
-USE_IFPLUGD=no
-
+# protocols and features
 CONFIG_IPV4=yes
 CONFIG_IPV6=no
 CONFIG_IPX=no

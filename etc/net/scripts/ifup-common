@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# This script performs configuration on iface prepared
-# by ifup or ifup-removable. We assume that all checks
-# are done yet and the only thing remaining to be done
-# is to configure the iface.
+# This script performs continues configuration of an interface started
+# by ifup, ifup-removable or ifup-ifplugd scripts. We assume that all
+# necessary checks are done yet.
 
 usage()
 {
@@ -19,7 +18,38 @@ NAME=$1
 init_netprofile
 pickup_options
 
-is_yes "$USE_IFPLUGD" && ! is_yes "$IN_IFPLUGD" && exit 0
+case "$USE_IFPLUGD" in
+	[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
+		! is_yes "$IN_IFPLUGD" && exit 0
+	;;
+	[Aa][Uu][Tt][Oo])
+		# Look for ifplugd exisance.
+		[ -z "$HAVE_IFPLUGD" ] && HAVE_IFPLUGD=`have_ifplugd`
+		! is_yes "$HAVE_IFPLUGS" && exit 0
+		# Look if card module is good.
+		. $SCRIPTDIR/functions-eth
+		need_detection auto || exit 0
+		# Let's deal with ifplugd
+		: ${IFPLUGD:=$DEFAULT_IFPLUGD}
+		if is_yes "$PERSISTENT_IFPLUGD"; then
+			if ifplugd_runs; then
+				start_ifplugd
+			else
+				resume_ifplugd
+			fi
+		else
+			ifplugd_runs && stop_ifplugd
+			start_ifplugd
+		fi
+		 $IFPLUGD_ARGS $IFPLUGD_EXTRA_ARGS
+	;;
+	*)
+		if is_yes "$IN_IFPLUGD"; then
+			print_error "ERROR: USE_IFPLUGD is not enabled for $NAME, but IN_IFPLUGD is set"
+			return 1
+		fi
+	;;
+esac
 
 process_sysctl_conf()
 {

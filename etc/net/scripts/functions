@@ -338,3 +338,12 @@ flush_addresses()
 	$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
 	$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
 }
+
+have_ifplugd()
+{
+	if [ -x "${IFPLUGD:=$DEFAULT_IFPLUGD}" ]; then
+		echo yes
+	else
+		echo no
+	fi
+}

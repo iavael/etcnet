@@ -8,35 +8,6 @@ try_static()
 	xargise_file $MYIFACEDIR/ipv4address "$IP -4 address add dev $NAME"
 }
 
-need_detection()
-{
-	case "$LINKDETECT" in
-		[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
-			return 0
-		;;
-		[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|[Nn]|0)
-			return 1
-		;;
-		[Aa][Uu][Tt][Oo])
-		[ -x "${IFPLUGSTATUS:=$DEFAULT_IFPLUGSTATUS}" ] || return 2
-		local driver
-		if [ -n "$MODULE" ]; then
-			driver=$MODULE
-		else
-			[ -x "${ETHTOOL:=$DEFAULT_ETHTOOL}" ] && driver=`$ETHTOOL -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
-		fi
-		case "$driver" in
-			eepro100|e100|8139too|tulip|3c59x|hostap|via-rhine)
-				return 0
-			;;
-			*)
-				return 1
-			;;
-		esac
-		;;
-	esac
-}
-
 try_dhcp()
 {
 	[ -x "$DHCP_CLIENT" ] || {

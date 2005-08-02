@@ -90,3 +90,6 @@ IPTABLES=/sbin/iptables
 DEFAULT_SZAP=/usr/bin/szap
 DEFAULT_SZAP_ARGS='-n 1 -x'
 DEFAULT_DVBNET=/usr/bin/dvbnet
+
+# List of known-good network modules (ones that support link detection).
+GOOD_MODULE_LIST='eepro100|e100|8139too|tulip|3c59x|hostap|via-rhine'

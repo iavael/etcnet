@@ -46,3 +46,59 @@ stop_dhcp_client()
 		$IP link set dev $NAME up
 	fi
 }
+
+need_detection()
+{
+	# Optional 1st arg is passed by ifup-common to handle USE_IFPLUGD=auto
+	case "${1:-$LINKDETECT}" in
+		[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
+			return 0
+		;;
+		[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|[Nn]|0)
+			return 1
+		;;
+		[Aa][Uu][Tt][Oo])
+		[ -x "${IFPLUGSTATUS:-$DEFAULT_IFPLUGSTATUS}" ] || return 2
+		local driver
+		if [ -n "$MODULE" ]; then
+			driver=$MODULE
+		else
+			[ -x "${ETHTOOL:-$DEFAULT_ETHTOOL}" ] && driver=`$ETHTOOL -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
+		fi
+		case "$driver" in
+			$GOOD_MODULE_LIST)
+				return 0
+			;;
+			*)
+				return 1
+			;;
+		esac
+		;;
+	esac
+}
+
+ifplugd_runs()
+{
+	$IFPLUGD --check-running --iface=${1:-$NAME}
+}
+
+start_ifplugd()
+{
+	$IFPLUGD --iface=${1:-$NAME} --no-shutdown --ignore-fail --ignore-retval \
+		--monitor --run=$SCRIPTDIR/ifplugd.action $IFPLUGD_EXTRA_ARGS
+}
+
+stop_ifplugd()
+{
+	$IFPLUGD --kill --iface=${1:-$NAME}
+}
+
+resume_ifplugd()
+{
+	$IFPLUGD --resume --iface=${1:-$NAME}
+}
+
+suspend_ifplugd()
+{
+	$IFPLUGD --suspend --iface=${1:-$NAME}
+}

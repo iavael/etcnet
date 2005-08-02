@@ -477,6 +477,9 @@ usage()
 }
 
 is_yes "$NETWORKING" || exit 0
+[ -z "$HAVE_IFPLUGD" ] && HAVE_IFPLUGD=`have_ifplugd`
+export HAVE_IFPLUGD
+
 # See how we were called.
 case "$1" in
 	start)

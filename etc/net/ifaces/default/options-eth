@@ -1,6 +1,27 @@
 # Optional now.
 #MODULE=
 
+# A special configuration method. The interface will be created, but no
+# configuration will be done until cable is plugged in. When ifplugd
+# detects cable presence on the interface, it will run ifup-ifplugd to
+# finish configuration. Values:
+# no:   don't use this feature
+# yes:  rely on pre-configured ifplugd, don't try to start it
+# auto: manage ifplugd for each such interface, if ifplugd is available
+#       and the card supports link detection.
+USE_IFPLUGD=auto
+
+# Two operational modes are possible with USE_IFPLUGD=auto: persistent ifplugd
+# (ifplugd will be run once and then only suspended/resumed when needed) and
+# temporary ifplugd (ifplugd will be killed at ifdown and started at ifup
+# each time). Default mode is to keep persistent ifplugd process.
+# TODO: move this option to 00-default?
+PERSISTENT_IFPLUGD=yes
+
+# /etc/net will construct ifplugd arg list automatically, but you can
+# add extra args with this option.
+IFPLUGD_EXTRA_ARGS='--delay-up=0 --delay-down=10'
+
 # LINKDETECT option allows to avoid DHCP/IPv4LL timeout, if ethernet cable is
 # not plugged in during startup. This feature requires ifplugstatus
 # and is off by default, because not all network cards report correct link
