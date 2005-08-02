@@ -9,10 +9,13 @@ usage()
 	exit 1
 }
 
+# ifplugd inherits variables from ifup-common
+unset IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE NETHOST SEEN_IFACES
 [ -z "$1" ] && usage
 NAME=$1
 
 . /etc/net/scripts/functions
+. /etc/net/scripts/functions-eth
 init_nethost
 if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
 	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST

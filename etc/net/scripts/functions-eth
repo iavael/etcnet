@@ -81,7 +81,7 @@ ifplugd_runs()
 start_ifplugd()
 {
 	$IFPLUGD --iface=${1:-$NAME} --no-shutdown --ignore-fail --ignore-retval \
-		--monitor --run=$SCRIPTDIR/ifplugd.action $IFPLUGD_EXTRA_ARGS
+		--run=$SCRIPTDIR/ifplugd.action $IFPLUGD_EXTRA_ARGS
 }
 
 stop_ifplugd()

@@ -41,6 +41,7 @@ case "$USE_IFPLUGD" in
 			ifplugd_runs && stop_ifplugd
 			start_ifplugd
 		fi
+		return 0
 	;;
 	*)
 		if is_yes "$IN_IFPLUGD"; then
