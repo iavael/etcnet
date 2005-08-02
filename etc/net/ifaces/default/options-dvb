@@ -1,6 +1,6 @@
 # This is a mandatory option. Currently supported values are:
 # ss223 for SkyStar-2 rev. 2.3
-# ss226 for SkyStar-2 rev. 2.3
+# ss226 for SkyStar-2 rev. 2.6
 # pentanet for Pent@Net
 # FIXME: ss1-stv for SkyStar-1
 #SUBTYPE=
