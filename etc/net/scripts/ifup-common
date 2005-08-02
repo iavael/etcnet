@@ -25,12 +25,11 @@ case "$USE_IFPLUGD" in
 	[Aa][Uu][Tt][Oo])
 		# Look for ifplugd exisance.
 		[ -z "$HAVE_IFPLUGD" ] && HAVE_IFPLUGD=`have_ifplugd`
-		! is_yes "$HAVE_IFPLUGS" && exit 0
+		! is_yes "$HAVE_IFPLUGD" && exit 0
 		# Look if card module is good.
 		. $SCRIPTDIR/functions-eth
 		need_detection auto || exit 0
 		# Let's deal with ifplugd
-		: ${IFPLUGD:=$DEFAULT_IFPLUGD}
 		if is_yes "$PERSISTENT_IFPLUGD"; then
 			if ifplugd_runs; then
 				start_ifplugd
