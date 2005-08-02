@@ -445,6 +445,6 @@ There is special script /sbin/fw which can manage firewall without restarting
 interface. Just run: /sbin/fw default stop and your firewall will be stopped :)
 
  Bugs and limitations
-1. All chains and tables processed in sort of date of file/directory creation
-2. Syntax file is not completed. Only few rules :)
-3. Many other limitations :)
+1. Syntax file is not completed. Some rules (especially with prefix "not") will
+not work (you can patch syntax file)
+2. Many other limitations :)
