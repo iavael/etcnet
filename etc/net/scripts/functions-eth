@@ -75,7 +75,7 @@ need_detection()
 
 ifplugd_runs()
 {
-	$IFPLUGD --check-running --iface=${1:-$NAME}
+	$IFPLUGD --check-running --iface=${1:-$NAME} >/dev/null
 }
 
 start_ifplugd()
