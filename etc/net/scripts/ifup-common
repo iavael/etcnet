@@ -23,7 +23,8 @@ case "$USE_IFPLUGD" in
 		! is_yes "$IN_IFPLUGD" && exit 0
 	;;
 	[Aa][Uu][Tt][Oo])
-		# Look for ifplugd exisance.
+		# Look for ifplugd exisance. FIXME: init IFPLUGD once
+		: ${IFPLUGD:=$DEFAULT_IFPLUGD}
 		[ -z "$HAVE_IFPLUGD" ] && HAVE_IFPLUGD=`have_ifplugd`
 		! is_yes "$HAVE_IFPLUGD" && exit 0
 		# Look if card module is good.
@@ -31,7 +32,7 @@ case "$USE_IFPLUGD" in
 		need_detection auto || exit 0
 		# Let's deal with ifplugd
 		if is_yes "$PERSISTENT_IFPLUGD"; then
-			if ifplugd_runs; then
+			if ! ifplugd_runs; then
 				start_ifplugd
 			else
 				resume_ifplugd
