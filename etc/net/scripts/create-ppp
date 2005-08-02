@@ -55,7 +55,7 @@ case "$SUBTYPE" in
 			print_error "ERROR: PPTP_SERVER is not set for interface $NAME with subtype $SUBTYPE"
 			exit 1
 		}
-		$SUBTYPEOPTIONS="local pty '$PPTP --nolaunchpppd $PPTP_SERVER'"
+		PTYOPTION="$PPTP --nolaunchpppd $PPTP_SERVER"
 	;;
 	pppoe)
 		[ -x "${PPPOE:=$DEFAULT_PPPOE}" ] || {
@@ -66,10 +66,10 @@ case "$SUBTYPE" in
 			print_error "WARNING: HOST is not set for interface $NAME with subtype $SUBTYPE"
 			exit 1
 		}
-		$SUBTYPEOPTIONS="local pty '$PPPOE -I $HOST -U'"
+		PTYOPTION="$PPPOE -I $HOST -U"
 	;;
 	dialup)
-		$SUBTYPEOPTIONS='modem'
+		BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS modem"
 	;;
 	*)
 		print_error "unknown SUBTYPE '$SUBTYPE' for interface $NAME"
@@ -77,7 +77,7 @@ case "$SUBTYPE" in
 esac
 
 # Let the show start...
-$PPPD $BASIC_PPPOPTIONS $PPPOPTIONS $SUBTYPEOPTIONS \
+$PPPD $BASIC_PPPOPTIONS $PPPOPTIONS ${PTYOPTION:+local pty "$PTYOPTION"} \
 ${PROF_PPPOPTIONSFILE:+ file $PROF_PPPOPTIONSFILE} \
 ${PROF_PPPINITCHAT:+ init "$CHAT_CMD $PROF_PPPINITCHAT"} \
 ${PROF_PPPCONNECTCHAT:+ connect "$CHAT_CMD $PROF_PPPCONNECTCHAT"} \
