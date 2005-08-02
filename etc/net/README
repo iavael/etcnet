@@ -265,23 +265,8 @@ Edit /etc/hotplug/net.agent and change
 /sbin/ifup to '/etc/net/scripts/ifup-removable $1 hotplug'.
 
 4.4 ifplugd configuration (already done in ALTLinux)
-my /etc/ifplugd/ifplugd.conf:
-INTERFACES="ether"
-ARGS="--wait-on-fork --no-auto --monitor --no-shutdown --ignore-retval --delay-up=0 --delay-down=2"
-
-my /etc/ifplugd/ifplugd.action:
-set -e
-
-if [ -z "$1" ] || [ -z "$2" ] ; then
-        echo "Wrong arguments" > /dev/stderr
-        exit 1
-fi
-
-[ "$2" = "up" ] && IN_IFPLUGD=yes exec /etc/net/scripts/ifup-ifplugd $1
-[ "$2" = "down" ] && IN_IFPLUGD=yes exec /etc/net/scripts/ifdown $1
-
-exit 1
-
+As of version 0.7.10 /etc/net have changed ifplugd code. Look at
+/etc/net/ifaces/default/options-eth for info.
 
 5. NETWORK PROFILES
 5.1 static profiles
