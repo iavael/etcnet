@@ -58,21 +58,17 @@ need_detection()
 			return 1
 		;;
 		[Aa][Uu][Tt][Oo])
-		[ -x "${IFPLUGSTATUS:-$DEFAULT_IFPLUGSTATUS}" ] || return 2
-		local driver
-		if [ -n "$MODULE" ]; then
-			driver=$MODULE
-		else
-			[ -x "${ETHTOOL:-$DEFAULT_ETHTOOL}" ] && driver=`$ETHTOOL -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
-		fi
-		case "$driver" in
-			$GOOD_MODULE_LIST)
-				return 0
-			;;
-			*)
-				return 1
-			;;
-		esac
+			[ -x "${IFPLUGSTATUS:-$DEFAULT_IFPLUGSTATUS}" ] || return 2
+			local driver pick
+			if [ -n "$MODULE" ]; then
+				driver=$MODULE
+			else
+				[ -x "${ETHTOOL:-$DEFAULT_ETHTOOL}" ] && driver=`$ETHTOOL -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
+			fi
+			for pick in $GOOD_MODULE_LIST; do
+				[ "$pick" = "$driver" ] && return 0
+			done
+		return 1
 		;;
 	esac
 }
