@@ -18,6 +18,21 @@ NAME=$1
 init_netprofile
 pickup_options
 
+#----------------+------+------+------+
+# USE_IFPLUGD:   | yes  | no   | auto |
+#----------------+------+------+------+
+# IN_IFPLUGD=yes |  A   |  B   |  C   |
+#----------------+------+------+------+
+# IN_IFPLUGD=no  |  D   |  E   |  F   |
+#----------------+------+------+------+
+# A: continue
+# B: exit 1
+# C: if X: continue
+# D: exit 0
+# E: continue
+# F: if X: start/resume ifplugd, then exit 0
+# X: we have ifplugd and a good network card
+
 case "$USE_IFPLUGD" in
 	[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
 		! is_yes "$IN_IFPLUGD" && exit 0
@@ -26,24 +41,21 @@ case "$USE_IFPLUGD" in
 		# Look for ifplugd exisance. FIXME: init IFPLUGD once
 		: ${IFPLUGD:=$DEFAULT_IFPLUGD}
 		[ -z "$HAVE_IFPLUGD" ] && HAVE_IFPLUGD=`have_ifplugd`
-		! is_yes "$HAVE_IFPLUGD" && exit 0
-		# Look if card module is good.
 		. $SCRIPTDIR/functions-eth
-		need_detection auto || exit 0
-		# If we are here, we shouldn't continue until ifup-ifplugd calls us,
-		# but don't forget to run ifplugd.
-		if ! is_yes "$IN_IFPLUGD"; then
-			if is_yes "$PERSISTENT_IFPLUGD"; then
-				if ! ifplugd_runs; then
-					start_ifplugd
+		if is_yes "$HAVE_IFPLUGD" && need_detection auto; then
+			if ! is_yes "$IN_IFPLUGD"; then
+				if is_yes "$PERSISTENT_IFPLUGD"; then
+					if ! ifplugd_runs; then
+						start_ifplugd
+					else
+						resume_ifplugd
+					fi
 				else
-					resume_ifplugd
+					ifplugd_runs && stop_ifplugd
+					start_ifplugd
 				fi
-			else
-				ifplugd_runs && stop_ifplugd
-				start_ifplugd
+				exit 0
 			fi
-			exit 0
 		fi
 	;;
 	*)
