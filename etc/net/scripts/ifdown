@@ -94,13 +94,13 @@ if iface_is_up $NAME; then
 	ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
 	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME && print_progress
 	ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
-	$IP link set dev $NAME down
+	! is_yes "$IN_IFPLUGD" && $IP link set dev $NAME down
 fi
 ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
 
 # Stop firewall after all
-is_yes "$CONFIG_FW"  && ExecIfExecutable $SCRIPTDIR/config-fw $NAME stop && print_progress 
+is_yes "$CONFIG_FW"  && ExecIfExecutable $SCRIPTDIR/config-fw $NAME stop && print_progress
 
 # 3. get rid of the iface
 flush_addresses $NAME

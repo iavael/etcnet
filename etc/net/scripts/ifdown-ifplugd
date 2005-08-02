@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# ifdown script for ifplugd-controlled interfaces. This is mostly
+# stripped-down version of ifdown script.
+
+usage()
+{
+	echo "Usage: $0 <interface>" >&2
+	exit 1
+}
+
+[ -z "$1" ] && usage
+NAME=$1
+
+. /etc/net/scripts/functions
+init_nethost
+if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
+	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
+else
+	MYIFACEDIR=$IFACEDIR/$NAME
+fi
+
+export IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE SEEN_IFACES
+init_netprofile
+pickup_options
+
+is_yes "$DISABLED" && exit 0
+iface_exists $NAME || exit 0
+seen_iface $NAME && exit 0
+add_seen_iface $NAME
+
+if is_yes "$IFDOWN_CHILDREN"; then
+	ifdown_children || {
+		print_error "Could not ifdown children for parent iface '$NAME'"
+		exit 1
+	}
+fi
+xargise_file $MYIFACEDIR/ipneigh "$IP neigh del dev $NAME"
+
+case "$BOOTPROTO" in
+	dhcp|dhcp-static|dhcp-ipv4ll-static)
+		stop_dhcp_client
+	;;
+	*)
+	;;
+esac
+
+case "$USE_IFPLUGD" in
+	[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1|[Aa][Uu][Tt][Oo])
+		# It's Ok, just do the job.
+	;;
+	*)
+		print_error "ERROR: USE_IFPLUGD is not enabled for $NAME"
+		return 1
+	;;
+esac
+
+ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME && print_progress
+ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
+ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME && print_progress
+ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
+is_yes "$CONFIG_FW" && ExecIfExecutable $SCRIPTDIR/config-fw $NAME stop && print_progress
+flush_addresses $NAME
+
+if is_yes "$IFDOWN_PARENTS"; then
+	ifdown_parents || {
+		print_error "Could not ifdown dependency for interface '$NAME'"
+		exit 1
+	}
+fi

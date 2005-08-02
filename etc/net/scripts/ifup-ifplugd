@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# This script is intended to be run from /etc/ifplugd/ifplugd.action.
-# The only thing we should do is to configure the interface without
-# creating it.
+# This script is intended to be run from /etc/ifplugd/ifplugd.action
+# or /etc/net/scripts/ifplugd.action. The only thing we should do is
+# to finish configuration of a ready pre-created interface.
 
 usage()
 {
