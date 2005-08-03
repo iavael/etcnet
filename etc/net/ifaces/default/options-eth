@@ -8,7 +8,7 @@
 # no:   don't use this feature
 # yes:  manage ifplugd for each such interface
 # auto: same as 'yes', if ifplugd is available and the card supports
-        link detection
+#       link detection
 USE_IFPLUGD=auto
 
 # Two operational modes are possible with USE_IFPLUGD=auto: persistent ifplugd
