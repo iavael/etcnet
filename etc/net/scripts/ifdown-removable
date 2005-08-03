@@ -70,14 +70,14 @@ is_yes "$DISABLED" && {
 
 if [ "$CALLER" = "pcmcia_cs" ]; then
 	! is_yes "$USE_PCMCIA" && {
-		print_error "USE_PCMCIA is disabled for $NAME"
+		is_yes "$SILENT_REMOVABLES" || print_error "USE_PCMCIA is disabled for $NAME"
 		exit 1
 	}
 fi
 
 if [ "$CALLER" = "hotplug" ]; then
 	! is_yes "$USE_HOTPLUG" && {
-		print_error "USE_HOTPLUG is disabled for $NAME"
+		is_yes "$SILENT_REMOVABLES" || print_error "USE_HOTPLUG is disabled for $NAME"
 		exit 1
 	}
 fi

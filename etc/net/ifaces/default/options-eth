@@ -9,14 +9,14 @@
 # yes:  manage ifplugd for each such interface
 # auto: same as 'yes', if ifplugd is available and the card supports
 #       link detection
-USE_IFPLUGD=auto
+USE_IFPLUGD=no
 
 # Two operational modes are possible with USE_IFPLUGD=auto: persistent ifplugd
 # (ifplugd will be run once and then only suspended/resumed when needed) and
 # temporary ifplugd (ifplugd will be killed at ifdown and started at ifup
 # each time). Default mode is to keep persistent ifplugd process.
 # TODO: move this option to 00-default?
-PERSISTENT_IFPLUGD=yes
+PERSISTENT_IFPLUGD=no
 
 # /etc/net will construct ifplugd arg list automatically, but you can
 # add extra args with this option.

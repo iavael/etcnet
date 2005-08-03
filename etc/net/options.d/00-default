@@ -2,6 +2,8 @@
 VERBOSE=yes
 # Progress dots are on by default.
 PROGRESS=yes
+# Don't log hotplug warnings from {ifup,ifdown}-removable.
+SILENT_REMOVABLES=off
 
 # VLAN interfaces naming type, see vconfig --help.
 # This variable is used only for vlantab AUTO interfaces.
