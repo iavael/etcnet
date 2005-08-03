@@ -66,7 +66,7 @@ need_detection()
 				driver=$MODULE
 			else
 				[ -x "${ETHTOOL:-$DEFAULT_ETHTOOL}" ] || return 1
-				driver=`$ETHTOOL -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
+				driver=`${ETHTOOL:-$DEFAULT_ETHTOOL} -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
 			fi
 			for pick in $GOOD_MODULE_LIST; do
 				[ "$pick" = "$driver" ] && return 0
