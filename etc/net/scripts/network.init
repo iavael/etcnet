@@ -311,7 +311,7 @@ check()
 		BNAME=`basename $MYIFACEDIR`
 		NAME=${BNAME/%@*/}
 		if [ "${NAME/%@*/}" != "${BNAME/%@$NETHOST/}" ]; then
-			print_message '$BNAME: SKIPPED'
+			print_message "$BNAME: SKIPPED"
 			continue
 		fi
 		# skip default
