@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # ifdown script for ifplugd-controlled interfaces. This is mostly
-# stripped-down version of ifdown script.
+# stripped-down version of ifdown script. This script should unconfigure
+# the interface and leave the device up so that ifplugd can continue
+# monitoring it.
 
 usage()
 {
@@ -14,8 +16,7 @@ unset IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE NETHOST SEEN_IFACES
 [ -z "$1" ] && usage
 NAME=$1
 
-SCRIPTDIR=/etc/net/scripts
-. $SCRIPTDIR/functions
+. ${SCRIPTDIR:=/etc/net/scripts}/functions
 . $SCRIPTDIR/functions-eth
 init_nethost
 if [ -d $IFACEDIR/$NAME@$NETHOST ]; then

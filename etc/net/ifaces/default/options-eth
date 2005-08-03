@@ -6,9 +6,9 @@
 # detects cable presence on the interface, it will run ifup-ifplugd to
 # finish configuration. Values:
 # no:   don't use this feature
-# yes:  rely on pre-configured ifplugd, don't try to start it
-# auto: manage ifplugd for each such interface, if ifplugd is available
-#       and the card supports link detection.
+# yes:  manage ifplugd for each such interface
+# auto: same as 'yes', if ifplugd is available and the card supports
+        link detection
 USE_IFPLUGD=auto
 
 # Two operational modes are possible with USE_IFPLUGD=auto: persistent ifplugd

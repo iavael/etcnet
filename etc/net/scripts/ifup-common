@@ -25,25 +25,44 @@ pickup_options
 #----------------+------+------+------+
 # IN_IFPLUGD=no  |  D   |  E   |  F   |
 #----------------+------+------+------+
-# A: continue
-# B: exit 1
-# C: if X: continue
-# D: exit 0
-# E: continue
-# F: if X: start/resume ifplugd, then exit 0
+# A: do nothing and continue
+# B: print error and exit
+# C: X ? A : B
+# D: start/resume ifplugd, then exit 0
+# E: do nothing and continue
+# F: X ? D : E
 # X: we have ifplugd and a good network card
 
+: ${IFPLUGD:=$DEFAULT_IFPLUGD}
+[ -z "$HAVE_IFPLUGD" ] && HAVE_IFPLUGD=`have_ifplugd`
+. $SCRIPTDIR/functions-eth
 case "$USE_IFPLUGD" in
 	[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
-		! is_yes "$IN_IFPLUGD" && exit 0
+		# A and D
+		if ! is_yes "$IN_IFPLUGD"; then
+			# D
+			! is_yes "$HAVE_IFPLUGD" && exit 1
+			if is_yes "$PERSISTENT_IFPLUGD"; then
+				if ! ifplugd_runs; then
+					start_ifplugd
+				else
+					resume_ifplugd
+				fi
+			else
+				ifplugd_runs && stop_ifplugd
+				start_ifplugd
+			fi
+			exit 0
+		fi
+		# A
 	;;
 	[Aa][Uu][Tt][Oo])
-		# Look for ifplugd exisance. FIXME: init IFPLUGD once
-		: ${IFPLUGD:=$DEFAULT_IFPLUGD}
-		[ -z "$HAVE_IFPLUGD" ] && HAVE_IFPLUGD=`have_ifplugd`
-		. $SCRIPTDIR/functions-eth
+		# C and F
+		# Look for ifplugd existance.
 		if is_yes "$HAVE_IFPLUGD" && need_detection auto; then
+			# X
 			if ! is_yes "$IN_IFPLUGD"; then
+				# F/D
 				if is_yes "$PERSISTENT_IFPLUGD"; then
 					if ! ifplugd_runs; then
 						start_ifplugd
@@ -56,13 +75,23 @@ case "$USE_IFPLUGD" in
 				fi
 				exit 0
 			fi
-		fi
-	;;
-	*)
-		if is_yes "$IN_IFPLUGD"; then
-			print_error "ERROR: USE_IFPLUGD is not enabled for $NAME, but IN_IFPLUGD is set"
+			# C/A
+		elif is_yes "$IN_IFPLUGD" ; then
+			# not X
+			# C/B
+			print_error "ERROR: USE_IFPLUGD=auto for $NAME, but IN_IFPLUGD=yes and card is unsupported"
 			exit 1
 		fi
+		# F/E
+	;;
+	*)
+		# B and E
+		if is_yes "$IN_IFPLUGD"; then
+			# B
+			print_error "ERROR: USE_IFPLUGD=no for $NAME, but IN_IFPLUGD=yes"
+			exit 1
+		fi
+		# E
 	;;
 esac
 

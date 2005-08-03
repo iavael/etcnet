@@ -60,26 +60,49 @@ case "$BOOTPROTO" in
 	;;
 esac
 
+#----------------+------+------+------+
+# USE_IFPLUGD:   | yes  | no   | auto |
+#----------------+------+------+------+
+# IN_IFPLUGD=yes |  A   |  B   |  C   |
+#----------------+------+------+------+
+# IN_IFPLUGD=no  |  D   |  E   |  F   |
+#----------------+------+------+------+
+# A: print error and exit
+# B: print error and exit
+# C: print error and exit
+# D: stop ifplugd and continue
+# E: do nothing and continue
+# F: X ? D : E
+# X: we have ifplugd and a good network card
+if is_yes "$IN_IFPLUGD"; then
+	print_error "ERROR: IN_IFPLUGD is set in ifdown"
+	exit 1
+fi
+: ${IFPLUGD:=$DEFAULT_IFPLUGD}
+[ -z "$HAVE_IFPLUGD" ] && HAVE_IFPLUGD=`have_ifplugd`
+. $SCRIPTDIR/functions-eth
 case "$USE_IFPLUGD" in
 	[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
-		# User has forced us to shutdown a running interface. We hope that (possibly)
-		# running ifplugd will survive interface absence, because we didn't start it
-		# and will not shut it down.
+		# D
+		if is_yes "$PERSISTENT_IFPLUGD"; then
+			suspend_ifplugd
+		else
+			ifplugd_runs && stop_ifplugd
+		fi
 	;;
 	[Aa][Uu][Tt][Oo])
-		# Look if (possibly) running ifplugd could be run by ifup-common.
-		# TODO: use stateful network model
-		: ${IFPLUGD:=$DEFAULT_IFPLUGD}
-		[ -z "$HAVE_IFPLUGD" ] && HAVE_IFPLUGD=`have_ifplugd`
-		. $SCRIPTDIR/functions-eth
+		# F
 		if is_yes "$HAVE_IFPLUGD" && need_detection auto; then
+			# F/D
 			if is_yes "$PERSISTENT_IFPLUGD"; then
 				suspend_ifplugd
 			else
 				ifplugd_runs && stop_ifplugd
 			fi
 		fi
+		# F/E
 	;;
+	# E
 esac
 
 if iface_is_up $NAME; then
