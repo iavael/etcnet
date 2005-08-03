@@ -58,12 +58,15 @@ need_detection()
 			return 1
 		;;
 		[Aa][Uu][Tt][Oo])
+			# Sometimes we need not ifplugstatus, but ifplugd. Let's hope they are
+			# packed in the same package.
 			[ -x "${IFPLUGSTATUS:-$DEFAULT_IFPLUGSTATUS}" ] || return 2
 			local driver pick
 			if [ -n "$MODULE" ]; then
 				driver=$MODULE
 			else
-				[ -x "${ETHTOOL:-$DEFAULT_ETHTOOL}" ] && driver=`$ETHTOOL -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
+				[ -x "${ETHTOOL:-$DEFAULT_ETHTOOL}" ] || return 1
+				driver=`$ETHTOOL -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
 			fi
 			for pick in $GOOD_MODULE_LIST; do
 				[ "$pick" = "$driver" ] && return 0
