@@ -85,9 +85,9 @@ case "$USE_IFPLUGD" in
 	[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
 		# D
 		if is_yes "$PERSISTENT_IFPLUGD"; then
-			suspend_ifplugd
+			suspend_ifplugd && print_progress
 		else
-			ifplugd_runs && stop_ifplugd
+			ifplugd_runs && stop_ifplugd && print_progress
 		fi
 	;;
 	[Aa][Uu][Tt][Oo])
@@ -95,9 +95,9 @@ case "$USE_IFPLUGD" in
 		if is_yes "$HAVE_IFPLUGD" && need_detection auto; then
 			# F/D
 			if is_yes "$PERSISTENT_IFPLUGD"; then
-				suspend_ifplugd
+				suspend_ifplugd && print_progress
 			else
-				ifplugd_runs && stop_ifplugd
+				ifplugd_runs && stop_ifplugd && print_progress
 			fi
 		fi
 		# F/E
@@ -106,10 +106,10 @@ case "$USE_IFPLUGD" in
 esac
 
 if iface_is_up $NAME; then
-	ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME
+	ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME && print_progress
 	ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME && print_progress
 	ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
-	$IP link set dev $NAME down
+	$IP link set dev $NAME down && print_progress
 fi
 ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
@@ -118,8 +118,8 @@ ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
 is_yes "$CONFIG_FW" && ExecIfExecutable $SCRIPTDIR/config-fw $NAME stop && print_progress
 
 # Get rid of the iface.
-flush_addresses $NAME
-ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME
+flush_addresses $NAME && print_progress
+ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME && print_progress
 
 # Shutdown parent only if requested.
 if is_yes "$IFDOWN_PARENTS"; then

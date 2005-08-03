@@ -109,14 +109,12 @@ if is_yes "$VERBOSE"; then
 	if is_yes "$PROGRESS"; then
 		print_progress()
 		{
-			local SYMBOL=${1:-.}
-			echo -n "$SYMBOL"
+			echo -n ${1:-.}
 			return 0
 		}
 		print_nack()
 		{
-			local SYMBOL=${1:-!}
-			echo -n "$SYMBOL"
+			echo -n ${1:-!}
 			return 0
 		}
 	fi
