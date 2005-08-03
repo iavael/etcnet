@@ -1,7 +1,11 @@
 # Set this to yes to see more messages during start and stop.
-VERBOSE=yes
+#VERBOSE=yes
 # Progress dots are on by default.
-PROGRESS=yes
+#PROGRESS=yes
+# Note: if you don't define VERBOSE and PROGRESS here, you will
+# get verbose output with progress indicators from network.init
+# and no output except errors from ifup* and ifdown*.
+
 # Don't log hotplug warnings from {ifup,ifdown}-removable.
 SILENT_REMOVABLES=off
 

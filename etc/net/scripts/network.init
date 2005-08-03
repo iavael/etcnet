@@ -12,6 +12,8 @@ if [ ! -s $SCRIPTDIR/functions ]; then
 	echo "Error: $SCRIPTDIR/functions not found!"
 	exit 1
 fi
+VERBOSE=on
+PROGRESS=on
 . $SCRIPTDIR/functions
 . $SCRIPTDIR/functions-fw
 SourceIfNotEmpty /etc/sysconfig/network

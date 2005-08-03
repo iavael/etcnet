@@ -106,21 +106,20 @@ if is_yes "$VERBOSE"; then
 		echo "$@"
 		return 0
 	}
-
-	print_progress()
-	{
-		is_yes "$VERBOSE" || return 0
-		local SYMBOL=${1:-.}
-		is_yes "$PROGRESS" && print_message -n "$SYMBOL"
-		return 0
-	}
-
-	print_nack()
-	{
-		local SYMBOL=${1:-!}
-		is_yes "$PROGRESS" && print_message -n "$SYMBOL"
-		return 0
-	}
+	if is_yes "$PROGRESS"; then
+		print_progress()
+		{
+			local SYMBOL=${1:-.}
+			echo -n "$SYMBOL"
+			return 0
+		}
+		print_nack()
+		{
+			local SYMBOL=${1:-!}
+			echo -n "$SYMBOL"
+			return 0
+		}
+	fi
 else
 	print_message() { return 0; }
 	print_progress() { return 0; }
