@@ -106,9 +106,9 @@ iptables_create_sed_rules()
 	# FIXME How to put newline here? :-/
 	IFS="
 	"
-	is_yes "$VERBOSE" && print_message "Loading iptables data"
+	print_message "Loading iptables data"
 	for rule in $replaces; do
-		is_yes "$VERBOSE" && print_progress
+		print_progress
 		[ -z $rule ] || is_comment "$rule"  && continue
 		search=$(echo $rule|cut -f1 -d:|sed -e 's/\//\\\//g')
 		replace=$(echo $rule|cut -f2 -d:|sed -e 's/\//\\\//g')
@@ -116,7 +116,7 @@ iptables_create_sed_rules()
 		#iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/$replace /g;"
 		iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/\1$replace\2/gi;"
 	done
-	is_yes "$VERBOSE" && print_message
+	print_message
 	IFS=$OLDIFS
 	export iptables_sed_rules
 }
@@ -149,7 +149,7 @@ iptables_preload()
 iptables_load_rules_from_file()
 {
 	if is_file_ok "$chain" && ! is_empty_file "$chain"; then
-		is_yes "$VERBOSE" && print_message "Loading rules for chain `basename $chain` in table `basename $table`"
+		print_message "Loading rules for chain `basename $chain` in table `basename $table`"
 		OLDIFS=$IFS
 		IFS="
 		"
@@ -169,7 +169,7 @@ iptables_load_rules_from_file()
 iptables_flush_rules_from_file()
 {
 	if is_file_ok "$chain" && ! is_empty_file "$chain"; then
-		is_yes "$VERBOSE" && print_message "Flushing rules for chain `basename $chain` in table `basename $table`"
+		print_message "Flushing rules for chain `basename $chain` in table `basename $table`"
 		# Flush rules only when stop networking
 		if [ "$NAME" != "default" ]; then
 			OLDIFS=$IFS
@@ -196,19 +196,19 @@ iptables_start()
 {
 	[ -z "$1" ] && return 1	
 	NAME="$1"
-	is_yes "$VERBOSE" && print_message "Starting iptables for $NAME"
+	print_message "Starting iptables for $NAME"
 	# Set defaut policy
 	if [ "$NAME" = "default" ]; then
 		[ -z "$IPTABLES_INPUT_POLICY" ] || {
-			is_yes "$VERBOSE" && print_message "Set $IPTABLES_INPUT_POLICY policy for INPUT chain"
+			print_message "Set $IPTABLES_INPUT_POLICY policy for INPUT chain"
 			iptables_chain_policy INPUT "$IPTABLES_INPUT_POLICY"
 		}
 		[ -z "$IPTABLES_FORWARD_POLICY" ] || {
-			is_yes "$VERBOSE" && print_message "Set $IPTABLES_FORWARD_POLICY policy for FORWARD chain"
+			print_message "Set $IPTABLES_FORWARD_POLICY policy for FORWARD chain"
 			iptables_chain_policy FORWARD "$IPTABLES_FORWARD_POLICY"
 		}
 		[ -z "$IPTABLES_OUTPUT_POLICY" ] || {
-			is_yes "$VERBOSE" && print_message "Set $IPTABLES_OUTPUT_POLICY policy for OUTPUT chain"
+			print_message "Set $IPTABLES_OUTPUT_POLICY policy for OUTPUT chain"
 			iptables_chain_policy OUTPUT "$IPTABLES_OUTPUT_POLICY"
 		}
 	fi
@@ -217,7 +217,7 @@ iptables_start()
 	if is_file_ok "modules" && ! is_empty_file "modules"; then
 		cat modules | while read module; do
 			[ ! -z "$module" ] && ! is_comment "$module" && {
-				is_yes "$VERBOSE" && print_message "Loading module $module"
+				print_message "Loading module $module"
 				$MODPROBE "$module" || print_error "Can't load module $module"
 			}
 		done
@@ -230,7 +230,7 @@ iptables_start()
 			[ "`basename $chain`" = "loadorder" ] && continue
 			if is_file_ok "$chain" && ! is_empty_file "$chain" ; then
 				if ! in_list "$IPTABLES_SYSTEM_CHAINS"  "$chain"; then
-					is_yes "$VERBOSE" && print_message "Creating chain `basename $chain` in table `basename $table`"
+					print_message "Creating chain `basename $chain` in table `basename $table`"
 					iptables_create_chain `basename $chain` -t `basename $table`
 				fi
 			fi
@@ -326,7 +326,7 @@ iptables_stop()
 			[ "`basename $chain`" = "loadorder" ] && continue
 			if is_file_ok "$chain" && ! is_empty_file "$chain"; then
 				if ! in_list "$IPTABLES_SYSTEM_CHAINS"  "$chain"; then
-					is_yes "$VERBOSE" && print_message "Deleting chain `basename $chain` from table `basename $table`"
+					print_message "Deleting chain `basename $chain` from table `basename $table`"
 					iptables_delete_chain `basename $chain` -t `basename $table`
 				fi
 			fi
@@ -337,18 +337,18 @@ iptables_stop()
 	if is_file_ok "modules" && ! is_empty_file "modules"; then
 		tac modules | while read module; do
 			[ ! -z "$module" ] && ! is_comment "$module" && {
-				is_yes "$VERBOSE" && print_message "Unloading module $module"
+				print_message "Unloading module $module"
 				$MODPROBE -r "$module" || print_error "Can't unload module $module"
 			}
 		done
 	fi
 	# Set ACCEPT policy
 	if [ "$NAME" = "default" ]; then
-		is_yes "$VERBOSE" && print_message "Set ACCEPT policy for INPUT chain"
+		print_message "Set ACCEPT policy for INPUT chain"
 		iptables_chain_policy INPUT ACCEPT
-		is_yes "$VERBOSE" && print_message "Set ACCEPT policy for FORWARD chain"
+		print_message "Set ACCEPT policy for FORWARD chain"
 		iptables_chain_policy FORWARD ACCEPT
-		is_yes "$VERBOSE" && print_message "Set ACCEPT policy for OUTPUT chain"
+		print_message "Set ACCEPT policy for OUTPUT chain"
 		iptables_chain_policy OUTPUT ACCEPT
 	fi
 }
