@@ -316,7 +316,7 @@ check()
 		fi
 		# skip default
 		[ "$NAME" = "default" -o "$NAME" = "unknown" -o "$NAME" = "CVS" ] && continue
-		unset TYPE
+		unset TYPE DISABLED
 		pickup_options
 		is_yes "$DISABLED" && {
 			print_message "$NAME: DISABLED"
