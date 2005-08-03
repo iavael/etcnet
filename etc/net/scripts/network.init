@@ -422,7 +422,7 @@ check()
 					fi
 					;;
 				ifup-pre|ifup-post|ifdown-pre|ifdown-post)
-					if [ -x "$TESTFILE" ]; then
+					if [ -x "$IFACEFILE" ]; then
 						print_message -n ' seems OK'
 					else
 						print_message "WARNING: script '$TESTFILE' is not executable"
