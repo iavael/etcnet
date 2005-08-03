@@ -297,14 +297,20 @@ reload()
 	touch "$LOCKFILE"
 }
 
+
 check()
 {
 	print_message "Checking interfaces in $IFACEDIR:"
 	export MYIFACEDIR NAME
+	check_bin_x()
+	{
+		local binary=${1:?ERROR: missing 1st argument to $FUNCNAME}
+		[ ! -x "$binary" ] && print_message " WARNING: $binary is not executable"
+	}
 	for MYIFACEDIR in $IFACEDIR/*; do
 		NAME=`basename $MYIFACEDIR`
 		# skip default
-		[ "$NAME" = "default" -o "$NAME" = "CVS" ] && continue
+		[ "$NAME" = "default" -o "$NAME" = "unknown" -o "$NAME" = "CVS" ] && continue
 		unset TYPE
 		pickup_options
 		is_yes "$DISABLED" && {
@@ -321,53 +327,39 @@ check()
 		# check for required utils
 		case "$TYPE" in
 			pentanet)
-				if [ -x "${PENTANETT:-$DEFAULT_PENTANETT}" ]; then
-					print_message ' PASSED'
-				else
-					print_message " WARNING: ${PENTANETT:-$DEFAULT_PENTANETT} is not executable"
-				fi
+				check_bin_x "${PENTANETT:-$DEFAULT_PENTANETT}"
 			;;
 			vlan)
-				if [ -x "${VCONFIG:-$DEFAULT_VCONFIG}" ]; then
-					print_message ' PASSED'
-				else
-					print_message " WARNING: ${VCONFIG:-$DEFAULT_VCONFIG} is not executable"
-				fi
+				check_bin_x "${VCONFIG:-$DEFAULT_VCONFIG}"
 			;;
 			bond)
-				if [ -x "${IFENSLAVE:-$DEFAULT_IFENSLAVE}" ]; then
-					print_message ' PASSED'
-				else
-					print_message " WARNING: ${IFENSLAVE:-$DEFAULT_IFENSLAVE} is not executable"
-				fi
+				check_bin_x "${IFENSLAVE:-$DEFAULT_IFENSLAVE}"
 			;;
 			bri)
-				if [ -x "${BRCTL:-$DEFAULT_BRCTL}" ]; then
-					print_message ' PASSED'
-				else
-					print_message " WARNING: ${BRCTL:-$DEFAULT_BRCTL} is not executable"
-				fi
+				check_bin_x "${BRCTL:-$DEFAULT_BRCTL}"
 			;;
 			ipsectun)
-				if [ -x "${IPSECADM:-$DEFAULT_IPSECADM}" ]; then
-					print_message ' PASSED'
-				else
-					print_message " WARNING: ${IPSECADM:-$DEFAULT_IPSECADM} is not executable"
-				fi
+				check_bin_x "${IPSECADM:-$DEFAULT_IPSECADM}"
 			;;
 			ppp)
-				if [ -x "${PPPD:-$DEFAULT_PPPD}" -a -x "${CHAT:-$DEFAULT_CHAT}" ]; then
-					print_message ' PASSED'
-				elif [ ! -x "${PPPD:-$DEFAULT_PPPD}" ]; then
-					print_message " WARNING: ${PPPD:-$DEFAULT_PPPD} is not executable"
-				elif [ ! -x "${CHAT:-$DEFAULT_CHAT}" ]; then
-					print_message " WARNING: ${CHAT:-$DEFAULT_CHAT} is not executable"
-				fi
-			;;
-			*)
-				print_message ' PASSED'
+				check_bin_x "${PPPD:-$DEFAULT_PPPD}"
+				case "$SUBTYPE" in
+					dialup)
+						check_bin_x "${CHAT:-$DEFAULT_CHAT}"
+					;;
+					pptp)
+						check_bin_x "${PPTP:-$DEFAULT_PPTP}"
+					;;
+					pppoe)
+						check_bin_x "${PPPOE:-$DEFAULT_PPPOE}"
+					;;
+					*)
+						print_message "ERROR: unknown PPP subtype '$SUBTYPE'"
+					;;
+				esac
 			;;
 		esac
+		print_message ' DONE'
 		# examine all files
 		for IFACEFILE in $MYIFACEDIR/*; do
 			TESTFILE=`basename $IFACEFILE`
@@ -422,6 +414,20 @@ check()
 						print_message -n ' WARNING: useless file!'
 					fi
 					;;
+				iwconfig)
+					if [ "$TYPE" = "eth" ]; then
+						print_message -n ' seems OK'
+					else
+						print_message -n ' WARNING: useless file!'
+					fi
+					;;
+				ifup-pre|ifup-post|ifdown-pre|ifdown-post)
+					if [ -x "$TESTFILE" ]; then
+						print_message -n ' seems OK'
+					else
+						print_message "WARNING: script '$TESTFILE' is not executable"
+					fi
+					;;
 				*)
 					print_message -n ' ???'
 					;;
@@ -451,7 +457,7 @@ check()
 		fi
 	done
 	# check options file(s)
-	for options in /etc/net/options /etc/net/options#*; do
+	for options in /etc/net/options /etc/net/options#* /etc/net/options.d/*; do
 		[ -f $options ] || continue
 		print_message -n "$options:"
 		if egrep -qv '^$|^#|(^[[:alpha:]][[:alnum:]_]*[[:space:]]*=[[:space:]]*.*$)' $options; then
