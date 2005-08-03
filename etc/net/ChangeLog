@@ -2,6 +2,7 @@
 	fixed RESOLV_POSTIN_CMD handling
 	removed DEFAULT_IPV4RULE_CMD to improve IP rule processing
 	initial SkyStar-2 DVB cards support
+	Pent@Net code is now a DVB subtype
 	initial PPP subtypes support
 	firewall code fixes
 	ifplugd code was heavily rewritten

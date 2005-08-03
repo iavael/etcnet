@@ -45,14 +45,14 @@ is_yes "$PPPPERSIST" && BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS persist"
 BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS${PPPHOLDOFF:+ holdoff $PPPHOLDOFF}"
 BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS${PPPIDLE:+ idle $PPPIDLE}"
 
-case "$SUBTYPE" in
+case "$PPPTYPE" in
 	pptp)
 		[ -x "${PPTP:=$DEFAULT_PPTP}" ] || {
 			print_error "$PPTP does not exist or is not executable. Try installing pptp-client RPM."
 			exit 1
 		}
 		[ -n "$PPTP_SERVER" ] || {
-			print_error "ERROR: PPTP_SERVER is not set for interface $NAME with subtype $SUBTYPE"
+			print_error "ERROR: PPTP_SERVER is not set for interface $NAME with PPPTYPE $PPPTYPE"
 			exit 1
 		}
 		PTYOPTION="$PPTP --nolaunchpppd $PPTP_SERVER"
@@ -63,7 +63,7 @@ case "$SUBTYPE" in
 			exit 1
 		}
 		[ -n "$HOST" ] || {
-			print_error "WARNING: HOST is not set for interface $NAME with subtype $SUBTYPE"
+			print_error "WARNING: HOST is not set for interface $NAME with PPPTYPE $PPPTYPE"
 			exit 1
 		}
 		PTYOPTION="$PPPOE -I $HOST -U"
@@ -72,7 +72,7 @@ case "$SUBTYPE" in
 		BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS modem"
 	;;
 	*)
-		print_error "unknown SUBTYPE '$SUBTYPE' for interface $NAME"
+		print_error "unknown PPPTYPE '$PPPTYPE' for interface $NAME"
 	;;
 esac
 

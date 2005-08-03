@@ -2,19 +2,19 @@
 
 ONBOOT=no
 
-# Experimental PPP subtype. Valid types are: dialup, pptp, pppoe.
+# PPP subtype. Valid types are: dialup, pptp, pppoe.
 # pptp and pptp types will benefit from correctly set REQIURES and
 # respectively HOST variables. dialup subtype will add 'modem' to
 # pppd options list.
-SUBTYPE=dialup
+PPPTYPE=dialup
 
 # For pptp subtype you must specify hostname or IP address of PPtP server
-# you connect to. Otherwise leave SUBTYPE=dialup.
+# you connect to. Otherwise leave PPPTYPE=dialup.
 #PPTP_SERVER=<string>
 
 # pppoe client requires target interface name. You must specify it in
 # the HOST variable, create-ppp will automatically construct correct
-# pty option for pppd. This option is mandatory if SUBTYPE=pppoe.
+# pty option for pppd. This option is mandatory if PPPTYPE=pppoe.
 #HOST=<string>
 
 # Optional pppoe path.

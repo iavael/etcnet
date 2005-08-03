@@ -24,7 +24,7 @@ Supported interface types:
 +bridge
 +traffic equalizers (teql)
 +/-dummy
-+Pent@NET
++DVB: Pent@NET, SkyStar
 +usbnet
 +PPP (see below for PPtP, PPPoE)
 

@@ -27,7 +27,7 @@ type2group()
 		lo|dummy)
 			echo '0'
 		;;
-		eth|plip|usb|pentanet|dvb)
+		eth|plip|usb|dvb)
 			echo '1'
 		;;
 		vlan|bond|bri|teql)
@@ -331,8 +331,19 @@ check()
 		fi
 		# check for required utils
 		case "$TYPE" in
-			pentanet)
-				check_bin_x "${PENTANETT:-$DEFAULT_PENTANETT}"
+			dvb)
+				case "$DVBTYPE" in
+					ss223|ss226)
+						check_bin_x "${SZAP:-$DEFAULT_SZAP}"
+						check_bin_x "${DVBNET:-$DEFAULT_DVBNET}"
+					;;
+					pentanet)
+						check_bin_x "${PENTANETT:-$DEFAULT_PENTANETT}"
+					;;
+					*)
+						print_message "ERROR: unknown DVB type '$DVBTYPE'"
+					;;
+				esac
 			;;
 			vlan)
 				check_bin_x "${VCONFIG:-$DEFAULT_VCONFIG}"
@@ -348,7 +359,7 @@ check()
 			;;
 			ppp)
 				check_bin_x "${PPPD:-$DEFAULT_PPPD}"
-				case "$SUBTYPE" in
+				case "$PPPTYPE" in
 					dialup)
 						check_bin_x "${CHAT:-$DEFAULT_CHAT}"
 					;;
@@ -359,7 +370,7 @@ check()
 						check_bin_x "${PPPOE:-$DEFAULT_PPPOE}"
 					;;
 					*)
-						print_message "ERROR: unknown PPP subtype '$SUBTYPE'"
+						print_message "ERROR: unknown PPP type '$PPPTYPE'"
 					;;
 				esac
 			;;
@@ -424,6 +435,20 @@ check()
 						print_message -n ' seems OK'
 					else
 						print_message -n ' WARNING: useless file!'
+					fi
+					;;
+				channels.conf)
+					if [ "$TYPE" = "dvb" ] && [ "$DVBTYPE" = "ss223" -o "$DVBTYPE" = "ss226" ]; then
+						print_message -n ' seems OK'
+					else
+						print_message -n ' WARNING: possibly useless file!'
+					fi
+					;;
+				pentanet.conf)
+					if [ "$TYPE" = "dvb" ] && [ "$DVBTYPE" = "pentanet" ]; then
+						print_message -n ' seems OK'
+					else
+						print_message -n ' WARNING: possibly useless file!'
 					fi
 					;;
 				ifup-pre|ifup-post|ifdown-pre|ifdown-post)
