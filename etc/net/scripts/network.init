@@ -308,7 +308,12 @@ check()
 		[ ! -x "$binary" ] && print_message " WARNING: $binary is not executable"
 	}
 	for MYIFACEDIR in $IFACEDIR/*; do
-		NAME=`basename $MYIFACEDIR`
+		BNAME=`basename $MYIFACEDIR`
+		NAME=${BNAME/%@*/}
+		if [ "${NAME/%@*/}" != "${BNAME/%@$NETHOST/}" ]; then
+			print_message ' SKIPPED'
+			continue
+		fi
 		# skip default
 		[ "$NAME" = "default" -o "$NAME" = "unknown" -o "$NAME" = "CVS" ] && continue
 		unset TYPE
