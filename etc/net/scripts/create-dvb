@@ -9,6 +9,11 @@ case "${DVBTYPE:?missing DVBTYPE option for $NAME, please fix}" in
 		[ "$DVBTYPE" = "ss223" ] && $MODPROBE mt312
 		[ "$DVBTYPE" = "ss226" ] && $MODPROBE stv0299
 		$MODPROBE skystar2
+		[ -x "${DVBNET:=$DEFAULT_DVBNET}" ] || {
+			print_error "$DVBNET does not exist or is not executable for $NAME"
+			exit 1
+		}
+		$DVBNET -p $PID
 	;;
 	pentanet)
 		$MODPROBE pentanet

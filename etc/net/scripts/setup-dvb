@@ -15,12 +15,7 @@ case "${DVBTYPE:?missing DVBTYPE option for $NAME, please fix}" in
 			print_error "empty or non-existent $CHANNELS_CONF for $NAME"
 			exit 1
 		}
-		[ -x "${DVBNET:=$DEFAULT_DVBNET}" ] || {
-			print_error "$DVBNET does not exist or is not executable for $NAME"
-			exit 1
-		}
 		$SZAP -c $CHANNELS_CONF ${SZAP_ARGS:=$DEFAULT_SZAP_ARGS}
-		$DVBNET -p $PID
 	;;
 	pentanet)
 		[ -x "${PENTANETT:=$DEFAULT_PENTANETT}" ] || {
