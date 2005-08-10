@@ -91,10 +91,6 @@ config_routes_rules()
 
 	# Setup rules only after routes are Ok, so that route tables are
 	# already populated when rule starts routing traffic to them.
-	# Note that we don't have 'add' here.
-	# As for now, you will have to place both 'del' and 'add'
-	# records for the same rule to prevent multiple records in
-	# kernel rule table.
 	process_ipv4rules add
 }
 
