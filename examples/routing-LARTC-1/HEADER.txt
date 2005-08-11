@@ -1,0 +1,25 @@
+This is a routing example from LARTC for multiple uplinks
+(http://lartc.org/howto/lartc.rpdb.multiple-links.html).
+The example is left as is with the following assumptions:
+IF0=localnet
+IF1=uplinkA
+IF2=uplinkB
+IP1=80.90.100.180
+IP2=90.100.110.33
+P1=80.90.100.182
+P2=90.100.110.62
+P1_NET=80.90.100.180/30
+P2_NET=90.100.110.32/27
+T1=80
+T2=90
+
+I have skipped the following because we will already have these
+route records in 'local' routing table:
+ip route add $P1_NET dev $IF1 src $IP1 table T1
+ip route add $P2_NET dev $IF2 src $IP2 table T2
+ip route add $P1_NET dev $IF1 src $IP1
+ip route add $P2_NET dev $IF2 src $IP2
+
+>  Now, this is just the very basic setup. It will work for
+> all processes running on the router itself, and for the
+> local network, if it is masqueraded.

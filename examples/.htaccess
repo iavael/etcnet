@@ -5,4 +5,5 @@ AddDescription "PPP examples" ifaces-ppp
 AddDescription "some more complex example" ifaces-3ethers
 AddDescription "VLAN config example" ifaces-vlan
 AddDescription "wireless config example" ifaces-wireless
+AddDescription "/etc/net config for LARTC multiple links example" routing-LARTC-1
 ForceType text/plain

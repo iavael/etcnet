@@ -1,0 +1,3 @@
+uplinkA mac 11:00:00:00:00:00
+uplinkB mac 11:00:00:00:00:01
+localnet mac 22:00:00:00:00:00
