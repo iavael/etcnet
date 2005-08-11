@@ -26,11 +26,11 @@
 #IFDOWN_PARENTS=yes
 
 # This variable must be defined for each bridge interface. This is a
-# space-separated list of slave ethernet interfaces combining the
+# (quoted) space-separated list of slave ethernet interfaces combining the
 # bridge. Don't forget to create configurations for the slave interfaces
 # too.
 # Don't define this variable here, the right place is your interface's
 # options file. 
-#REQUIRES=
+#HOST=
 # Optional overloading of brctl path.
 #BRCTL=

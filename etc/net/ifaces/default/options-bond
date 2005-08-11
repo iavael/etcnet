@@ -4,7 +4,7 @@
 # optional override
 #IFENSLAVE=
 # Slave ifaces. Mandatory.
-#REQUIRES=
+#HOST=
 # Operation mode (optional).
 # 0: round robin (default)
 # 1: active-backup
