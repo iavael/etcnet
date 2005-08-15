@@ -448,3 +448,10 @@ interface. Just run: /sbin/fw default stop and your firewall will be stopped :)
 1. Syntax file is not completed. Some rules (especially with prefix "not") will
 not work (you can patch syntax file)
 2. Many other limitations :)
+
+11. Known bugs
+1. some kernels have problems with many VLAN interfaces
+2. teql interfaces can't be safely renamed
+3. VLAN interfaces sometimes are initialized into wrong state: http://www.kernel.org/git/gitweb.cgi?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=f4637b55ba960d9987a836617271659e9b7b0de8
+4. some network drivers have race condition in interface init code
+5. ppp interfaces can only be named ppp%d
