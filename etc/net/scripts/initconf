@@ -64,7 +64,7 @@ function print_ipv4_P2P_addresses()
 	$IP -4 ad sh dev $IFNAME | grep '^ *inet' | sed 's/^ *inet //' | cut -d' ' -f1-3 | tr '\n' '\t' | sed 's/\t/ NEWLINE /g' | sed 's/ NEWLINE /\\n/g'
 }
 
-for iface in `$IP li | egrep '^[[:digit:]]+: ' | cut -d' ' -f2 | sed 's/://' | sed 's/@NONE$//'`; do
+for iface in `$IP li | egrep '^[[:digit:]]+: ' | cut -d' ' -f2 | sed 's/://' | sed 's/@.*$//'`; do
 	echo -n "Processing interface '$iface':"
 	if [ -d $IFACEDIR/$iface ]; then
 		echo " configuration exists"
