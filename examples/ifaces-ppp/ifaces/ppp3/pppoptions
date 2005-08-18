@@ -1,4 +1,3 @@
-pty '/usr/sbin/pppoe -I eth0 -T 80 -U'
 noipdefault
 noauth
 default-asyncmap

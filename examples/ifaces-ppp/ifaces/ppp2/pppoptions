@@ -4,8 +4,8 @@ lcp-echo-interval 0
 :10.10.10.10
 noipdefault
 ipcp-accept-local
-#defaultroute
-#usepeerdns
+defaultroute
+usepeerdns
 novj
 nobsdcomp
 novjccomp
