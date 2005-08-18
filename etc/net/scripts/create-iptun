@@ -3,8 +3,8 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-TUNLOCAL=${TUNLOCAL:?missing TUNLOCAL}
-TUNREMOTE=${TUNREMOTE:?missing TUNREMOTE}
+: ${TUNLOCAL:?missing TUNLOCAL}
+: ${TUNREMOTE:?missing TUNREMOTE}
 
 case "${TUNTYPE:=ipip}" in
 	ipip)
