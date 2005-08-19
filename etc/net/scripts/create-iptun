@@ -22,4 +22,4 @@ case "${TUNTYPE:=ipip}" in
 esac
 $MODPROBE $MODULE
 
-$IP tunnel add $NAME mode $TUNTYPE local $TUNLOCAL remote $TUNREMOTE ttl ${TUNTTL:-inherit} $TUNOPTIONS
+$IP tunnel add $NAME mode $TUNTYPE local $TUNLOCAL remote $TUNREMOTE ttl ${TUNTTL:-inherit} $TUNOPTIONS ${HOST:+dev $HOST}

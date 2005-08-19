@@ -6,6 +6,7 @@
 	minor initconf tunnel fix
 	bugs section in README
 	updated PPP examples
+	iptun HOST option
 0.7.11 2005-08-10
 	"service network reload" bugfix
 0.7.10 2005-08-08

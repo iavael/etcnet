@@ -9,5 +9,8 @@
 # IP tunnel type: 'ipip' (default), 'gre' or 'sit'.
 #TUNTYPE=
 
-# Append whatever you want (GRE keys etc).
+# Append whatever you want (GRE keys etc). Don't set 'dev' here
 #TUNOPTIONS=
+
+# Optional host interface. If set, this name will be used for 'dev' option.
+#HOST=
