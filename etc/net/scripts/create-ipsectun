@@ -3,9 +3,9 @@
 . $SCRIPTDIR/functions
 pickup_options
 
-TUNLOCAL=${TUNLOCAL:?missing TUNLOCAL}
-TUNREMOTE=${TUNREMOTE:?missing TUNREMOTE}
-TUNSPI=${TUNSPI:?missing TUNSPI}
+: ${TUNLOCAL:?missing TUNLOCAL}
+: ${TUNREMOTE:?missing TUNREMOTE}
+: ${TUNSPI:?missing TUNSPI}
 
 [ -x "${IPSECADM:=$DEFAULT_IPSECADM}" ] || {
 	print_error "$IPSECADM does not exist or is not executable. Try installing ipsecadm RPM."
@@ -55,4 +55,4 @@ $MODPROBE ipsec_tunnel || {
 
 $IPSECADM sa add --spi=$TUNSPI --src=$TUNLOCAL --dst=$TUNREMOTE \
 $CIPHER_OPTIONS $DIGEST_OPTIONS --duplex && \
-$IPSECADM tunnel add $NAME --local=$TUNLOCAL --remote=$TUNREMOTE --spi=$TUNSPI
+$IPSECADM tunnel add $NAME --local=$TUNLOCAL --remote=$TUNREMOTE --spi=$TUNSPI ${HOST:+--nextdev=$HOST}

@@ -19,3 +19,6 @@
 # Same for DIGEST and DIGESTFILE
 #DIGEST=
 #DIGESTFILE=
+
+# --nextdev arg
+#HOST=
