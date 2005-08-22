@@ -1,0 +1,1 @@
+cbq bandwidth 1280kbit weight 1kbit prio 1 maxburst 20 avpkt 200 rate 40kbit bounded isolated

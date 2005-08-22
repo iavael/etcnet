@@ -1,0 +1,1 @@
+cbq bandwidth 100000kbit weight 1kbit prio 1 maxburst 20 avpkt 200
