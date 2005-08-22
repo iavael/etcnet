@@ -61,7 +61,7 @@ $TC qdisc del dev $NAME root >/dev/null 2>&1
 # do the rest
 cd $MYIFACEDIR/qos/
 export RECLEVEL=0
-# process only the first
+# process only the first dir
 for d in $MYIFACEDIR/qos/*; do
 	[ -d $d ] && {
 		process_qos_dir $d root && print_progress
