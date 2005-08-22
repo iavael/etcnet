@@ -11,3 +11,4 @@
 - don't use uninitialised/unquoted values
 - SkyStar 1 support
 - ZyXEL support
+- QoS profiles support
