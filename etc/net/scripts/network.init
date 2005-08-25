@@ -136,10 +136,6 @@ start_group()
 	local GROUP_SIZE=`echo "${START_GROUP[$GROUP_ID]}" | wc -w | sed 's/ *//'`
 # GROUP_SIZE is always not zero
 	print_message "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
-	[ $GROUP_ID -eq 2 ] && {
-		# hosted physical
-		start_vlantab
-	}
 	for i in `seq 1 $GROUP_SIZE`; do
 		IFNAME=`echo "${START_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStarting $IFNAME: "
@@ -162,10 +158,6 @@ stop_group()
 	local GROUP_SIZE=`echo "${STOP_GROUP[$GROUP_ID]}" | wc -w | sed 's/ *//'`
 # GROUP_SIZE is always not zero
 	print_message "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
-	[ $GROUP_ID -eq 2 ] && {
-		# hosted physical
-		stop_vlantab
-	}
 	for i in `seq 1 $GROUP_SIZE`; do
 		IFNAME=`echo "${STOP_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStopping $IFNAME: "
@@ -215,6 +207,8 @@ start()
 	print_message " $IFACECOUNT interfaces found"
 	# 2. process each group
 	for i in 0 1 2 3 4; do
+		# handle vlantab in hosted physical group
+		[ $i -eq 2 ] && start_vlantab
 		[ -n "${START_GROUP[$i]}" ] && start_group $i boot skiphot
 	done
 	touch "$LOCKFILE"
@@ -254,6 +248,7 @@ stop()
 	# reverse order
 	for i in 4 3 2 1 0; do
 		[ -n "${STOP_GROUP[$i]}" ] && stop_group $i skiphot
+		[ $i -eq 2 ] && stop_vlantab
 	done
 	is_yes "$CONFIG_FW" && 	ExecIfExecutable `profiled_filename /etc/net/scripts/config-fw` default stop
 	rm -f "$LOCKFILE"
@@ -289,9 +284,11 @@ reload()
 	# reverse order for stop, direct order for start
 	for i in 4 3 2 1 0; do
 		[ -n "$STOP_GROUP[$i]" ] && stop_group $i
+		[ $i -eq 2 ] && stop_vlantab
 	done
 	rm -f "$LOCKFILE"
 	for i in 0 1 2 3 4; do
+		[ $i -eq 2 ] && start_vlantab
 		[ -n "$START_GROUP[$i]" ] && start_group $i boot
 	done
 	touch "$LOCKFILE"
