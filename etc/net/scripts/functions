@@ -146,6 +146,7 @@ get_mapped_ifname()
 {
 	local OLDNAME=${1:?missing 1st argument to $FUNCNAME}
 	local PROF_IFTAB=`profiled_filename $IFTAB`
+	local NEW_NAME
 	if [ -s "$PROF_IFTAB" ]; then
 		[ -x $IFRENAME ] || {
 			print_error "$IFRENAME is unavailable, but $PROF_IFTAB exists"
