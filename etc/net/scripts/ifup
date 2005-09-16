@@ -72,22 +72,25 @@ if is_yes "$IFUP_PARENTS"; then
 	}
 fi
 
-# 3c. exec scripts
+# 3c. exec hooks
 ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifup-pre $NAME && print_progress
 
-# 4. make device appear
+# 4. make iface appear
 if ExecIfExecutable $SCRIPTDIR/create-$TYPE $NAME; then
 	print_progress
 else
-	print_progress '!'
+	print_nack
 	exit 1
 fi
 
-# We can't be sure that our interface is called $NAME at the moment :(
-#wait_for_macaddr $NAME
-
-# 5. configure iface
+# 5. adjust name and configure iface
 IFTAB_FILE=`profiled_filename $IFTAB`
-[ -s "$IFTAB_FILE" ] && $IFRENAME -c "$IFTAB_FILE" -n "$NAME" >/dev/null 2>&1 && print_progress
+if [ -s "$IFTAB_FILE" ]; then
+	if $IFRENAME -c "$IFTAB_FILE" -n "$NAME"; then
+		print_progress
+	else
+		print_nack
+	fi
+fi
 $SCRIPTDIR/ifup-common $NAME
