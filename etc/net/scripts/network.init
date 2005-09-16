@@ -14,6 +14,7 @@ if [ ! -s $SCRIPTDIR/functions ]; then
 fi
 export VERBOSE=on
 export PROGRESS=on
+HOST=
 . $SCRIPTDIR/functions
 . $SCRIPTDIR/functions-fw
 SourceIfNotEmpty /etc/sysconfig/network
