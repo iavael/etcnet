@@ -79,3 +79,8 @@ DONT_FLUSH=on
 
 # ...and disconnect script
 #PPPDISCONNECTCHAT=<script>
+
+# TODO, this does not work yet
+# pppd does not save default route for us. We could save and restore it
+# with ip-up/ip-down, but this option will do the trick for us.
+#RESTORE_DEFAULTROUTE=<bool>
