@@ -2,10 +2,11 @@
 # ss223 for SkyStar-2 rev. 2.3
 # ss226 for SkyStar-2 rev. 2.6
 # pentanet for Pent@NET
+# pentaval for Pent@VALUE
 # FIXME: ss1-stv for SkyStar-1
 #DVBTYPE=
 
-### SkyStar options
+### SkyStar-2 options
 #PID=
 #SZAP=
 #SZAP_ARGS=
@@ -21,3 +22,9 @@
 #PENTANETT=
 # config file name, default $DEFAULT_PENTANET_CONF
 #PENTANET_CONF=
+
+### Pent@VALUE options
+# pentavalt location, default $DEFAULT_PENTAVALT
+#PENTAVALT=
+# config file name, default $DEFAULT_PENTAVAL_CONF
+#PENTAVAL_CONF=

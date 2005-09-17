@@ -16,6 +16,9 @@ case "${DVBTYPE:?missing DVBTYPE option for $NAME, please fix}" in
 	pentanet)
 		try_rmmod pentanet
 	;;
+	pentaval)
+		try_rmmod pentaval
+	;;
 	*)
 		print_error "unknown DVB type '$DVBTYPE' for interface $NAME"
 	;;

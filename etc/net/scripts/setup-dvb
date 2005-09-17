@@ -25,6 +25,14 @@ case "${DVBTYPE:?missing DVBTYPE option for $NAME, please fix}" in
 		PROF_CONFIGFILE=`profiled_filename ${PENTANET_CONF:-$DEFAULT_PENTANET_CONF}`
 		[ -s "$PROF_CONFIGFILE" ] && $PENTANETT -a -f $PROF_CONFIGFILE >/dev/null
 	;;
+	pentaval)
+		[ -x "${PENTAVALT:=$DEFAULT_PENTAVALT}" ] || {
+			print_error "$PENTAVALT does not exist or is not executable for $NAME"
+			exit 1
+		}
+		PROF_CONFIGFILE=`profiled_filename ${PENTAVAL_CONF:-$DEFAULT_PENTAVAL_CONF}`
+		[ -s "$PROF_CONFIGFILE" ] && $PENTAVALT -a -f $PROF_CONFIGFILE >/dev/null
+	;;
 	*)
 		print_error "unknown DVB type '$DVBTYPE' for interface $NAME"
 	;;
