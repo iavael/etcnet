@@ -19,6 +19,7 @@ case "${DVBTYPE:?missing DVBTYPE option for $NAME, please fix}" in
 		$MODPROBE pentanet
 	;;
 	pentaval)
+		$MODPROBE scanval
 		$MODPROBE pentaval
 	;;
 	*)
