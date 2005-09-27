@@ -14,5 +14,5 @@
 - QoS profiles support
 - merge with SuSE, LFS, PLD
 - PPP RESTORE_DEFAULTROUTE option
-- Pent@VAL support
 - export review
+- rmmod and kernel 2.6 bugfix
