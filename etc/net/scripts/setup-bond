@@ -5,10 +5,13 @@ init_netprofile
 pickup_options
 
 : ${HOST:?HOST must be set for $NAME}
+: ${BONDOPTIONS:?BONDOPTIONS must be set for $NAME}
 
 [ -x "${IFENSLAVE:=$DEFAULT_IFENSLAVE}" ] || {
 	print_error "$IFENSLAVE does not exist or is not executable. Try installing iputils RPM."
 	exit 1
 }
 
-$IFENSLAVE $NAME $HOST > /dev/null
+for host in $HOST; do
+	$IFENSLAVE $NAME $host > /dev/null
+done
