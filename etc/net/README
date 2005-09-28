@@ -1,4 +1,4 @@
-/etc/net version 0.7.12
+/etc/net version 0.7.14
 http://etcnet.org/
 
 Copyright (c) 2004-2005 Denis Ovsienko (info#pilot_org_ua)
@@ -24,7 +24,7 @@ Supported interface types:
 +bridge
 +traffic equalizers (teql)
 +/-dummy
-+DVB: Pent@NET, SkyStar
++DVB: Pent@NET, Pent@VALUE, SkyStar-2
 +usbnet
 +PPP (see below for PPtP, PPPoE)
 
