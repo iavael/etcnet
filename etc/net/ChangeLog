@@ -1,6 +1,7 @@
 0.7.14
 	bonding code bugfixes
 	interface dependency bugfixes
+	new option NEVER_RMMOD
 0.7.13 2005-09-18
 	Pent@VALUE support
 	temporary ALTLinux-specific export workaround

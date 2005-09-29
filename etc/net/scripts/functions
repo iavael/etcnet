@@ -135,6 +135,7 @@ iface_is_up()
 
 try_rmmod()
 {
+	is_yes "$NEVER_RMMOD" && return
 	local MODNAME=${1:?missing 1st argument to $FUNCNAME}
 	# Note: usage counter is treated in a different way by 2.6 kernels.
 	# This may cause bugs :(
