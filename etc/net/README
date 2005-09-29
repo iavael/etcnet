@@ -455,3 +455,4 @@ not work (you can patch syntax file)
 3. VLAN interfaces sometimes are initialized into wrong state: http://www.kernel.org/git/gitweb.cgi?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=f4637b55ba960d9987a836617271659e9b7b0de8
 4. some network drivers have race condition in interface init code
 5. ppp interfaces can only be named ppp%d
+6. DHCP does not work for bonding
