@@ -508,7 +508,7 @@ check()
 
 usage()
 {
-	echo "${0##*/} {start|startwith|stop|stopwith|restart|reload|restartwith|switchto <new profile name>}"
+	echo "${0##*/} {start|startwith|stop|stopwith|restart|reload|restartwith|switchto|switchfrom <new profile name>}"
 	exit 1
 }
 
@@ -569,6 +569,14 @@ case "$1" in
 		init_netprofile
 		stop
 		init_netprofile $2
+		start
+		;;
+	switchfrom)
+		[ $# -ne 2 ] && usage
+		init_nethost
+		init_netprofile $2
+		stop
+		init_netprofile
 		start
 		;;
 	check)
