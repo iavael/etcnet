@@ -239,7 +239,8 @@ ifup_parents ()
 {
 	[ -z "$REQUIRES" -a -z "$HOST" ] && return 0
 	local parent ret=0
-	for parent in $REQUIRES $HOST; do
+	for parent in ${REQUIRES:+$REQUIRES }${HOST}; do
+		# We call ifup even if parent exists, but is down.
 		if ! iface_is_up $parent; then
 			$SCRIPTDIR/ifup $parent || {
 				ret=$?
@@ -254,8 +255,10 @@ ifdown_parents ()
 {
 	[ -z "$REQUIRES" -a -z "$HOST" ] && return 0
 	local parent ret=0
-	for parent in $REQUIRES $HOST; do
-		if iface_is_up $parent; then
+	for parent in ${REQUIRES:+$REQUIRES }${HOST}; do
+		# Parent iface may exist, but be down, because some children auto-down their parents.
+		# We should call ifdown, if iface exists.
+		if iface_exists $parent; then
 			$SCRIPTDIR/ifdown $parent || {
 				ret=$?
 				break

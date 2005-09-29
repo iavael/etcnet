@@ -2,7 +2,7 @@
 
 # This script finds all children of specified interface name.
 # It will print out a list of all ifaces that are not DISABLED
-# and have $1 in its REQUIRES option.
+# and have $1 in its REQUIRES or HOST option.
 # TODO: handle 'boot' arg?
 
 usage()
