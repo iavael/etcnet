@@ -6,8 +6,8 @@ NETWORKING=yes
 CONFMETHOD=etcnet
 
 # Used by rc.sysinit to setup system hostname at boot.
-#HOSTNAME=
-#DOMAINNAME=
+HOSTNAME=localhost.localdomain
+DOMAINNAME=localdomain
 
 # This is used by ALTLinux ppp-common to decide if we want to install
 # nameserver lines into /etc/resolv.conf or not.
