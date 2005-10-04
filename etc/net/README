@@ -456,3 +456,4 @@ not work (you can patch syntax file)
 4. some network drivers have race condition in interface init code
 5. ppp interfaces can only be named ppp%d
 6. DHCP does not work for bonding
+7. ppp option 'demand' can hang /etc/net startup forever
