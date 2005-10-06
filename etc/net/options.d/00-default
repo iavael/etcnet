@@ -49,7 +49,7 @@ DEFAULT_PENTANET_CONF=pentanet.conf
 DEFAULT_PENTAVAL_CONF=pentaval.conf
 DEFAULT_IPSECADM=/usr/sbin/ipsecadm
 DEFAULT_IFENSLAVE=/sbin/ifenslave
-DEFAULT_BRCTL=/sbin/brctl
+DEFAULT_BRCTL=/usr/sbin/brctl
 DEFAULT_ETHTOOL=/usr/sbin/ethtool
 
 # profiles
