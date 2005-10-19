@@ -35,6 +35,7 @@ TC=/sbin/tc
 MODPROBE=/sbin/modprobe
 LSMOD=/sbin/lsmod
 INSMOD=/sbin/insmod
+RMMOD=/sbin/rmmod
 SYSCTL=/sbin/sysctl
 IFRENAME=/sbin/ifrename
 DEFAULT_IFPLUGSTATUS=/usr/sbin/ifplugstatus
