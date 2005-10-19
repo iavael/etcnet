@@ -11,6 +11,29 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
+Contents:
+1. General information
+2. Quick start
+ 2A. Example configuration
+ 2B. Requirements
+3. Misc info
+ 3.1 Files
+ 3.2 Interface groups
+ 3.3 PLIP maps
+ 3.4 QoS hierarchy
+ 3.5 Interface recursion and dependencies
+4. System configuration
+5. Configuration profiles
+ 5.1 Static profiles
+ 5.1 Dynamic profiles
+6. PPP interfaces
+7. Smart sysctl support
+8.
+9. PPTP interfaces
+10. Firewall support
+
+
+
 1. GENERAL INFORMATION
 
 Supported interface types:
@@ -113,6 +136,7 @@ When BOOTPROTO is other than 'static', you will need a DHCP and (optionally)
 IPv4LL client (zcip).
 iproute2 is a must
 
+3. MISC INFO
 3.1 FILES
 /etc/net/iface/default
 There is no interface named 'default', this dir only stores default
@@ -212,7 +236,7 @@ belong to parent qdisc and will point to current dir (class), you don't have to
 specify parent and flowid keywords. If 'extra.filter' file exists, it's contents
 will be prefixed to each line of 'filter' file.
 
-3.5. INTERFACE RECURSION AND DEPENDENCIES
+3.5 INTERFACE RECURSION AND DEPENDENCIES
 1. When we bring up an iface, we MUST ensure that parent iface is up.
 If it is not so, continue only if we succeeded bringing parent iface up.
 2. When we have brought an iface up, we MAY (if configured to do it)
@@ -268,8 +292,8 @@ Edit /etc/hotplug/net.agent and change
 As of version 0.7.10 /etc/net have changed ifplugd code. Look at
 /etc/net/ifaces/default/options-eth for info.
 
-5. NETWORK PROFILES
-5.1 static profiles
+5. CONFIGURATION PROFILES
+5.1 Static profiles
 A profile is a configuration superset. E.g. when a notebook boots up in
 several different networks, it's desirable to select current configuration
 by just one parameter. Current profile name can be set via:
@@ -294,7 +318,7 @@ To switch between configurations without editing /etc/net/profile one can use:
 # service etcnet startwith office
 # service etcnet restartwith home
 
-5.2 dynamic profiles
+5.2 Dynamic profiles
 If 'selectprofile' executable script exists in iface directory, it will be run with a
 single argument, which defines current stage of (de)configuration sequence. If you
 want to override current profile name during runtime, you should perform required
@@ -323,7 +347,7 @@ PPP links tend to make a considerable mess due to floating indexes. iftab/ifrena
 will not work here, so we will have old ppp%u names. create-ppp will try to guess
 correct unit index from the interface name and pass it to pppd.
 
-7. smart sysctl support
+7. Smart sysctl support
 If there is a sysctl.conf file in interface directory, it will be processed in this
 manner: fully specified variables (like in a traditional /etc/sysctl.conf file) will
 will be processed as is, but for single word variables like rp_filter auto-prefix
