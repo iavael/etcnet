@@ -1,6 +1,8 @@
 0.7.15
 	provide default hostname
-	define RMMOD path
+	define rmmod path
+	new options: PPPOE_EXTRA_OPTIONS, PPTP_EXTRA_OPTIONS
+	new option: PPPTIMEOUT (patch by Alexey I. Froloff)
 0.7.14 2005-09-29
 	bonding code bugfixes
 	interface dependency bugfixes

@@ -84,3 +84,12 @@ DONT_FLUSH=on
 # pppd does not save default route for us. We could save and restore it
 # with ip-up/ip-down, but this option will do the trick for us.
 #RESTORE_DEFAULTROUTE=<bool>
+
+# If you want to pass some extra args to pppoe or pptp binary, you can do it here.
+#PPPOE_EXTRA_OPTIONS=<string>
+#PPTP_EXTRA_OPTIONS=<string>
+
+# Your PPP link will not hang for more seconds, than specified here.
+# /etc/net will pass according  lcp-echo-interval and lcp-echo-failure
+# options to pppd, if this options is set.
+#PPPTIMEOUT=<integer>

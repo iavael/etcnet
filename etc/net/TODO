@@ -3,7 +3,7 @@
 - xsupplicant support
 - Elektra support
 - analyze zebra and RTPROTO ip option
-? SNMP bridge workaround
+- SNMP bridge workaround (see http://linux-net.osdl.org/index.php/Bonding#SNMP_agents)
 - patch: bridge-utils arg order
 - patch: kernel: support more than one teql interfaces
 - lockfiles and service network status
@@ -17,5 +17,6 @@
 - export review
 - etcnet manpage
 - more docs
-- PPPOE_EXTRA_OPTIONS
-- PPPTIMEOUT option
++ PPPOE_EXTRA_OPTIONS
++ PPPTIMEOUT option
+- drop PPPMAXFAIL, PPPPERSIST, PPPHOLDOFF, PPPIDLE in 0.8.0
