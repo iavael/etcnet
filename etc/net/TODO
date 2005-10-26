@@ -21,3 +21,4 @@
 + PPPTIMEOUT option
 - drop PPPMAXFAIL, PPPPERSIST, PPPHOLDOFF, PPPIDLE in 0.8.0
 - allow compiled-in 802.1q
+- only pickup DISABLED and TYPE in network.init

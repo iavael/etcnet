@@ -208,6 +208,8 @@ start()
 		print_progress
 	done
 	print_message " $IFACECOUNT interfaces found"
+	# Unset options, which are not set by default, but can break other ifaces.
+	unset REQUIRES HOST
 	# 2. process each group
 	for i in 0 1 2 3 4; do
 		# handle vlantab in hosted physical group
@@ -248,6 +250,7 @@ stop()
 		print_progress
 	done
 	print_message " $IFACECOUNT interfaces found"
+	unset REQUIRES HOST
 	# reverse order
 	for i in 4 3 2 1 0; do
 		[ -n "${STOP_GROUP[$i]}" ] && stop_group $i skiphot

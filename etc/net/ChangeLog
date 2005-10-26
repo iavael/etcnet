@@ -4,6 +4,7 @@
 	new options: PPPOE_EXTRA_OPTIONS, PPTP_EXTRA_OPTIONS
 	new option: PPPTIMEOUT (patch by Alexey I. Froloff)
 	stop_vlantab bugfix
+	network.init bugfix
 0.7.14 2005-09-29
 	bonding code bugfixes
 	interface dependency bugfixes
