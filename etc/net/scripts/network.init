@@ -137,6 +137,7 @@ start_group()
 	local GROUP_SIZE=`echo "${START_GROUP[$GROUP_ID]}" | wc -w | sed 's/ *//'`
 # GROUP_SIZE is always not zero
 	print_message "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
+	local i
 	for i in `seq 1 $GROUP_SIZE`; do
 		IFNAME=`echo "${START_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStarting $IFNAME: "
@@ -159,6 +160,7 @@ stop_group()
 	local GROUP_SIZE=`echo "${STOP_GROUP[$GROUP_ID]}" | wc -w | sed 's/ *//'`
 # GROUP_SIZE is always not zero
 	print_message "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
+	local i
 	for i in `seq 1 $GROUP_SIZE`; do
 		IFNAME=`echo "${STOP_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStopping $IFNAME: "
