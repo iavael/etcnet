@@ -15,10 +15,7 @@
 - merge with SuSE, LFS, PLD
 - PPP RESTORE_DEFAULTROUTE option
 - export review
-- etcnet manpage
+- etcnet.8, etcnet-options.5  
 - more docs
-+ PPPOE_EXTRA_OPTIONS
-+ PPPTIMEOUT option
-- drop PPPMAXFAIL, PPPPERSIST, PPPHOLDOFF, PPPIDLE in 0.8.0
 - allow compiled-in 802.1q
 - only pickup DISABLED and TYPE in network.init

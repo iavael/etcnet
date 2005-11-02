@@ -1,15 +1,6 @@
-/etc/net version 0.7.15
+/etc/net version 0.8.0
 http://etcnet.org/
 
-Copyright (c) 2004-2005 Denis Ovsienko (info#pilot_org_ua)
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
 
 Contents:
 1. General information
@@ -31,10 +22,14 @@ Contents:
 8.
 9. PPTP interfaces
 10. Firewall support
-
+Appendix A. Copyright and license
 
 
 1. GENERAL INFORMATION
+
+/etc/net (etcnet) performs network configuration in Linux. The project's
+goal is to make network management in Linux more convenient and
+reflecting modern kernel and tools features.
 
 Supported interface types:
 +ethernet (eth)
@@ -481,3 +476,16 @@ not work (you can patch syntax file)
 5. ppp interfaces can only be named ppp%d
 6. DHCP does not work for bonding
 7. ppp option 'demand' can hang /etc/net startup forever
+
+
+Appendix A. COPYRIGHT AND LICENSE
+
+Copyright (c) 2004-2005 Denis Ovsienko <info/@/etcnet.org>
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
