@@ -14,8 +14,11 @@ if [ ! -s $SCRIPTDIR/functions ]; then
 fi
 export VERBOSE=on
 export PROGRESS=on
+# In certain cases we receive preset variables, some of those are not
+# what we want to accept.
 export HOST=
 . $SCRIPTDIR/functions
+pickup_options
 . $SCRIPTDIR/functions-fw
 SourceIfNotEmpty /etc/sysconfig/network
 export IFACEDIR SCRIPTDIR NETPROFILE NETHOST

@@ -26,7 +26,8 @@ case "$CALLER" in
 	;;
 esac
 
-. ${SCRIPTDIR:=/etc/net/scripts}/functions
+[ -z "$SCRIPTDIR" ] && ${SCRIPTDIR:=/etc/net/scripts}/functions
+pickup_defaults
 
 # Deal with ifrename and mappings before we try to read options,
 # because iface name may change.

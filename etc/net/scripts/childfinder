@@ -14,7 +14,8 @@ usage()
 [ -z "$1" ] && usage
 PARENTNAME=$1
 CHILDREN=""
-. $SCRIPTDIR/functions
+[ -z "$SCRIPTDIR" ] && ${SCRIPTDIR:=/etc/net/scripts}/functions
+pickup_defaults
 
 # same code as in network.init
 for MYIFACEDIR in $IFACEDIR/*; do

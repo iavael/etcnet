@@ -1,10 +1,15 @@
 #!/bin/bash
 
-for optionsfile in /etc/net/options /etc/net/options.d/*; do
-	[ -s "$optionsfile" ] && . $optionsfile
-done
+# Functions and variables are subject for export, see bottom of this file.
 
 DENOISE="egrep ^[^#]"
+
+pickup_defaults()
+{
+	for optionsfile in /etc/net/options /etc/net/options.d/*; do
+		[ -s "$optionsfile" ] && . $optionsfile
+	done
+}
 
 # Stolen from /etc/init.d/functions and improved.
 is_yes()
@@ -212,7 +217,7 @@ init_nethost()
 }
 
 # iterator
-foreach_child ()
+foreach_child()
 {
 	local WHAT=${1:?missing 1st argument to $FUNCNAME}
 	local CHILDREN=`$SCRIPTDIR/childfinder $NAME`
@@ -224,19 +229,19 @@ foreach_child ()
 }
 
 # get down all dependant ifaces
-ifdown_children ()
+ifdown_children()
 {
 	foreach_child ifdown
 }
 
 # same for ifdown
-ifup_children ()
+ifup_children()
 {
 	foreach_child ifup
 }
 
 # check if parent iface(s) (REQUIRES/HOST) is up and ifup if needed
-ifup_parents ()
+ifup_parents()
 {
 	[ -z "$REQUIRES" -a -z "$HOST" ] && return 0
 	local parent ret=0
@@ -252,7 +257,7 @@ ifup_parents ()
 	return $ret
 }
 
-ifdown_parents ()
+ifdown_parents()
 {
 	[ -z "$REQUIRES" -a -z "$HOST" ] && return 0
 	local parent ret=0
@@ -269,7 +274,7 @@ ifdown_parents ()
 	return $ret
 }
 
-iface_exists ()
+iface_exists()
 {
 	local NAME=${1:?missing 1st argument to $FUNCNAME}
 	$IP li sh dev $NAME >/dev/null 2>&1
@@ -284,7 +289,7 @@ seen_iface ()
 	return 1
 }
 
-add_seen_iface ()
+add_seen_iface()
 {
 	local newname=${1:?missing 1st arg to $FUNCNAME}
 	SEEN_IFACES="${SEEN_IFACES:+$SEEN_IFACES }$newname"
@@ -352,3 +357,11 @@ have_ifplugd()
 		echo no
 	fi
 }
+
+declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_typename2type
+declare -frx pickup_options print_error print_message print_progress print_nack
+declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netprofile
+declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
+declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
+declare -frx process_ipv4rules flush_addresses have_ifplugd pickup_defaults
+declare -rx DENOISE

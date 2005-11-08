@@ -10,11 +10,11 @@ usage()
 	exit 1
 }
 
-unset IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE NETHOST SEEN_IFACES
+unset IFACEDIR MYIFACEDIR NAME NETPROFILE NETHOST SEEN_IFACES
 [ -z "$1" ] && usage
 NAME=$1
 
-. ${SCRIPTDIR:=/etc/net/scripts}/functions
+[ -z "$SCRIPTDIR" ] && ${SCRIPTDIR:=/etc/net/scripts}/functions
 init_nethost
 if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
 	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST

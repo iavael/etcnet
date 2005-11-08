@@ -14,7 +14,8 @@ usage()
 [ -z "$1" ] && usage
 NAME=$1
 
-. ${SCRIPTDIR:=/etc/net/scripts}/functions
+[ -z "$SCRIPTDIR" ] && ${SCRIPTDIR:=/etc/net/scripts}/functions
+pickup_defaults
 if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
 	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
 else

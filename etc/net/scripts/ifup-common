@@ -13,9 +13,6 @@ usage()
 [ -z "$1" ] && usage
 NAME=$1
 
-. $SCRIPTDIR/functions
-
-init_netprofile
 pickup_options
 
 #----------------+------+------+------+
