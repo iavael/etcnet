@@ -19,3 +19,6 @@
 - more docs
 - allow compiled-in 802.1q
 - only pickup DISABLED and TYPE in network.init
+- more .d-style
+- (RH#119952) {pre,post}-{start,stop,restart,reload} hook scripts
+- iANS support?

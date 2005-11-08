@@ -1,0 +1,29 @@
+.TH "etcnet" "8" "0.8.0" "Denis Ovsienko <info@etcnet.org>" ""
+.SH "NAME"
+/etc/net is a network configuration system. 
+.SH "SYNOPSIS"
+.TP 
+ifup <interface>
+.TP 
+ifdown <interface>
+.TP 
+service network <start|stop|restart|reload...>
+.SH "DESCRIPTION"
+/etc/net controls your network configuration. Once you have created your configuration, you should be able to control state of your host with 3 scripts: ifup, ifdown, network.init.
+.SH "FILENAMES"
+When a need to read certain file or check for its existence arises, several naming conventions are taken in account. If neither "network profile" nor "network host" are defined, /etc/net leaves filename unchanged.
+.SH "ENVIRONMENT"
+HETHOST
+HETPROFILE
+.SH "BUGS"
+
+.SH "SEE ALSO"
+ip, tc
+/etc/net is usually shipped with documentation and examples.
+http://etcnet.org/
+.SH "FILES"
+.TP 
+/etc/net/iftab
+/etc/net/sysctl.conf
+/etc/net/hosttab
+/etc/net/vlantab
