@@ -5,7 +5,6 @@
 # These are necessary constants.
 DENOISE="egrep ^[^#]"
 DEFAULT_BONDMODE=0
-DEFAULT_IPV4ROUTE_CMD='append'
 IFACEDIR=/etc/net/ifaces
 VARLIBDIR=/var/lib/etcnet
 VLANTAB=/etc/net/vlantab
@@ -405,7 +404,7 @@ declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netp
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
 declare -frx process_ipv4rules flush_addresses have_ifplugd pickup_defaults
-declare -rx DENOISE DEFAULT_BONDMODE DEFAULT_IPV4ROUTE_CMD IFACEDIR VARLIBDIR
+declare -rx DENOISE DEFAULT_BONDMODE IFACEDIR VARLIBDIR
 declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS
 declare -rx DEFAULT_IFPLUGD DEFAULT_IWCONFIG DEFAULT_WPA_SUPPLICANT DEFAULT_PLIPCONFIG
 declare -rx DEFAULT_VCONFIG DEFAULT_PENTANETT DEFAULT_PENTAVALT DEFAULT_PENTANET_CONF
