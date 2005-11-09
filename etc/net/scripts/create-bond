@@ -1,6 +1,5 @@
 #!/bin/bash
 
-. $SCRIPTDIR/functions
 pickup_options
 
 # TODO: max_bonds=1 to override modules.conf?

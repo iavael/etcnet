@@ -1,7 +1,5 @@
 #!/bin/sh
 
-. $SCRIPTDIR/functions
-
 $MODPROBE ipv6
 
 xargise_file $MYIFACEDIR/ipv6address "$IP -6 address add dev $NAME"

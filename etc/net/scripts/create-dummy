@@ -1,8 +1,6 @@
 #!/bin/bash
 
-. $SCRIPTDIR/functions
 pickup_options
-
 
 # TODO: check if device is already up/module loaded
 # load module

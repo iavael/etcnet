@@ -1,6 +1,5 @@
 #!/bin/bash
 
-. $SCRIPTDIR/functions
 pickup_options
 
 # If an administrator wishes to rely on modules.conf, let's agree.

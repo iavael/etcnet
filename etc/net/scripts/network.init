@@ -329,6 +329,10 @@ check()
 			continue
 		}
 		GROUP_ID=`type2group $TYPE`
+		[ -z "$GROUP_ID" ] && {
+			print_error "unknown interface group for iface '$NAME' of type '$TYPE'"
+			continue
+		}
 		GROUP=`group2name $GROUP_ID`
 		print_message -n "$BNAME: ${TYPE:-unknown type}/${GROUP:-unknown group}"
 		if [ -z "$GROUP" ];then

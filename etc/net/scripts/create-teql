@@ -1,6 +1,5 @@
 #!/bin/bash
 
-. $SCRIPTDIR/functions
 pickup_options
 
 # Let's hope we manage all TEQLs ourselves :-/

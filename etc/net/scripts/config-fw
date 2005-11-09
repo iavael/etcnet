@@ -14,7 +14,6 @@ usage()
 NAME=$1
 ACTION=$2
 
-. ${SCRIPTDIR:=/etc/net/scripts}/functions
 . ${SCRIPTDIR:=/etc/net/scripts}/functions-fw
 
 [ -z "$NETPROFILE" ] && init_netprofile

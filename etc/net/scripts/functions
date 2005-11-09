@@ -2,14 +2,44 @@
 
 # Functions and variables are subject for export, see bottom of this file.
 
+# These are necessary constants.
 DENOISE="egrep ^[^#]"
-
-pickup_defaults()
-{
-	for optionsfile in /etc/net/options /etc/net/options.d/*; do
-		[ -s "$optionsfile" ] && . $optionsfile
-	done
-}
+DEFAULT_BONDMODE=0
+DEFAULT_IPV4ROUTE_CMD='append'
+IFACEDIR=/etc/net/ifaces
+VARLIBDIR=/var/lib/etcnet
+VLANTAB=/etc/net/vlantab
+HOSTTAB=/etc/net/hosttab
+IFTAB=/etc/net/iftab
+PROFILE_FILE=/etc/net/profile
+PROC_CMDLINE=/proc/cmdline
+DEFAULT_IFPLUGSTATUS=/usr/sbin/ifplugstatus
+DEFAULT_IFPLUGD=/usr/sbin/ifplugd
+DEFAULT_IWCONFIG=/sbin/iwconfig
+DEFAULT_WPA_SUPPLICANT=/usr/sbin/wpa_supplicant
+DEFAULT_PLIPCONFIG=/sbin/plipconfig
+DEFAULT_VCONFIG=/usr/bin/vconfig
+DEFAULT_PENTANETT=/usr/sbin/pentanett
+DEFAULT_PENTAVALT=/usr/sbin/pentavalt
+DEFAULT_PENTANET_CONF=pentanet.conf
+DEFAULT_PENTAVAL_CONF=pentaval.conf
+DEFAULT_IPSECADM=/usr/sbin/ipsecadm
+DEFAULT_IFENSLAVE=/sbin/ifenslave
+DEFAULT_BRCTL=/usr/sbin/brctl
+DEFAULT_ETHTOOL=/usr/sbin/ethtool
+DEFAULT_PPPD=/usr/sbin/pppd
+DEFAULT_CHAT=/usr/sbin/chat
+DEFAULT_PPPOPTIONSFILE=pppoptions
+DEFAULT_PPPINITCHAT=pppinit
+DEFAULT_PPPCONNECTCHAT=pppconnect
+DEFAULT_PPPDISCONNECTCHAT=pppdisconnect
+DEFAULT_CHATOPTIONS='-t 120'
+DEFAULT_PPPOE=/usr/sbin/pppoe
+DEFAULT_PPPOEOPTIONS='-U'
+DEFAULT_PPTP=/usr/sbin/pptp
+DEFAULT_SZAP=/usr/bin/szap
+DEFAULT_SZAP_ARGS='-n 1 -x'
+DEFAULT_DVBNET=/usr/bin/dvbnet
 
 # Stolen from /etc/init.d/functions and improved.
 is_yes()
@@ -59,7 +89,7 @@ ExecIfExecutable()
 supported_type()
 {
 	local TYPE=${1:?missing 1st arg to $FUNCNAME}
-	[ -x $SCRIPTDIR/create-$TYPE -o -x $SCRIPTDIR/destroy-$TYPE ] && return 0
+	[ "$TYPE" = "lo" -o -x $SCRIPTDIR/create-$TYPE -o -x $SCRIPTDIR/destroy-$TYPE ] && return 0
 	return 1
 }
 
@@ -358,10 +388,29 @@ have_ifplugd()
 	fi
 }
 
+pickup_defaults()
+{
+	for optionsfile in /etc/net/options /etc/net/options.d/*; do
+		[ -s "$optionsfile" ] && . $optionsfile
+	done
+	is_yes "$GOT_ETCNET_OPTIONS" || {
+		print_error "could not read /etc/net options in $0"
+		exit 2
+	}
+}
+
 declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_typename2type
 declare -frx pickup_options print_error print_message print_progress print_nack
 declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netprofile
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
 declare -frx process_ipv4rules flush_addresses have_ifplugd pickup_defaults
-declare -rx DENOISE
+declare -rx DENOISE DEFAULT_BONDMODE DEFAULT_IPV4ROUTE_CMD IFACEDIR VARLIBDIR
+declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS
+declare -rx DEFAULT_IFPLUGD DEFAULT_IWCONFIG DEFAULT_WPA_SUPPLICANT DEFAULT_PLIPCONFIG
+declare -rx DEFAULT_VCONFIG DEFAULT_PENTANETT DEFAULT_PENTAVALT DEFAULT_PENTANET_CONF
+declare -rx DEFAULT_PENTAVAL_CONF DEFAULT_IPSECADM DEFAULT_IFENSLAVE DEFAULT_BRCTL
+declare -rx DEFAULT_ETHTOOL DEFAULT_PPPD DEFAULT_CHAT DEFAULT_PPPOPTIONSFILE
+declare -rx DEFAULT_PPPINITCHAT DEFAULT_PPPCONNECTCHAT DEFAULT_PPPDISCONNECTCHAT
+declare -rx DEFAULT_CHATOPTIONS DEFAULT_PPPOE DEFAULT_PPPOEOPTIONS DEFAULT_PPTP
+declare -rx DEFAULT_SZAP DEFAULT_SZAP_ARGS DEFAULT_DVBNET

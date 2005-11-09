@@ -1,6 +1,5 @@
 #!/bin/bash
 
-. $SCRIPTDIR/functions
 pickup_options
 
 [ -n "$MODULE" ] && try_rmmod $MODULE

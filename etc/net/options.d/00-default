@@ -17,18 +17,6 @@ SILENT_REMOVABLES=off
 # DEV_PLUS_VID_NO_PAD
 VLAN_NAMETYPE=DEV_PLUS_VID_NO_PAD
 
-# See options-bond
-DEFAULT_BONDMODE=0
-
-DEFAULT_IPV4ROUTE_CMD='append'
-
-# config files
-IFACEDIR=/etc/net/ifaces
-VARLIBDIR=/var/lib/etcnet
-VLANTAB=/etc/net/vlantab
-HOSTTAB=/etc/net/hosttab
-IFTAB=/etc/net/iftab
-
 # tools
 IP=/sbin/ip
 TC=/sbin/tc
@@ -38,24 +26,6 @@ INSMOD=/sbin/insmod
 RMMOD=/sbin/rmmod
 SYSCTL=/sbin/sysctl
 IFRENAME=/sbin/ifrename
-DEFAULT_IFPLUGSTATUS=/usr/sbin/ifplugstatus
-DEFAULT_IFPLUGD=/usr/sbin/ifplugd
-DEFAULT_IWCONFIG=/sbin/iwconfig
-DEFAULT_WPA_SUPPLICANT=/usr/sbin/wpa_supplicant
-DEFAULT_PLIPCONFIG=/sbin/plipconfig
-DEFAULT_VCONFIG=/usr/bin/vconfig
-DEFAULT_PENTANETT=/usr/sbin/pentanett
-DEFAULT_PENTAVALT=/usr/sbin/pentavalt
-DEFAULT_PENTANET_CONF=pentanet.conf
-DEFAULT_PENTAVAL_CONF=pentaval.conf
-DEFAULT_IPSECADM=/usr/sbin/ipsecadm
-DEFAULT_IFENSLAVE=/sbin/ifenslave
-DEFAULT_BRCTL=/usr/sbin/brctl
-DEFAULT_ETHTOOL=/usr/sbin/ethtool
-
-# profiles
-PROFILE_FILE=/etc/net/profile
-PROC_CMDLINE=/proc/cmdline
 
 # DHCP
 DHCP_CLIENT=/sbin/dhcpcd
@@ -70,18 +40,6 @@ IPX_INTERFACE=/sbin/ipx_interface
 IPX_INTERNAL_NET=/sbin/ipx_internal_net
 IPX_CONFIGURE=/sbin/ipx_configure
 
-# PPP defaults
-DEFAULT_PPPD=/usr/sbin/pppd
-DEFAULT_CHAT=/usr/sbin/chat
-DEFAULT_PPPOPTIONSFILE=pppoptions
-DEFAULT_PPPINITCHAT=pppinit
-DEFAULT_PPPCONNECTCHAT=pppconnect
-DEFAULT_PPPDISCONNECTCHAT=pppdisconnect
-DEFAULT_CHATOPTIONS='-t 120'
-DEFAULT_PPPOE=/usr/sbin/pppoe
-DEFAULT_PPPOEOPTIONS='-U'
-DEFAULT_PPTP=/usr/sbin/pptp
-
 # resolv.conf post-install command. Usually you don't want to define this
 # variable here, but place distribution-specific options file to options.d.
 # The command and its arguments must be stored in different variables, because
@@ -95,11 +53,6 @@ ALLOW_UNKNOWN=no
 
 # FireWall defaults
 IPTABLES=/sbin/iptables
-
-# DVB utils
-DEFAULT_SZAP=/usr/bin/szap
-DEFAULT_SZAP_ARGS='-n 1 -x'
-DEFAULT_DVBNET=/usr/bin/dvbnet
 
 # List of known-good network modules (ones that support link detection).
 GOOD_MODULE_LIST='eepro100 e100 8139too tulip 3c59x hostap via-rhine b44'

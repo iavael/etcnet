@@ -1,9 +1,6 @@
 #!/bin/bash
 
-. $SCRIPTDIR/functions
 pickup_options
-
-
 
 case "${DVBTYPE:?missing DVBTYPE option for $NAME, please fix}" in
 	ss223|ss226)

@@ -52,7 +52,6 @@ process_qos_dir ()
 NAME=$1
 
 [ -d $MYIFACEDIR/qos/ -a -x $MYIFACEDIR/qos/ ] || exit 0
-. $SCRIPTDIR/functions
 pickup_options
 
 # clean up

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-. $SCRIPTDIR/functions
-
 $IP tunnel del $NAME
 # ?
 try_rmmod ipip

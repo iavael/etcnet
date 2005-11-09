@@ -14,7 +14,6 @@
 - QoS profiles support
 - merge with SuSE, LFS, PLD
 - PPP RESTORE_DEFAULTROUTE option
-- export review
 - etcnet.8, etcnet-options.5  
 - more docs
 - allow compiled-in 802.1q
@@ -22,3 +21,5 @@
 - more .d-style
 - (RH#119952) {pre,post}-{start,stop,restart,reload} hook scripts
 - iANS support?
+- examine functions-fw and config-fw
+- config_ipv6_routes()
