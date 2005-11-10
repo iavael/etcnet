@@ -68,12 +68,12 @@ iptables_local_stop()
 
 case "$FW_TYPE" in
 	iptables)
-		is_dir_ok "$MYIFACEDIR/fw/$FW_TYPE" || exit 0
+	 	[ -d "$MYIFACEDIR/fw/$FW_TYPE" ] || exit 0
 		export FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX IPTABLES_INPUT_POLICY \
 				IPTABLES_FORWARD_POLICY IPTABLES_OUTPUT_POLICY IPTABLES_RULE_EMBEDDING
 		# Load own interface syntax if exists
 		[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && {
-			is_file_ok "$MYIFACEDIR/fw/$FW_TYPE/syntax" && ! is_empty_file "$MYIFACEDIR/fw/$FW_TYPE/syntax" && {
+			[ -f "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && {
 				IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$FW_TYPE"
 				export iptables_syntax=
 				export iptables_sed_rules=

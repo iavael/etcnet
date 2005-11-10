@@ -2,32 +2,11 @@
 
 # FIXME
 # move to another place
-is_dir_ok()
-{
-	[ -d "$1" -a -x "$1" ] && return 0
-	return 1
-}
-# FIXME
-# move to another place
-is_file_ok()
-{
-	[ -f "$1" -a -r "$1" ] && return 0
-	return 1
-}
-# FIXME
-# move to another place
 is_comment()
 {
 	echo "$1"|egrep -q '^\ *#' && return 0
 	echo "$1"|egrep -q '^\ *\;' && return 0
 	return 1
-}
-# FIXME
-# move to another place
-is_empty_file()
-{
-	[ -s "$1" ] && return 1
-	return 0
 }
 
 # FIXME
@@ -128,7 +107,7 @@ iptables_pop_rule()
 iptables_load_syntax()
 {
 	export iptables_syntax=
-	[ -z "$1" ] || ! is_file_ok "$1" || is_empty_file "$1" && return 1
+	[ -z "$1" ] || [ ! -f "$1" ] || [ ! -s "$1" ] && return 1
 	export iptables_syntax=$(< "$1")
 }
 
@@ -143,8 +122,6 @@ iptables_create_sed_rules()
 		[ -z "$rule" ] || is_comment "$rule"  && continue
 		search=$(echo $rule|cut -f1 -d:|sed -e 's/\//\\\//g')
 		replace=$(echo $rule|cut -f2 -d:|sed -e 's/\//\\\//g')
-		# FIXME  Still remove spaces so add it
-		#iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/$replace /g;"
 		iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/\1$replace\2/gi;"
 	done < <(echo "$replaces")
 	print_message
@@ -178,7 +155,7 @@ iptables_preload()
 
 iptables_load_rules_from_file()
 {
-	if is_file_ok "$chain" && ! is_empty_file "$chain"; then
+	if [ -f "$chain" ] && [ -s "$chain" ]; then
 		print_message "Loading rules for chain `basename $chain` in table `basename $table`"
 		rules=$(< "$chain")
 		while read rule; do
@@ -214,7 +191,7 @@ iptables_load_rules_from_file()
 
 iptables_flush_rules_from_file()
 {
-	if is_file_ok "$chain" && ! is_empty_file "$chain"; then
+	if [ -f "$chain" ] && [ -s "$chain" ]; then
 		print_message "Flushing rules for chain `basename $chain` in table `basename $table`"
 		# Flush rules only when stop networking
 		if [ "$NAME" != "default" ]; then
@@ -276,7 +253,7 @@ iptables_start()
 	fi
 	cd "$MYIFACEDIR/fw/$FW_TYPE"
 	# Load modules
-	if is_file_ok "modules" && ! is_empty_file "modules"; then
+	if [ -f "modules" ] && [ -s "modules" ]; then
 		cat modules | while read module; do
 			[ ! -z "$module" ] && ! is_comment "$module" && {
 				print_message "Loading module $module"
@@ -287,10 +264,10 @@ iptables_start()
 	# Create user chains
 	for table in *; do
 		[ "`basename $table`" = "loadorder" ] && continue
-		! is_dir_ok "$table" && continue
+		[ ! -d "$table" ] && continue
 		for chain in "$table"/*; do
 			[ "`basename $chain`" = "loadorder" ] && continue
-			if is_file_ok "$chain" && ! is_empty_file "$chain" ; then
+			if [ -f "$chain" ] && [ -s "$chain" ]; then
 				if ! in_list "$IPTABLES_SYSTEM_CHAINS"  "$chain"; then
 					print_message "Creating chain `basename $chain` in table `basename $table`"
 					iptables_create_chain `basename $chain` -t `basename $table`
@@ -301,11 +278,11 @@ iptables_start()
 
 	# FIXME  Double code
 	# Load rules after creating _all_ chains
-	if is_file_ok "loadorder" && ! is_empty_file "loadorder"; then
+	if [ -f "loadorder" ] && [ -s "loadorder" ]; then
 		cat "loadorder"|while read table; do
 			is_empty_string "$table" && continue
-			! is_dir_ok "$table" && continue
-			if is_file_ok "$table/loadorder" && ! is_empty_file "$table/loadorder"; then
+			[ ! -d "$table" ] && continue
+			if [ -f "$table/loadorder" ] && [ -s "$table/loadorder" ]; then
 				cat "$table/loadorder"|while read chain; do
 					is_empty_string "$chain" && continue
 					chain="$table/$chain"
@@ -320,8 +297,8 @@ iptables_start()
 	else
 		for table in *; do
 			[ "`basename $table`" = "loadorder" ] && continue
-			! is_dir_ok "$table" && continue
-			if is_file_ok "$table/loadorder" && ! is_empty_file "$table/loadorder"; then
+			[ ! -d "$table" ] && continue
+			if [ -f "$table/loadorder" ] && [ -s "$table/loadorder" ]; then
 				cat "$table/loadorder"|while read chain; do
 					is_empty_string "$chain" && continue
 					chain="$table/$chain"
@@ -345,11 +322,11 @@ iptables_stop()
 
 	# FIXME  Double code
 	# Flush rules
-	if is_file_ok "loadorder" && ! is_empty_file "loadorder"; then
+	if [ -f "loadorder" ] && [ -s "loadorder" ]; then
 		tac "loadorder"|while read table; do
 			is_empty_string "$table" && continue
-			! is_dir_ok "$table" && continue
-			if is_file_ok "$table/loadorder" && ! is_empty_file "$table/loadorder"; then
+			[ ! -d "$table" ] && continue
+			if [ -f "$table/loadorder" ] && [ -s "$table/loadorder" ]; then
 				tac "$table/loadorder"|while read chain; do
 					is_empty_string "$chain" && continue
 					chain="$table/$chain"
@@ -364,8 +341,8 @@ iptables_stop()
 	else
 		for table in *; do
 			[ "`basename $table`" = "loadorder" ] && continue
-			! is_dir_ok "$table" && continue
-			if is_file_ok "$table/loadorder" && ! is_empty_file "$table/loadorder"; then
+			[ ! -d "$table" ] && continue
+			if [ -f "$table/loadorder" ] && [ -s "$table/loadorder" ]; then
 				chainsorder=$(tac "$table/loadorder")
 				tac "$table/loadorder"|while read chain; do
 					is_empty_string "$chain" && continue
@@ -383,10 +360,10 @@ iptables_stop()
 	# Delete user chains
 	for table in *; do
 		[ "`basename $table`" = "loadorder" ] && continue
-		! is_dir_ok "$table" && continue
+		[ ! -d "$table" ] && continue
 		for chain in "$table"/*; do
 			[ "`basename $chain`" = "loadorder" ] && continue
-			if is_file_ok "$chain" && ! is_empty_file "$chain"; then
+			if [ -f "$chain" ] && [ -s "$chain" ] ; then
 				if ! in_list "$IPTABLES_SYSTEM_CHAINS"  "$chain"; then
 					print_message "Deleting chain `basename $chain` from table `basename $table`"
 					iptables_delete_chain `basename $chain` -t `basename $table`
@@ -396,7 +373,7 @@ iptables_stop()
 	done
 
 	# Unload modules
-	if is_file_ok "modules" && ! is_empty_file "modules"; then
+	if [ -f "modules" ] && [ -s "modules" ]; then
 		tac modules | while read module; do
 			[ ! -z "$module" ] && ! is_comment "$module" && {
 				print_message "Unloading module $module"
