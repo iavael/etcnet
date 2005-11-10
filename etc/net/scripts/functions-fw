@@ -74,20 +74,47 @@ iptables_flush_chain()
 	eval "$IPTABLES -F $@" || print_error "$IPTABLES -F $@"
 }
 
-
-iptables_add_rule()
+iptables_push_rule()
 {
-	eval "$IPTABLES -A $@" || print_error "$IPTABLES -A $@"
+    case $1 in
+	"-A"|"-I"|"-D")
+	    eval "$IPTABLES $@" || print_error "$IPTABLES $@"
+	;;
+	*)
+    	    case ${IPTABLES_RULE_EMBEDDING:APPEND} in
+    		APPEND)
+	    	    eval "$IPTABLES -A $@" || print_error "$IPTABLES -A $@"
+		;;
+		INSERT)
+	    	    eval "$IPTABLES -I $@" || print_error "$IPTABLES -I $@"
+		;;
+		*)
+		print_error "Unknown type of rule embedding $IPTABLES_RULE_EMBEDDING"
+		;;
+	    esac
+	;;
+    esac
 }
 
-iptables_insert_rule()
+iptables_pop_rule()
 {
-	eval "$IPTABLES -I $@" || print_error "$IPTABLES -I $@"
-}
-
-iptables_delete_rule()
-{
-	eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"
+    case $1 in
+	"-A")
+	    shift
+	    eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"	    	    
+	;;
+	"-I")
+	    PRE="$1 $2"
+	    shift 3
+	    eval "$IPTABLES -D $PRE $@" || print_error "$IPTABLES -D $PRE $@"
+	;;	
+	"-D")
+	    shift
+	    iptables_push_rule $@
+	*)
+        eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"	    	        	
+	;;
+    esac
 }
 
 iptables_load_syntax()
@@ -157,7 +184,7 @@ iptables_load_rules_from_file()
 		for rule in $rules; do
 			[ ! -z "$rule" ] && ! is_comment "$rule" && {
 				rule=`iptables_expand_string "$rule"`
-				[ -z "$rule" ] || iptables_add_rule `basename $chain` -t `basename $table` $rule
+				[ -z "$rule" ] || iptables_push_rule `basename $chain` -t `basename $table` $rule
 				print_progress
 			}
 		done
@@ -179,7 +206,7 @@ iptables_flush_rules_from_file()
 			for rule in $rules; do
 			[ ! -z "$rule" ] && ! is_comment "$rule" && {
 				rule=`iptables_expand_string "$rule"`
-				[ -z "$rule" ] || iptables_delete_rule `basename $chain` -t `basename $table` $rule
+				[ -z "$rule" ] || iptables_pop_rule `basename $chain` -t `basename $table` $rule
 				print_progress
 			}
 			done

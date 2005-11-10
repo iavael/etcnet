@@ -1,5 +1,11 @@
 # All chains and targets are case-sensitive !
 policy: 
+insert: -I
+ins: -I
+append: -A
+add: -A
+delete: -D
+del: -D
 # Builtin targets
 accept: -j ACCEPT
 pass: -j ACCEPT

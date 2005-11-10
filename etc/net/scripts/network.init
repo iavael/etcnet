@@ -183,7 +183,7 @@ start()
 	is_yes "$CONFIG_FW" && {
 		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
 		export CONFIG_FW FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX IPTABLES_INPUT_POLICY \
-				IPTABLES_FORWARD_POLICY IPTABLES_OUTPUT_POLICY
+				IPTABLES_FORWARD_POLICY IPTABLES_OUTPUT_POLICY IPTABLES_RULE_EMBEDDING
 		iptables_preload
 	 	ExecIfExecutable `profiled_filename /etc/net/scripts/config-fw` default start
 	}
@@ -228,7 +228,7 @@ stop()
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
 	is_yes "$CONFIG_FW" && {
 		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
-		export CONFIG_FW FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX
+		export CONFIG_FW FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX IPTABLES_RULE_EMBEDDING
 		iptables_preload
 	}
 	declare -a STOP_GROUP
