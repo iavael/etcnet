@@ -18,7 +18,7 @@ export PROGRESS=on
 # what we want to accept.
 export HOST=
 . $SCRIPTDIR/functions
-pickup_options
+pickup_defaults
 . $SCRIPTDIR/functions-fw
 SourceIfNotEmpty /etc/sysconfig/network
 export IFACEDIR SCRIPTDIR NETPROFILE NETHOST

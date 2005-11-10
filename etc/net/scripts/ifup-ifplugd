@@ -14,7 +14,8 @@ unset IFACEDIR MYIFACEDIR NAME NETPROFILE NETHOST SEEN_IFACES
 [ -z "$1" ] && usage
 NAME=$1
 
-[ -z "$SCRIPTDIR" ] && ${SCRIPTDIR:=/etc/net/scripts}/functions
+[ -z "$SCRIPTDIR" ] && . ${SCRIPTDIR:=/etc/net/scripts}/functions
+pickup_defaults
 init_nethost
 if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
 	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST

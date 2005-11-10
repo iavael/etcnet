@@ -20,6 +20,7 @@ usage()
 NAME=$1
 OLD_NAME=$NAME
 CALLER=${2:?$0: missing 2nd arg}
+. ${SCRIPTDIR:=/etc/net/scripts}/functions
 
 case "$CALLER" in
 	pcmcia_cs|hotplug)
@@ -30,8 +31,7 @@ case "$CALLER" in
 	;;
 esac
 
-. ${SCRIPTDIR:=/etc/net/scripts}/functions
-
+pickup_defaults
 # Deal with ifrename and mappings before we try to read options,
 # because iface name may change.
 
