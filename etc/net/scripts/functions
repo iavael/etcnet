@@ -392,10 +392,10 @@ pickup_defaults()
 	for optionsfile in /etc/net/options /etc/net/options.d/*; do
 		[ -s "$optionsfile" ] && . $optionsfile
 	done
-	is_yes "$GOT_ETCNET_OPTIONS" || {
-		print_error "could not read /etc/net options in $0"
+	if [ -z "$SCRIPTDIR" ]; then
+		print_error "could not read /etc/net options from usual place"
 		exit 2
-	}
+	fi
 }
 
 declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type

@@ -1,6 +1,7 @@
 0.8.0
 	/etc/net moves from CVS to SVN
 	PPPMAXFAIL, PPPPERSIST, PPPHOLDOFF, PPPIDLE options were dropped, use pppoptions file instead
+	faster and more robust code
 0.7.15 2005-10-26
 	provide default hostname
 	define rmmod path
