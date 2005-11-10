@@ -111,6 +111,7 @@ iptables_pop_rule()
 	"-D")
 	    shift
 	    iptables_push_rule $@
+	;;
 	*)
         eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"	    	        	
 	;;
