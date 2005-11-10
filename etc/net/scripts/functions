@@ -398,7 +398,7 @@ pickup_defaults()
 	}
 }
 
-declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_typename2type
+declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type
 declare -frx pickup_options print_error print_message print_progress print_nack
 declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netprofile
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
