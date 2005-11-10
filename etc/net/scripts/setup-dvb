@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pickup_defaults
+init_netprofile
 pickup_options
 
 case "${DVBTYPE:?missing DVBTYPE option for $NAME, please fix}" in

@@ -11,6 +11,7 @@ usage()
 [ -z "$1" ] && usage
 NAME=$1
 
+pickup_defaults
 pickup_options
 
 # configure WEP

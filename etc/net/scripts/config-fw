@@ -14,6 +14,7 @@ usage()
 NAME=$1
 ACTION=$2
 
+pickup_defaults
 . ${SCRIPTDIR:=/etc/net/scripts}/functions-fw
 
 [ -z "$NETPROFILE" ] && init_netprofile

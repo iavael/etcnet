@@ -1,5 +1,6 @@
 #!/bin/bash
 
+pickup_defaults
 init_netprofile
 pickup_options
 

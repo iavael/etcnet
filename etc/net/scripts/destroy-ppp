@@ -11,4 +11,5 @@ usage()
 [ -z "$1" ] && usage
 NAME=$1
 
+# TODO: check for existence
 kill `cat /var/run/$NAME.pid`

@@ -2,6 +2,7 @@
 
 # IPX protocol configuration script, works like brctl processor.
 
+pickup_defaults
 pickup_options
 
 IPX_INTF_FILE=`profiled_filename $MYIFACEDIR/ipxinterface`
