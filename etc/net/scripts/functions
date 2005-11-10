@@ -88,7 +88,7 @@ ExecIfExecutable()
 supported_type()
 {
 	local TYPE=${1:?missing 1st arg to $FUNCNAME}
-	[ "$TYPE" = "lo" -o -x $SCRIPTDIR/create-$TYPE -o -x $SCRIPTDIR/destroy-$TYPE ] && return 0
+	[ -x $SCRIPTDIR/create-$TYPE -o -x $SCRIPTDIR/destroy-$TYPE ] && return 0
 	return 1
 }
 
