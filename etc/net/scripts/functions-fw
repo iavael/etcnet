@@ -104,8 +104,15 @@ iptables_pop_rule()
 	    eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"	    	    
 	;;
 	"-I")
-	    PRE="$1 $2"
-	    shift 3
+	    PRE="$2"
+		case $3 in
+			[0-9]*)
+				shift 3
+			;;
+			*)
+				shift 2
+			;;
+		esac
 	    eval "$IPTABLES -D $PRE $@" || print_error "$IPTABLES -D $PRE $@"
 	;;	
 	"-D")
@@ -130,22 +137,17 @@ iptables_create_sed_rules()
 	export iptables_sed_rules=
 	[ $# -lt 1 -o -z "$1" ] && return 1
 	replaces="$1"
-	OLDIFS=$IFS
-	# FIXME How to put newline here? :-/
-	IFS="
-	"
 	print_message "Loading iptables data"
-	for rule in $replaces; do
+	while read rule; do
 		print_progress
-		[ -z $rule ] || is_comment "$rule"  && continue
+		[ -z "$rule" ] || is_comment "$rule"  && continue
 		search=$(echo $rule|cut -f1 -d:|sed -e 's/\//\\\//g')
 		replace=$(echo $rule|cut -f2 -d:|sed -e 's/\//\\\//g')
 		# FIXME  Still remove spaces so add it
 		#iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/$replace /g;"
 		iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/\1$replace\2/gi;"
-	done
+	done < <(echo "$replaces")
 	print_message
-	IFS=$OLDIFS
 	export iptables_sed_rules
 }
 
@@ -178,38 +180,34 @@ iptables_load_rules_from_file()
 {
 	if is_file_ok "$chain" && ! is_empty_file "$chain"; then
 		print_message "Loading rules for chain `basename $chain` in table `basename $table`"
-		OLDIFS=$IFS
-		IFS="
-		"
 		rules=$(< "$chain")
-		for rule in $rules; do
+		while read rule; do
 			[ ! -z "$rule" ] && ! is_comment "$rule" && {
 				rule=`iptables_expand_string "$rule"`
 				[ -z "$rule" ] || {
-				    echo "$rule"|read FIRST SECOND REST
-				    case $FIRST in
-					"-A"|"-D")
-        				    iptables_push_rule $FIRST `basename $chain` -t `basename $table` $SECOND $REST
+				    read FIRST SECOND REST < <(echo $rule)
+    					case $FIRST in
+					    "-A"|"-D")
+        					iptables_push_rule $FIRST `basename $chain` -t `basename $table` $SECOND $REST
+						;;
+					    "-I")
+						case $SECOND in
+						    [0-9]*)
+	        					iptables_push_rule $FIRST `basename $chain` $SECOND -t `basename $table` $REST
+						    ;;
+						    *)
+	        					iptables_push_rule $FIRST `basename $chain` -t `basename $table` $SECOND $REST
+						    ;;
+						esac
+						;;					    
+					    *)
+        					iptables_push_rule `basename $chain` -t `basename $table` $FIRST $SECOND $REST
 					    ;;
-					"-I")
-					    case $SECOND in
-						[0-9]*)
-	        				    iptables_push_rule $FIRST `basename $chain` $SECOND -t `basename $table` $REST
-						;;
-						*)
-	        				    iptables_push_rule $FIRST `basename $chain` -t `basename $table` $SECOND $REST
-						;;
-					    esac
-					    ;;					    
-					*)
-        				    iptables_push_rule `basename $chain` -t `basename $table` $FIRST $SECOND $REST
-					;;
-				    esac
+						esac
 				}
 				print_progress
 			}
-		done
-		IFS=$OLDIFS
+		done < <(echo "$rules")
 		print_message
 	fi
 }
@@ -220,38 +218,34 @@ iptables_flush_rules_from_file()
 		print_message "Flushing rules for chain `basename $chain` in table `basename $table`"
 		# Flush rules only when stop networking
 		if [ "$NAME" != "default" ]; then
-			OLDIFS=$IFS
-			IFS="
-			"
 			rules=$(tac "$chain")
-			for rule in $rules; do
+			while read rule; do
 			[ ! -z "$rule" ] && ! is_comment "$rule" && {
 				rule=`iptables_expand_string "$rule"`
 				[ -z "$rule" ] || {
-				    echo "$rule"|read FIRST SECOND REST
-				    case $FIRST in
-					"-A"|"-D")
-        				    iptables_pop_rule $FIRST `basename $chain` -t `basename $table` $SECOND $REST
+				    read  FIRST SECOND REST < <(echo $rule)
+					case $FIRST in
+					    "-A"|"-D")
+        					iptables_pop_rule $FIRST `basename $chain` -t `basename $table` $SECOND $REST
+						;;
+					    "-I")
+						case $SECOND in
+						    [0-9]*)
+	        					iptables_pop_rule $FIRST `basename $chain` $SECOND -t `basename $table` $REST
+						    ;;
+						    *)
+	        					iptables_pop_rule $FIRST `basename $chain` -t `basename $table` $SECOND $REST
+						    ;;
+						esac
+						;;					    
+					    *)
+        					iptables_pop_rule `basename $chain` -t `basename $table` $FIRST $SECOND $REST
 					    ;;
-					"-I")
-					    case $SECOND in
-						[0-9]*)
-	        				    iptables_pop_rule $FIRST `basename $chain` $SECOND -t `basename $table` $REST
-						;;
-						*)
-	        				    iptables_pop_rule $FIRST `basename $chain` -t `basename $table` $SECOND $REST
-						;;
-					    esac
-					    ;;					    
-					*)
-        				    iptables_pop_rule `basename $chain` -t `basename $table` $FIRST $SECOND $REST
-					;;
-				    esac
+						esac
 				}				
 				print_progress
 			}
-			done
-			IFS=$OLDIFS
+			done < <(echo "$rules")
 			print_message
 		else
 			iptables_flush_chain `basename $chain` -t `basename $table`
