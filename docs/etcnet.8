@@ -9,10 +9,45 @@ ifdown <interface>
 .TP 
 service network <start|stop|restart|reload...>
 .SH "DESCRIPTION"
-/etc/net is a network configuration system. It should be both simple to use for a beginner and powerful for expert. First of all you have to describe your network connection(s) in a set of files. Once you are done it, you should be able to control state of your host with 3 scripts: ifup, ifdown, network.init.
+/etc/net is a network configuration system. It should be both simple to use for a beginner and powerful for expert. First of all you have to describe your network connection(s) in a set of files. Once you are done, you should be able to control state of your host with 3 scripts: ifup, ifdown, network.init.
 .SH "CONFIGURATION"
+
 .SH "INTERFACE GROUPS"
+There are 5 interface groups in /etc/net. Interfaces are divided to groups to avoid problems with implicit interface dependencies.
+.SH "INTERFACE DIRECTORY LAYOUT"
+Unless explicitly stated, each configuration file contains 1 item per line (options, addresses, routes etc.). You have to create files for each feature you want to use. If file is missing, the feature will not be configured.
+.IP options
+Main options file. This file is required. See etcnet\-options manpage for list of options available.
+.IP iplink
+List of 'ip link' commands. If you need to change interface MTU or PROMISC flag, this is the right place to do it. This file is not required.
+.IP ipneigh
+List of 'ip ne' commands, can be used to control ARP table, e.g. add static ARP entries. This file is not required.
+.IP ipv4address
+List of IPv4 addresses for current interface. This file is not required, but often used.
+.IP ipv4route
+List of IPv4 routes for current interface. This file is not required, but often used.
+.IP ipv4rule
+List of IPv4 routing rules for current interface. You will need this file only if you install routes into multiple routing tables. This file is not required.
+.IP ipv6address
+List of IPv6 addresses for current interface. This file is not required.
+.IP ipv6route
+List of IPv6 routes for current interface. This file is not required.
+.IP iwconfig
+List of iwconfig commands. This file is not required, unless you want to use WiFi WEP.
+.IP wpa_supplicant.conf
+wpa_supplicant configuration file.
+.IP sysctl.conf
+.IP resolv.conf
+.SH "SPECIAL INTERFACES"
+/etc/net ships with 3 existing interfaces:
+.IP lo
+This is a must for a Linux host. Loopback interface comes in configuration, suitable for most cases.
+.IP default
+This is really not an interface, but interface template. 'default' interface forms initial set of options for all interfaces. After that each interface type and each interface can add extra options or override existing options. It is not recommended to change options for 'default' interface.
+.IP unknown
+This is a special interface, which is used each time /etc/net can't find a suitable configuration, but is requested to do. This interface's purpose is to help configure hotplug interfaces, which don't yet have a configuration.
 .SH "PROFILES"
+
 .SH "FILENAMES"
 When a need to read certain file or check for its existence arises, several naming conventions are taken in account. If neither "network profile" nor "network host" are defined, /etc/net leaves filename unchanged.
 .SH "ENVIRONMENT"
