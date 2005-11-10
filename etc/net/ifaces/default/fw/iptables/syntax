@@ -1,32 +1,44 @@
 # All chains and targets are case-sensitive !
 policy: 
-# Targets
+# Builtin targets
 accept: -j ACCEPT
 pass: -j ACCEPT
 drop: -j DROP
-reject: -j REJECT
 deny: -j DROP
 return: -j RETURN
-reject-with: -j REJECT --reject-with
-snat: -j SNAT --to-source
-snat-to: -j SNAT --to-source
-dnat: -j DNAT --to-destination
-dnat-to: -j DNAT --to-destination
-mark: -j MARK --set-mark
-log: -j LOG
+queue: -j QUEUE
+
+# Target extensions
 balance: -j BALANCE --to-destination
 classify: -j CLASSIFY --set-class
-# FIXME not full support
-clusterip: -j CLUSTERIP
+clusterip: -j CLUSTERIP --new
+clusterip-hashmode: -j CLUSTERIP --hashmode
+clusterip-clustermac: -j CLUSTERIP --clustermac
+clusterip-total-nodes: -j CLUSTERIP --total-nodes
+clusterip-local-node: -j CLUSTERIP --local-node
+clusterip-hash-init: -j CLUSTERIP --hash-init
 connmark: -j CONNMARK --set-mark
+set-connmark: -j CONNMARK --set-mark
+mask: --mask
 connmark-save: -j CONNMARK --save-mark
 save-connmark: -j CONNMARK --save-mark
 connmark-restore: -j CONNMARK --restore-mark
 restore-connmark: -j CONNMARK --restore-mark
+dnat: -j DNAT --to-destination
+dnat-to: -j DNAT --to-destination
+dnat-to-destination: -j DNAT --to-destination
 set-dscp: -j DSCP --set-dscp
 set-dscp-class: -j DSCP --set-dscp-class
-ecn: -j ECN --ecn-tcp-remove
 ecn-tcp-remove: -j ECN --ecn-tcp-remove
+log: -j LOG
+log-level: --log-level
+log-prefix: --log-prefix
+log-tcp-sequence: --log-tcp-sequence
+log-tcp-options: --log-tcp-options
+log-ip-options: --log-ip-options
+log-uid: --log-uid
+mark: -j MARK --set-mark
+set-mark: -j MARK --set-mark
 masquerade: -j MASQUERADE
 masquerade-to-ports: -j MASQUERADE --to-ports
 mirror: -j MIRROR
@@ -35,6 +47,8 @@ netmap-to: -j NETMAP --to
 notrack: -j NOTRACK
 redirect: -j REDIRECT
 redirect-to-ports: -j REDIRECT --to-ports
+reject: -j REJECT
+reject-with: -j REJECT --reject-with
 route-to: -j ROUTE --oif
 route-from: -j ROUTE --iif
 route-gw: -j ROUTE --gw
@@ -42,6 +56,9 @@ route-continue: -j ROUTE --continue
 route-tee: -j ROUTE --tee
 add-set: -j SET --add-set
 del-set: -j SET --del-set
+snat: -j SNAT --to-source
+snat-to: -j SNAT --to-source
+snat-to-source: -j SNAT --to-source
 set-mss: -j TCPMSS -set-mss
 clamp-mss-to-pmtu: -j TCPMSS --clamp-mss-to-pmtu
 set-tos: -j TOS --set-tos
@@ -53,8 +70,139 @@ dec-ttl: -j TTL --ttl-dec
 ttl-inc: -j TTL --ttl-inc
 inc-ttl: -j TTL --ttl-inc
 ulog: -j ULOG
+ulog-nlgroup: --ulog-nlgroup
+ulog-prefix: --ulog-prefix
+ulog-cprange: --ulog-cprange
+ulog-qthreshold: --ulog-qthreshold
 
-# Directions
+# Match extensions
+srctype: -m addrtype --src-type
+src-type: -m addrtype --src-type
+dsttype: -m addrtype --dst-type
+dst-type: -m addrtype --dst-type
+ah: -m ah --ahspi
+ah-ahspi: -m ah --ahspi
+childlevel: -m childlevel --childlevel
+condition: -m condition --condition
+connmarked: -m connmark --mark
+connrate: -m connrate --connrate
+ctstate: -m conntrack --ctstate
+conntrack-ctstate: -m conntrack --ctstate
+ctproto: -m conntrack --ctproto
+conntrack-ctproto: -m conntrack --ctproto
+ctorigsrc: -m conntrack --ctorigsrc
+conntrack-ctorigsrc: -m conntrack --ctorigsrc
+ctorigdst: -m conntrack --ctorigdst
+conntrack-ctorigdst: -m conntrack --ctorigdst
+ctreplsrc: -m conntrack --ctreplsrc
+conntrack-ctreplsrc: -m conntrack --ctreplsrc
+ctrepldst: -m conntrack  --ctrepldst
+conntrack-ctrepldst: -m conntrack  --ctrepldst
+ctstatus: -m conntrack --ctstatus
+conntrack-ctstatus: -m conntrack --ctstatus
+ctexpire: -m conntrack --ctexpire
+conntrack-ctexpire: -m conntrack --ctexpire
+dscp: -m dscp --dscp
+dscp-class: -m dscp --dscp-class
+dstlimit: -m dstlimit --dstlimit
+dstlimit-mode: -m dstlimit --dstlimit-mode
+dstlimit-name: -m dstlimit --dstlimit-name
+dstlimit-burst: -m dstlimit --dstlimit-burst
+dstlimit-htable-size: -m dstlimit --dstlimit-htable-size
+dstlimit-htable-max: -m dstlimit --dstlimit-htable-max
+dstlimit-htable-gcinterval: -m dstlimit --dstlimit-htable-gcinterval
+dstlimit-htable-expire: -m dstlimit --dstlimit-htable-expire
+ecn-tcp-cwr: -m ecn --ecn-tcp-cwr
+tcp-cwr: -m ecn --ecn-tcp-cwr
+ecn-tcp-ece: -m ecn --ecn-tcp-ece
+tcp-ece: -m ecn --ecn-tcp-ece
+ecn-ip-ect: -m ecn --ecn-ip-ect
+ip-ect: -m ecn --ecn-ip-ect
+espspi: -m esp --espspi
+esp-spi: -m esp --espspi
+fuzzy-lower-limit: -m fuzzy --lower-limit
+lower-limit: -m fuzzy --lower-limit
+fuzzy-upper-limit: -m fuzzy --upper-limit
+upper-limit: -m fuzzy --upper-limit
+helper: -m helper --helper
+icmp-type: -m icmp --icmp-type
+iprange-src-range: -m iprange --src-range
+iprange-src: -m iprange --src-range
+src-range: -m iprange --src-range
+iprange-dst-range: -m iprange --dst-range
+iprange-dst: -m iprange --dst-range
+dst-range: -m iprange --dst-range
+length: -m length --length
+limit-rate: -m limit --limit
+rate: -m limit --limit
+limit-burst: -m limit --limit-burst
+burst: -m limit --limit-burst
+mac: -m mac --mac-source
+mac-source: -m mac --mac-source
+marked: -m mark --mark
+sports: -m multiport --source-ports
+from-ports: -m multiport --source-ports
+source-ports: -m multiport --source-ports
+dports: -m multiport --destination-ports
+to-ports: -m multiport --destination-ports
+destination-ports: -m multiport --destination-ports
+ports: -m multiport --ports
+nth-every: -m nth --every
+nth-counter: -m nth --counter
+nth-start: -m nth --start
+nth-packet: -m nth --packet
+owner-uid: -m owner --uid-owner
+uid-owner: -m owner --uid-owner
+owner-gid: -m owner --gid-owner
+gid-owner: -m owner --gid-owner
+owner-pid: -m owner --pid-owner
+pid-owner: -m owner --pid-owner
+owner-sid: -m owner --sid-owner
+sid-owner: -m owner --sid-owner
+owner-cmd: -m owner --cmd-owner
+cmd-owner: -m owner --cmd-owner
+physdev-in: -m physdev --physdev-in
+physdev-out: -m physdev --physdev-out
+physdev-is-in: -m physdev --physdev-is-in
+physdev-is-out: -m physdev --physdev-is-out
+physdev-is-bridged: -m physdev --physdev-is-bridged
+pkttype: -m pkttype --pkt-type
+random: -m random --average 
+realm: -m realm --realm
+set: -m set --set
+state: -m state --state
+tcp-source-port: -m tcp --source-port
+tcp-src-port: -m tcp --source-port
+tcp-destination-port: -m tcp --destination-port
+tcp-dst-port: -m tcp --destination-port
+tcp-dest-port: -m tcp --destination-port
+tcp-flags: -m tcp --tcp-flags
+flags: -m tcp --tcp-flags
+tcp-syn: -m tcp --syn
+tcp-option: -m tcp --tcp-option
+tcp-mss: -m tcp --mss
+tcpmss: -m tcpmss --mss
+timestart: -m time --timestart
+time-start: -m time --timestart
+timestop: -m time --timestop
+time-stop: -m time --timestop
+days: -m time --days
+datestart: -m time --datestart
+date-start: -m time --datestart
+datestop: -m time --datestop
+date-stop: -m time --datestop
+tos: -m tos --tos
+ttl-eq: -m ttl --ttl-eq
+ttl-gt: -m ttl --ttl-gt
+ttl-lt: -m ttl --ttl-lt
+udp-source-port: -m udp --source-port
+udp-src-port: -m udp --source-port
+udp-destination-port: -m udp --destination-port
+udp-dest-port: -m udp --destination-port
+udp-dst-port: -m udp --destination-port
+unclean: -m unclean
+
+# Parameters
 from: --src
 src: --src
 source: --src
@@ -71,14 +219,10 @@ siface: -i
 out-iface: -o
 to-iface: -o
 diface: -o
-
-# Protocols
 all: --protocol ALL
 tcp: --protocol TCP
 udp: --protocol UDP
 icmp: --protocol ICMP
-
-# Misc
 jump: -j 
 jump-to: -j
 any: 0.0.0.0/0
@@ -89,10 +233,10 @@ if:
 net: 
 host: 
 is: 
-proto: 
+proto: --protocol
 not: !
 fragment: --fragment
-counters: --set-counters
+set-counters: --set-counters
 unspec: UNPSEC
 unicast: UNICAST
 local: LOCAL
@@ -112,17 +256,9 @@ new: NEW
 related: RELATED
 ssnat: SNAT
 sdnat: DNAT
-none: NONE
 expected: EXPECTED
 seen_reply: SEEN_REPLY
 assured: ASSURED
-mask: --mask
-log-level: --log-level
-log-prefix: --log-prefix
-log-tcp-sequence: --log-tcp-sequence
-log-tcp-options: --log-tcp-options
-log-ip-options: --log-ip-options
-log-uid: --log-uid
 net-unreachable: icmp-net-unreachable
 net-unreach: icmp-net-unreachable
 port-unreachable: icmp-port-unreachable
@@ -135,129 +271,11 @@ host-prohibited: icmp-host-prohibited
 host-prohibit: icmp-host-prohibited
 admin-prohibited: icmp-admin-prohibited
 admin-prohibit: icmp-admin-prohibited
-ulog-nlgroup: --ulog-nlgroup
-ulog-prefix: --ulog-prefix
-ulog-cprange: --ulog-cprange
-ulog-qthreshold: --ulog-qthreshold
-
-# Match extensions
-addrtype: -m addrtype
-addr-type: -m addrtype
-srctype: --src-type
-src-type: --src-type
-dsttype: --dst-type
-dst-type: --dst-type
-ah: --ahspi
-childlevel: --childlevel
-condition: --condition
-cond: --condition
-connmarked: -m connmark --mark
-connrate: --connrate
-conntrack: -m conntrack
-ctstate: --ctstate
-ctproto: --ctproto
-ctorigsrc: --ctorigsrc
-ctorigdst: --ctorigdst
-ctreplsrc: --ctreplsrc
-ctrepldst: --ctrepldst
-ctstatus: --ctstatus
-ctexpire: --ctexpire
-dscp: --dscp
-dscp-class: --dscp-class
-dstlimit: --dstlimit
-dstlimit-mode: --dstlimit-mode
-dstlimit-name: --dstlimit-name
-dstlimit-durst: --dstlimit-burst
-dstlimit-htable-size: --dstlimit-htable-size
-dstlimit-htable-max: --dstlimit-htable-max
-dstlimit-htable-gcinterval: --dstlimit-htable-gcinterval
-dstlimit-htable-expire: --dstlimit-htable-expire
-ecn-tcp-cwr: --ecn-tcp-cwr
-tcp-cwr: --ecn-tcp-cwr
-ecn-tcp-ece: --ecn-tcp-ece
-tcp-ece: --ecn-tcp-ece
-ecn-ip-ect: --ecn-ip-ect
-ip-ect: --ecn-ip-ect
-esp: -m esp
-espspi: --espspi
-fuzzy: -m fuzzy
-fuzzy-lower-limit: --lower-limit
-lower-limit: --lower-limit
-fuzzy-upper-limit: --upper-limit
-upper-limit: --upper-limit
-helper: --helper
-helper-string: --helper
-icmp-type: --icmp-type
-iprange: -m iprange
-iprange-src-range: --src-range
-iprange-src: --src-range
-src-range: --src-range
-iprange-dst-range: --dst-range
-iprange-dst: --dst-range
-dst-range: --dst-range
-length: --length
-limit: -m limit
-limit-rate: --limit
-rate: --limit
-limit-burst: --limit-burst
-burst: --limit-burst
-mac: --mac-source
-marked: -m mark --mark
-mport: -m mport
-sports: --source-ports
-from-ports: --source-ports
-source-ports: --source-ports
-dports: --destionation-ports
-to-ports: --destionation-ports
-destination-ports: --destination-ports
-ports: --ports
-nth: -m nth
-nth-every: --every
-nth-counter: --counter
-nth-start: --start
-nth-packet: --packet
-owner: -m owner
-owner-uid: --uid-owner
-uid-owner: --uid-owner
-owner-gid: --gid-owner
-gid-owner: --gid-owner
-owner-pid: --pid-owner
-pid-owner: --pid-owner
-owner-sid: --sid-owner
-sid-owner: --sid-owner
-owner-cmd: --cmd-owner
-cmd-owner: --cmd-owner
-physdev: -m physdev
-physdev-in: --physdev-in
-physdev-is-in: --physdev-is-in
-physdev-out: --physdev-out
-physdev-is-out: --physdev-is-out
-physdev-is-bridged: --physdev-is-bridged
-pkttype: --pkt-type
-random: --average 
-realm: --realm
-set: --set
-state: --state
-tcp-flags: --tcp-flags
-flags: --tcp-flags
-syn: --syn
-tcp-option: --tcp-option
-mss: -m tcp --mss
-tcpmss: -m tcpmss --mss
-tcp-mss: -m tcpmss --mss
-time: -m time
-timestart: --timestart
-time-start: --timestart
-timestop: --timestop
-time-stop: --timestop
-days: --days
-datestart: --datestart
-date-start: --datestart
-datestop: --datestop
-date-stop: --datestop
-tos-is: --tos
-ttl: -m ttl
-ttl-eq: --ttl-eq
-ttl-gt: --ttl-gt
-ttl-lt: --ttl-lt
-
+# Flag ALL not supported
+syn: SYN
+ack: ACK
+fin: FIN
+rst: RST
+urg: URG
+psh: PSH
+none: NONE
