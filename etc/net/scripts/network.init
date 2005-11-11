@@ -40,7 +40,7 @@ type2group()
 		iptun|ipsectun)
 			echo '3'
 		;;
-		ppp|ippp|pptp)
+		ppp)
 			echo '4'
 		;;
 	esac
