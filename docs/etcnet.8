@@ -1,4 +1,4 @@
-.TH "etcnet" "8" "0.8.0" "Denis Ovsienko <info@etcnet.org>" ""
+.TH "etcnet" "8" "0.8.0" "Denis Ovsienko <info@etcnet.org>" "Linux network configuration"
 .SH "NAME"
 /etc/net \- configuring network in Linux
 .SH "SYNOPSIS"
@@ -10,10 +10,34 @@ ifdown <interface>
 service network <start|stop|restart|reload...>
 .SH "DESCRIPTION"
 /etc/net is a network configuration system. It should be both simple to use for a beginner and powerful for expert. First of all you have to describe your network connection(s) in a set of files. Once you are done, you should be able to control state of your host with 3 scripts: ifup, ifdown, network.init.
-.SH "CONFIGURATION"
+.SH "SYSTEM CONFIGURATION"
+/etc/net ships in default configuration, which is suitable for many cases. Linux distributions can customize default installation even further, but there are things that only you can configure. /etc/net keeps its configuration in files, most of which reside in /etc/net (literally) directory.
+.IP "/etc/net/options.d"
+This directory by default keeps 00\-default file.
+.IP /etc/net/sysctl.conf
+sysctl startup file
+.IP "/etc/net/ipv4rule ???"
+ip rules startup table ('ip \-4 rule add' args)
+.IP /etc/net/vlantab
+VLAN mass\-configuration table.
+.IP /etc/net/iftab
+Interface mappings table, this file is used by ifrename. iftab file format is described in iftab manpage. Please note that we don't use /etc/iftab, but keep our own /etc/net/iftab. This difference allows to keep /etc/net\-specific filenames with profile and host suffixes under a single directory without creating additional mess in /etc. Additionally it prevents the system from accidental interface name change after ifrename invocation.
+.SH "INTERFACE CONFIGURATION"
 
 .SH "INTERFACE GROUPS"
-There are 5 interface groups in /etc/net. Interfaces are divided to groups to avoid problems with implicit interface dependencies.
+There are 5 interface groups in /etc/net model:
+.IP "virtual"
+Self\-consistent interfaces, currently loopback and dummy. They very seldom require other interfaces and require no hardware, therefore chances are high to bring them up.
+.IP "real physical"
+Interfaces, corresponding to real hardware% pure Ethernet, PLIP, USB Ethernet adapters and DVB. You cannot bring them up, if there is no hardware present.
+.IP "hosted physical"
+Something between physical and logical type. This group includes: VLAN, bonding, bridges and traffic equalizers. These interfaces don't directly use hardware, but are built from one ore more 'host' real physical interfaces. If host interface is missing, hosted interfaces can't be brought up.
+.IP "independent logical"
+This group includes IP and IPSec tunnels. Tunnels are stateless, they are much like virtual group, but sometimes they depend on lower\-level interfaces indirectly.
+.IP "dependent logical"
+This group currently consists of PPP interfaces, including PPPoE/PPtP ones. Their well known property is to disconnect on timeouts, so this group has the most chances to fail.
+.LP 
+When network is being started, /etc/net puts interfaces in appropriate group and processes groups from virtual to dependent logical. When network is being stopped, groups are processed in reverse order. This order results in less failures, than simple processing from A to Z. You don't have to specify interface group anywhere, it is computed from interface type.
 .SH "INTERFACE DIRECTORY LAYOUT"
 Unless explicitly stated, each configuration file contains 1 item per line (options, addresses, routes etc.). You have to create files for each feature you want to use. If file is missing, the feature will not be configured.
 .IP options
@@ -33,17 +57,32 @@ List of IPv6 addresses for current interface. This file is not required.
 .IP ipv6route
 List of IPv6 routes for current interface. This file is not required.
 .IP iwconfig
-List of iwconfig commands. This file is not required, unless you want to use WiFi WEP.
+List of iwconfig commands. This file is only required for WiFi WEP.
 .IP wpa_supplicant.conf
-wpa_supplicant configuration file.
+wpa_supplicant configuration file. This file is only required for WiFi WPA.
+.IP brctl
+List of brctl commands. This file is only used by bridges and is not required.
+.IP ipx_interface
+List of 'ipx_interface add' arguments. This file is required for IPX interfaces.
 .IP sysctl.conf
+List of sysctl options, which will be processed after interface is up. Unlike traditional sysctl.conf files, where you have to specify the full path to sysctl variables, in this file you can use short variable names. E.g. to enable forwarding on current interface, you can use forwarding=1 and to disable return path filtering you can use rp_filter=0. /etc/net will automatically find appropriate prefixes for all variables. This file is optional.
 .IP resolv.conf
+Resolver configuration. This file will be copied to /etc/resolv.conf after interface is up. This file is optional.
+.IP ifup\-pre\-local
+If exists and is executable, is run before interface is up, but after it is created.
+.IP ifup\-post\-local
+If exists and is executable, is run after the interface is completely up and running.
+.IP ifdown\-pre\-local
+If exists and is executable, is run before the interface is going to be shutdown.
+.IP ifdown\-post\-local
+If exists and is executable, is run after the interface is completely gone.
 .SH "SPECIAL INTERFACES"
 /etc/net ships with 3 existing interfaces:
 .IP lo
 This is a must for a Linux host. Loopback interface comes in configuration, suitable for most cases.
 .IP default
-This is really not an interface, but interface template. 'default' interface forms initial set of options for all interfaces. After that each interface type and each interface can add extra options or override existing options. It is not recommended to change options for 'default' interface.
+This is really not an interface, but interface template. 'default' interface forms initial set of options for all interfaces and it doesn't belong to any interface group. This interface allows placing an additional options file into configuration directory: options\-<TYPE>. This optional file has effect ONLY for 'default' interface, it allows to override default options with type\-specific options.
+It is not recommended to change options for 'default' interface. Each interface can add extra options or override existing options, if needed.
 .IP unknown
 This is a special interface, which is used each time /etc/net can't find a suitable configuration, but is requested to do. This interface's purpose is to help configure hotplug interfaces, which don't yet have a configuration.
 .SH "PROFILES"
@@ -54,11 +93,25 @@ When a need to read certain file or check for its existence arises, several nami
 HETHOST
 HETPROFILE
 .SH "BUGS"
-
-.SH "SEE ALSO"
-ip, tc
 .TP 
-http://etcnet.org/
+Some kernels have problems with many VLAN interfaces.
+.TP 
+teql interfaces can't be safely renamed.
+.TP 
+VLAN interfaces sometimes are initialized into wrong state.
+.TP 
+Some network drivers have race condition in interface init code.
+.TP 
+ppp interfaces can only be named ppp%d.
+.TP 
+SkyStar DVB interfaces can only be named dvb*.
+.TP 
+DHCP does not work for bonding.
+.TP 
+ppp option 'demand' can hang /etc/net startup forever
+.SH "SEE ALSO"
+.BR ip (8),
+.BR tc (8)
 .SH "FILES"
 .TP 
 /etc/net/iftab
