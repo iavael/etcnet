@@ -22,5 +22,5 @@
 - (RH#119952) {pre,post}-{start,stop,restart,reload} hook scripts
 - iANS support?
 - examine functions-fw and config-fw
-+ config_ipv6_routes()
 - Makefile ?
+- netplugd support ?
