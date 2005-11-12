@@ -4,7 +4,7 @@
 
 usage()
 {
-	echo "Usage: $0 <interface> <action>" > /dev/stderr
+	echo "Usage: $0 <interface> <action>" >&2
 	exit 1
 }
 
@@ -101,6 +101,6 @@ case "$FW_TYPE" in
 		esac
 		;;
 	*)
-		echo "Firewall type $FW_TYPE doesn't supported"
+		echo "Firewall type $FW_TYPE isn't supported"
 esac
 
