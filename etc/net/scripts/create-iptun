@@ -3,6 +3,7 @@
 pickup_defaults
 pickup_options
 
+: ${TUNTYPE:?missing TUNTYPE}
 : ${TUNLOCAL:?missing TUNLOCAL}
 : ${TUNREMOTE:?missing TUNREMOTE}
 
