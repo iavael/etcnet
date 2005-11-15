@@ -3,6 +3,7 @@
 	PPPMAXFAIL, PPPPERSIST, PPPHOLDOFF, PPPIDLE options were dropped, use pppoptions file instead
 	faster and more robust code
 	IPv6/sit fixes
+	dropped TUNTTL, use TUNOPTIONS instead
 0.7.15 2005-10-26
 	provide default hostname
 	define rmmod path
