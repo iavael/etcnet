@@ -80,10 +80,10 @@ config_ipv4_routes_rules()
 	# If there is no operation, substitute default, otherwise keep.
 		case "$FIRST" in
 			add|del|change|append|replace)
-				$IP -4 route $FIRST $REST
+				$IP -4 route $FIRST $REST dev $NAME
 			;;
 			*)
-				$IP -4 route append $FIRST $REST
+				$IP -4 route append $FIRST $REST dev $NAME
 			;;
 		esac
 		print_progress

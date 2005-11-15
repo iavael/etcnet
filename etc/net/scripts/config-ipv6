@@ -12,10 +12,10 @@ if iface_is_up $NAME; then
 	# If there is no operation, substitute default, otherwise keep.
 		case "$FIRST" in
 			add|del|change|append|replace)
-				$IP -6 route $FIRST $REST
+				$IP -6 route $FIRST $REST dev $NAME
 			;;
 			*)
-				$IP -6 route append $FIRST $REST
+				$IP -6 route append $FIRST $REST dev $NAME
 			;;
 		esac
 		print_progress
