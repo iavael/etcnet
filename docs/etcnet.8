@@ -130,6 +130,8 @@ SkyStar DVB interfaces can only be named dvb*.
 DHCP does not work for bonding.
 .TP 
 ppp option 'demand' can hang /etc/net startup forever
+.TP 
+CONFIG_IPV6 must be on to configure 6-to-4 (TYPE=iptun, TUNTYPE=sit) tunnels correctly
 .SH "SEE ALSO"
 .BR ip (8),
 .BR tc (8),
