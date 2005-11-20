@@ -2,15 +2,6 @@
 
 # FIXME
 # move to another place
-is_comment()
-{
-	echo "$1"|egrep -q '^\ *#' && return 0
-	echo "$1"|egrep -q '^\ *\;' && return 0
-	return 1
-}
-
-# FIXME
-# move to another place
 is_empty_string()
 {
 	echo "$1"|egrep -qv ".*[a-zA-Z].*"
@@ -159,7 +150,6 @@ iptables_load_rules_from_file()
 		print_message "Loading rules for chain `basename $chain` in table `basename $table`"
 		rules=$(< "$chain")
 		while read rule; do
-			[ ! -z "$rule" ] && ! is_comment "$rule" && {
 				rule=`iptables_expand_string "$rule"`
 				[ -z "$rule" ] || {
 				    read FIRST SECOND REST < <(echo $rule)
@@ -183,8 +173,7 @@ iptables_load_rules_from_file()
 						esac
 				}
 				print_progress
-			}
-		done < <(echo "$rules")
+		done < <(echo "$rules"|egrep "^[^#]")
 		print_message
 	fi
 }
@@ -197,7 +186,6 @@ iptables_flush_rules_from_file()
 		if [ "$NAME" != "default" ]; then
 			rules=$(tac "$chain")
 			while read rule; do
-			[ ! -z "$rule" ] && ! is_comment "$rule" && {
 				rule=`iptables_expand_string "$rule"`
 				[ -z "$rule" ] || {
 				    read  FIRST SECOND REST < <(echo $rule)
@@ -221,8 +209,7 @@ iptables_flush_rules_from_file()
 						esac
 				}				
 				print_progress
-			}
-			done < <(echo "$rules")
+			done < <(echo "$rules"|egrep "^[^#]")
 			print_message
 		else
 			iptables_flush_chain `basename $chain` -t `basename $table`
@@ -254,12 +241,10 @@ iptables_start()
 	cd "$MYIFACEDIR/fw/$FW_TYPE"
 	# Load modules
 	if [ -f "modules" ] && [ -s "modules" ]; then
-		cat modules | while read module; do
-			[ ! -z "$module" ] && ! is_comment "$module" && {
-				print_message "Loading module $module"
-				$MODPROBE "$module" || print_error "Can't load module $module"
-			}
-		done
+		while read module; do
+			print_message "Loading module $module"
+			$MODPROBE "$module" || print_error "Can't load module $module"
+		done < <(egrep "^[^#]" modules)
 	fi
 	# Create user chains
 	for table in *; do
@@ -279,31 +264,28 @@ iptables_start()
 	# FIXME  Double code
 	# Load rules after creating _all_ chains
 	if [ -f "loadorder" ] && [ -s "loadorder" ]; then
-		cat "loadorder"|while read table; do
-			is_empty_string "$table" && continue
+		while read table; do
 			[ ! -d "$table" ] && continue
 			if [ -f "$table/loadorder" ] && [ -s "$table/loadorder" ]; then
-				cat "$table/loadorder"|while read chain; do
-					is_empty_string "$chain" && continue
+				while read chain; do
 					chain="$table/$chain"
 					iptables_load_rules_from_file
-				done
+				done < <(egrep "^[^#]" "$table/loadorder")
 			else
 				for chain in "$table"/*; do
 					iptables_load_rules_from_file
 				done
 			fi
-		done
+		done < <(egrep "^[^#]" loadorder)
 	else
 		for table in *; do
 			[ "`basename $table`" = "loadorder" ] && continue
 			[ ! -d "$table" ] && continue
 			if [ -f "$table/loadorder" ] && [ -s "$table/loadorder" ]; then
-				cat "$table/loadorder"|while read chain; do
-					is_empty_string "$chain" && continue
+				while read chain; do
 					chain="$table/$chain"
 					iptables_load_rules_from_file
-				done
+				done < <(egrep "^[^#]" "$table/loadorder")
 			else
 				for chain in "$table"/*; do
 					iptables_load_rules_from_file
@@ -323,32 +305,29 @@ iptables_stop()
 	# FIXME  Double code
 	# Flush rules
 	if [ -f "loadorder" ] && [ -s "loadorder" ]; then
-		tac "loadorder"|while read table; do
-			is_empty_string "$table" && continue
+		while read table; do
 			[ ! -d "$table" ] && continue
 			if [ -f "$table/loadorder" ] && [ -s "$table/loadorder" ]; then
-				tac "$table/loadorder"|while read chain; do
-					is_empty_string "$chain" && continue
+				while read chain; do
 					chain="$table/$chain"
 					iptables_flush_rules_from_file
-				done
+				done < <(tac "$table/loadorder"|egrep "^[^#]")
 			else
 				for chain in "$table"/*; do
 					iptables_flush_rules_from_file
 				done
 			fi
-		done
+		done < <(tac loadorder|egrep "^[^#]")
 	else
 		for table in *; do
 			[ "`basename $table`" = "loadorder" ] && continue
 			[ ! -d "$table" ] && continue
 			if [ -f "$table/loadorder" ] && [ -s "$table/loadorder" ]; then
 				chainsorder=$(tac "$table/loadorder")
-				tac "$table/loadorder"|while read chain; do
-					is_empty_string "$chain" && continue
+				while read chain; do
 					chain="$table/$chain"
 					iptables_flush_rules_from_file
-				done
+				done < <(tac "$table/loadorder"|egrep "^[^#]")
 			else
 				for chain in "$table"/*; do
 					iptables_flush_rules_from_file
@@ -374,12 +353,10 @@ iptables_stop()
 
 	# Unload modules
 	if [ -f "modules" ] && [ -s "modules" ]; then
-		tac modules | while read module; do
-			[ ! -z "$module" ] && ! is_comment "$module" && {
-				print_message "Unloading module $module"
-				$MODPROBE -r "$module" || print_error "Can't unload module $module"
-			}
-		done
+		while read module; do
+			print_message "Unloading module $module"
+			$MODPROBE -r "$module" || print_error "Can't unload module $module"
+		done < <(tac modules|egrep "^[^#]")
 	fi
 	# Set ACCEPT policy
 	if [ "$NAME" = "default" ]; then
