@@ -113,19 +113,19 @@ iptables_load_syntax()
 
 iptables_create_sed_rules()
 {
-	export iptables_sed_rules=
-	[ $# -lt 1 -o -z "$1" ] && return 1
-	replaces="$1"
-	print_message "Loading iptables data"
-	while read rule; do
-		print_progress
-		[ -z "$rule" ] || is_comment "$rule"  && continue
-		search=$(echo $rule|cut -f1 -d:|sed -e 's/\//\\\//g')
-		replace=$(echo $rule|cut -f2 -d:|sed -e 's/\//\\\//g')
-		iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/\1$replace\2/gi;"
-	done < <(echo "$replaces")
-	print_message
-	export iptables_sed_rules
+    export iptables_sed_rules=
+    [ $# -lt 1 -o -z "$1" ] && return 1
+    replaces="$1"
+    print_message "Loading iptables data"
+    OLDIFS=$IFS
+    IFS=":"
+    while read search replace; do
+        print_progress
+        iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/\1$replace\2/gi;"
+    done < <(echo "$replaces"|egrep "^[^#]"|sed -e 's/\//\\\\\//g')
+    IFS=$OLDIFS
+    print_message
+    export iptables_sed_rules
 }
 
 iptables_expand_string()
