@@ -2,14 +2,6 @@
 
 # FIXME
 # move to another place
-is_empty_string()
-{
-	echo "$1"|egrep -qv ".*[a-zA-Z].*"
-	return $?
-}
-
-# FIXME
-# move to another place
 in_list()
 {
 	OLDIFS=$IFS
@@ -128,12 +120,7 @@ iptables_expand_string()
 	else
 		rule=$(eval "echo $1")
 	fi
- 	if is_empty_string "$rule"; then
-		echo ""
-	else
-		echo "$rule"
-	fi
-		
+	echo "$rule"|egrep -q "^[^#]" && echo "$rule" || echo ""
 }
 
 iptables_preload()
