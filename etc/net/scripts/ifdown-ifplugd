@@ -11,12 +11,11 @@ usage()
 	exit 1
 }
 
-# ifplugd inherits variables from ifup-common through ifplugd
-unset IFACEDIR MYIFACEDIR NAME NETPROFILE NETHOST SEEN_IFACES
 [ -z "$1" ] && usage
 NAME=$1
 
-[ -z "$SCRIPTDIR" ] && . ${SCRIPTDIR:=/etc/net/scripts}/functions
+export SCRIPTDIR=/etc/net/scripts
+. $SCRIPTDIR/functions
 pickup_defaults
 . $SCRIPTDIR/functions-eth
 init_nethost
@@ -26,7 +25,7 @@ else
 	MYIFACEDIR=$IFACEDIR/$NAME
 fi
 
-export IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE SEEN_IFACES
+export MYIFACEDIR NETPROFILE
 init_netprofile
 pickup_options
 
@@ -34,6 +33,7 @@ is_yes "$DISABLED" && exit 0
 iface_exists $NAME || exit 0
 seen_iface $NAME && exit 0
 add_seen_iface $NAME
+export SEEN_IFACES
 
 if is_yes "$IFDOWN_CHILDREN"; then
 	ifdown_children || {
