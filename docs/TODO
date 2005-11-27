@@ -24,3 +24,5 @@
 - examine functions-fw and config-fw
 - Makefile ?
 - netplugd support ?
+- '. $SCRIPTDIR/functions-eth' (line 89) is executed after 'stop_dhcp_client' line 63
+- ignore rpmsave/rpmnew when reading options
