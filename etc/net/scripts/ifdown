@@ -9,9 +9,13 @@ usage()
 }
 
 [ -z "$1" ] && usage
-NAME=$1
+export NAME=$1
 
-[ -z "$SCRIPTDIR" ] && . ${SCRIPTDIR:=/etc/net/scripts}/functions
+if [ -z "$SCRIPTDIR" ]; then
+	export SCRIPTDIR=functions
+	. $SCRIPTDIR/functions
+fi
+
 pickup_defaults
 init_nethost
 if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
@@ -20,7 +24,7 @@ else
 	MYIFACEDIR=$IFACEDIR/$NAME
 fi
 
-export IFACEDIR MYIFACEDIR SCRIPTDIR NAME NETPROFILE SEEN_IFACES
+export MYIFACEDIR NETPROFILE
 init_netprofile
 pickup_options
 
@@ -40,6 +44,7 @@ fi
 is_yes "$DISABLED" && exit 0
 iface_exists $NAME || exit 0
 seen_iface $NAME && exit 0
+export SEEN_IFACES
 add_seen_iface $NAME
 
 # 2. prepare for shutdown
