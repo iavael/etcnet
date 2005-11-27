@@ -9,11 +9,15 @@ ifdown <interface>
 .TP 
 service network <start|stop|restart|reload...>
 .SH "DESCRIPTION"
-/etc/net is a network configuration system. It should be both simple to use for a beginner and powerful for expert. First of all you have to describe your network connection(s) in a set of files. Once you are done, you should be able to control state of your host with 3 scripts: ifup, ifdown, network.init.
+/etc/net is a network configuration system. It should be both simple
+to use for a beginner and powerful for expert. First of all you have
+to describe your network options and connection(s) in a set of
+configuration files. Once you are done, you should be able to control
+state of your host with 3 scripts: ifup, ifdown, network.init.
 .SH "SYSTEM CONFIGURATION"
 /etc/net ships in default configuration, which is suitable for many cases. Linux distributions can customize default installation even further, but there are things that only you can configure. /etc/net keeps its configuration in files, most of which reside in /etc/net (literally) directory.
 .IP "/etc/net/options.d"
-This directory by default keeps 00\-default file.
+This directory by default keeps 00\-default file. There can be other files here, they will be read in alphabet order.
 .IP /etc/net/sysctl.conf
 sysctl startup file
 .IP "/etc/net/ipv4rule ???"
@@ -108,6 +112,7 @@ When a need to read certain file or check for its existence arises, several nami
 .SH "CONFIGURATION PROFILES"
 
 .SH "MULTIHOST CONFIGURATION"
+
 .SH "ENVIRONMENT"
 .IP HETHOST
 This variable can hold host ID in multi\-host configuration, which should be used instead of automatically detected.
@@ -131,7 +136,9 @@ DHCP does not work for bonding.
 .TP 
 ppp option 'demand' can hang /etc/net startup forever
 .TP 
-CONFIG_IPV6 must be on to configure 6-to-4 (TYPE=iptun, TUNTYPE=sit) tunnels correctly
+CONFIG_IPV6 must be on to configure 6\-to\-4 (TYPE=iptun, TUNTYPE=sit) tunnels correctly
+.TP 
+Profiles don't work with QoS.
 .SH "SEE ALSO"
 .BR ip (8),
 .BR tc (8),
