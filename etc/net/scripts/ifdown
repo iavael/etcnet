@@ -12,7 +12,7 @@ usage()
 export NAME=$1
 
 if [ -z "$SCRIPTDIR" ]; then
-	export SCRIPTDIR=functions
+	export SCRIPTDIR=/etc/net/scripts
 	. $SCRIPTDIR/functions
 fi
 
