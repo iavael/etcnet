@@ -4,6 +4,9 @@
 	faster and more robust code
 	IPv6/sit fixes
 	dropped TUNTTL, use TUNOPTIONS instead
+	ifplugd fixes
+	.d-style options support
+	ignore backup files
 0.7.15 2005-10-26
 	provide default hostname
 	define rmmod path
