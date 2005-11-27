@@ -106,9 +106,10 @@ pickup_options()
 	# to determine iface type we must read it's config, but
 	# we should read global config and type config first.
 	# A workaround here.
-	local optionsfile
-	for optionsfile in $MYIFACEDIR/options $MYIFACEDIR/options.d/*; do
-		SourceIfNotEmpty `profiled_filename $optionsfile`
+	local of
+	for of in $MYIFACEDIR/options $MYIFACEDIR/options.d/*; do
+		[ "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
+		SourceIfNotEmpty `profiled_filename $of`
 	done
 	is_yes "$DISABLED" && return
 	[ -z "$TYPE" ] && TYPE=`name2type $NAME`
@@ -119,18 +120,25 @@ pickup_options()
 	if ! supported_type $TYPE; then
 		print_error "iface type '$TYPE' is not supported"
 	fi
+
 	# source default options
-	for optionsfile in $IFACEDIR/default/options $IFACEDIR/default/options.d/*; do
-		SourceIfNotEmpty `profiled_filename $optionsfile`
+	for of in $IFACEDIR/default/options $IFACEDIR/default/options.d/*; do
+		[ "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
+		SourceIfNotEmpty `profiled_filename $of`
 	done
+
 	# then source default options for our iface type
-	for optionsfile in $IFACEDIR/default/options-$TYPE $IFACEDIR/default/options-$TYPE.d/*; do
-		SourceIfNotEmpty `profiled_filename $optionsfile`
+	for of in $IFACEDIR/default/options-$TYPE $IFACEDIR/default/options-$TYPE.d/*; do
+		[ "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
+		SourceIfNotEmpty `profiled_filename $of`
 	done
+
 	# and finally source iface options
-	for optionsfile in $MYIFACEDIR/options $MYIFACEDIR/options.d/*; do
-		SourceIfNotEmpty `profiled_filename $optionsfile`
+	for of in $MYIFACEDIR/options $MYIFACEDIR/options.d/*; do
+		[ "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
+		SourceIfNotEmpty `profiled_filename $of`
 	done
+
 	# Load type-specific functions
 	SourceIfNotEmpty $SCRIPTDIR/functions-$TYPE
 }
@@ -398,8 +406,10 @@ have_ifplugd()
 
 pickup_defaults()
 {
-	for optionsfile in /etc/net/options /etc/net/options.d/*; do
-		[ -s "$optionsfile" ] && . $optionsfile
+	local of
+	for of in /etc/net/options /etc/net/options.d/*; do
+		[ "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
+		SourceIfNotEmpty $optionsfile
 	done
 	if [ -z "$SCRIPTDIR" ]; then
 		print_error "could not read /etc/net options from usual place"
