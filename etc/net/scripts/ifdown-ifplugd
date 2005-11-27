@@ -57,7 +57,7 @@ case "$USE_IFPLUGD" in
 	;;
 	*)
 		print_error "ERROR: USE_IFPLUGD is not enabled for $NAME"
-		return 1
+		exit 1
 	;;
 esac
 
