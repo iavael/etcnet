@@ -97,6 +97,8 @@ if [ "$NAME" != "$OLD_NAME" ]; then
 	fi
 fi
 
+ExecIfExecutable $LOCALSCRIPTDIR/ifup-pre-local $NAME && print_progress
+
 # avoid cycles
 seen_iface $NAME && exit 0
 add_seen_iface $NAME

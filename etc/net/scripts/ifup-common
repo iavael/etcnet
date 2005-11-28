@@ -195,7 +195,7 @@ ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && print_progress
 
 # ifup-post
 iface_is_up $NAME && {
-	ExecIfExecutable $SCRIPTDIR/ifup-post-local $NAME && print_progress
+	ExecIfExecutable $LOCALSCRIPTDIR/ifup-post-local $NAME && print_progress
 	ExecIfExecutable $MYIFACEDIR/ifup-post $NAME && print_progress
 }
 

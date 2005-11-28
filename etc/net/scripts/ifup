@@ -79,7 +79,7 @@ if is_yes "$IFUP_PARENTS"; then
 fi
 
 # 3c. exec hooks
-ExecIfExecutable $SCRIPTDIR/ifup-pre-local $NAME && print_progress
+ExecIfExecutable $LOCALSCRIPTDIR/ifup-pre-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifup-pre $NAME && print_progress
 
 # 4. make iface appear

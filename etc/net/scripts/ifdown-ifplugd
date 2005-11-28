@@ -61,9 +61,9 @@ case "$USE_IFPLUGD" in
 	;;
 esac
 
-ExecIfExecutable $SCRIPTDIR/ifdown-pre-local $NAME && print_progress
+ExecIfExecutable $LOCALSCRIPTDIR/ifdown-pre-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
-ExecIfExecutable $SCRIPTDIR/ifdown-post-local $NAME && print_progress
+ExecIfExecutable $LOCALSCRIPTDIR/ifdown-post-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
 is_yes "$CONFIG_FW" && ExecIfExecutable $SCRIPTDIR/config-fw $NAME stop && print_progress
 flush_addresses $NAME
