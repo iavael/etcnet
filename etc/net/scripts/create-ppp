@@ -11,6 +11,11 @@ usage()
 [ -z "$1" ] && usage
 NAME=$1
 
+# Basic options usually shouldn't be modified, but for some rare cases we
+# define it before reading defaults and interface options to allow override.
+# Please don't override BASIC_PPPOPTIONS, if possible.
+BASIC_PPPOPTIONS="nolog updetach unit ${NAME//ppp/}"
+
 pickup_defaults
 pickup_options
 
@@ -24,9 +29,6 @@ pickup_options
 	exit 1
 }
 CHAT_CMD="$CHAT ${CHATOPTIONS:-$DEFAULT_CHATOPTIONS} -f"
-
-# This one is a must.
-BASIC_PPPOPTIONS="nolog updetach unit ${NAME//ppp/}"
 
 PROF_PPPOPTIONSFILE=`profiled_filename $MYIFACEDIR/${PPPOPTIONSFILE:=$DEFAULT_PPPOPTIONSFILE}`
 [ -s $PROF_PPPOPTIONSFILE ] || PROF_PPPOPTIONSFILE=
