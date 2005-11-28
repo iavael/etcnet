@@ -179,6 +179,7 @@ stop_group()
 
 start()
 {
+	ExecIfExecutable $LOCALSCRIPTDIR/netup-pre $*
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
 	is_yes "$CONFIG_FW" && {
 		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
@@ -219,12 +220,14 @@ start()
 		[ $i -eq 2 ] && start_vlantab
 		[ -n "${START_GROUP[$i]}" ] && start_group $i boot skiphot
 	done
+	ExecIfExecutable $LOCALSCRIPTDIR/netup-post $*
 	touch "$LOCKFILE"
 }
 
 # almost clone
 stop()
 {
+	ExecIfExecutable $LOCALSCRIPTDIR/netdown-pre $*
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
 	is_yes "$CONFIG_FW" && {
 		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
@@ -260,6 +263,7 @@ stop()
 		[ $i -eq 2 ] && stop_vlantab
 	done
 	is_yes "$CONFIG_FW" && 	ExecIfExecutable `profiled_filename /etc/net/scripts/config-fw` default stop
+	ExecIfExecutable $LOCALSCRIPTDIR/netdown-post $*
 	rm -f "$LOCKFILE"
 }
 
@@ -291,18 +295,21 @@ reload()
 	done
 	print_message " $IFACECOUNT interfaces to process"
 	# reverse order for stop, direct order for start
+	ExecIfExecutable $LOCALSCRIPTDIR/netdown-pre $*
 	for i in 4 3 2 1 0; do
 		[ -n "$STOP_GROUP[$i]" ] && stop_group $i
 		[ $i -eq 2 ] && stop_vlantab
 	done
+	ExecIfExecutable $LOCALSCRIPTDIR/netdown-post $*
 	rm -f "$LOCKFILE"
+	ExecIfExecutable $LOCALSCRIPTDIR/netup-pre $*
 	for i in 0 1 2 3 4; do
 		[ $i -eq 2 ] && start_vlantab
 		[ -n "$START_GROUP[$i]" ] && start_group $i boot
 	done
+	ExecIfExecutable $LOCALSCRIPTDIR/netup-post $*
 	touch "$LOCKFILE"
 }
-
 
 check()
 {
@@ -534,62 +541,62 @@ case "$1" in
 		[ $# -ne 1 ] && usage
 		init_nethost
 		init_netprofile
-		start
+		start $*
 		;;
 	startwith)
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile $2
-		start
+		start $*
 		;;
 	stop)
 		[ $# -ne 1 ] && usage
 		init_nethost
 		init_netprofile
-		stop
+		stop $*
 		;;
 	stopwith)
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile $2
-		stop
+		stop $*
 		;;
 	restart)
 		[ $# -ne 1 ] && usage
 		init_nethost
 		init_netprofile
-		stop
-		start
+		stop $*
+		start $*
 		;;
 	reload)
 		[ $# -ne 1 ] && usage
 		init_nethost
 		init_netprofile
-		reload
+		reload $*
 		;;
 	restartwith)
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile $2
-		stop
+		stop $*
 		init_netprofile $2
-		start
+		start $*
 		;;
 	switchto)
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile
-		stop
+		stop $*
 		init_netprofile $2
-		start
+		start $*
 		;;
 	switchfrom)
 		[ $# -ne 2 ] && usage
 		init_nethost
 		init_netprofile $2
-		stop
+		stop $*
 		init_netprofile
-		start
+		start $*
 		;;
 	check)
 		init_nethost

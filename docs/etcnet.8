@@ -36,6 +36,14 @@ If exists and is executable, is run after ANY interface is completely up and run
 If exists and is executable, is run before ANY interface is going to be shutdown.
 .IP /etc/net/ifdown\-post
 If exists and is executable, is run after ANY interface is completely gone.
+.IP /etc/net/netup\-pre
+If exists and is executable, is run before starting network.
+.IP /etc/net/netup\-post
+If exists and is executable, is run after starting network.
+.IP /etc/net/netdown\-pre
+If exists and is executable, is run before stopping network.
+.IP /etc/net/netdown\-post
+If exists and is executable, is run after stopping network.
 .SH "INTERFACE CONFIGURATION"
 
 .SH "INTERFACE GROUPS"
