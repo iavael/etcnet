@@ -14,15 +14,14 @@
 - QoS profiles support
 - merge with SuSE, LFS, PLD
 - PPP RESTORE_DEFAULTROUTE option
-- etcnet.8, etcnet-options.5
++ etcnet.8, etcnet-options.5
 - more docs
 - allow compiled-in 802.1q
 - only pickup DISABLED and TYPE in network.init
-- more .d-style
++ more .d-style
 - (RH#119952) {pre,post}-{start,stop,restart,reload} hook scripts
 - iANS support?
 - examine functions-fw and config-fw
 - Makefile ?
-- netplugd support ?
 - '. $SCRIPTDIR/functions-eth' (line 89) is executed after 'stop_dhcp_client' line 63
-- ignore rpmsave/rpmnew when reading options
++ ignore rpmsave/rpmnew when reading options
