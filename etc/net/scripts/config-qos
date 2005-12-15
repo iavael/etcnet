@@ -1,70 +1,78 @@
 #!/bin/bash
 
-# This script handles QoS configuration for given iface name.
-
 usage()
 {
-	echo "Usage: $0 <interface>" >&2
+	echo '/etc/net QoS handler'
+	echo "Usage: $0 <interface> <start|stop>" >&2
 	exit 1
 }
 
-# process_qos_dir <current dir> <parent> [last qdisc handle] [extra]
-process_qos_dir ()
-{
-	local NODENAME NODETYPE NODEIDPREFIX NODEATTRS NODEID
-	local NODEDIR=${1:?missing 1st arg to $FUNCNAME}
-	local NODENAME=${NODEDIR//*\//}
-	# this arg is 'root' for the first call and 'parent x:y' for the rest
-	local PARENTNODE=${2:?missing 2nd arg to $FUNCNAME}
-	local LAST_QDISC_HANDLE=$3
-	local EXTRAATTRS=$4
-	if [ -f $NODEDIR/class ]; then
-		NODETYPE=class
-		NODEIDPREFIX=classid
-		NODEID="$LAST_QDISC_HANDLE$NODENAME"
-		NODEATTRS="`head -1 $NODEDIR/class`"
-	elif [ -f $NODEDIR/qdisc ]; then
-		NODETYPE=qdisc
-		NODEIDPREFIX=handle
-		NODEID="$NODENAME:"
-		LAST_QDISC_HANDLE=$NODEID
-		NODEATTRS=`head -1 $NODEDIR/qdisc`
-	else
-		print_error "Unknown node type in $FUNCNAME, TDIR=$NODEDIR"
-		return 1
-	fi
-	$TC $NODETYPE add dev $NAME $PARENTNODE $NODEIDPREFIX $NODEID $EXTRAATTRS $NODEATTRS
-# setup filters
-	if [ $NODETYPE = class -a -s $NODEDIR/filter ]; then
-		$DENOISE $NODEDIR/filter | while read FILTEREXPR; do
-			$TC filter add dev $NAME $PARENTNODE `head -1 $NODEDIR/extra.filter 2>/dev/null` $FILTEREXPR flowid $NODEID
-		done
-	fi
-	RECLEVEL=$((RECLEVEL+1))
-	for d in $NODEDIR/*; do
-		[ -d $d ] && $FUNCNAME $d "parent $NODEID" "$LAST_QDISC_HANDLE" "`head -1 $NODEDIR/extra 2>/dev/null`"
-	done
-	RECLEVEL=$((RECLEVEL-1))
-	return 0
-}
-
-[ -z "$1" ] && usage
-NAME=$1
-
 [ -d $MYIFACEDIR/qos/ -a -x $MYIFACEDIR/qos/ ] || exit 0
+[ $# -eq 2 ] || usage
+NAME=$1
+ACTION=$2
 pickup_defaults
 pickup_options
 
-# clean up
-$TC qdisc del dev $NAME root >/dev/null 2>&1
+case $ACTION
+	start)
+		# process_qos_dir <current dir> <parent> [last qdisc handle] [extra]
+		process_qos_dir()
+		{
+			local NODENAME NODETYPE NODEIDPREFIX NODEATTRS NODEID
+			local NODEDIR=${1:?missing 1st arg to $FUNCNAME}
+			local NODENAME=${NODEDIR//*\//}
+			# this arg is 'root' for the first call and 'parent x:y' for the rest
+			local PARENTNODE=${2:?missing 2nd arg to $FUNCNAME}
+			local LAST_QDISC_HANDLE=$3
+			local EXTRAATTRS=$4
+			if [ -f $NODEDIR/class ]; then
+				NODETYPE=class
+				NODEIDPREFIX=classid
+				NODEID="$LAST_QDISC_HANDLE$NODENAME"
+				NODEATTRS="`head -1 $NODEDIR/class`"
+			elif [ -f $NODEDIR/qdisc ]; then
+				NODETYPE=qdisc
+				NODEIDPREFIX=handle
+				NODEID="$NODENAME:"
+				LAST_QDISC_HANDLE=$NODEID
+				NODEATTRS=`head -1 $NODEDIR/qdisc`
+			else
+				print_error "Unknown node type in $FUNCNAME, TDIR=$NODEDIR"
+				return 1
+			fi
+			$TC $NODETYPE add dev $NAME $PARENTNODE $NODEIDPREFIX $NODEID $EXTRAATTRS $NODEATTRS
+		# setup filters
+			if [ $NODETYPE = class -a -s $NODEDIR/filter ]; then
+				$DENOISE $NODEDIR/filter | while read FILTEREXPR; do
+					$TC filter add dev $NAME $PARENTNODE `head -1 $NODEDIR/extra.filter 2>/dev/null` $FILTEREXPR flowid $NODEID
+				done
+			fi
+			RECLEVEL=$((RECLEVEL+1))
+			for d in $NODEDIR/*; do
+				[ -d $d ] && $FUNCNAME $d "parent $NODEID" "$LAST_QDISC_HANDLE" "`head -1 $NODEDIR/extra 2>/dev/null`"
+			done
+			RECLEVEL=$((RECLEVEL-1))
+			return 0
+		}
+		# clean up
+		$TC qdisc del dev $NAME root >/dev/null 2>&1
 
-# do the rest
-cd $MYIFACEDIR/qos/
-export RECLEVEL=0
-# process only the first dir
-for d in $MYIFACEDIR/qos/*; do
-	[ -d $d ] && {
-		process_qos_dir $d root && print_progress
-		break
-	}
-done
+		# do the rest
+		cd $MYIFACEDIR/qos/
+		export RECLEVEL=0
+		# process only the first dir
+		for d in $MYIFACEDIR/qos/*; do
+			[ -d $d ] && {
+				process_qos_dir $d root && print_progress
+				break
+			}
+		done
+	;;
+	stop)
+		$TC qdisc del dev $NAME root >/dev/null 2>&1
+	;;
+	*)
+		print_error "Illegal argument to $0: '$ACTION'"
+	;;
+esac

@@ -355,47 +355,6 @@ xargise_file()
 	return 0
 }
 
-# operation\first word | add X | del X | Y X
-#----------------------+-------+-------+------
-# add                  | add X | del X | add X
-#----------------------+-------+-------+------
-# del                  | del X | del X | del X
-#----------------------+-------+-------+------
-process_ipv4rules()
-{
-	local OP=${1:?missing 1st arg to $FUNCNAME}
-	SRCFILE=`profiled_filename $MYIFACEDIR/ipv4rule`
-	[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
-	while read FIRST REST; do
-		case "$FIRST" in
-			add)
-				[ $OP = "del" ] && FIRST=del
-			;;
-			del)
-				# should we restore deleted rules on iface shutdown?
-				# [ $OP = "del" ] && FIRST=add
-			;;
-			*)
-				FIRST="$OP $FIRST"
-			;;
-		esac
-		$IP -4 rule $FIRST $REST
-		print_progress
-	done
-}
-
-flush_addresses()
-{
-	local NAME=${1:?missing 1st arg to $FUNCNAME}
-	# Delete ip rules before addresses (and thus routes), see comment in
-	# config-ipv4:config_routes_rules() for exact reason.
-	process_ipv4rules del
-	$IP -4 address flush dev $NAME >/dev/null 2>&1
-	$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
-	$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
-	$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
-}
-
 have_ifplugd()
 {
 	if [ -x "${IFPLUGD:=$DEFAULT_IFPLUGD}" ]; then

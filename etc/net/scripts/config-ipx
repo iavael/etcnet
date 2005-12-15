@@ -1,17 +1,34 @@
 #!/bin/bash
 
-# IPX protocol configuration script, works like brctl processor.
+usage()
+{
+	echo '/etc/net IPX handler'
+	echo "Usage: $0 <interface> <start|stop>" >&2
+	exit 1
+}
 
+[ $# -eq 2 ] || usage
+NAME=$1
+ACTION=$2
 pickup_defaults
 pickup_options
 
-IPX_INTF_FILE=`profiled_filename $MYIFACEDIR/ipxinterface`
-[ -s "$IPX_INTF_FILE" ] || exit 0
-[ -x "$IPX_INTERFACE" ] || {
-	print_error "$IPX_INTERFACE does not exist or is not executable. Try installing ipxutils RPM."
-	return 1
-}
-[ -f /proc/net/ipx ] || $MODPROBE ipx
+case $ACTION
+	start)
+		IPX_INTF_FILE=`profiled_filename $MYIFACEDIR/ipxinterface`
+		[ -s "$IPX_INTF_FILE" ] || exit 0
+		[ -x "$IPX_INTERFACE" ] || {
+			print_error "$IPX_INTERFACE does not exist or is not executable. Try installing ipxutils RPM."
+			return 1
+		}
+		[ -f /proc/net/ipx ] || $MODPROBE ipx
 
-$DENOISE $IPX_INTF_FILE | sed "s/AUTO /$NAME /" | \
-xargs --max-lines=1 $IPX_INTERFACE add && print_progress
+		$DENOISE $IPX_INTF_FILE | sed "s/AUTO /$NAME /" | \
+		xargs --max-lines=1 $IPX_INTERFACE add && print_progress
+	;;
+	stop)
+	;;
+	*)
+		print_error "Illegal argument to $0: '$ACTION'"
+	;;
+esac

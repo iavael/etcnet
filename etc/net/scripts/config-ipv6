@@ -1,23 +1,45 @@
 #!/bin/bash
 
+usage()
+{
+	echo '/etc/net IPv6 handler'
+	echo "Usage: $0 <interface> <start|stop>" >&2
+	exit 1
+}
+
+[ $# -eq 2 ] || usage
+NAME=$1
+ACTION=$2
 pickup_defaults
 $MODPROBE ipv6
 
-xargise_file $MYIFACEDIR/ipv6address "$IP -6 address add dev $NAME"
-if iface_is_up $NAME; then
-	# setup routes
-	SRCFILE=`profiled_filename $MYIFACEDIR/ipv6route`
-	[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
-	while read FIRST REST; do
-	# If there is no operation, substitute default, otherwise keep.
-		case "$FIRST" in
-			add|del|change|append|replace)
-				$IP -6 route $FIRST $REST dev $NAME
-			;;
-			*)
-				$IP -6 route append $FIRST $REST dev $NAME
-			;;
-		esac
-		print_progress
-	done
-fi
+case $ACTION
+	start)
+		xargise_file $MYIFACEDIR/ipv6address "$IP -6 address add dev $NAME"
+		if iface_is_up $NAME; then
+			# setup routes
+			SRCFILE=`profiled_filename $MYIFACEDIR/ipv6route`
+			[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
+			while read FIRST REST; do
+			# If there is no operation, substitute default, otherwise keep.
+				case "$FIRST" in
+					add|del|change|append|replace)
+						$IP -6 route $FIRST $REST dev $NAME
+					;;
+					*)
+						$IP -6 route append $FIRST $REST dev $NAME
+					;;
+				esac
+				print_progress
+			done
+		fi
+	;;
+	stop)
+		$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
+		$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
+		$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
+	;;
+	*)
+		print_error "Illegal argument to $0: '$ACTION'"
+	;;
+esac

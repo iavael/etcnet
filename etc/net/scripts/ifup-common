@@ -160,18 +160,13 @@ is_yes "$CONFIG_WIRELESS" && ExecIfExecutable $SCRIPTDIR/config-wireless $NAME &
 # process ip neighbours
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
 
-# setup addresses and (only if iface is up) routes
-# don't flush IPv6 auto-generated link-level addresses
-is_yes $DONT_FLUSH || {
-	flush_addresses $NAME
-	print_progress
-}
-# Start firewall before all
+# Order matters here.
 is_yes "$CONFIG_FW"  && ExecIfExecutable $SCRIPTDIR/config-fw $NAME start
-is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME
-is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME
-is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME
-is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME
+is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME start
+
+is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME start
+is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME start
+is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME start
 
 # handle resolver config
 MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`
