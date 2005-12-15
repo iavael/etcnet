@@ -9,6 +9,7 @@
 	ignore backup files
 	hook scripts names and location changed (grep LOCALSCRIPTDIR)
 	netup-pre, netup-post, netdown-pre, netdown-post hook scripts
+	initial ethtool support
 0.7.15 2005-10-26
 	provide default hostname
 	define rmmod path

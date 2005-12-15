@@ -18,10 +18,9 @@
 - more docs
 - allow compiled-in 802.1q
 - only pickup DISABLED and TYPE in network.init
-+ more .d-style
 - (RH#119952) {pre,post}-{start,stop,restart,reload} hook scripts
 - iANS support?
 - examine functions-fw and config-fw
 - Makefile ?
 - '. $SCRIPTDIR/functions-eth' (line 89) is executed after 'stop_dhcp_client' line 63
-+ ignore rpmsave/rpmnew when reading options
++ ethtool -s support in ifup-common

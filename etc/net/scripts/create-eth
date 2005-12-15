@@ -11,3 +11,4 @@ if [ -n "$MODULE" ]; then
 else
 	$IP link set dev $NAME down
 fi
+[ -x "${ETHTOOL:=$DEFAULT_ETHTOOL}" ] && xargise_file $MYIFACEDIR/ethtool "$ETHTOOL -s $NAME"
