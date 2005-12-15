@@ -60,3 +60,8 @@ GOOD_MODULE_LIST='eepro100 e100 8139too tulip 3c59x hostap via-rhine b44'
 # Set this to yes to never remove any modules (kernel 2.6 has a bad idea if
 # we need a module or not).
 NEVER_RMMOD=no
+
+# Enable automatic broadcast address generation. ip doesn't set broadcast
+# address for an interface, unless explicitly told. This option will add
+# 'broadcast +' to each IPv4 address line (see iproute2 manual).
+AUTO_BROADCAST=off

@@ -46,7 +46,16 @@ case $ACTION
 	start)
 		try_static()
 		{
-			xargise_file $MYIFACEDIR/ipv4address "$IP -4 address add dev $NAME"
+			local REALFILE=`profiled_filename $MYIFACEDIR/ipv4address`
+			if [ -s $REALFILE ]; then
+				local ADDRESSLINE
+				$DENOISE $REALFILE | while read ADDRESSLINE; do
+					is_yes "$AUTO_BROADCAST" && [ "$ADDRESSLINE" = "${ADDRESSLINE/broadcast/}" ] && \
+						ADDRESSLINE="$ADDRESSLINE broadcast +"
+					$IP -4 address add dev $NAME $ADDRESSLINE && print_progress
+				done
+			fi
+			return 0
 		}
 
 		try_dhcp()
