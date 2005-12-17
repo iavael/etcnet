@@ -369,7 +369,7 @@ pickup_defaults()
 	local of
 	for of in /etc/net/options /etc/net/options.d/*; do
 		[ "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
-		SourceIfNotEmpty $optionsfile
+		SourceIfNotEmpty $of
 	done
 	if [ -z "$SCRIPTDIR" ]; then
 		print_error "could not read /etc/net options from usual place"
