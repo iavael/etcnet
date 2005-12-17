@@ -13,7 +13,7 @@ ACTION=$2
 pickup_defaults
 pickup_options
 
-case $ACTION
+case $ACTION in
 	start)
 		IPX_INTF_FILE=`profiled_filename $MYIFACEDIR/ipxinterface`
 		[ -s "$IPX_INTF_FILE" ] || exit 0

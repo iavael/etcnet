@@ -14,7 +14,7 @@ ACTION=$2
 pickup_defaults
 pickup_options
 
-case $ACTION
+case $ACTION in
 	start)
 		# process_qos_dir <current dir> <parent> [last qdisc handle] [extra]
 		process_qos_dir()
