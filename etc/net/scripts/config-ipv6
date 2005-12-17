@@ -13,7 +13,7 @@ ACTION=$2
 pickup_defaults
 $MODPROBE ipv6
 
-case $ACTION
+case $ACTION in
 	start)
 		xargise_file $MYIFACEDIR/ipv6address "$IP -6 address add dev $NAME"
 		if iface_is_up $NAME; then
