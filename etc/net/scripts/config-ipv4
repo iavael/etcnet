@@ -42,7 +42,7 @@ process_ipv4rules()
 	done
 }
 
-case $ACTION
+case $ACTION in
 	start)
 		try_static()
 		{
