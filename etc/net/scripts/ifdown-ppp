@@ -36,5 +36,11 @@ if iface_is_up $NAME; then
 	ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
 	$IP link set dev $NAME down
 fi
+
+if is_yes "$RESTORE_DEFAULTROUTE" && [ -s /var/run/$NAME.defaultroute ]; then
+	xargise_file /var/run/$NAME.defaultroute "$IP ro ad"
+	rm -f /var/run/$NAME.defaultroute
+fi
+
 ExecIfExecutable $LOCALSCRIPTDIR/ifdown-post-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress

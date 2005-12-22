@@ -11,6 +11,7 @@
 	netup-pre, netup-post, netdown-pre, netdown-post hook scripts
 	initial ethtool support
 	new AUTO_BROADCAST option
+	new RESTORE_DEFAULTROUTE option
 0.7.15 2005-10-26
 	provide default hostname
 	define rmmod path

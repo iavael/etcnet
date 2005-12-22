@@ -30,6 +30,7 @@ pickup_options
 }
 CHAT_CMD="$CHAT ${CHATOPTIONS:-$DEFAULT_CHATOPTIONS} -f"
 
+# Locate additional files.
 PROF_PPPOPTIONSFILE=`profiled_filename $MYIFACEDIR/${PPPOPTIONSFILE:=$DEFAULT_PPPOPTIONSFILE}`
 [ -s $PROF_PPPOPTIONSFILE ] || PROF_PPPOPTIONSFILE=
 
@@ -42,6 +43,7 @@ PROF_PPPCONNECTCHAT=`profiled_filename $MYIFACEDIR/${PPPCONNECTCHAT:=$DEFAULT_PP
 PROF_PPPDISCONNECTCHAT=`profiled_filename $MYIFACEDIR/${PPPDISCONNECTCHAT:=$DEFAULT_PPPDISCONNECTCHAT}`
 [ -s $PROF_PPPDISCONNECTCHAT ] || PROF_PPPDISCONNECTCHAT=
 
+# Build additional option set.
 [ -n "$PPPTIMEOUT" ] && if [ "$PPPTIMEOUT" -gt 3 ]; then
 	BASIC_PPPOPTIONS="$BASIC_PPPOPTIONS lcp-echo-interval $(($PPPTIMEOUT / 3)) lcp-echo-failure 3"
 fi
@@ -76,6 +78,12 @@ case "$PPPTYPE" in
 		print_error "unknown PPPTYPE '$PPPTYPE' for interface $NAME"
 	;;
 esac
+
+# Save default route(s)
+if is_yes "$RESTORE_DEFAULTROUTE"; then
+	$IP ro ls | grep ^default > /var/run/$NAME.defaultroute
+	[ -s /var/run/$NAME.defaultroute ] || rm -f /var/run/$NAME.defaultroute
+fi
 
 # Let the show start...
 $PPPD $BASIC_PPPOPTIONS $PPPOPTIONS ${PTYOPTION:+local pty "$PTYOPTION"} \
