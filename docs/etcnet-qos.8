@@ -1,0 +1,29 @@
+.TH "etcnet-qos" "8" "0.8.0" "Denis Ovsienko <info@etcnet.org>" ""
+.SH "NAME"
+/etc/net QoS support manual
+.SH "DESCRIPTION"
+General rules:
+.TP 
+1. Classes and qdiscs can contain each other. Typically a class contains a qdisc or one or more subclasses. A qdisc typically contains one ore more classes.
+.TP 
+2. Containment is represented by directory tree.
+.TP 
+3. Directory must contain one of two files: either 'class' or 'qdisc' so that /etc/net knows the type of each node. The file contains current node parameters.
+.TP 
+4. Qdisc handle is it's directory name with ':'.
+.TP 
+5. Class classid is the last qdisc seen in the tree plus ':' plus current class's directory name.
+.TP 
+6. If current directory contains file 'extra', it's contents will be used when creating children (usually classes). This does not apply to childrens' children.
+.TP 
+7. Class dir can contain 'filter' file with filter statements. The filters will belong to parent qdisc and will point to current dir (class), you don't have to specify parent and flowid keywords. If 'extra.filter' file exists, it's contents will be prefixed to each line of 'filter' file.
+.SH "SEE ALSO"
+.TP 
+/etc/net QoS examples: http://etcnet.org/examples/
+.TP 
+tc manpage
+.TP 
+google://linux+qos
+
+.SH "FILES"
+qos/1 \- root qdisc

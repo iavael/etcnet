@@ -9,7 +9,6 @@ Contents:
  2B. Requirements
 3. Misc info
  3.3 PLIP maps
- 3.4 QoS hierarchy
  3.5 Interface recursion and dependencies
 4. System configuration
 5. Configuration profiles
@@ -48,8 +47,6 @@ Supported protocols:
 IPv4 (static, DHCP, IPv4LL)
 IPv6 (static)
 IPX
-
-Extra features: QoS, sysctl, firewall.
 
 2. QUICK START
 # mkdir /etc/net/ifaces/myinterface1
@@ -148,34 +145,6 @@ below plip parport_pc
 below parport_pc parport
 options parport io=0x3f8,0x3bc
 I can't check if this works now.
-
-3.4 QoS hierarchy
-/etc/net/ifaces/ether/qos/
-1/ --- root qdisc, 1 is handle (1:)
-1/qdisc --- root qdisc options
-10/   \
-20/    | - root qdisc subclasses (handles are 1:10, 1:20 and 1:30 respectively)
-30/   /
-10/class --- class options
-10/100/ --- class child qdisc options (handle 10:100)
-10/100/101/   \
-10/100/102/    | - subclasses (100:101, 100:102, 100:103)
-10/100/103/   /
-General rules:
-1. Classes and qdiscs can contain each other. Typically a class contains a qdisc
-or one or more subclasses. A qdisc typically contains one ore more classes.
-2. Containment is represented by directory tree.
-3. Directory must contain one of two files: either 'class' or 'qdisc' so that we
-know the type of each node. The file contains current node parameters.
-4. Qdisc handle is it's directory name with ':'.
-5. Class classid is the last qdisc seen in the tree plus ':' plus current class's
-directory name.
-6. If current directory contains file 'extra', it's contents will be used when
-creating children (usually classes). This does not apply to childrens' children.
-7. Class dir can contain 'filter' file with filter statements. The filters will
-belong to parent qdisc and will point to current dir (class), you don't have to
-specify parent and flowid keywords. If 'extra.filter' file exists, it's contents
-will be prefixed to each line of 'filter' file.
 
 3.5 INTERFACE RECURSION AND DEPENDENCIES
 1. When we bring up an iface, we MUST ensure that parent iface is up.
