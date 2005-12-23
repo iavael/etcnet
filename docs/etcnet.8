@@ -146,24 +146,25 @@ Autoprefix means that if fully specified variables (like in a traditional /etc/s
 is met, it will be processed as is, but for single word variables like rp_filter or forwarding
 appropriate prefix will be tried to find. Autoprefix works only for interface sysctl.conf and
 type\-specific sysctl.conf.
-.SH "RECURSION AND DEPENDENCIES (*)"
-When we bring up an interface, we MUST ensure that parent iface is up.
-If it is not so, continue only if we succeeded bringing parent iface up.
-2. When we have brought an iface up, we MAY (if configured to do it)
-bring up all ifaces that depend on it.
-3. When we bring down an iface, we MUST first bring down all dependant
-ifaces.
-4. We SHOULD keep track of processed ifaces for the original transaction
-to avoid loops.
-Look for IFUP_CHILDREN, IFDOWN_CHILDREN, IFUP_PARENTS and IFDOWN_PARENTS
-in /etc/net/ifaces/default/options.
+.SH "RECURSION AND DEPENDENCIES (FIXME)"
+Some interfaces require other interfaces to be up for proper initialization. Some
+dependencies are calculated automaticaly, but some need to be configured manually.
+There are 6 options to control it:
+.IP HOST=<interface>
+.IP REQUIRES=<interface>[ <interface>[ <interface>...]]
+.IP IFUP_PARENTS=<boolean>
+.IP IFDOWN_PARENTS=<boolean>
+.IP IFUP_CHILDREN=<boolean>
+.IP IFDOWN_CHILDREN=<boolean>
+.LP
 NOTE:
-As for now (0.5.2 and earlier) interfaces from vlantab bypass traditional logic,
+Interfaces from vlantab bypass traditional logic,
 they can't cause parent/child interface to become up/down. If parent interface
 is down at the moment of vlantab processing (ONBOOT=no or misconfiguration), all
 child VLAN interfaces will be just skipped.
 .SH "VLANTAB SYNTAX"
-For each VLAN interface you have to add a line:
+vlantab provides a way to bulk-configure VLAN interfaces with only IPv4 address
+at each interface. For each VLAN interface you have to place a line:
 .IP "<host interface> <VLAN ID>"
 Create VLAN interface and automatically name it according to VLAN_NAMETYPE option value.
 .IP "<host interface> <VLAN ID> <VLAN interface name>"
@@ -178,18 +179,59 @@ This file holds aliases for hostnames. If your hostname is long or unconvinient,
 <hostname3><space><alias3>
 <hostname4><space><alias4>
 <hostname5><space><alias5>
-.SH "FILENAMES (*)"
+.SH "FILENAMES (FIXME)"
 /etc/net scripts implement support for separate namespaces in a single configuration
 tree. This is achieved though special suffixes, which are used depending on current values
 of network profile and network host.
-.SH "CONFIGURATION PROFILES (*)"
+.SH "CONFIGURATION PROFILES"
+A profile is a configuration superset. E.g. when a notebook boots up in
+several different networks, it's desirable to select current configuration
+by just one parameter. Current profile name can be set via:
+.TP
+1. environment variable NETPROFILE (not a good idea I guess)
+.TP
+2. file /etc/net/profile (file should contain just one word, e.g. "office" w/o quotes)
+.TP
+3. kernel boot parameter "netprof", e.g. "LILO: linux netprof=home"
+.LP
+Specifying a profile does nothing by default. But if etcnet scripts know the
+current profile name (e.g. "home") and look for a configuration file (e.g. "options")
+and "options#home" exists, then "options#home" will be used instead of "options".
+The same for ipv4address, ipv4route, ipv4rule, ipv6address, iplink and so on).
 
-.SH "MULTIHOST CONFIGURATION (*)"
+Now if you want to boot the same host in two different networks, you will most
+probably have to create additional ipv4address#yourprofilename for another address
+and ipv4route#yourprofilename for another default route. Same for resolv.conf,
+I guess.
+
+Next example: booting two different hosts from the same HDD (root fs). The same as
+previous, but additional options#yourprofilename and iftab#yourprofilename for the
+different network card.
+
+To switch between configurations without editing /etc/net/profile one can use:
+.TP
+# service etcnet startwith office
+.TP
+# service etcnet restartwith home
+.LP
+If 'selectprofile' executable script exists in iface directory, it will be run with a
+single argument, which defines current stage of (de)configuration sequence. If you
+want to override current profile name during runtime, you should perform required
+actions in this script and print profile name to stdout. Since this script will be run
+several times and runtime detection can take certain time to complete, it is advised
+that the script should perform actions only at certain stages. 'selectprofile' will
+always get calling script name as the first parameter, so you can skip trying to
+detect wireless AP before the kernel module is even loaded, for example. See
+/etc/net/ifaces/default/selectprofile for sample implementation.
+
+As of /etc/net\-0.5.3 init_netprofile is called only from {ifup,ifdown}.*,
+{setup,shutdown}\-.* and network.init scripts.
+.SH "MULTIHOST CONFIGURATION (FIXME)"
 You can create a single configuration tree and distribute it across multiple hosts. If you mark
 .SH "ENVIRONMENT"
-.IP HETHOST
+.IP NETHOST
 This variable can hold host ID in multi\-host configuration, which should be used instead of automatically detected.
-.IP HETPROFILE
+.IP NETPROFILE
 This variable can hold configuration profile name, which should be used instead of automatically detected.
 .SH "BUGS"
 .TP 
@@ -199,7 +241,7 @@ teql interfaces can't be safely renamed.
 .TP 
 VLAN interfaces sometimes are initialized into wrong state.
 .TP 
-Some network drivers have race condition in interface init code.
+Some network drivers have race condition in interface init code, so 'mac' iftab match does not work.
 .TP 
 ppp interfaces can only be named ppp%d.
 .TP 
@@ -212,8 +254,13 @@ ppp option 'demand' can hang /etc/net startup forever
 CONFIG_IPV6 must be on to configure 6\-to\-4 (TYPE=iptun, TUNTYPE=sit) tunnels correctly
 .TP 
 Profiles don't work with QoS.
+.TP 
+Dummy interfaces can't be named anything except dummy0.
 .SH "SEE ALSO"
-.BR ip (8),
-.BR tc (8),
-.BR ifrename (8),
-.BR iftab (5)
+.BR ip(8),
+.BR tc(8),
+.BR etcnet-options(5),
+.BR etcnet-qos(8),
+.BR etcnet-fw(8),
+.BR ifrename(8),
+.BR iftab(5)
