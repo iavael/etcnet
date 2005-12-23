@@ -1,5 +1,5 @@
 - bluetooth support
-- auto broadcast option
++ auto broadcast option
 - xsupplicant support
 - Elektra support
 - analyze zebra and RTPROTO ip option
@@ -12,13 +12,13 @@
 - SkyStar 1 support
 - ZyXEL support
 - QoS profiles support
-- merge with SuSE, LFS, PLD
-- PPP RESTORE_DEFAULTROUTE option
+- merge from SuSE
++ PPP RESTORE_DEFAULTROUTE option
 + etcnet.8, etcnet-options.5
 - more docs
 - allow compiled-in 802.1q
 - only pickup DISABLED and TYPE in network.init
-- (RH#119952) {pre,post}-{start,stop,restart,reload} hook scripts
++ (RH#119952) {pre,post}-{start,stop,restart,reload} hook scripts
 - iANS support?
 - examine functions-fw and config-fw
 - Makefile ?

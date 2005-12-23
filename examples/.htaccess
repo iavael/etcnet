@@ -4,8 +4,8 @@ AddDescription "example with 3 Ethernet interfaces, a bridge and a GRE tunnel" E
 AddDescription "PPP configuration examples" PPP
 AddDescription "fragment of QoS setup for an internet cafe" QoS-CBQ-internet-cafe
 AddDescription "HTB/SFQ QoS example" QoS-HTB-SFQ-256kbit
-AddDescription "example for HTB user guide" QoS-HTB-user-guide
+AddDescription "HTB user guide example port" QoS-HTB-user-guide
 AddDescription "simple VLAN configuration" VLAN-without-vlantab
 AddDescription "wireless example for IPW2100 card in WEP mode" WiFi-WEP-wpa2100
-AddDescription "/etc/net firewall (iptables) setup example" firewall-hiddenman
-AddDescription "/etc/net config for LARTC multiple links example" routing-LARTC-1
+AddDescription "iptables example by hiddenman" firewall-hiddenman
+AddDescription "LARTC multiple links example port" routing-LARTC-1
