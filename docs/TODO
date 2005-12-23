@@ -24,3 +24,4 @@
 - Makefile ?
 - '. $SCRIPTDIR/functions-eth' (line 89) is executed after 'stop_dhcp_client' line 63
 + ethtool -s support in ifup-common
+- fix dummy renaming
