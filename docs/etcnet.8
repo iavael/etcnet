@@ -1,6 +1,6 @@
 .TH "etcnet" "8" "0.8.0" "Denis Ovsienko <info@etcnet.org>" "Linux network configuration"
 .SH "NAME"
-/etc/net \- configuring network in Linux
+/etc/net \- basic and advanced network configuration in Linux
 .SH "SYNOPSIS"
 .TP 
 ifup <interface>
@@ -11,7 +11,7 @@ service network <start|stop|restart|reload...>
 .SH "DESCRIPTION"
 /etc/net is a network configuration system. It should be both simple
 to use for a beginner and powerful for expert. First of all you have
-to describe your network options and connection(s) in a set of
+to describe your network options and interfaces in a set of
 configuration files. Once you are done, you should be able to control
 state of your host with 3 scripts: ifup, ifdown, network.init.
 .SH "SYSTEM CONFIGURATION"
@@ -44,8 +44,8 @@ If exists and is executable, is run after starting network.
 If exists and is executable, is run before stopping network.
 .IP /etc/net/netdown\-post
 If exists and is executable, is run after stopping network.
-.SH "INTERFACE CONFIGURATION"
-
+.SH "INTERFACE CONFIGURATION (*)"
+For QoS configuration manual see etcnet\-qos(8).
 .SH "INTERFACE GROUPS"
 There are 5 interface groups in /etc/net model:
 .IP "virtual"
@@ -84,6 +84,8 @@ List of iwconfig commands. This file is only required for WiFi WEP.
 wpa_supplicant configuration file. This file is only required for WiFi WPA.
 .IP brctl
 List of brctl commands. This file is only used by bridges and is not required.
+.IP ethtool
+List of ethtool commands. This file is only useful for Ethernet interfaces and is not required.
 .IP ipx_interface
 List of 'ipx_interface add' arguments. This file is required for IPX interfaces.
 .IP sysctl.conf
@@ -117,17 +119,17 @@ Create VLAN interface with specified name.
 Create VLAN interface with specified name and run 'ip address' with specified arguments.
 .SH "HOSTTAB SYNTAX"
 This file holds aliases for hostnames. If your hostname is long or unconvinient, you can define an alias here. This alias can be used for tagging files. One hostname should be referenced by one alias only. File format:
-.nf
+.nf 
 <hostname1><space><alias1>
 <hostname2><space><alias2>
 <hostname3><space><alias3>
 <hostname4><space><alias4>
 <hostname5><space><alias5>
-.SH "FILENAMES"
+.SH "FILENAMES (*)"
 When a need to read certain file or check for its existence arises, several naming conventions are taken in account. If neither "network profile" nor "network host" are defined, /etc/net leaves filename unchanged.
-.SH "CONFIGURATION PROFILES"
+.SH "CONFIGURATION PROFILES (*)"
 
-.SH "MULTIHOST CONFIGURATION"
+.SH "MULTIHOST CONFIGURATION (*)"
 
 .SH "ENVIRONMENT"
 .IP HETHOST
