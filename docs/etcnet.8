@@ -137,7 +137,9 @@ This file holds aliases for hostnames. If your hostname is long or unconvinient,
 <hostname4><space><alias4>
 <hostname5><space><alias5>
 .SH "FILENAMES (*)"
-When a need to read certain file or check for its existence arises, several naming conventions are taken in account. If neither "network profile" nor "network host" are defined, /etc/net leaves filename unchanged.
+/etc/net scripts implement support for separate namespaces in a single configuration
+tree. This is achieved though special suffixes, which are used depending on current values
+of network profile and network host.
 .SH "CONFIGURATION PROFILES (*)"
 
 .SH "MULTIHOST CONFIGURATION (*)"
