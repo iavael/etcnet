@@ -7,4 +7,5 @@ AddDescription "VLAN config example" ifaces-vlan
 AddDescription "wireless config example" ifaces-wireless
 AddDescription "/etc/net config for LARTC multiple links example" routing-LARTC-1
 AddDescription "fragment of QoS setup for an internet cafe" qos-cafe
+AddDescription "/etc/net firewall (iptables) setup example" fw-iptables
 ForceType text/plain
