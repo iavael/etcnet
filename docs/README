@@ -4,20 +4,9 @@ http://etcnet.org/
 
 Contents:
 1. General information
-2. Quick start
- 2A. Example configuration
- 2B. Requirements
-3. Misc info
- 3.3 PLIP maps
- 3.5 Interface recursion and dependencies
-4. System configuration
 5. Configuration profiles
  5.1 Static profiles
  5.1 Dynamic profiles
-6. PPP interfaces
-7. Smart sysctl support
-8.
-9. PPTP interfaces
 10. Firewall support
 Appendix A. Copyright and license
 
@@ -47,160 +36,6 @@ Supported protocols:
 IPv4 (static, DHCP, IPv4LL)
 IPv6 (static)
 IPX
-
-2. QUICK START
-# mkdir /etc/net/ifaces/myinterface1
-$ less /etc/net/ifaces/default/options
-$ less /etc/net/ifaces/default/options-*
-# vi /etc/net/ifaces/myinterface1/options
-# vi /etc/net/ifaces/myinterface1/ipv4address
-# vi /etc/net/ifaces/myinterface1/ipv4route
-...
-# mkdir /etc/net/ifaces/myinterface2
-...
-# vi /etc/hotplug/net.agent (see /etc/net/ifaces/default/options:USE_HOTPLUG)
-# vi /etc/pcmcia/network
-...
-# service network stop
-# rm /etc/init.d/network
-# ln -s /etc/init.d/network /etc/net/scripts/network.init
-# rmmod <all loaded network modules>
-# service network start
-
-2A. Example configuration
-eth0 with 10.0.0.1/24, default route to 10.0.0.254 and route 10.0.1.0/24 through 10.0.0.253
-
-{
-old /etc/sysconfig/network-scripts/ifcfg-eth0:
----8<---8<---
-DEVICE=eth0
-BOOTPROTO=static
-IPADDR=10.0.0.1
-NETMASK=255.255.255.0
-ONBOOT=yes
----8<---8<---
-
-old /etc/sysconfig/network:
----8<---8<---
-GATEWAY=10.0.0.254
----8<---8<---
-
-old /etc/sysconfig/static-routes:
----8<---8<---
-eth0 net 10.0.1.0 netmask 255.255.255.0 gw 10.0.0.253
----8<---8<---
-
-old /etc/modules.conf:
----8<---8<---
-alias eth0 3c59x
----8<---8<---
-}
-
-{
-new /etc/net/iface/<any name>/options
----8<---8<---
-# only if name is not "eth[0-9]+"
-TYPE=eth
-MODULE=3c59x
----8<---8<---
-
-new /etc/net/iface/<any name>/ipv4address
----8<---8<---
-10.0.0.1/24
----8<---8<---
-
-new /etc/net/iface/<any name>/ipv4route
----8<---8<---
-10.0.1.0/24 via 10.0.0.253
-default via 10.0.0.254
----8<---8<---
-}
-
-2B. REQUIREMENTS
-ifrename (part of recent wireless-utils package) is a must for interface
-name maps. NOTE: /etc/net 0.4.2 requires ifrename-28!
-vlan-utils24 are required to setup VLAN interfaces.
-Your kernel must have CryptoAPI patch applied to setup PSK IPSec tunnels.
-When LINKDETECT is used, you will need ifplugstatus from ifplugd package.
-When BOOTPROTO is other than 'static', you will need a DHCP and (optionally)
-IPv4LL client (zcip).
-iproute2 is a must
-
-3. MISC INFO
-
-3.3 PLIP maps
-My notes for multiple PLIP interfaces.
-
-myplip mac fc:fc:fc:fc:fc:fc
-Most hosts have 1 or 0 parallel ports.
-If you have more and need configured all of them, try
-using different 'baseaddress 0xXXX' maps for each iface.
-Also note that you will need appropriate modules.conf
-entries like:
-alias plip0 plip
-alias plip1 plip
-alias parport0 parport
-alias parport1 parport
-below plip parport_pc
-below parport_pc parport
-options parport io=0x3f8,0x3bc
-I can't check if this works now.
-
-3.5 INTERFACE RECURSION AND DEPENDENCIES
-1. When we bring up an iface, we MUST ensure that parent iface is up.
-If it is not so, continue only if we succeeded bringing parent iface up.
-2. When we have brought an iface up, we MAY (if configured to do it)
-bring up all ifaces that depend on it.
-3. When we bring down an iface, we MUST first bring down all dependant
-ifaces.
-4. We SHOULD keep track of processed ifaces for the original transaction
-to avoid loops.
-Look for IFUP_CHILDREN, IFDOWN_CHILDREN, IFUP_PARENTS and IFDOWN_PARENTS
-in /etc/net/ifaces/default/options.
-
-3.5.1 ifup algorythm
-[ifup_parents]
-create (type-specific)
-[rename]
-[ifup-pre]
-config (protocols and set UP)
-setup (type-specific, may bind to parents or modify them)
-[ifup-post]
-[ifup_children]
-
-3.5.2 ifdown algorythm
-[ifdown_children]
-[shutdown] (type-specific, may unbind from parents or modify them)
-[ifdown-pre]
-unconfig (and set DOWN)
-[ifdown-post]
-destroy (type-specific)
-[ifdown_parents]
-
-3.5.3 VLANs and iface deps
-As for now (0.5.2 and earlier) interfaces from vlantab bypass traditional logic,
-they can't cause parent/child interface to become up/down. If parent interface
-is down at the moment of vlantab processing (ONBOOT=no or misconfiguration), all
-child VLAN interfaces will be just skipped.
-
-
-4. SYSTEM CONFIGURATION
-4.1 Edit /etc/sysctl.conf so that it does not intersect with /etc/net/sysctl.conf
-
-4.2 pcmcia_cs configuration (already done in ALTLinux)
-Edit /etc/pcmcia/network.opts and replace calls to /sbin/ifup and 
-/sbin/ifdown to '/etc/net/scripts/ifup-removable $1 pcmcia_cs' and
-'/etc/net/scripts/ifdown-removable $1 pcmcia_cs' respectively.
-Apply patch for interface name change support to cardmgr.
-
-4.3 hotplug configuration (already done in ALTLinux)
-Edit /etc/hotplug/net.agent and change 
-/sbin/ifdown to '/etc/net/scripts/ifdown-removable $1 hotplug' and
-/sbin/ifup to '/etc/net/scripts/ifup-removable $1 hotplug'.
-
-4.4 ifplugd configuration (already done in ALTLinux)
-As of version 0.7.10 /etc/net have changed ifplugd code. Look at
-/etc/net/ifaces/default/options-eth for info.
 
 5. CONFIGURATION PROFILES
 5.1 Static profiles
@@ -240,48 +75,6 @@ detect wireless AP before the kernel module is even loaded, for example. See
 /etc/net/ifaces/default/selectprofile for sample implementation.
 As for /etc/net-0.5.3 init_netprofile is called only from {ifup,ifdown}.*,
 {setup,shutdown}-.* and network.init scripts.
-
-6. PPP interfaces
-Directory layout:
-[options] --- see ifaces/default/options-ppp
-[pppoptions] --- pppd options file
-[pppinit] --- pppd init chat script (not shell script)
-[pppconnect] --- pppd connect chat script (not shell script)
-[pppdisconnect] --- pppd disconnect chat script (not shell script)
-ip{v4,v6}{address,route} are a little useless ATM, because pppd assigns addresses
-on its own. This will be resolved later.
-Note that you will need to place a call to /etc/net/scripts/ifdown-ppp to
-/etc/ppp/ip-down or /etc/ppp/ip-down.d/ for scripts to work as designed.
-Naming conventions:
-PPP links tend to make a considerable mess due to floating indexes. iftab/ifrename
-will not work here, so we will have old ppp%u names. create-ppp will try to guess
-correct unit index from the interface name and pass it to pppd.
-
-7. Smart sysctl support
-If there is a sysctl.conf file in interface directory, it will be processed in this
-manner: fully specified variables (like in a traditional /etc/sysctl.conf file) will
-will be processed as is, but for single word variables like rp_filter auto-prefix
-will be tried to find. Auto-prefix works only for interface sysctl.conf and
-type-specific sysctl.conf (/etc/net/scripts/sysctl.conf-$TYPE). Order of processing:
-/etc/net/sysctl.conf (at startup)
-/etc/net/ifaces/default/sysctl.conf (at ifup w/o auto-prefix)
-/etc/net/ifaces/default/sysctl.conf-$TYPE (at ifup with auto-prefix)
-/etc/net/ifaces/XXXXXX/sysctl.conf (at ifup with auto-prefix)
-
-8. FIXME: Multiple hosts configuration
-Priority table:
-file#profile@{host,alias}
-file@{host,alias}
-file#profile
-file
-
-9. PPTP interfaces
-/etc/net supports Linux pptp-client. PPTP interfaces are in fact PPP interfaces,
-main difference is that one has to put
---
-pty 'pptp --nolaunchpppd 1.2.3.4'
---
-line into pppoptions file. 1.2.3.4 is IP address of PPTP server.
 
 10. Firewall support
 10.1. Iptables configs structure

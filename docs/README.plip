@@ -1,0 +1,14 @@
+myplip mac fc:fc:fc:fc:fc:fc
+Most hosts have 1 or 0 parallel ports.
+If you have more and need configured all of them, try
+using different 'baseaddress 0xXXX' maps for each iface.
+Also note that you will need appropriate modules.conf
+entries like:
+alias plip0 plip
+alias plip1 plip
+alias parport0 parport
+alias parport1 parport
+below plip parport_pc
+below parport_pc parport 
+options parport io=0x3f8,0x3bc
+I can't check if this works now.
