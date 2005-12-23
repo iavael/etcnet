@@ -49,7 +49,9 @@ To complete interface configuration one should perform the following steps for e
 network interface found at Linux host:
 .TP 
 Invent a descriptive name for the interface and place appropriate line
-into /etc/net/iftab.
+into /etc/net/iftab. Note that some restrictions apply:
+PPP interfaces can only be named pppXXX, TEQL interfaces shouldn't be renamed due
+to a bug in kernel code. Skystar DVB kernel code isn't stable at all.
 .TP 
 Create interface configuration directory /etc/net/ifaces/<NAME>
 .TP 
@@ -97,7 +99,7 @@ List of ethtool commands. This file is only useful for Ethernet interfaces and i
 .IP ipx_interface
 List of 'ipx_interface add' arguments. This file is required for IPX interfaces.
 .IP sysctl.conf
-List of sysctl options, which will be processed after interface is up. Unlike traditional sysctl.conf files, where you have to specify the full path to sysctl variables, in this file you can use short variable names. E.g. to enable forwarding on current interface, you can use forwarding=1 and to disable return path filtering you can use rp_filter=0. /etc/net will automatically find appropriate prefixes for all variables. This file is optional.
+List of sysctl options, which will be processed after interface is up. Lookup SMART SYSCTL SUPPORT. This file is optional.
 .IP resolv.conf
 Resolver configuration. This file will be copied to /etc/resolv.conf after interface is up. This file is optional.
 .IP ifup\-pre
@@ -108,11 +110,20 @@ If exists and is executable, is run after CURRENT interface is completely up and
 If exists and is executable, is run before CURRENT interface is going to be shutdown.
 .IP ifdown\-post
 If exists and is executable, is run after CURRENT interface is completely gone.
+.IP pppoptions
+This optional file contains additional pppd options for PPP interfaces.
+.IP pppinit
+This optional file contains chat (not shell) script for modem initialization.
+.IP pppconnect
+This optional file contains chat (not shell) script to connect to remote node (e.g. dial a number).
+.IP pppdisconnect
+This optional file contains chat (not shell) script to disconnect from remote node (e.g. hang up).
+
 .LP 
 The interface directory can contain 2 special directories: 'fw' and 'qos'. They are used for
 firewall and QoS configuration respectively. For QoS configuration manual see etcnet\-qos(8).
 .SH "SPECIAL INTERFACES"
-/etc/net ships with 3 existing interfaces:
+/etc/net is shipped with 3 existing interfaces:
 .IP lo
 This is a must for a Linux host. Loopback interface comes in configuration, suitable for most cases.
 .IP default
@@ -120,6 +131,37 @@ This is really not an interface, but interface template. 'default' interface for
 It is not recommended to change options for 'default' interface. Each interface can add extra options or override existing options, if needed.
 .IP unknown
 This is a special interface, which is used each time /etc/net can't find a suitable configuration, but is requested to do. This interface's purpose is to help configure hotplug interfaces, which don't yet have a configuration.
+.SH "SMART SYSCTL SUPPORT"
+/etc/net handles several sysctl.conf files:
+.IP  /etc/net/sysctl.conf
+Processed at startup, no autoprefix.
+.IP  /etc/net/ifaces/default/sysctl.conf
+Processed at ifup, no autoprefix.
+.IP  /etc/net/ifaces/default/sysctl.conf\-$TYPE
+Processed at ifup, with autoprefix.
+.IP  /etc/net/ifaces/XXXXXX/sysctl.conf
+Processed at ifup, with autoprefix.
+.LP 
+Autoprefix means that if fully specified variables (like in a traditional /etc/sysctl.conf file)
+is met, it will be processed as is, but for single word variables like rp_filter or forwarding
+appropriate prefix will be tried to find. Autoprefix works only for interface sysctl.conf and
+type\-specific sysctl.conf.
+.SH "RECURSION AND DEPENDENCIES (*)"
+When we bring up an interface, we MUST ensure that parent iface is up.
+If it is not so, continue only if we succeeded bringing parent iface up.
+2. When we have brought an iface up, we MAY (if configured to do it)
+bring up all ifaces that depend on it.
+3. When we bring down an iface, we MUST first bring down all dependant
+ifaces.
+4. We SHOULD keep track of processed ifaces for the original transaction
+to avoid loops.
+Look for IFUP_CHILDREN, IFDOWN_CHILDREN, IFUP_PARENTS and IFDOWN_PARENTS
+in /etc/net/ifaces/default/options.
+NOTE:
+As for now (0.5.2 and earlier) interfaces from vlantab bypass traditional logic,
+they can't cause parent/child interface to become up/down. If parent interface
+is down at the moment of vlantab processing (ONBOOT=no or misconfiguration), all
+child VLAN interfaces will be just skipped.
 .SH "VLANTAB SYNTAX"
 For each VLAN interface you have to add a line:
 .IP "<host interface> <VLAN ID>"
