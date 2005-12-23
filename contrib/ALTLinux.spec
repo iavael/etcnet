@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.8.0
-Release:	alt0.10
+Release:	alt0.17
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -101,8 +101,9 @@ for n in ifup ifdown; do
 	%__ln_s ..%_sysconfdir/net/scripts/$n %buildroot/sbin
 done
 
-%__install -D -m 644 docs/etcnet.8 %buildroot%_man8dir/etcnet.8
-%__install -D -m 644 docs/etcnet-options.5 %buildroot%_man5dir/etcnet-options.5
+mkdir -p %buildroot%_man8dir %buildroot%_man5dir
+install -m 644 docs/etcnet*.8 %buildroot%_man8dir
+install -m 644 docs/etcnet*.5 %buildroot%_man5dir
 
 %post
 if [ $1 -lt 2 ]; then
