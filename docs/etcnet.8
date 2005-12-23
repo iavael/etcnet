@@ -44,14 +44,22 @@ If exists and is executable, is run after starting network.
 If exists and is executable, is run before stopping network.
 .IP /etc/net/netdown\-post
 If exists and is executable, is run after stopping network.
-.SH "INTERFACE CONFIGURATION (*)"
-For QoS configuration manual see etcnet\-qos(8).
+.SH "INTERFACE CONFIGURATION"
+To complete interface configuration one should perform the following steps for each
+network interface found at Linux host:
+.TP 
+Invent a descriptive name for the interface and place appropriate line
+into /etc/net/iftab.
+.TP 
+Create interface configuration directory /etc/net/ifaces/<NAME>
+.TP 
+Fill it with configuration files accordingly to INTERFACE DIRECTORY LAYOUT.
 .SH "INTERFACE GROUPS"
 There are 5 interface groups in /etc/net model:
 .IP "virtual"
 Self\-consistent interfaces, currently loopback and dummy. They very seldom require other interfaces and require no hardware, therefore chances are high to bring them up.
 .IP "real physical"
-Interfaces, corresponding to real hardware% pure Ethernet, PLIP, USB Ethernet adapters and DVB. You cannot bring them up, if there is no hardware present.
+Interfaces, corresponding to real hardware: pure Ethernet, PLIP, USB Ethernet adapters and DVB. You cannot bring them up, if there is no hardware present.
 .IP "hosted physical"
 Something between physical and logical type. This group includes: VLAN, bonding, bridges and traffic equalizers. These interfaces don't directly use hardware, but are built from one ore more 'host' real physical interfaces. If host interface is missing, hosted interfaces can't be brought up.
 .IP "independent logical"
@@ -100,6 +108,9 @@ If exists and is executable, is run after CURRENT interface is completely up and
 If exists and is executable, is run before CURRENT interface is going to be shutdown.
 .IP ifdown\-post
 If exists and is executable, is run after CURRENT interface is completely gone.
+.LP 
+The interface directory can contain 2 special directories: 'fw' and 'qos'. They are used for
+firewall and QoS configuration respectively. For QoS configuration manual see etcnet\-qos(8).
 .SH "SPECIAL INTERFACES"
 /etc/net ships with 3 existing interfaces:
 .IP lo
@@ -130,7 +141,7 @@ When a need to read certain file or check for its existence arises, several nami
 .SH "CONFIGURATION PROFILES (*)"
 
 .SH "MULTIHOST CONFIGURATION (*)"
-
+You can create a single configuration tree and distribute it across multiple hosts. If you mark
 .SH "ENVIRONMENT"
 .IP HETHOST
 This variable can hold host ID in multi\-host configuration, which should be used instead of automatically detected.
