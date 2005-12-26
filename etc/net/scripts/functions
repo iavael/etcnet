@@ -212,20 +212,23 @@ get_mapped_ifname()
 
 profiled_filename()
 {
-	local BASE=${1:?missing 1st arg to $FUNCNAME}
-	local CAND1=$BASE${NETPROFILE:+#$NETPROFILE}${NETHOST:+@$NETHOST}
-	local CAND2=$BASE${NETHOST:+@$NETHOST}
-	local CAND3=$BASE${NETPROFILE:+#$NETPROFILE}
-	local CAND4=$BASE
-	if [ -e $CAND1 ]; then
-		echo $CAND1
-	elif [ -e $CAND2 ]; then
-		echo $CAND2
-	elif [ -e $CAND3 ]; then
-		echo $CAND3
-	else
-		echo $CAND4
+	local CAND BASE=${1:?missing 1st arg to $FUNCNAME}
+	CAND=$BASE${NETPROFILE:+#$NETPROFILE}${NETHOST:+@$NETHOST}
+	if [ -e $CAND ]; then
+		echo $CAND
+		return 0
 	fi
+	CAND=$BASE${NETHOST:+@$NETHOST}
+	if [ -e $CAND ]; then
+		echo $CAND
+		return 0
+	fi
+	CAND=$BASE${NETPROFILE:+#$NETPROFILE}
+	if [ -e $CAND ]; then
+		echo $CAND
+		return 0
+	fi
+	echo $BASE
 	return 0
 }
 
@@ -377,6 +380,7 @@ pickup_defaults()
 	fi
 }
 
+shopt -s nullglob
 declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type
 declare -frx pickup_options print_error print_message print_progress print_nack
 declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netprofile
