@@ -1,0 +1,2 @@
+This example configures 4 dummy interfaces with one IPv4
+address per interface.

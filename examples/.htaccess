@@ -9,3 +9,4 @@ AddDescription "simple VLAN configuration" VLAN-without-vlantab
 AddDescription "wireless example for IPW2100 card in WEP mode" WiFi-WEP-wpa2100
 AddDescription "iptables example by hiddenman" firewall-hiddenman
 AddDescription "LARTC multiple links example port" routing-LARTC-1
+AddDescription "dummy interfaces configuration" dummy
