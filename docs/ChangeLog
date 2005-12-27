@@ -1,19 +1,20 @@
 0.8.0
-	/etc/net moves from CVS to SVN
-	PPPMAXFAIL, PPPPERSIST, PPPHOLDOFF, PPPIDLE options were dropped, use pppoptions file instead
-	faster and more robust code
-	IPv6/sit fixes
-	dropped TUNTTL, use TUNOPTIONS instead
-	ifplugd fixes
-	.d-style options support
-	ignore backup files
-	hook scripts names and location changed (grep LOCALSCRIPTDIR)
-	netup-pre, netup-post, netdown-pre, netdown-post hook scripts
-	initial ethtool support
-	new AUTO_BROADCAST option
-	new RESTORE_DEFAULTROUTE option
-	better documentation
-	updated dummy code/docs
+	/etc/net moves from CVS to SVN and gets a major code cleanup
+	bugfix: IPv6/sit
+	bugfix: ifplugd
+	bugfix: dummy code
+	bugfix: ignore backup files
+	new feature: .d-style options support
+	new feature: netup-pre, netup-post, netdown-pre, netdown-post hook scripts
+	new feature:  ethtool support
+	new feature: AUTO_BROADCAST option
+	new feature: RESTORE_DEFAULTROUTE option
+	new feature: manpages
+	new feature: IPv6 sysctl autoprefixes
+	change: PPPMAXFAIL, PPPPERSIST, PPPHOLDOFF, PPPIDLE options were dropped, use pppoptions file instead
+	change: dropped TUNTTL, use TUNOPTIONS instead
+	change: hook scripts names and location (LOCALSCRIPTDIR)
+	change: resolved IPv4/IPv6 sysctl vars nameclash
 0.7.15 2005-10-26
 	provide default hostname
 	define rmmod path
