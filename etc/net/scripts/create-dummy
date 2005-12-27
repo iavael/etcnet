@@ -3,9 +3,6 @@
 pickup_defaults
 pickup_options
 
-# TODO: check if device is already up/module loaded
-# load module
-#$IP link set $NAME down
-
-# this actually does not work with anything other than dummy0
-$MODPROBE dummy
+# Let's hope we manage all TEQLs ourselves :-/
+$INSMOD -o $NAME dummy >/dev/null
+$IP link set dev dummy0 name $NAME

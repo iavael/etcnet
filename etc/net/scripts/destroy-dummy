@@ -3,4 +3,4 @@
 pickup_defaults
 pickup_options
 
-try_rmmod dummy
+try_rmmod $NAME
