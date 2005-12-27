@@ -155,18 +155,18 @@ if ! is_yes $KEEP_DOWN; then
 fi
 
 # handle wireless extensions
-is_yes "$CONFIG_WIRELESS" && ExecIfExecutable $SCRIPTDIR/config-wireless $NAME && print_progress
+is_yes "$CONFIG_WIRELESS" && $SCRIPTDIR/config-wireless $NAME && print_progress
 
 # process ip neighbours
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
 
 # Order matters here.
-is_yes "$CONFIG_FW"  && ExecIfExecutable $SCRIPTDIR/config-fw $NAME start
-is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME start
+is_yes "$CONFIG_FW"  && $SCRIPTDIR/config-fw $NAME start
+is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos $NAME start
 
-is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME start
-is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME start
-is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME start
+is_yes "$CONFIG_IPV4" && $SCRIPTDIR/config-ipv4 $NAME start
+is_yes "$CONFIG_IPV6" && $SCRIPTDIR/config-ipv6 $NAME start
+is_yes "$CONFIG_IPX"  && $SCRIPTDIR/config-ipx $NAME start
 
 # handle resolver config
 MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`

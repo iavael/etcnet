@@ -121,12 +121,12 @@ ExecIfExecutable $LOCALSCRIPTDIR/ifdown-post-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
 
 # ifup-common reverse order
-is_yes "$CONFIG_IPX"  && ExecIfExecutable $SCRIPTDIR/config-ipx $NAME stop
-is_yes "$CONFIG_IPV6" && ExecIfExecutable $SCRIPTDIR/config-ipv6 $NAME stop
-is_yes "$CONFIG_IPV4" && ExecIfExecutable $SCRIPTDIR/config-ipv4 $NAME stop
+is_yes "$CONFIG_IPX"  && $SCRIPTDIR/config-ipx $NAME stop
+is_yes "$CONFIG_IPV6" && $SCRIPTDIR/config-ipv6 $NAME stop
+is_yes "$CONFIG_IPV4" && $SCRIPTDIR/config-ipv4 $NAME stop
 
-is_yes "$CONFIG_QOS"  && ExecIfExecutable $SCRIPTDIR/config-qos $NAME stop
-is_yes "$CONFIG_FW"  && ExecIfExecutable $SCRIPTDIR/config-fw $NAME stop
+is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos $NAME stop
+is_yes "$CONFIG_FW"  && $SCRIPTDIR/config-fw $NAME stop
 
 # Get rid of the iface.
 ExecIfExecutable $SCRIPTDIR/destroy-$TYPE $NAME && print_progress
