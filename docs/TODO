@@ -1,5 +1,4 @@
 - bluetooth support
-+ auto broadcast option
 - xsupplicant support
 - Elektra support
 - analyze zebra and RTPROTO ip option
@@ -9,19 +8,14 @@
 - lockfiles and service network status
 - consider using $* instead of $@
 - don't use uninitialised/unquoted values
-- SkyStar 1 support
+- SkyStar-1 support
 - ZyXEL support
 - QoS profiles support
-- merge from SuSE
-+ PPP RESTORE_DEFAULTROUTE option
-+ etcnet.8, etcnet-options.5
-- more docs
+- merge shellcode from SuSE
+- complete docs set
 - allow compiled-in 802.1q
 - only pickup DISABLED and TYPE in network.init
-+ (RH#119952) {pre,post}-{start,stop,restart,reload} hook scripts
 - iANS support?
-- examine functions-fw and config-fw
+- cleanup functions-fw and config-fw
 - Makefile ?
 - '. $SCRIPTDIR/functions-eth' (line 89) is executed after 'stop_dhcp_client' line 63
-+ ethtool -s support in ifup-common
-+ fix dummy renaming
