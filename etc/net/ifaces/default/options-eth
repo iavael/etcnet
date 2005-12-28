@@ -1,64 +1,10 @@
-# Optional now.
-#MODULE=
+# This file doesn't contain comments any more.
+# For detailed options description refer to etcnet-options(5) manpage,
+# section 'ETHERNET OPTIONS'.
 
-# A special configuration method. The interface will be created, but no
-# configuration will be done until cable is plugged in. When ifplugd
-# detects cable presence on the interface, it will run ifup-ifplugd to
-# finish configuration. Values:
-# no:   don't use this feature
-# yes:  manage ifplugd for each such interface
-# auto: same as 'yes', if ifplugd is available and the card supports
-#       link detection
 USE_IFPLUGD=no
-
-# Two operational modes are possible with USE_IFPLUGD=auto: persistent ifplugd
-# (ifplugd will be run once and then only suspended/resumed when needed) and
-# temporary ifplugd (ifplugd will be killed at ifdown and started at ifup
-# each time). Default mode is to keep persistent ifplugd process.
-# TODO: move this option to 00-default?
 PERSISTENT_IFPLUGD=no
-
-# /etc/net will construct ifplugd arg list automatically, but you can
-# add extra args with this option.
 IFPLUGD_EXTRA_ARGS='--delay-up=0 --delay-down=10'
-
-# LINKDETECT option allows to avoid DHCP/IPv4LL timeout, if ethernet cable is
-# not plugged in during startup. This feature requires ifplugstatus
-# and is off by default, because not all network cards report correct link
-# status.
-# 'auto' is a special value. If your network card is known to report right
-# link status, LINKDETECT feature will take effect.
-#LINKDETECT={yes|no|auto}
 LINKDETECT=auto
-
-# Some network card modules create network device first, then perform
-# some initialization and after some time fill in MAC address data.
-# Hotplug starts working immediately after the interface is created, so
-# if you use mac address match rule in iftab, it may happen to broke.
-# If this variable is set to non-zero, /etc/net will wait for specified
-# amount of 0.1 sec times for MAC address to become not 00:00:00:00:00:00.
-# WARNING: EXPERIMENTAL FEATURE !!!
-# MACADDR_WAITTIME=10
-
-# Wireless options
 CONFIG_WIRELESS=yes
-
-# optional override
-#IWCONFIG=<string>
-
-# optional override
-#WPA_SUPPLICANT=<string>
-
-#WPA_DRIVER=<string>
-
-# Optional additional DHCP client arguments.
-#DHCP_ARGS=<string>
-
-# Compute a valid hostname and send it to DHCP server. (-h)
 DHCP_HOSTNAME=localhost
-
-# Get a hostname from DHCP server. (-H)
-#DHCP_HOSTNAME=AUTO
-
-# Send this string as a hostname. (-h)
-#DHCP_HOSTNAME=<string>

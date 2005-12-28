@@ -91,3 +91,64 @@ interface in their REQUIRES list) before the current interface is shut down.
 If set to yes, this variable will cause ifdown call for all parent (listed in current
 REQUIRES list) after the current interface is shut down.
 Note: this will not work for ifplugd-controlled interfaces.
+.SH "ETHERNET OPTIONS"
+.TP
+.B MODULE
+Kernel module name (or quoted list of names), which must be loaded before interface
+initialisation.
+.TP
+.B USE_IFPLUGD
+A special configuration method. The interface will be created, but no
+configuration will be done until cable is plugged in. When ifplugd
+detects cable presence on the interface, it will run ifup-ifplugd to
+finish configuration. Values:
+no:   don't use this feature
+yes:  manage ifplugd for each such interface
+auto: same as 'yes', if ifplugd is available and the card supports
+link detection
+.TP
+.B PERSISTENT_IFPLUGD
+Two operational modes are possible with USE_IFPLUGD=auto: persistent ifplugd
+(ifplugd will be run once and then only suspended/resumed when needed) and
+temporary ifplugd (ifplugd will be killed at ifdown and started at ifup
+each time). Default mode is to keep persistent ifplugd process.
+.TP
+.B IFPLUGD_EXTRA_ARGS
+/etc/net will construct ifplugd arg list automatically, but you can
+add extra args with this option.
+.TP
+.B LINKDETECT
+LINKDETECT option allows to avoid DHCP/IPv4LL timeout, if ethernet cable is
+not plugged in during startup. This feature requires ifplugstatus
+and is off by default, because not all network cards report correct link
+status. Possible values are: yes/no/auto.
+'auto' is a special value. If your network card is known to report right
+link status, LINKDETECT feature will take effect.
+.TP
+.B MACADDR_WAITTIME
+Some network card modules create network device first, then perform
+some initialization and after some time fill in MAC address data.
+Hotplug starts working immediately after the interface is created, so
+if you use mac address match rule in iftab, it may happen to broke.
+If this variable is set to non-zero, /etc/net will wait for specified
+amount of 0.1 sec times for MAC address to become not 00:00:00:00:00:00.
+WARNING: THIS IS EXPERIMENTAL FEATURE !!!
+.TP
+.B IWCONFIG
+Optional path to iwconfig.
+.TP
+.B WPA_SUPPLICANT
+Optional path to wpa_supplicant.
+.TP
+.B WPA_DRIVER
+Optional WPA driver name to pass to wpa_supplicant.
+.TP
+.B DHCP_ARGS
+Optional additional DHCP client arguments.
+.TP
+.B DHCP_HOSTNAME
+Possible values: 'localhost' (compute a valid hostname and send it to
+DHCP server with -h option), 'AUTO' (Get a hostname from DHCP server
+with -H option), any other string (send the string as a hostname with
+-h).
+
