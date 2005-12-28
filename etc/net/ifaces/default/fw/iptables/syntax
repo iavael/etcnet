@@ -82,131 +82,131 @@ ulog-cprange: --ulog-cprange
 ulog-qthreshold: --ulog-qthreshold
 
 # Match extensions
-srctype: -m addrtype --src-type
-src-type: -m addrtype --src-type
-dsttype: -m addrtype --dst-type
-dst-type: -m addrtype --dst-type
-ah: -m ah --ahspi
-ah-ahspi: -m ah --ahspi
-childlevel: -m childlevel --childlevel
-condition: -m condition --condition
-connmarked: -m connmark --mark
-connrate: -m connrate --connrate
-ctstate: -m conntrack --ctstate
-conntrack-ctstate: -m conntrack --ctstate
-ctproto: -m conntrack --ctproto
-conntrack-ctproto: -m conntrack --ctproto
-ctorigsrc: -m conntrack --ctorigsrc
-conntrack-ctorigsrc: -m conntrack --ctorigsrc
-ctorigdst: -m conntrack --ctorigdst
-conntrack-ctorigdst: -m conntrack --ctorigdst
-ctreplsrc: -m conntrack --ctreplsrc
-conntrack-ctreplsrc: -m conntrack --ctreplsrc
-ctrepldst: -m conntrack  --ctrepldst
-conntrack-ctrepldst: -m conntrack  --ctrepldst
-ctstatus: -m conntrack --ctstatus
-conntrack-ctstatus: -m conntrack --ctstatus
-ctexpire: -m conntrack --ctexpire
-conntrack-ctexpire: -m conntrack --ctexpire
-dscp: -m dscp --dscp
-dscp-class: -m dscp --dscp-class
-dstlimit: -m dstlimit --dstlimit
-dstlimit-mode: -m dstlimit --dstlimit-mode
-dstlimit-name: -m dstlimit --dstlimit-name
-dstlimit-burst: -m dstlimit --dstlimit-burst
-dstlimit-htable-size: -m dstlimit --dstlimit-htable-size
-dstlimit-htable-max: -m dstlimit --dstlimit-htable-max
-dstlimit-htable-gcinterval: -m dstlimit --dstlimit-htable-gcinterval
-dstlimit-htable-expire: -m dstlimit --dstlimit-htable-expire
-ecn-tcp-cwr: -m ecn --ecn-tcp-cwr
-tcp-cwr: -m ecn --ecn-tcp-cwr
-ecn-tcp-ece: -m ecn --ecn-tcp-ece
-tcp-ece: -m ecn --ecn-tcp-ece
-ecn-ip-ect: -m ecn --ecn-ip-ect
-ip-ect: -m ecn --ecn-ip-ect
-espspi: -m esp --espspi
-esp-spi: -m esp --espspi
-fuzzy-lower-limit: -m fuzzy --lower-limit
-lower-limit: -m fuzzy --lower-limit
-fuzzy-upper-limit: -m fuzzy --upper-limit
-upper-limit: -m fuzzy --upper-limit
-helper: -m helper --helper
-icmp-type: -m icmp --icmp-type
-iprange-src-range: -m iprange --src-range
-iprange-src: -m iprange --src-range
-src-range: -m iprange --src-range
-iprange-dst-range: -m iprange --dst-range
-iprange-dst: -m iprange --dst-range
-dst-range: -m iprange --dst-range
-length: -m length --length
-limit-rate: -m limit --limit
-rate: -m limit --limit
-limit-burst: -m limit --limit-burst
-burst: -m limit --limit-burst
-mac: -m mac --mac-source
-mac-source: -m mac --mac-source
-marked: -m mark --mark
-sports: -m multiport --source-ports
-from-ports: -m multiport --source-ports
-source-ports: -m multiport --source-ports
-dports: -m multiport --destination-ports
-to-ports: -m multiport --destination-ports
-destination-ports: -m multiport --destination-ports
-ports: -m multiport --ports
-nth-every: -m nth --every
-nth-counter: -m nth --counter
-nth-start: -m nth --start
-nth-packet: -m nth --packet
-owner-uid: -m owner --uid-owner
-uid-owner: -m owner --uid-owner
-owner-gid: -m owner --gid-owner
-gid-owner: -m owner --gid-owner
-owner-pid: -m owner --pid-owner
-pid-owner: -m owner --pid-owner
-owner-sid: -m owner --sid-owner
-sid-owner: -m owner --sid-owner
-owner-cmd: -m owner --cmd-owner
-cmd-owner: -m owner --cmd-owner
-physdev-in: -m physdev --physdev-in
-physdev-out: -m physdev --physdev-out
-physdev-is-in: -m physdev --physdev-is-in
-physdev-is-out: -m physdev --physdev-is-out
-physdev-is-bridged: -m physdev --physdev-is-bridged
-pkttype: -m pkttype --pkt-type
-random: -m random --average 
-realm: -m realm --realm
-set: -m set --set
-state: -m state --state
-tcp-source-port: -m tcp --source-port
-tcp-src-port: -m tcp --source-port
-tcp-destination-port: -m tcp --destination-port
-tcp-dst-port: -m tcp --destination-port
-tcp-dest-port: -m tcp --destination-port
-tcp-flags: -m tcp --tcp-flags
-flags: -m tcp --tcp-flags
-tcp-syn: -m tcp --syn
-tcp-option: -m tcp --tcp-option
-tcp-mss: -m tcp --mss
-tcpmss: -m tcpmss --mss
-timestart: -m time --timestart
-time-start: -m time --timestart
-timestop: -m time --timestop
-time-stop: -m time --timestop
-days: -m time --days
-datestart: -m time --datestart
-date-start: -m time --datestart
-datestop: -m time --datestop
-date-stop: -m time --datestop
-tos: -m tos --tos
-ttl-eq: -m ttl --ttl-eq
-ttl-gt: -m ttl --ttl-gt
-ttl-lt: -m ttl --ttl-lt
-udp-source-port: -m udp --source-port
-udp-src-port: -m udp --source-port
-udp-destination-port: -m udp --destination-port
-udp-dest-port: -m udp --destination-port
-udp-dst-port: -m udp --destination-port
-unclean: -m unclean
+srctype: -maddrtype --src-type
+src-type: -maddrtype --src-type
+dsttype: -maddrtype --dst-type
+dst-type: -maddrtype --dst-type
+ah: -mah --ahspi
+ah-ahspi: -mah --ahspi
+childlevel: -mchildlevel --childlevel
+condition: -mcondition --condition
+connmarked: -mconnmark --mark
+connrate: -mconnrate --connrate
+ctstate: -mconntrack --ctstate
+conntrack-ctstate: -mconntrack --ctstate
+ctproto: -mconntrack --ctproto
+conntrack-ctproto: -mconntrack --ctproto
+ctorigsrc: -mconntrack --ctorigsrc
+conntrack-ctorigsrc: -mconntrack --ctorigsrc
+ctorigdst: -mconntrack --ctorigdst
+conntrack-ctorigdst: -mconntrack --ctorigdst
+ctreplsrc: -mconntrack --ctreplsrc
+conntrack-ctreplsrc: -mconntrack --ctreplsrc
+ctrepldst: -mconntrack  --ctrepldst
+conntrack-ctrepldst: -mconntrack  --ctrepldst
+ctstatus: -mconntrack --ctstatus
+conntrack-ctstatus: -mconntrack --ctstatus
+ctexpire: -mconntrack --ctexpire
+conntrack-ctexpire: -mconntrack --ctexpire
+dscp: -mdscp --dscp
+dscp-class: -mdscp --dscp-class
+dstlimit: -mdstlimit --dstlimit
+dstlimit-mode: -mdstlimit --dstlimit-mode
+dstlimit-name: -mdstlimit --dstlimit-name
+dstlimit-burst: -mdstlimit --dstlimit-burst
+dstlimit-htable-size: -mdstlimit --dstlimit-htable-size
+dstlimit-htable-max: -mdstlimit --dstlimit-htable-max
+dstlimit-htable-gcinterval: -mdstlimit --dstlimit-htable-gcinterval
+dstlimit-htable-expire: -mdstlimit --dstlimit-htable-expire
+ecn-tcp-cwr: -mecn --ecn-tcp-cwr
+tcp-cwr: -mecn --ecn-tcp-cwr
+ecn-tcp-ece: -mecn --ecn-tcp-ece
+tcp-ece: -mecn --ecn-tcp-ece
+ecn-ip-ect: -mecn --ecn-ip-ect
+ip-ect: -mecn --ecn-ip-ect
+espspi: -mesp --espspi
+esp-spi: -mesp --espspi
+fuzzy-lower-limit: -mfuzzy --lower-limit
+lower-limit: -mfuzzy --lower-limit
+fuzzy-upper-limit: -mfuzzy --upper-limit
+upper-limit: -mfuzzy --upper-limit
+helper: -mhelper --helper
+icmp-type: -micmp --icmp-type
+iprange-src-range: -miprange --src-range
+iprange-src: -miprange --src-range
+src-range: -miprange --src-range
+iprange-dst-range: -miprange --dst-range
+iprange-dst: -miprange --dst-range
+dst-range: -miprange --dst-range
+length: -mlength --length
+limit-rate: -mlimit --limit
+rate: -mlimit --limit
+limit-burst: -mlimit --limit-burst
+burst: -mlimit --limit-burst
+mac: -mmac --mac-source
+mac-source: -mmac --mac-source
+marked: -mmark --mark
+sports: -mmultiport --source-ports
+from-ports: -mmultiport --source-ports
+source-ports: -mmultiport --source-ports
+dports: -mmultiport --destination-ports
+to-ports: -mmultiport --destination-ports
+destination-ports: -mmultiport --destination-ports
+ports: -mmultiport --ports
+nth-every: -mnth --every
+nth-counter: -mnth --counter
+nth-start: -mnth --start
+nth-packet: -mnth --packet
+owner-uid: -mowner --uid-owner
+uid-owner: -mowner --uid-owner
+owner-gid: -mowner --gid-owner
+gid-owner: -mowner --gid-owner
+owner-pid: -mowner --pid-owner
+pid-owner: -mowner --pid-owner
+owner-sid: -mowner --sid-owner
+sid-owner: -mowner --sid-owner
+owner-cmd: -mowner --cmd-owner
+cmd-owner: -mowner --cmd-owner
+physdev-in: -mphysdev --physdev-in
+physdev-out: -mphysdev --physdev-out
+physdev-is-in: -mphysdev --physdev-is-in
+physdev-is-out: -mphysdev --physdev-is-out
+physdev-is-bridged: -mphysdev --physdev-is-bridged
+pkttype: -mpkttype --pkt-type
+random: -mrandom --average 
+realm: -mrealm --realm
+set: -mset --set
+state: -mstate --state
+tcp-source-port: -mtcp --source-port
+tcp-src-port: -mtcp --source-port
+tcp-destination-port: -mtcp --destination-port
+tcp-dst-port: -mtcp --destination-port
+tcp-dest-port: -mtcp --destination-port
+tcp-flags: -mtcp --tcp-flags
+flags: -mtcp --tcp-flags
+tcp-syn: -mtcp --syn
+tcp-option: -mtcp --tcp-option
+tcp-mss: -mtcp --mss
+tcpmss: -mtcpmss --mss
+timestart: -mtime --timestart
+time-start: -mtime --timestart
+timestop: -mtime --timestop
+time-stop: -mtime --timestop
+days: -mtime --days
+datestart: -mtime --datestart
+date-start: -mtime --datestart
+datestop: -mtime --datestop
+date-stop: -mtime --datestop
+tos: -mtos --tos
+ttl-eq: -mttl --ttl-eq
+ttl-gt: -mttl --ttl-gt
+ttl-lt: -mttl --ttl-lt
+udp-source-port: -mudp --source-port
+udp-src-port: -mudp --source-port
+udp-destination-port: -mudp --destination-port
+udp-dest-port: -mudp --destination-port
+udp-dst-port: -mudp --destination-port
+unclean: -munclean
 
 # Parameters
 from: --src
@@ -243,28 +243,28 @@ proto: --protocol
 not: !
 fragment: --fragment
 set-counters: --set-counters
-unspec: UNPSEC
-unicast: UNICAST
-local: LOCAL
-broadcast: BROADCAST
-anycast: ANYCAST
-multicast: MULTICAST
-blackhole: BLACKHOLE
-unreachable: UNREACHABLE
-unreach: UNREACHABLE
-prohibit: PROHIBIT
-throw: THROW
-nat: NAT
-xresolve: XRESOLVE
-invalid: INVALID
-established: ESTABLISHED
-new: NEW
-related: RELATED
-ssnat: SNAT
-sdnat: DNAT
-expected: EXPECTED
-seen_reply: SEEN_REPLY
-assured: ASSURED
+unspec:UNPSEC
+unicast:UNICAST
+local:LOCAL
+broadcast:BROADCAST
+anycast:ANYCAST
+multicast:MULTICAST
+blackhole:BLACKHOLE
+unreachable:UNREACHABLE
+unreach:UNREACHABLE
+prohibit:PROHIBIT
+throw:THROW
+nat:NAT
+xresolve:XRESOLVE
+invalid:INVALID
+established:ESTABLISHED
+new:NEW
+related:RELATED
+ssnat:SNAT
+sdnat:DNAT
+expected:EXPECTED
+seen_reply:SEEN_REPLY
+assured:ASSURED
 net-unreachable: icmp-net-unreachable
 net-unreach: icmp-net-unreachable
 port-unreachable: icmp-port-unreachable
@@ -278,10 +278,10 @@ host-prohibit: icmp-host-prohibited
 admin-prohibited: icmp-admin-prohibited
 admin-prohibit: icmp-admin-prohibited
 # Flag ALL not supported
-syn: SYN
-ack: ACK
-fin: FIN
-rst: RST
-urg: URG
-psh: PSH
-none: NONE
+syn:SYN
+ack:ACK
+fin:FIN
+rst:RST
+urg:URG
+psh:PSH
+none:NONE

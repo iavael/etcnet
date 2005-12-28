@@ -104,7 +104,7 @@ iptables_create_sed_rules()
     IFS=":"
     while read search replace; do
         print_progress
-        iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/\1$replace\2/gi;"
+        iptables_sed_rules=${iptables_sed_rules}"s/\(^\|[^-]\b\)$search\(\b[^-]\|$\)/\1$replace\2/g;"
     done < <(echo "$replaces"|egrep "^[^#]"|sed -e 's/\//\\\\\//g')
     IFS=$OLDIFS
     print_message
