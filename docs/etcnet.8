@@ -75,7 +75,7 @@ Unless explicitly stated, each configuration file contains 1 item per line (opti
 .IP options
 Main options file. This file is required. See etcnet\-options manpage for list of options available.
 .IP iplink
-List of 'ip link' commands. If you need to change interface MTU or PROMISC flag, this is the right place to do it. This file is not required.
+List of 'ip link' commands. If you need to change interface MTU or PROMISC flag, this is the right place to do it. If you want to to have a specific MAC address on the board, you can place "address xx:xx:xx:xx:xx:xx" into this file. This file is not required.
 .IP ipneigh
 List of 'ip ne' commands, can be used to control ARP table, e.g. add static ARP entries. This file is not required.
 .IP ipv4address
