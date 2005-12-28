@@ -215,4 +215,39 @@ Required parent iface name.
 .TP
 .B VID
 Required VLAN ID.
-
+.SH "DVB options"
+.TP
+.B DVBTYPE
+This is a mandatory option. Currently supported values are:
+ss223 for SkyStar-2 rev. 2.3, ss226 for SkyStar-2 rev. 2.6,
+pentanet for Pent@NET, pentaval for Pent@VALUE
+.LP
+SkyStar-2 options
+.TP
+.B PID
+.TP
+.B SZAP
+.TP
+.B SZAP_ARGS
+.TP
+.B DVBNET
+.TP
+.B CHANNELS_CONF
+For SkyStar cards you can override channels.conf location (default is
+channels.conf in the interface's configuration directory.
+.LP
+Pent@NET options
+.TP
+.B PENTANETT
+pentanett location
+.TP
+.B PENTANET_CONF
+Config file name.
+.LP
+Pent@VALUE options
+.TP
+.B PENTAVALT
+pentavalt location
+.TP
+.B PENTAVAL_CONF
+config file name
