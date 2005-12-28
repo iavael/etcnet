@@ -258,6 +258,8 @@ CONFIG_IPV6 must be on to configure 6\-to\-4 (TYPE=iptun, TUNTYPE=sit) tunnels c
 Profiles don't work with QoS.
 .TP 
 If you configure dummy interfaces, 'dummy0' interface name must be always unused.
+.TP
+Bonding interface name can't be same as another kernel module name.
 .SH "SEE ALSO"
 .BR ip(8),
 .BR tc(8),
