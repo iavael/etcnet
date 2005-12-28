@@ -167,3 +167,19 @@ Append whatever you want (TTL, GRE keys etc). Don't set 'dev' here.
 .TP
 .B HOST
 Optional host interface. If set, this name will be used for 'dev' option.
+.SH "VLAN options"
+.TP
+.B VCONFIG
+Optional path to vconfig.
+.TP
+.B NAMETYPE
+Optional VLAN naming type, see vconfig --help for details. This option
+is also used when processing vlantab. Possible values: VLAN_PLUS_VID,
+VLAN_PLUS_VID_NO_PAD, DEV_PLUS_VID, DEV_PLUS_VID_NO_PAD (default).
+.TP
+.B HOST
+Required parent iface name.
+.TP
+.B VID
+Required VLAN ID.
+
