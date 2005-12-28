@@ -167,6 +167,39 @@ Append whatever you want (TTL, GRE keys etc). Don't set 'dev' here.
 .TP
 .B HOST
 Optional host interface. If set, this name will be used for 'dev' option.
+.SH "IPSec tunnels options"
+At least one of cipher or digest must be configured.
+CIPHERFILE and DIGESTFILE are searched in iface dir.
+If CIPHER is defined, CIPHERFILE must be defined too,
+same for DIGEST and DIGESTFILE.
+.TP
+.B IPSECADM
+(Optional) location of ipsecadm.
+.TP
+.B TUNLOCAL
+Local endpoint.
+.TP
+.B TUNREMOTE
+Remote endpoint.
+.TP
+.B TUNSPI
+SPI must be defined for an IPSec tunnel. SPI is a hexadecimal
+number, values less than 0x2000 are reserved.
+.TP
+.B CIPHER
+Cipher name.
+.TP
+.B CIPHERFILE
+Dipher file name.
+.TP
+.B DIGEST
+Digest name.
+.TP
+.B DIGESTFILE
+Digest file name.
+.TP
+.B HOST
+"ipsecadm --nextdev" argument
 .SH "VLAN options"
 .TP
 .B VCONFIG
