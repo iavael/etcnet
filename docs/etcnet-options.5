@@ -3,7 +3,7 @@
 /etc/net interface options
 .SH "DESCRIPTION"
 
-.SH "COMMON OPTIONS"
+.SH "Common options"
 .TP
 .B TYPE
 This option defines interface type. It is required, if interface type cannot be
@@ -91,7 +91,7 @@ interface in their REQUIRES list) before the current interface is shut down.
 If set to yes, this variable will cause ifdown call for all parent (listed in current
 REQUIRES list) after the current interface is shut down.
 Note: this will not work for ifplugd-controlled interfaces.
-.SH "ETHERNET OPTIONS"
+.SH "Ethernet options"
 .TP
 .B MODULE
 Kernel module name (or quoted list of names), which must be loaded before interface
@@ -151,4 +151,19 @@ Possible values: 'localhost' (compute a valid hostname and send it to
 DHCP server with -h option), 'AUTO' (Get a hostname from DHCP server
 with -H option), any other string (send the string as a hostname with
 -h).
-
+.SH "IP tunnels options"
+.TP
+.B TUNTYPE
+IP tunnel type: 'ipip' (default), 'gre' or 'sit'.
+.TP
+.B TUNLOCAL
+Local tunnel endpoint.
+.TP
+.B TUNREMOTE
+Remote tunnel endpoint.
+.TP
+.B TUNOPTIONS
+Append whatever you want (TTL, GRE keys etc). Don't set 'dev' here.
+.TP
+.B HOST
+Optional host interface. If set, this name will be used for 'dev' option.
