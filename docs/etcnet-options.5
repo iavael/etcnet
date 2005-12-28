@@ -292,3 +292,62 @@ This variable must be defined for each bridge interface. This is a
 (quoted) space-separated list of slave ethernet interfaces combining the
 bridge. Don't forget to create configurations for the slave interfaces
 too.
+.SH "PPP options"
+.LP
+This section assumes knowledge of pppd(8) manpage.
+.TP
+.B PPPTYPE
+PPP subtype. Valid types are: dialup, pptp, pppoe.
+pptp and pptp types will benefit from correctly set REQIURES and
+respectively HOST variables. dialup subtype will add 'modem' to
+pppd options list.
+.TP
+.B PPTP_SERVER
+For "pptp" subtype you must specify hostname or IP address of PPtP server
+you connect to. Otherwise leave PPPTYPE=dialup.
+.TP
+.B HOST
+pppoe client requires target interface name. You must specify it in
+the HOST variable, create-ppp will automatically construct correct
+pty option for pppd. This option is mandatory if PPPTYPE=pppoe.
+.TP
+.B PPPOE
+Optional pppoe path.
+.TP
+.B PPPOE_EXTRA_OPTIONS
+.TP
+.B PPTP
+Optional pptp-client path.
+.TP
+.B PPTP_EXTRA_OPTIONS
+.TP
+.B PPPD
+pppd location, optional
+.TP
+.B PPPOPTIONS
+Additional pppd args. Note that interface-specific options file
+will override PPPOPTIONS from options-ppp, not append.
+.TP
+.B CHAT
+chat location, optional
+.TP
+.B CHATOPTIONS
+chat options (timeout, verbose mode etc)
+.TP
+.B PPPOPTIONSFILE
+.TP
+.B PPPINITCHAT
+.TP
+.B PPPCONNECTCHAT
+.TP
+.B PPPDISCONNECTCHAT
+.TP
+.B RESTORE_DEFAULTROUTE
+pppd does not save default route for us. We could save and restore it
+with ip-up/ip-down, but this option will do the trick for us.
+.TP
+.B PPPTIMEOUT
+Your PPP link will not hang for more seconds, than specified here.
+/etc/net will pass according  lcp-echo-interval and lcp-echo-failure
+options to pppd, if this options is set.
+

@@ -1,76 +1,8 @@
-# Default options for PPP interfaces. Comments are mostly 'man pppd' quotations.
+# This file doesn't contain comments any more.
+# For detailed options description refer to etcnet-options(5) manpage,
+# section 'PPP options'.
 
 ONBOOT=no
-
-# PPP subtype. Valid types are: dialup, pptp, pppoe.
-# pptp and pptp types will benefit from correctly set REQIURES and
-# respectively HOST variables. dialup subtype will add 'modem' to
-# pppd options list.
 PPPTYPE=dialup
-
-# For pptp subtype you must specify hostname or IP address of PPtP server
-# you connect to. Otherwise leave PPPTYPE=dialup.
-#PPTP_SERVER=<string>
-
-# pppoe client requires target interface name. You must specify it in
-# the HOST variable, create-ppp will automatically construct correct
-# pty option for pppd. This option is mandatory if PPPTYPE=pppoe.
-#HOST=<string>
-
-# Optional pppoe path.
-#PPPOE=
-
-# Optional pptp-client path.
-#PPTP=
-
-# pppd assigns addresses itself
+# pppd assigns addresses itself, so we don't intrude by default.
 DONT_FLUSH=on
-
-# pppd location, optional
-#PPPD=<string>
-
-# chat location, optional
-#CHAT=<string>
-
-# chat options (timeout, verbose mode etc)
-#CHATOPTIONS=<string>
-
-# UPDATE: This isn't supported any more. Use pppoptions file instead.
-#PPPMAXFAIL=
-#PPPPERSIST=
-#PPPHOLDOFF=
-#PPPIDLE=
-
-# Additional pppd args. Note that interface-specific options file
-# will override this value, not append.
-#PPPOPTIONS=<string>
-
-# Note: empty pppoptions/pppinit/pppconnect/pppdisconnect files will
-# not be used.
-# Note: those files are not shell scripts, but chat scripts.
-#
-# One could override the default base for profiled pppd options file
-# here, but why?
-#PPPOPTIONSFILE=<string>
-
-# Same for pppd init script.
-#PPPINITCHAT=<string>
-
-# ... connect script...
-#PPPCONNECTCHAT=<string>
-
-# ...and disconnect script
-#PPPDISCONNECTCHAT=<script>
-
-# pppd does not save default route for us. We could save and restore it
-# with ip-up/ip-down, but this option will do the trick for us.
-#RESTORE_DEFAULTROUTE=<bool>
-
-# If you want to pass some extra args to pppoe or pptp binary, you can do it here.
-#PPPOE_EXTRA_OPTIONS=<string>
-#PPTP_EXTRA_OPTIONS=<string>
-
-# Your PPP link will not hang for more seconds, than specified here.
-# /etc/net will pass according  lcp-echo-interval and lcp-echo-failure
-# options to pppd, if this options is set.
-#PPPTIMEOUT=<integer>
