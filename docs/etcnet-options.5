@@ -1,16 +1,93 @@
 .TH "etcnet-options" "5" "0.8.0" "Denis Ovsienko <info@etcnet.org>" ""
 .SH "NAME"
-
+/etc/net interface options
 .SH "DESCRIPTION"
 
 .SH "COMMON OPTIONS"
-.IP TYPE
+.TP
+.B TYPE
 This option defines interface type. It is required, if interface type cannot be
 found from interface name and if DISABLED is not set.
-.IP ONBOOT
-.IP DISABLED
-.SH "FILES"
-/etc/net/iftab
-/etc/net/sysctl.conf
-/etc/net/hosttab
-/etc/net/vlantab
+.TP
+.B DISABLED
+Set to "yes" to ignore the interface. Note that setting DISABLED
+to "yes" in ifaces/default/options and having no "DISABLED=no"
+in interface-specific options file will effectively disable ALL
+interfaces.
+.TP
+.B BOOTPROTO
+BOOTPROTO can be any of the following: static, dhcp, ipv4ll.
+* "static": use ipv4address/ipv6address
+'static' has the same meaning as 'none' in initscripts/net-scripts sense.
+If you don't want to assing any address to an interface, but still keep
+it up and running, you can just use 'static' and have no ipv4address file.
+* "dhcp": run DHCP client
+* "ipv4ll": run IPv4LL client (zcip)
+As far as I know, there are no working IPv6 DHCP
+implementations. IPv4LL is not required for IPv6 because of
+link-scope addresses.
+Additional feature is multi-method configurations (methods
+can be delimited by ' ', ',' or '-':
+* "dhcp-static": try DHCP, if it fails, configure static address(es)
+* "dhcp-ipv4ll": same, but fallback to IPv4LL
+* "dhcp-ipv4ll-static": try DHCP, fallback to IPv4LL (very unlikely to fail),
+fallback to static
+/etc/net will try to configure interface at the first succeeding
+method. Note that etcnet will process routes and rules despite of
+BOOTPROTO.
+.TP
+.B ONBOOT
+Defines if the interface will be automatically brought up during
+system startup or 'service network start' invocation.
+.TP
+.B USE_HOTPLUG
+If set to yes, iface will be skipped during boot.
+Note that standard hotplug calls /sbin/ifup and /sbin/ifdown.
+This should be changed to /etc/net/scripts/ifup-removable and
+/etc/net/scripts/ifdown-removable respectively, if you wish to use
+etcnet from hotplug.
+.TP
+.B USE_PCMCIA
+Same for pcmcia_cs
+.TP
+.B CONFIG_IPV4
+FIXME
+.TP
+.B CONFIG_IPV6
+FIXME
+.TP
+.B CONFIG_IPX
+FIXME
+.TP
+.B CONFIG_QOS
+FIXME
+.TP
+.B CONFIG_WIRELESS
+FIXME
+.TP
+.B CONFIG_FW
+FIXME
+.TP
+.B KEEP_DOWN
+If set to yes, interface will not be set UP, but configured.
+.TP
+.B DONT_FLUSH
+IPv4/IPv6. Don't flush existing addresses from interface before assigning new ones.
+.TP
+.B IFUP_CHILDREN
+If set to yes, this variable will cause ifup call for all child (having current
+interface in their REQUIRES list) after the current interface is set up.
+.TP
+.B IFUP_PARENTS
+If set to yes, this variable will cause ifup call for all parent (listed in current
+REQUIRES list) before the current interface is set up.
+Note: this will not work for ifplugd-controlled interfaces.
+.TP
+.B IFDOWN_CHILDREN
+If set to yes, this variable will cause ifdown call for all child (having current
+interface in their REQUIRES list) before the current interface is shut down.
+.TP
+.B IFDOWN_PARENTS
+If set to yes, this variable will cause ifdown call for all parent (listed in current
+REQUIRES list) after the current interface is shut down.
+Note: this will not work for ifplugd-controlled interfaces.

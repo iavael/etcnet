@@ -1,77 +1,20 @@
-# Set to "yes" to ignore the interface. Note that setting DISABLED
-# to "yes" in ifaces/default/options and having no "DISABLED=no"
-# in interface-specific options file will effectively disable ALL
-# interfaces.
-#  0.4.0: now we don't have to specify TYPE for disabled interfaces
+# This file doesn't contain comments any more, refer to etcnet-options(5)
+# manpage for detailed options description.
+
 DISABLED=no
-
-# BOOTPROTO can be any of the following: static, dhcp, ipv4ll.
-# * "static": use ipv4address/ipv6address
-# 'static' has the same meaning as 'none' in initscripts/net-scripts sense.
-# IF you don't want to assing any address to an interface, but still keep
-# it up and running, you can just use 'static' and have no ipv4address file.
-# * "dhcp": run DHCP client
-# * "ipv4ll": run IPv4LL client (zcip)
-# As far as I know, there are no working IPv6 DHCP
-# implementations. IPv4LL is not required for IPv6 because of
-# link-scope addresses.
-# Additional feature is multi-method configurations (methods
-# can be delimited by ' ', ',' or '-':
-# * "dhcp-static": try DHCP, if it fails, configure static address(es)
-# * "dhcp-ipv4ll": same, but fallback to IPv4LL
-# * "dhcp-ipv4ll-static": try DHCP, fallback to IPv4LL (very unlikely to fail),
-# fallback to static
-# /etc/net will try to configure interface at the first succeeding
-# method. Note that etcnet will process routes and rules despite of
-# BOOTPROTO.
 BOOTPROTO=static
-
-# Defines if the interface will be automatically brought up during
-# system startup or 'service network start' invocation.
 ONBOOT=yes
-
-# If set to yes, iface will be skipped during boot.
-# Note that standard hotplug calls /sbin/ifup and /sbin/ifdown.
-# This should be changed to /etc/net/scripts/ifup-removable and
-# /etc/net/scripts/ifdown-removable respectively, if you wish to use
-# etcnet from hotplug.
 USE_HOTPLUG=no
-
-# Same for pcmcia_cs
 USE_PCMCIA=no
-
-# protocols and features
 CONFIG_IPV4=yes
 CONFIG_IPV6=no
 CONFIG_IPX=no
 CONFIG_QOS=yes
 CONFIG_WIRELESS=no
 CONFIG_FW=no
-
-# If set to yes, interface will not be set UP, but configured.
 KEEP_DOWN=no
-
-# IPv4/IPv6. Don't flush existing addresses from interface before assigning new.
 DONT_FLUSH=no
-
-# ****************** Interface dependencies ******************
-# If interface A has REQUIRES=B in it's options file, A is the child, B is the parent.
-# I don't recommend changing defaults here. See also: README/3.5
-
-# If set to yes, this variable will cause ifup call for all child (having current
-# interface in their REQUIRES list) after the current interface is set up.
 IFUP_CHILDREN=no
-
-# If set to yes, this variable will cause ifup call for all parent (listed in current
-# REQUIRES list) before the current interface is set up.
-# Note: this will not work for ifplugd-controlled interfaces.
 IFUP_PARENTS=yes
-
-# If set to yes, this variable will cause ifdown call for all child (having current
-# interface in their REQUIRES list) before the current interface is shut down.
 IFDOWN_CHILDREN=yes
-
-# If set to yes, this variable will cause ifdown call for all parent (listed in current
-# REQUIRES list) after the current interface is shut down.
-# Note: this will not work for ifplugd-controlled interfaces.
 IFDOWN_PARENTS=no

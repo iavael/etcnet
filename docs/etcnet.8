@@ -149,7 +149,8 @@ type\-specific sysctl.conf.
 .SH "RECURSION AND DEPENDENCIES (FIXME)"
 Some interfaces require other interfaces to be up for proper initialization. Some
 dependencies are calculated automaticaly, but some need to be configured manually.
-There are 6 options to control it:
+If interface A has REQUIRES=B in it's options file, A is the child, B is the parent.
+There are 6 options to control dependencies resolution:
 .IP HOST=<interface>
 .IP REQUIRES=<interface>[ <interface>[ <interface>...]]
 .IP IFUP_PARENTS=<boolean>
@@ -157,6 +158,7 @@ There are 6 options to control it:
 .IP IFUP_CHILDREN=<boolean>
 .IP IFDOWN_CHILDREN=<boolean>
 .LP
+Those options are described in etcnet-options(5) manpage.
 NOTE:
 Interfaces from vlantab bypass traditional logic,
 they can't cause parent/child interface to become up/down. If parent interface
