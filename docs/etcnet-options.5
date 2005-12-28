@@ -282,4 +282,13 @@ arp_interval:int: arp interval in milliseconds
 .br
 arp_ip_target:string array (min = 1, max = 16): arp targets in n.n.n.n form
 .br
-
+.SH "Bridge options"
+.TP
+.B BRCTL
+Optional override of brctl path.
+.TP
+.B HOST
+This variable must be defined for each bridge interface. This is a
+(quoted) space-separated list of slave ethernet interfaces combining the
+bridge. Don't forget to create configurations for the slave interfaces
+too.
