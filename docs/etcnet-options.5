@@ -251,3 +251,35 @@ pentavalt location
 .TP
 .B PENTAVAL_CONF
 config file name
+.SH "Bonding options"
+.TP
+.B IFENSLAVE
+.TP
+.B HOST
+.TP
+.B BONDMODE
+Operation mode (optional). Possible values: 0 for round robin (default),
+1 for active-backup, 2 for xor, 3 for broadcast, 4 for IEEE 802.3ad
+Dynamic link aggregation.
+.TP
+.B BONDOPTIONS
+Additional options. This will have effect per interface. The list from
+modinfo bond is:
+.br
+miimon:int: Link check interval in milliseconds
+.br
+updelay:int: Delay before considering link up, in milliseconds
+.br
+downdelay:int: Delay before considering link down, in milliseconds
+.br
+use_carrier:int: Use netif_carrier_ok (vs MII ioctls) in miimon; 0 for off, 1 for on (default)
+.br
+primary:string: Primary network device to use
+.br
+lacp_rate:string: LACPDU tx rate to request from 802.3ad partner (slow/fast)
+.br
+arp_interval:int: arp interval in milliseconds
+.br
+arp_ip_target:string array (min = 1, max = 16): arp targets in n.n.n.n form
+.br
+
