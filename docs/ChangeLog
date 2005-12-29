@@ -1,5 +1,4 @@
-0.8.0
-	/etc/net moves from CVS to SVN and gets a major code cleanup
+0.8.0 2005-12-29
 	bugfix: IPv6/sit
 	bugfix: ifplugd
 	bugfix: dummy code
@@ -11,6 +10,7 @@
 	new feature: RESTORE_DEFAULTROUTE option
 	new feature: manpages
 	new feature: IPv6 sysctl autoprefixes
+	change: /etc/net moves from CVS to SVN and gets a major code cleanup
 	change: PPPMAXFAIL, PPPPERSIST, PPPHOLDOFF, PPPIDLE options were dropped, use pppoptions file instead
 	change: dropped TUNTTL, use TUNOPTIONS instead
 	change: hook scripts names and location (LOCALSCRIPTDIR)
