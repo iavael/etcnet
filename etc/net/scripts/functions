@@ -266,34 +266,33 @@ init_nethost()
 	return 0
 }
 
-# This helper must be run in a separate subprocess to not mess up
-# current option set. We don't do any checks, because it's called
-# by find_all_children() only.
-iface_depends()
-{
-	pickup_options
-	is_yes "$DISABLED" && return 1
-	echo $REQUIRES $HOST | tr ' ' '\n' | grep -q ^$1$
-}
-
-# This function finds all direct children of interface specified and
-# returns result in CHILDREN global variable.
-find_all_children()
-{
-	local PARENT=$NAME
-	local MYIFACEDIR NAME BASENAME
-	for MYIFACEDIR in $IFACEDIR/*; do
-		BASENAME=`basename $MYIFACEDIR`
-		NAME=${BASENAME/%@*/}
-		[ "$NAME" = "default" -o "$NAME" = "unknown" -o "$NAME" = "CVS" ] && continue
-		[ "${NAME/%@*/}" = "${BASENAME/%@$NETHOST/}" ] || continue
-		(iface_depends $PARENT) && CHILDREN=${CHILDREN:+$CHILDREN }$NAME
-	done
-}
-
 # This function executes an action for all children found.
 foreach_child()
 {
+	# This function finds all direct children of interface specified and
+	# returns result in CHILDREN global variable.
+	find_all_children()
+	{
+		# This helper must be run in a separate subprocess to not mess up
+		# current option set. We don't do any checks, because it's called
+		# by find_all_children() only.
+		iface_depends()
+		{
+			pickup_options
+			is_yes "$DISABLED" && return 1
+			echo $REQUIRES $HOST | tr ' ' '\n' | grep -q ^$1$
+		}
+		local PARENT=$NAME
+		local MYIFACEDIR NAME BASENAME
+		for MYIFACEDIR in $IFACEDIR/*; do
+			BASENAME=`basename $MYIFACEDIR`
+			NAME=${BASENAME/%@*/}
+			[ "$NAME" = "default" -o "$NAME" = "unknown" -o "$NAME" = "CVS" ] && continue
+			[ "${NAME/%@*/}" = "${BASENAME/%@$NETHOST/}" ] || continue
+			(iface_depends $PARENT) && CHILDREN=${CHILDREN:+$CHILDREN }$NAME
+		done
+	}
+	######### End of preamble ############
 	local CHILDREN ret=0 WHAT=${1:?missing 1st argument to $FUNCNAME}
 	find_all_children
 	for child in $CHILDREN; do
