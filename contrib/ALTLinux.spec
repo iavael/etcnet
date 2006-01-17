@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.8.0
-Release:	alt0.17
+Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -90,15 +90,15 @@ This package contains default options for a Linux server.
 %build
 
 %install
-%__mkdir_p %buildroot%_initdir
-%__cp -a etc %buildroot
-%__install -m 644 %SOURCE1 %buildroot/etc/net/options.d
-%__install -m 644 %SOURCE2 %buildroot/etc/net/options.d
+mkdir -p %buildroot%_initdir
+cp -a etc %buildroot
+install -m 644 %SOURCE1 %buildroot/etc/net/options.d
+install -m 644 %SOURCE2 %buildroot/etc/net/options.d
 
-%__ln_s ../../..%_sysconfdir/net/scripts/network.init %buildroot%_initdir/network
-%__mkdir_p %buildroot/sbin/
+ln -s ../../../etc/net/scripts/network.init %buildroot%_initdir/network
+mkdir -p %buildroot/sbin/
 for n in ifup ifdown; do
-	%__ln_s ..%_sysconfdir/net/scripts/$n %buildroot/sbin
+	ln -s ../etc/net/scripts/$n %buildroot/sbin
 done
 
 mkdir -p %buildroot%_man8dir %buildroot%_man5dir
@@ -106,7 +106,7 @@ install -m 644 docs/etcnet*.8 %buildroot%_man8dir
 install -m 644 docs/etcnet*.5 %buildroot%_man5dir
 
 %post
-if [ $1 -lt 2 ]; then
+if [ $1 -eq 1 ]; then
 # This is a fresh install.
 	/sbin/chkconfig --add network
 fi
@@ -158,6 +158,9 @@ fi
 %files full
 
 %changelog
+* Sat Dec 31 2005 Denis Ovsienko <pilot@altlinux.ru> 0.8.0-alt1
+- new version features #7897, #8003 bugfixes and a ChangeLog
+
 * Wed Oct 26 2005 Denis Ovsienko <pilot@altlinux.ru> 0.7.15-alt1
 - new version (#8118, #8332)
 - updated required version for ifrename (iwlib bugfix)
