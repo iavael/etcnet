@@ -3,7 +3,6 @@
 # Functions and variables are subject for export, see bottom of this file.
 
 # These are necessary constants.
-DENOISE="egrep ^[^#]"
 DEFAULT_BONDMODE=0
 IFACEDIR=/etc/net/ifaces
 LOCALSCRIPTDIR=/etc/net
@@ -40,6 +39,12 @@ DEFAULT_PPTP=/usr/sbin/pptp
 DEFAULT_SZAP=/usr/bin/szap
 DEFAULT_SZAP_ARGS='-n 1 -x'
 DEFAULT_DVBNET=/usr/bin/dvbnet
+
+# This trick is required for regexp to bypass bash nullglob option.
+denoise()
+{
+	eval "egrep \"^[^#]\"" $*
+}
 
 # Stolen from /etc/init.d/functions and improved.
 is_yes()
@@ -243,7 +248,7 @@ init_netprofile()
 		NETPROFILE=`$MYIFACEDIR/selectprofile $0 | head -1 | cut -d' ' -f1`
 	elif [ -z "$NETPROFILE" ]; then
 		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
-			NETPROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | cut -d' ' -f1`
+			NETPROFILE=`denoise -m 1 "$PROFILE_FILE" | cut -d' ' -f1`
 		elif [ -r "$PROC_CMDLINE" ]; then
 			# try to fetch profile name from kernel options
 			NETPROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | \
@@ -259,7 +264,7 @@ init_nethost()
 	if [ -n "$1" ]; then
 		NETHOST="$1"
 	elif [ -s "$HOSTTAB" ] && grep "^$HOSTNAME " $HOSTTAB; then
-		NETHOST=`$DENOISE $HOSTTAB | grep -m 1 "^$HOSTNAME " | cut -d' ' -f2`
+		NETHOST=`denoise $HOSTTAB | grep -m 1 "^$HOSTNAME " | cut -d' ' -f2`
 	else
 		NETHOST=$HOSTNAME
 	fi
@@ -376,7 +381,7 @@ xargise_file()
 	local PROCESSOR="${2:?missing 2nd arg to $FUNCNAME}"
 	local REALFILE=`profiled_filename $BASEFILE`
 	if [ -s $REALFILE ]; then
-		$DENOISE $REALFILE | xargs --max-lines=1 $PROCESSOR && print_progress
+		denoise $REALFILE | xargs --max-lines=1 $PROCESSOR && print_progress
 	fi
 	return 0
 }
@@ -409,8 +414,8 @@ declare -frx pickup_options print_error print_message print_progress print_nack
 declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netprofile
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
-declare -frx process_ipv4rules flush_addresses have_ifplugd pickup_defaults
-declare -rx DENOISE DEFAULT_BONDMODE IFACEDIR LOCALSCRIPTDIR VARLIBDIR
+declare -frx process_ipv4rules flush_addresses have_ifplugd pickup_defaults denoise
+declare -rx DEFAULT_BONDMODE IFACEDIR LOCALSCRIPTDIR VARLIBDIR
 declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS
 declare -rx DEFAULT_IFPLUGD DEFAULT_IWCONFIG DEFAULT_WPA_SUPPLICANT DEFAULT_PLIPCONFIG
 declare -rx DEFAULT_VCONFIG DEFAULT_PENTANETT DEFAULT_PENTAVALT DEFAULT_PENTANET_CONF

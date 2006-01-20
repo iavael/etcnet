@@ -44,7 +44,7 @@ case $ACTION in
 			$TC $NODETYPE add dev $NAME $PARENTNODE $NODEIDPREFIX $NODEID $EXTRAATTRS $NODEATTRS
 		# setup filters
 			if [ $NODETYPE = class -a -s $NODEDIR/filter ]; then
-				$DENOISE $NODEDIR/filter | while read FILTEREXPR; do
+				denoise $NODEDIR/filter | while read FILTEREXPR; do
 					$TC filter add dev $NAME $PARENTNODE `head -1 $NODEDIR/extra.filter 2>/dev/null` $FILTEREXPR flowid $NODEID
 				done
 			fi

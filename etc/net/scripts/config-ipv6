@@ -19,7 +19,7 @@ case $ACTION in
 		if iface_is_up $NAME; then
 			# setup routes
 			SRCFILE=`profiled_filename $MYIFACEDIR/ipv6route`
-			[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
+			[ -s "$SRCFILE" ] && denoise "$SRCFILE" | \
 			while read FIRST REST; do
 			# If there is no operation, substitute default, otherwise keep.
 				case "$FIRST" in
