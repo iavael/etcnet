@@ -1,4 +1,4 @@
-0.8.1
+0.8.1 2005-01-23
 	bugfix: nullglob shell option was breaking egrep call
 0.8.0 2005-12-29
 	bugfix: IPv6/sit

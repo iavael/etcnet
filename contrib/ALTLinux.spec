@@ -1,5 +1,5 @@
 Name:		etcnet
-Version:	0.8.0
+Version:	0.8.1
 Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
@@ -14,7 +14,7 @@ PreReq:		setup >= 0:2.1.9-ipl18mdk, service, startup >= 0:0.9.3-alt1
 Requires:	grep, sed, iproute2, ifrename >= 28-alt5.pre10, chkconfig
 BuildArch:	noarch
 Conflicts:	net-scripts
-Conflicts:	ethtool < 3-alt4, pcmcia-cs < 3.2.8-alt2, ifplugd < 0.28-alt2
+Conflicts:	ethtool < 3-alt4, ifplugd < 0.28-alt2
 Provides:	network-config-subsystem
 
 %description
@@ -48,7 +48,7 @@ Group:		System/Configuration/Networking
 Requires:	%name = %version-%release, wireless-tools
 Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables
 Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2, ipsecadm >= 0.9-alt8
-Requires:	hotplug, ncpfs, pcmcia-cs >= 3.2.8-alt2, ppp, vlan-utils24
+Requires:	hotplug, ncpfs, ppp, vlan-utils24
 Requires:	pptp-client, wpa_supplicant, zcip, rp-pppoe-base >= 3.6-alt2
 
 %description full
@@ -158,6 +158,10 @@ fi
 %files full
 
 %changelog
+* Mon Jan 23 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.1-alt0.test1
+- testing new version
+- removed pcmcia-cs dependency
+
 * Sat Dec 31 2005 Denis Ovsienko <pilot@altlinux.ru> 0.8.0-alt1
 - new version features #7897, #8003 bugfixes and a ChangeLog
 
