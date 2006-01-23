@@ -1,0 +1,309 @@
+diff -urN pcmcia-cs-3.2.8.orig/cardmgr/cardmgr.c pcmcia-cs-3.2.8/cardmgr/cardmgr.c
+--- pcmcia-cs-3.2.8.orig/cardmgr/cardmgr.c	2004-05-21 10:39:36 +0400
++++ pcmcia-cs-3.2.8/cardmgr/cardmgr.c	2005-02-07 16:15:27 +0300
+@@ -56,6 +56,11 @@
+ #include <pcmcia/cistpl.h>
+ #include <pcmcia/ds.h>
+ 
++/* Bugfix to keep track of network interfaces name change. */
++#include <netinet/in.h>
++#include <libnetlink/libnetlink.h>
++#include <libnetlink/ll_map.h>
++
+ #include "cardmgr.h"
+ 
+ /*====================================================================*/
+@@ -65,6 +70,8 @@
+     int			state;
+     card_info_t		*card;
+     bind_info_t		*bind[MAX_BINDINGS];
++    /* For network interfaces only. */
++    int 		ifindex[MAX_BINDINGS];
+     mtd_ident_t		*mtd[2*CISTPL_MAX_DEVICES];
+     cistpl_funcid_t	funcid;
+     cistpl_manfid_t	manfid;
+@@ -97,7 +104,9 @@
+ struct mtd_ident_t *default_mtd = NULL;
+ 
+ static int sockets;
+-static struct socket_info_t socket[MAX_SOCKS];
++/* Here I rename socket to cardsocket to resolve conflict with */
++/* /usr/include/sys/socket.h:100 */
++static struct socket_info_t cardsocket[MAX_SOCKS];
+ 
+ /* Default path for config file, device scripts */
+ #ifdef ETC
+@@ -298,7 +307,7 @@
+ 	return;
+     }
+     for (i = 0; i < sockets; i++) {
+-	s = &socket[i];
++	s = &cardsocket[i];
+ 	fprintf(f, "Socket %d: ", i);
+ 	if (!(s->state & SOCKET_PRESENT)) {
+ 	    fprintf(f, "empty\n");
+@@ -334,7 +343,7 @@
+ 
+ static int get_tuple(int ns, cisdata_t code, ds_ioctl_arg_t *arg)
+ {
+-    socket_info_t *s = &socket[ns];
++    socket_info_t *s = &cardsocket[ns];
+     
+     arg->tuple.DesiredTuple = code;
+     arg->tuple.Attributes = 0;
+@@ -366,7 +375,7 @@
+ 
+ static int get_pci_id(int ns, pci_id_t *id)
+ {
+-    socket_info_t *s = &socket[ns];
++    socket_info_t *s = &cardsocket[ns];
+     config_info_t config;
+ 
+     config.Function = config.ConfigBase = 0;
+@@ -412,7 +421,7 @@
+ 
+ static card_info_t *lookup_card(int ns)
+ {
+-    socket_info_t *s = &socket[ns];
++    socket_info_t *s = &cardsocket[ns];
+     card_info_t *card = NULL;
+     ds_ioctl_arg_t arg;
+     pci_id_t pci_id = { 0, 0 };
+@@ -689,7 +698,7 @@
+ 
+ static int execute_on_all(char *cmd, char *class, int sn, int fn)
+ {
+-    socket_info_t *s = &socket[sn];
++    socket_info_t *s = &cardsocket[sn];
+     bind_info_t *bind;
+     int i, k, ret = 0;
+     char m[10];
+@@ -867,7 +876,7 @@
+ 
+ static void bind_mtd(int sn)
+ {
+-    socket_info_t *s = &socket[sn];
++    socket_info_t *s = &cardsocket[sn];
+     region_info_t region;
+     bind_info_t bind;
+     mtd_info_t mtd_info;
+@@ -938,7 +947,7 @@
+ 
+ static void do_insert(int sn)
+ {
+-    socket_info_t *s = &socket[sn];
++    socket_info_t *s = &cardsocket[sn];
+     card_info_t *card;
+     device_info_t **dev;
+     bind_info_t *bind, **tail;
+@@ -1036,7 +1045,27 @@
+     for (i = ret = 0; i < card->bindings; i++) {
+ 	char *class = EITHER_OR(card->class[i], dev[i]->class);
+ 	if (class)
+-	    ret |= execute_on_all("start", class, sn, i);
++	{
++		/* If we added a network interface, remember its ifindex          */
++		/* to perform stop with the current iface name, not original one. */
++		if (!strcmp (class, "network"))
++		{
++			struct rtnl_handle rth;
++			cardsocket[sn].ifindex[i] = 0;
++			if (verbose) syslog (LOG_INFO, "do_insert: calling rtnl_open()");
++			if (rtnl_open (&rth, RTMGRP_IPV4_IFADDR) >= 0)
++			{
++				int initerror = ll_init_map (&rth);
++				if (verbose) syslog (LOG_INFO, "do_insert: called ll_init_map() with ret %d", initerror);
++				/* invalidate ll_name_to_index() static cache */
++				ll_name_to_index ("lo");
++				cardsocket[sn].ifindex[i] = ll_name_to_index (cardsocket[sn].bind[i]->name);
++				if (verbose) syslog (LOG_INFO, "do_insert: called ll_name_to_index('%s') with ret %u", cardsocket[sn].bind[i]->name, cardsocket[sn].ifindex[i]);
++				rtnl_close (&rth);
++			}
++		}
++		ret |= execute_on_all("start", class, sn, i);
++	}    
+     }
+     beep(BEEP_TIME, (ret) ? BEEP_ERR : BEEP_OK);
+     
+@@ -1046,7 +1075,7 @@
+ 
+ static int do_check(int sn)
+ {
+-    socket_info_t *s = &socket[sn];
++    socket_info_t *s = &cardsocket[sn];
+     card_info_t *card;
+     device_info_t **dev;
+     int i;
+@@ -1069,7 +1098,7 @@
+ 
+ static void do_remove(int sn)
+ {
+-    socket_info_t *s = &socket[sn];
++    socket_info_t *s = &cardsocket[sn];
+     card_info_t *card;
+     device_info_t **dev;
+     bind_info_t *bind;
+@@ -1086,7 +1115,23 @@
+     for (i = 0; i < card->bindings; i++) {
+ 	char *class = EITHER_OR(card->class[i], dev[i]->class);
+ 	if (class)
+-	    execute_on_all("stop", class, sn, i);
++	{
++		/* Now we will make use of ifindex stored in do_insert() */
++		if (!strcmp (class, "network") && cardsocket[sn].ifindex[i])
++		{
++			struct rtnl_handle rth;
++			if (verbose) syslog (LOG_INFO, "do_remove: calling rtnl_open()");
++			if (rtnl_open (&rth, RTMGRP_IPV4_IFADDR) >= 0)
++			{
++				int initerror = ll_init_map (&rth);
++				if (verbose) syslog (LOG_INFO, "do_remove: called ll_init_map() with ret %d", initerror);
++				strncpy (cardsocket[sn].bind[i]->name, ll_index_to_name (cardsocket[sn].ifindex[i]), DEV_NAME_LEN);
++				if (verbose) syslog (LOG_INFO, "do_remove: called ll_index_to_name(%u) with ret '%s'", cardsocket[sn].ifindex[i], cardsocket[sn].bind[i]->name);
++				rtnl_close (&rth);
++			}
++		}
++		execute_on_all("stop", class, sn, i);
++	}
+     }
+ 
+     /* unbind driver instances */
+@@ -1135,7 +1180,7 @@
+ 
+ static void do_suspend(int sn)
+ {
+-    socket_info_t *s = &socket[sn];
++    socket_info_t *s = &cardsocket[sn];
+     card_info_t *card;
+     device_info_t **dev;
+     int i;
+@@ -1155,7 +1200,7 @@
+ 
+ static void do_resume(int sn)
+ {
+-    socket_info_t *s = &socket[sn];
++    socket_info_t *s = &cardsocket[sn];
+     card_info_t *card;
+     device_info_t **dev;
+     int i;
+@@ -1181,7 +1226,7 @@
+     for (;;) {
+ 	usleep(100000);
+ 	for (i = 0; i < sockets; i++)
+-	    if ((ioctl(socket[i].fd, DS_GET_STATUS, &status) == 0) &&
++	    if ((ioctl(cardsocket[i].fd, DS_GET_STATUS, &status) == 0) &&
+ 		(status.CardState & CS_EVENT_CARD_INSERTION))
+ 		break;
+ 	if (i == sockets) break;
+@@ -1193,7 +1238,7 @@
+ static void free_resources(void)
+ {
+     adjust_list_t *al;
+-    int fd = socket[0].fd;
++    int fd = cardsocket[0].fd;
+ 
+     for (al = root_adjust; al; al = al->next) {
+ 	if (al->adj.Action == ADD_MANAGED_RESOURCE) {
+@@ -1215,7 +1260,7 @@
+     adjust_list_t *al;
+     int ret;
+     char tmp[64];
+-    int fd = socket[0].fd;
++    int fd = cardsocket[0].fd;
+     
+     for (al = root_adjust; al; al = al->next) {
+ 	ret = ioctl(fd, DS_ADJUST_RESOURCE_INFO, &al->adj);
+@@ -1281,7 +1326,7 @@
+     case SIGTERM:
+     case SIGINT:
+ 	for (i = 0; i < sockets; i++)
+-	    if ((socket[i].state & SOCKET_PRESENT) &&
++	    if ((cardsocket[i].state & SOCKET_PRESENT) &&
+ 		(do_check(i) == 0)) do_remove(i);
+ 	free_resources();
+ 	exit(0);
+@@ -1317,8 +1362,8 @@
+     for (fd = -1, i = 0; i < MAX_SOCKS; i++) {
+ 	fd = open_sock(i, S_IFCHR|S_IREAD|S_IWRITE);
+ 	if (fd < 0) break;
+-	socket[i].fd = fd;
+-	socket[i].state = 0;
++	cardsocket[i].fd = fd;
++	cardsocket[i].state = 0;
+     }
+     if ((fd < 0) && (errno != ENODEV) && (errno != ENOENT))
+ 	syslog(LOG_ERR, "open_sock(socket %d) failed: %m", i);
+@@ -1445,7 +1490,7 @@
+ #endif
+ 
+     for (i = max_fd = 0; i < sockets; i++)
+-	max_fd = (socket[i].fd > max_fd) ? socket[i].fd : max_fd;
++	max_fd = (cardsocket[i].fd > max_fd) ? cardsocket[i].fd : max_fd;
+ 
+     /* First select() call: poll, don't wait */
+     tv.tv_sec = tv.tv_usec = 0;
+@@ -1457,7 +1502,7 @@
+     for (pass = 0; ; pass++) {
+ 	FD_ZERO(&fds);
+ 	for (i = 0; i < sockets; i++)
+-	    FD_SET(socket[i].fd, &fds);
++	    FD_SET(cardsocket[i].fd, &fds);
+ 
+ 	while ((ret = select(max_fd+1, &fds, NULL, NULL,
+ 			     ((pass == 0) ? &tv : NULL))) < 0) {
+@@ -1470,9 +1515,9 @@
+ 	}
+ 
+ 	for (i = 0; i < sockets; i++) {
+-	    if (!FD_ISSET(socket[i].fd, &fds))
++	    if (!FD_ISSET(cardsocket[i].fd, &fds))
+ 		continue;
+-	    ret = read(socket[i].fd, &event, 4);
++	    ret = read(cardsocket[i].fd, &event, 4);
+ 	    if ((ret == -1) && (errno != EAGAIN))
+ 		syslog(LOG_INFO, "read(%d): %m\n", i);
+ 	    if (ret != 4)
+@@ -1480,26 +1525,26 @@
+ 	    
+ 	    switch (event) {
+ 	    case CS_EVENT_CARD_REMOVAL:
+-		socket[i].state = 0;
++		cardsocket[i].state = 0;
+ 		do_remove(i);
+ 		break;
+ 	    case CS_EVENT_EJECTION_REQUEST:
+ 		ret = do_check(i);
+ 		if (ret == 0) {
+-		    socket[i].state = 0;
++		    cardsocket[i].state = 0;
+ 		    do_remove(i);
+ 		}
+-		write(socket[i].fd, &ret, 4);
++		write(cardsocket[i].fd, &ret, 4);
+ 		break;
+ 	    case CS_EVENT_CARD_INSERTION:
+ 	    case CS_EVENT_INSERTION_REQUEST:
+-		socket[i].state |= SOCKET_PRESENT;
++		cardsocket[i].state |= SOCKET_PRESENT;
+ 	    case CS_EVENT_CARD_RESET:
+-		socket[i].state |= SOCKET_READY;
++		cardsocket[i].state |= SOCKET_READY;
+ 		do_insert(i);
+ 		break;
+ 	    case CS_EVENT_RESET_PHYSICAL:
+-		socket[i].state &= ~SOCKET_READY;
++		cardsocket[i].state &= ~SOCKET_READY;
+ 		break;
+ 	    case CS_EVENT_PM_SUSPEND:
+ 		do_suspend(i);
+diff -urN pcmcia-cs-3.2.8.orig/cardmgr/Makefile pcmcia-cs-3.2.8/cardmgr/Makefile
+--- pcmcia-cs-3.2.8.orig/cardmgr/Makefile	2003-11-22 11:54:13 +0300
++++ pcmcia-cs-3.2.8/cardmgr/Makefile	2005-02-04 20:36:59 +0300
+@@ -60,6 +60,7 @@
+ 	rm -f $(TOOLS) $(EXTRA) pcic_probe
+ 
+ cardmgr: cardmgr.o yacc_config.o lex_config.o
++	$(CC) cardmgr.o yacc_config.o lex_config.o -o $@ -lnetlink -Wall
+ 
+ yacc_config.o lex_config.o: %.o: %.c
+ 	$(CC) -c -MD -O -pipe $(CPPFLAGS) $<
