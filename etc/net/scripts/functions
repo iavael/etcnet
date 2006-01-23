@@ -109,7 +109,7 @@ pickup_options()
 	# A workaround here.
 	local of
 	for of in $MYIFACEDIR/options $MYIFACEDIR/options.d/*; do
-		[ "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
+		[ -f "$of" -a "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
 		SourceIfNotEmpty `profiled_filename $of`
 	done
 	is_yes "$DISABLED" && return
@@ -124,19 +124,19 @@ pickup_options()
 
 	# source default options
 	for of in $IFACEDIR/default/options $IFACEDIR/default/options.d/*; do
-		[ "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
+		[ -f "$of" -a "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
 		SourceIfNotEmpty `profiled_filename $of`
 	done
 
 	# then source default options for our iface type
 	for of in $IFACEDIR/default/options-$TYPE $IFACEDIR/default/options-$TYPE.d/*; do
-		[ "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
+		[ -f "$of" -a "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
 		SourceIfNotEmpty `profiled_filename $of`
 	done
 
 	# and finally source iface options
 	for of in $MYIFACEDIR/options $MYIFACEDIR/options.d/*; do
-		[ "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
+		[ -f "$of" -a "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
 		SourceIfNotEmpty `profiled_filename $of`
 	done
 
@@ -403,7 +403,6 @@ pickup_defaults()
 	fi
 }
 
-shopt -s nullglob
 declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type
 declare -frx pickup_options print_error print_message print_progress print_nack
 declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netprofile
