@@ -76,7 +76,7 @@ start_vlantab()
 		print_message empty.
 		return
 	}
-	local LCNT=`denoise -c $PROFILED_VLANTAB`
+	local LCNT=`$DENOISE -c $PROFILED_VLANTAB`
 	if [ "$LCNT" != "0" ]; then
 		[ -x "${VCONFIG:=$DEFAULT_VCONFIG}" ] || {
 			print_message "missing $VCONFIG"
@@ -89,7 +89,7 @@ start_vlantab()
 			return 1
 		}
 		SourceIfNotEmpty $SCRIPTDIR/functions-vlan
-		denoise $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+		$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 			if [ "$PROBED_8021Q" = "no" ]; then
 				PROBED_8021Q=yes
 				$MODPROBE 8021q || {
@@ -120,7 +120,7 @@ stop_vlantab()
 	}
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	SourceIfNotEmpty $SCRIPTDIR/functions-vlan
-	denoise $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
+	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
 		if destroy_vlan_iface $HOST_IFACE $CHILD_VID $CHILD_NAME; then
 			print_progress
 		else
@@ -128,7 +128,7 @@ stop_vlantab()
 		fi
 	done
 	# See start_vlantab().
-	print_message "`denoise -c $PROFILED_VLANTAB` lines processed."
+	print_message "`$DENOISE -c $PROFILED_VLANTAB` lines processed."
 	return 0
 }
 

@@ -23,7 +23,7 @@ case $ACTION in
 		}
 		[ -f /proc/net/ipx ] || $MODPROBE ipx
 
-		denoise $IPX_INTF_FILE | sed "s/AUTO /$NAME /" | \
+		$DENOISE $IPX_INTF_FILE | sed "s/AUTO /$NAME /" | \
 		xargs --max-lines=1 $IPX_INTERFACE add && print_progress
 	;;
 	stop)

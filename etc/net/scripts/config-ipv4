@@ -23,7 +23,7 @@ process_ipv4rules()
 {
 	local OP=${1:?missing 1st arg to $FUNCNAME}
 	SRCFILE=`profiled_filename $MYIFACEDIR/ipv4rule`
-	[ -s "$SRCFILE" ] && denoise "$SRCFILE" | \
+	[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
 	while read FIRST REST; do
 		case "$FIRST" in
 			add)
@@ -49,7 +49,7 @@ case $ACTION in
 			local REALFILE=`profiled_filename $MYIFACEDIR/ipv4address`
 			if [ -s $REALFILE ]; then
 				local ADDRESSLINE
-				denoise $REALFILE | while read ADDRESSLINE; do
+				$DENOISE $REALFILE | while read ADDRESSLINE; do
 					is_yes "$AUTO_BROADCAST" && [ "$ADDRESSLINE" = "${ADDRESSLINE/broadcast/}" ] && \
 						ADDRESSLINE="$ADDRESSLINE broadcast +"
 					$IP -4 address add dev $NAME $ADDRESSLINE && print_progress
@@ -125,7 +125,7 @@ case $ACTION in
 		{
 			# setup routes
 			local SRCFILE=`profiled_filename $MYIFACEDIR/ipv4route`
-			[ -s "$SRCFILE" ] && denoise "$SRCFILE" | \
+			[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
 			while read FIRST REST; do
 			# If there is no operation, substitute default, otherwise keep.
 				case "$FIRST" in

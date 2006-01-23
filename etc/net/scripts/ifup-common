@@ -100,7 +100,7 @@ process_sysctl_conf()
 	local ONELINE
 	local VARPREFIX
 	[ -s $SRCFILE ] || return 0
-	denoise $SRCFILE | sed "s/ //g" | while read ONELINE; do
+	$DENOISE $SRCFILE | sed "s/ //g" | while read ONELINE; do
 		local VARNAME=`echo $ONELINE  | cut -d'=' -f1`
 		local VARVALUE=`echo $ONELINE | cut -d'=' -f2`
 		# If variable name contains dot(s), we use it as is. Otherwise
