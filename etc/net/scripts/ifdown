@@ -93,7 +93,11 @@ case "$USE_IFPLUGD" in
 		if is_yes "$PERSISTENT_IFPLUGD"; then
 			suspend_ifplugd && print_progress
 		else
-			ifplugd_runs && stop_ifplugd && print_progress
+			while ifplugd_runs; do
+				stop_ifplugd
+				print_progress
+				usleep 100000
+			done
 		fi
 	;;
 	[Aa][Uu][Tt][Oo])

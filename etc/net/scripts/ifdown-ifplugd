@@ -63,10 +63,14 @@ esac
 
 ExecIfExecutable $LOCALSCRIPTDIR/ifdown-pre-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
+# The same things as ifdown does.
+is_yes "$CONFIG_IPX"  && $SCRIPTDIR/config-ipx  $NAME stop
+is_yes "$CONFIG_IPV6" && $SCRIPTDIR/config-ipv6 $NAME stop
+is_yes "$CONFIG_IPV4" && $SCRIPTDIR/config-ipv4 $NAME stop
+is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos  $NAME stop
+is_yes "$CONFIG_FW"   && $SCRIPTDIR/config-fw   $NAME stop
 ExecIfExecutable $LOCALSCRIPTDIR/ifdown-post-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
-is_yes "$CONFIG_FW" && $SCRIPTDIR/config-fw $NAME stop && print_progress
-flush_addresses $NAME
 
 if is_yes "$IFDOWN_PARENTS"; then
 	ifdown_parents || {

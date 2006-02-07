@@ -17,6 +17,7 @@ if [ -z "$1" -o -z "$2" ] ; then
 	exit 1
 fi
 
+unset SEEN_IFACES
 [ "$2" = "up" ] && exec /etc/net/scripts/ifup-ifplugd $1
 [ "$2" = "down" ] && exec /etc/net/scripts/ifdown-ifplugd $1
 exit 0
