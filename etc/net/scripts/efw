@@ -7,7 +7,7 @@
 #    like etcnet does so process it by bash sort order
 # 2. Guessing may not work correct
 # 3. Что будет, если указано: efw rule "some rule"? оно же попадет под полный
-# разбор и заглючит
+# разбор и заглючит, если $#==4
 
 # default values
 NAME=default
@@ -15,16 +15,27 @@ TABLE=filter
 CHAIN=
 MYIFACEDIR=
 TABLES="mangle filter nat"
-ACTIONS="start stop restart reload flush show count rule"
+ACTIONS="start stop restart load unload reload flush show count rule"
 
 usage()
 {
-	echo "Usage: $0 [iface] [table] [chain] <action>" >&2
+	echo "Usage: $0 [iface] [table] [chain] <action> [iptables rule]" >&2
 	echo ""
-	echo "iface  - 'default' (by default) or real interface name"
-	echo "table  - 'mangle', 'filter' (by default), 'nat'"
-	echo "chain  -  system or user defined chain name (case sensitive!)"
-	echo "action - 'start','stop','restart','reload','flush','show','count','rule'"
+	echo "iface   - 'default' (by default) or real interface name"
+	echo "table   - 'mangle', 'filter' (by default), 'nat'"
+	echo "chain   -  system or user defined chain name (case sensitive!)"
+	echo "action  - 'start','stop','restart','load','unload','reload','flush','show','count','rule'"
+	echo ""
+	echo "start   - process all tables and chains for given interface (even when chain or table is defined)"
+	echo "stop    - process all tables and chains for given interface (even when chain or table is defined)"
+	echo "restart - equivalent to stop then start"	  
+	echo "load    - load rules for given interface, table and chain"
+	echo "unload  - unload rules for given interface, table and chain"
+	echo "reload  - equivalent to unload then load"	  
+	echo "flush   - flush rules for given interface, table and chain"
+	echo "show    - list ruels for given interface, table and chain"
+	echo "count   - show counters for given table and chains"
+	echo "rule    - parse rule and pass it to iptables"
 	echo ""
 	exit 1
 }
@@ -128,6 +139,25 @@ guess_options()
 	}
 }
 
+iptables_local_start()
+{
+	is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$iptables_syntax" ] && { 
+		iptables_load_syntax `profiled_filename /etc/net/ifaces/default/fw/iptables/syntax`
+		iptables_create_sed_rules "$iptables_syntax"
+	}			
+	is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$iptables_sed_rules" ] && iptables_create_sed_rules "$iptables_syntax"
+	iptables_start "$NAME"
+}
+
+iptables_local_stop()
+{
+	is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$iptables_syntax" ] && { 
+		iptables_load_syntax `profiled_filename /etc/net/ifaces/default/fw/iptables/syntax`
+		iptables_create_sed_rules "$iptables_syntax"
+	}			
+	is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$iptables_sed_rules" ] && iptables_create_sed_rules "$iptables_syntax"
+	iptables_stop "$NAME"
+}
 
 . ${SCRIPTDIR:=/etc/net/scripts}/functions
 pickup_defaults
@@ -147,23 +177,46 @@ fi
 
 [ $# -lt 1 ] && usage || guess_options $@
 
-echo "iface is $NAME"
+echo "interface is $NAME"
 echo "table is $TABLE"
 echo "chain is $CHAIN"
 echo "action is $ACTION"
-
-exit
-###
-if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
-	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
-else
-	MYIFACEDIR=$IFACEDIR/$NAME
-fi
-
-[ -d "$MYIFACEDIR" ] || {
-	print_error "interface configuration directory '$MYIFACEDIR' not found"
-	exit 1
-}
-
+echo ""
 
 SourceIfNotEmpty "$MYIFACEDIR/fw/options"
+
+case "$FW_TYPE" in
+	iptables)
+	 	[ -d "$MYIFACEDIR/fw/$FW_TYPE" ] || exit 0
+		# Load own interface syntax if exists
+		[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && {
+			[ -f "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && {
+				IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$FW_TYPE"
+				export iptables_syntax=
+				export iptables_sed_rules=
+			}
+		}
+		case "$ACTION" in
+			start)
+				iptables_local_start
+				;;
+			stop)
+				iptables_local_stop
+				;;
+			restart)
+				iptables_local_stop
+				iptables_local_start
+				;;
+			reload)
+				iptables_local_stop
+				iptables_local_start
+				;;
+			*)
+				usage
+				;;
+		esac
+		;;
+	*)
+		echo "Firewall type $FW_TYPE isn't supported"
+esac
+
