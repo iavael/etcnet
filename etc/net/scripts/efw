@@ -2,73 +2,127 @@
 # Firewall script
 #
 
-# TODO
-# 1. Show bytes with action "count"?
-
 # Known issues:
 # 1. When interface is 'all' we can't guess right interfaces processing order
 #    like etcnet does so process it by bash sort order
-# 2. If guessing is enabled user may input wrong interface name, therefore table,
-#    chain and action will be applied to all interfaces (this issue is applicable to 
-#    table and chain input too)
+# 2. Guessing may not work correct
+# 3. Что будет, если указано: efw rule "some rule"? оно же попадет под полный
+# разбор и заглючит
 
 # default values
-DEFNAME=all
-DEFTABLE=all
-DEFCHAIN=all
-ACTIONS="start stop restart reload flush show rule"
+NAME=default
+TABLE=filter
+CHAIN=
+MYIFACEDIR=
 TABLES="mangle filter nat"
-
-# FIXME Move to global options?
-# Try to guess all options except action
-GUESS=Yes
+ACTIONS="start stop restart reload flush show count rule"
 
 usage()
 {
-	echo "Usage: $0 [iface] [table] [chain] action" >&2
+	echo "Usage: $0 [iface] [table] [chain] <action>" >&2
 	echo ""
-	echo "iface - 'all' (by default), 'default' or real interface name"
-	echo "table - 'all' (by default) or real table name"
-	echo "chain - 'all' (by default) or real chain name (case sensitive!)"
-	echo "action - 'start','stop','restart','reload','flush','show','rule'"
+	echo "iface  - 'default' (by default) or real interface name"
+	echo "table  - 'mangle', 'filter' (by default), 'nat'"
+	echo "chain  -  system or user defined chain name (case sensitive!)"
+	echo "action - 'start','stop','restart','reload','flush','show','count','rule'"
 	echo ""
 	exit 1
 }
 
+
+
 guess_options()
 {
-	# Only action defined
-	[ $# -eq 1 ] && 
+	# Four options. Get interface name and shift
+	[ $# -ge 4 ] && 
 	{
-		egrep -q "([^-]\b)$1(\b[^-]|$)" < <(echo "$actions") ||
+		NAME="$1"
+		[ "$NAME" != 'all' ] && 
 		{
-			echo "Unknown firewall action $1"
+			[ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
+			[ -d "$MYIFACEDIR" ] || {
+				print_error "interface configuration directory '$MYIFACEDIR' not found"
+				exit 1
+			}
+		}
+		egrep -q "([^-]\b)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" ||
+		{
+			print_error "Unknown firewall table $2"
 			exit 1
 		}
-		ACTION="$1"
+		CHAIN="$3"
+		egrep -q "([^-]\b)$4(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION="$4" ||
+		{
+			print_error "Unknown firewall action $4"
+			exit 1
+		}
 		return
 	}
 
-	# Two options, try to guess
+	# Three options. Guess first and shift
+	[ $# -eq 3 ] && 
+	{
+			[ "$1" != 'default' ] && 
+			{
+				# May be it's and interface name
+				[ -d $IFACEDIR/$1@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$1@$NETHOST || MYIFACEDIR=$IFACEDIR/$1
+				[ -d "$MYIFACEDIR" ] &&
+				{
+					# Yes, it's an interface name
+					NAME="$1"
+					egrep -q "([^-]\b)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" || CHAIN="$2"
+				} ||
+				{
+					# No, it's not an interface name
+					egrep -q "([^-]\b)$1(\b[^-]|$)" < <(echo "$TABLES") && 
+					{
+						TABLE="$1"
+						CHAIN="$2"
+					} || 
+					{
+						print_error "Unknown firewall table $1"
+						exit 1
+					}
+				}
+			} ||
+			{
+				# Yes, it's an interface name
+				NAME="$1"
+				egrep -q "([^-]\b)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" || CHAIN="$2"
+			}
+			shift 2
+	}
+
+	# Two options. Guest first and shift
 	[ $# -eq 2 ] && 
 	{
-		[ "$2" != 'all' ] && 
-		{
-			NAME=$2
-			if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
-				MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
-			else
-				MYIFACEDIR=$IFACEDIR/$NAME
-			fi
-	
-			[ -d "$MYIFACEDIR" ] || {
-				# this is not an interface name?
-				NAME=$DEFNAME
+		[ "$1" != 'default' ] && 
+			{
+				# May be it's and interface name
+				[ -d $IFACEDIR/$1@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$1@$NETHOST || MYIFACEDIR=$IFACEDIR/$1
+				[ -d "$MYIFACEDIR" ] &&
+				{
+					# Yes, it's an interface name
+					$NAME=$1
+				} ||
+				{
+					# No
+					egrep -q "([^-]\b)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$1" || CHAIN="$1"
+				}
+			} ||
+			{
+				# Yes, it's an interface name
+				NAME="$1"
 			}
+			shift
+	
 		}
-		egrep -q "([^-]\b)$1(\b[^-]|$)" < <(echo "$actions") ||
+	# One option
+	[ $# -eq 1 ] &&
+	{
+		egrep -q "([^-]\b)$1(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION=$1 ||
 		{
-			echo "Unknown firewall action $1"
+			print_error "Unknown firewall action $1"
 			exit 1
 		}
 	}
@@ -91,13 +145,12 @@ if  ! is_yes "$CONFIG_FW";  then
 	exit 1
 fi
 
-if ! is_yes "$GUESS"; then
-	{
-		[ $# -lt 4 ] && usage;
-	}
-else
-		[ $# -lt 1 ] && usage || guess_options $@
-fi
+[ $# -lt 2 ] && usage || guess_options $@
+
+echo "iface is $NAME"
+echo "table is $TABLE"
+echo "chain is $CHAIN"
+echo "action is $ACTION"
 
 exit
 ###
