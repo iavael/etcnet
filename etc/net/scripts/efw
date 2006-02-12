@@ -37,7 +37,7 @@ guess_options()
 	[ $# -ge 4 ] && 
 	{
 		NAME="$1"
-		[ "$NAME" != 'all' ] && 
+		[ "$NAME" != 'default' ] && 
 		{
 			[ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
 			[ -d "$MYIFACEDIR" ] || {
@@ -107,7 +107,7 @@ guess_options()
 				} ||
 				{
 					# No
-					egrep -q "([^-]\b)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$1" || CHAIN="$1"
+					egrep -q "([^-]\b)$1(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$1" || CHAIN="$1"
 				}
 			} ||
 			{
