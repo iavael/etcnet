@@ -45,13 +45,13 @@ guess_options()
 				exit 1
 			}
 		}
-		egrep -q "([^-]\b)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" ||
+		egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" ||
 		{
 			print_error "Unknown firewall table $2"
 			exit 1
 		}
 		CHAIN="$3"
-		egrep -q "([^-]\b)$4(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION="$4" ||
+		egrep -q "([^-]\b|^)$4(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION="$4" ||
 		{
 			print_error "Unknown firewall action $4"
 			exit 1
@@ -70,11 +70,11 @@ guess_options()
 				{
 					# Yes, it's an interface name
 					NAME="$1"
-					egrep -q "([^-]\b)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" || CHAIN="$2"
+					egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" || CHAIN="$2"
 				} ||
 				{
 					# No, it's not an interface name
-					egrep -q "([^-]\b)$1(\b[^-]|$)" < <(echo "$TABLES") && 
+					egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$TABLES") && 
 					{
 						TABLE="$1"
 						CHAIN="$2"
@@ -88,7 +88,7 @@ guess_options()
 			{
 				# Yes, it's an interface name
 				NAME="$1"
-				egrep -q "([^-]\b)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" || CHAIN="$2"
+				egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" || CHAIN="$2"
 			}
 			shift 2
 	}
@@ -103,11 +103,11 @@ guess_options()
 				[ -d "$MYIFACEDIR" ] &&
 				{
 					# Yes, it's an interface name
-					$NAME=$1
+					NAME="$1"
 				} ||
 				{
 					# No
-					egrep -q "([^-]\b)$1(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$1" || CHAIN="$1"
+					egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$1" || CHAIN="$1"
 				}
 			} ||
 			{
@@ -120,7 +120,7 @@ guess_options()
 	# One option
 	[ $# -eq 1 ] &&
 	{
-		egrep -q "([^-]\b)$1(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION=$1 ||
+		egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION=$1 ||
 		{
 			print_error "Unknown firewall action $1"
 			exit 1
