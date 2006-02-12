@@ -145,7 +145,7 @@ if  ! is_yes "$CONFIG_FW";  then
 	exit 1
 fi
 
-[ $# -lt 2 ] && usage || guess_options $@
+[ $# -lt 1 ] && usage || guess_options $@
 
 echo "iface is $NAME"
 echo "table is $TABLE"
