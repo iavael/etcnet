@@ -1,0 +1,116 @@
+#!/bin/bash
+# Firewall script
+#
+
+# TODO
+# 1. Show bytes with action "count"?
+
+# Known issues:
+# 1. When interface is 'all' we can't guess right interfaces processing order
+#    like etcnet does so process it by bash sort order
+# 2. If guessing is enabled user may input wrong interface name, therefore table,
+#    chain and action will be applied to all interfaces (this issue is applicable to 
+#    table and chain input too)
+
+# default values
+DEFNAME=all
+DEFTABLE=all
+DEFCHAIN=all
+ACTIONS="start stop restart reload flush show rule"
+TABLES="mangle filter nat"
+
+# FIXME Move to global options?
+# Try to guess all options except action
+GUESS=Yes
+
+usage()
+{
+	echo "Usage: $0 [iface] [table] [chain] action" >&2
+	echo ""
+	echo "iface - 'all' (by default), 'default' or real interface name"
+	echo "table - 'all' (by default) or real table name"
+	echo "chain - 'all' (by default) or real chain name (case sensitive!)"
+	echo "action - 'start','stop','restart','reload','flush','show','rule'"
+	echo ""
+	exit 1
+}
+
+guess_options()
+{
+	# Only action defined
+	[ $# -eq 1 ] && 
+	{
+		egrep -q "([^-]\b)$1(\b[^-]|$)" < <(echo "$actions") ||
+		{
+			echo "Unknown firewall action $1"
+			exit 1
+		}
+		ACTION="$1"
+		return
+	}
+
+	# Two options, try to guess
+	[ $# -eq 2 ] && 
+	{
+		[ "$2" != 'all' ] && 
+		{
+			NAME=$2
+			if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
+				MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
+			else
+				MYIFACEDIR=$IFACEDIR/$NAME
+			fi
+	
+			[ -d "$MYIFACEDIR" ] || {
+				# this is not an interface name?
+				NAME=$DEFNAME
+			}
+		}
+		egrep -q "([^-]\b)$1(\b[^-]|$)" < <(echo "$actions") ||
+		{
+			echo "Unknown firewall action $1"
+			exit 1
+		}
+	}
+}
+
+
+. ${SCRIPTDIR:=/etc/net/scripts}/functions
+pickup_defaults
+. ${SCRIPTDIR:=/etc/net/scripts}/functions-fw
+
+[ -z "$NETPROFILE" ] && init_netprofile
+
+[ -z "$CONFIG_FW" ] && {
+	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
+	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
+}
+
+if  ! is_yes "$CONFIG_FW";  then
+	print_message "Firewall is disabled"
+	exit 1
+fi
+
+if ! is_yes "$GUESS"; then
+	{
+		[ $# -lt 4 ] && usage;
+	}
+else
+		[ $# -lt 1 ] && usage || guess_options $@
+fi
+
+exit
+###
+if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
+	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
+else
+	MYIFACEDIR=$IFACEDIR/$NAME
+fi
+
+[ -d "$MYIFACEDIR" ] || {
+	print_error "interface configuration directory '$MYIFACEDIR' not found"
+	exit 1
+}
+
+
+SourceIfNotEmpty "$MYIFACEDIR/fw/options"
