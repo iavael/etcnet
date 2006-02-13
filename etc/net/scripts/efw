@@ -33,7 +33,7 @@ usage()
 	echo "unload  - unload rules for given interface, table and chain"
 	echo "reload  - equivalent to unload then load"	  
 	echo "flush   - flush rules for given interface, table and chain"
-	echo "show    - list ruels for given interface, table and chain"
+	echo "show    - list rules for given interface, table and chain"
 	echo "count   - show counters for given table and chains"
 	echo "rule    - parse rule and pass it to iptables"
 	echo ""
@@ -207,13 +207,32 @@ case "$FW_TYPE" in
 				iptables_local_stop
 				iptables_local_start
 				;;
+			load)
+				iptables_local_load
+				;;
+			unload)
+				iptables_local_unload
+				;;
 			reload)
-				iptables_local_stop
-				iptables_local_start
+				iptables_local_load
+				iptables_local_unload
+				;;
+			flush)
+				iptables_local_flush
+				;;
+			show)
+				iptables_local_show
+				;;
+			count)
+				iptables_local_count
+				;;
+			rule)
+				iptables_local_rule
 				;;
 			*)
 				usage
 				;;
+#start stop restart load unload reload flush show count rule				
 		esac
 		;;
 	*)
