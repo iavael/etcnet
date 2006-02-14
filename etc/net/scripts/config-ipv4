@@ -144,11 +144,11 @@ case $ACTION in
 			process_ipv4rules add
 		}
 
+		is_yes $DONT_FLUSH || {
+			$IP -4 address flush dev $NAME >/dev/null 2>&1
+			print_progress
+		}
 		if iface_is_up $NAME; then
-			is_yes $DONT_FLUSH || {
-				$IP -4 address flush dev $NAME >/dev/null 2>&1
-				print_progress
-			}
 			case "$BOOTPROTO" in
 				static)
 					try_static && config_ipv4_routes_rules
@@ -177,7 +177,7 @@ case $ACTION in
 	#------------------------------------------------------ 'start' case ends
 	stop)
 		process_ipv4rules del
-		$IP -4 address flush dev $NAME >/dev/null 2>&1
+		is_yes "$DONT_FLUSH" || $IP -4 address flush dev $NAME >/dev/null 2>&1
 	;;
 	#------------------------------------------------------ 'stop' case ends
 	*)

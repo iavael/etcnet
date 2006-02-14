@@ -15,6 +15,11 @@ $MODPROBE ipv6
 
 case $ACTION in
 	start)
+		if ! is_yes "$DONT_FLUSH"; then
+			$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
+			$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
+			$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
+		fi
 		xargise_file $MYIFACEDIR/ipv6address "$IP -6 address add dev $NAME"
 		if iface_is_up $NAME; then
 			# setup routes
@@ -35,9 +40,11 @@ case $ACTION in
 		fi
 	;;
 	stop)
-		$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
-		$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
-		$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
+		if ! is_yes "$DONT_FLUSH"; then
+			$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
+			$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
+			$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
+		fi
 	;;
 	*)
 		print_error "Illegal argument to $0: '$ACTION'"

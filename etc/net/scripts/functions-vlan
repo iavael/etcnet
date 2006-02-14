@@ -44,6 +44,7 @@ destroy_vlan_iface()
 	local HOST_IFACE=${1:?missing 1st arg to $FUNCNAME}
 	local VID=${2:?missing 2nd arg to $FUNCNAME}
 	local NAME=`get_vlan_ifname $HOST_IFACE $VID`
+	# We must do it regardless of DONT_FLUSH
 	$IP address flush dev $NAME >/dev/null 2>&1
 	$VCONFIG rem $NAME >/dev/null 2>&1 || return 1
 	return 0
