@@ -224,7 +224,7 @@ iptables_start()
 		for chain in "$table"/*; do
 			[ "`basename $chain`" = "loadorder" ] && continue
 			if [ -f "$chain" ] && [ -s "$chain" ]; then
-				egrep -q "([^-]\b)$chain(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") ||
+				egrep -q "([^-]\b|^)$chain(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") ||
 				{
 					print_message "Creating chain `basename $chain` in table `basename $table`"
 					iptables_create_chain `basename $chain` -t `basename $table`
@@ -315,7 +315,7 @@ iptables_stop()
 		for chain in "$table"/*; do
 			[ "`basename $chain`" = "loadorder" ] && continue
 			if [ -f "$chain" ] && [ -s "$chain" ] ; then
-				egrep -q "([^-]\b)$chain(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") ||
+				egrep -q "([^-]\b|^)$chain(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") ||
 				{
 					print_message "Deleting chain `basename $chain` from table `basename $table`"
 					iptables_delete_chain `basename $chain` -t `basename $table`
