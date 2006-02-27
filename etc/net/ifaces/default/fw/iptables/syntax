@@ -65,7 +65,7 @@ del-set: -j SET --del-set
 snat: -j SNAT --to-source
 snat-to: -j SNAT --to-source
 snat-to-source: -j SNAT --to-source
-set-mss: -j TCPMSS -set-mss
+set-mss: -j TCPMSS --set-mss
 clamp-mss-to-pmtu: -j TCPMSS --clamp-mss-to-pmtu
 set-tos: -j TOS --set-tos
 trace: -j TRACE
