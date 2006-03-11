@@ -1,23 +1,9 @@
 - bluetooth support
 - xsupplicant support
 - Elektra support
-- analyze zebra and RTPROTO ip option
-- SNMP bridge workaround (see http://linux-net.osdl.org/index.php/Bonding#SNMP_agents)
 - patch: bridge-utils arg order
 - patch: kernel: support more than one teql interfaces
-- lockfiles and service network status
-- consider using $* instead of $@
-- don't use uninitialised/unquoted values
 - SkyStar-1 support
-- ZyXEL support
+- USB ZyXEL support
 - QoS profiles support
-- merge shellcode from SuSE
-- complete docs set
-- allow compiled-in 802.1q
-- only pickup DISABLED and TYPE in network.init
-- iANS support?
-- cleanup functions-fw and config-fw
-- Makefile ?
-- '. $SCRIPTDIR/functions-eth' (line 89) is executed after 'stop_dhcp_client' line 63
-- profiled resolv.conf
-- profiled firewall
+- iANS support ?
