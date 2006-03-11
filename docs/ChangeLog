@@ -1,5 +1,6 @@
 0.8.2
 	bugfix: ifplugd code
+	bugfix: profile name detection
 	change: DONT_FLUSH is considered on ifdown too
 0.8.1 2005-01-23
 	bugfix: nullglob shell option was breaking egrep call

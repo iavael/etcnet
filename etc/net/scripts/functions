@@ -242,12 +242,13 @@ init_netprofile()
 	elif [ -n "$MYIFACEDIR" -a -s "$MYIFACEDIR/selectprofile" -a -x "$MYIFACEDIR/selectprofile" ]; then
 		NETPROFILE=`$MYIFACEDIR/selectprofile $0 | head -1 | cut -d' ' -f1`
 	elif [ -z "$NETPROFILE" ]; then
-		if [ -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
-			NETPROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | cut -d' ' -f1`
-		elif [ -r "$PROC_CMDLINE" ]; then
+		if [ -r "$PROC_CMDLINE" ]; then
 			# try to fetch profile name from kernel options
 			NETPROFILE=`cat "$PROC_CMDLINE" | sed 's/  / /g' | \
 			sed 's/ /\n/g' | egrep '^netprofile=' | cut -d'=' -f2`
+		fi
+		if [ -z "$NETPROFILE" -a -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
+			NETPROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | cut -d' ' -f1`
 		fi
 	fi
 	return 0
