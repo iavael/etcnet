@@ -3,7 +3,7 @@
 #
 
 # Known issues:
-# 1. When interface is 'all' we can't guess right interfaces processing order
+# 1. When interface is 'all' we can't guess correct interfaces processing order
 #    like etcnet does so process it by bash sort order
 # 2. Guessing may not work correct
 # 3. „то будет, если указано: efw rule "some rule"? оно же попадет под полный

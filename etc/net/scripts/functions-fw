@@ -152,9 +152,8 @@ iptables_load_rules_from_file()
 iptables_flush_rules_from_file()
 {
 	if [ -f "$chain" ] && [ -s "$chain" ]; then
-		print_message "Flushing rules for chain `basename $chain` in table `basename $table`"
-		# Flush rules only when stop networking
 		if [ "$NAME" != "default" ]; then
+			print_message "Unloading rules for chain `basename $chain` in table `basename $table`"
 			rules=$(tac "$chain")
 			while read rule; do
 				rule=`iptables_expand_string "$rule"`
@@ -183,6 +182,8 @@ iptables_flush_rules_from_file()
 			done < <(echo "$rules"|egrep "^[^#]")
 			print_message
 		else
+			# Flush rules only when stop networking
+			print_message "Flushing chain `basename $chain` in table `basename $table`"
 			iptables_flush_chain `basename $chain` -t `basename $table`
 		fi
 	fi
