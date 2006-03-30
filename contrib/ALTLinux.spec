@@ -1,5 +1,5 @@
 Name:		etcnet
-Version:	0.8.1
+Version:	0.8.2
 Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
@@ -158,6 +158,9 @@ fi
 %files full
 
 %changelog
+* Fri Mar 31 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.2-alt1
+- New version features bugfixes for #9171, #9172, #9035, #9200
+
 * Mon Jan 23 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.1-alt0.test1
 - testing new version
 - removed pcmcia-cs dependency
