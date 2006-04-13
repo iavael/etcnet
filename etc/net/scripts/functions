@@ -3,7 +3,7 @@
 # Functions and variables are subject for export, see bottom of this file.
 
 # These are necessary constants.
-DENOISE="egrep ^[^#]"
+DENOISE="egrep ^[^#] | sed -e 's/^ *\(.*\) *$/\1/'"
 DEFAULT_BONDMODE=0
 IFACEDIR=/etc/net/ifaces
 LOCALSCRIPTDIR=/etc/net
