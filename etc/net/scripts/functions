@@ -3,7 +3,8 @@
 # Functions and variables are subject for export, see bottom of this file.
 
 # These are necessary constants.
-DENOISE="egrep ^[^#] | sed -e 's/^ *\(.*\) *$/\1/'"
+DENOISE="egrep ^[^#]"
+TRIM="sed -e 's/^ *\(.*\) *$/\1/'"
 DEFAULT_BONDMODE=0
 IFACEDIR=/etc/net/ifaces
 LOCALSCRIPTDIR=/etc/net
@@ -248,7 +249,7 @@ init_netprofile()
 			sed 's/ /\n/g' | egrep '^netprofile=' | cut -d'=' -f2`
 		fi
 		if [ -z "$NETPROFILE" -a -s "$PROFILE_FILE" -a -r "$PROFILE_FILE" ]; then
-			NETPROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | cut -d' ' -f1`
+			NETPROFILE=`$DENOISE -m 1 "$PROFILE_FILE" | $TRIM | cut -d' ' -f1`
 		fi
 	fi
 	return 0
@@ -260,7 +261,7 @@ init_nethost()
 	if [ -n "$1" ]; then
 		NETHOST="$1"
 	elif [ -s "$HOSTTAB" ] && grep "^$HOSTNAME " $HOSTTAB; then
-		NETHOST=`$DENOISE $HOSTTAB | grep -m 1 "^$HOSTNAME " | cut -d' ' -f2`
+		NETHOST=`$DENOISE $HOSTTAB | $TRIM | grep -m 1 "^$HOSTNAME " | cut -d' ' -f2`
 	else
 		NETHOST=$HOSTNAME
 	fi
@@ -377,7 +378,7 @@ xargise_file()
 	local PROCESSOR="${2:?missing 2nd arg to $FUNCNAME}"
 	local REALFILE=`profiled_filename $BASEFILE`
 	if [ -s $REALFILE ]; then
-		$DENOISE $REALFILE | xargs --max-lines=1 $PROCESSOR && print_progress
+		$DENOISE $REALFILE | $TRIM | xargs --max-lines=1 $PROCESSOR && print_progress
 	fi
 	return 0
 }
@@ -410,7 +411,7 @@ declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netp
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
 declare -frx have_ifplugd pickup_defaults
-declare -rx DENOISE DEFAULT_BONDMODE IFACEDIR LOCALSCRIPTDIR VARLIBDIR
+declare -rx DENOISE TRIM DEFAULT_BONDMODE IFACEDIR LOCALSCRIPTDIR VARLIBDIR
 declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS
 declare -rx DEFAULT_IFPLUGD DEFAULT_IWCONFIG DEFAULT_WPA_SUPPLICANT DEFAULT_PLIPCONFIG
 declare -rx DEFAULT_VCONFIG DEFAULT_PENTANETT DEFAULT_PENTAVALT DEFAULT_PENTANET_CONF
