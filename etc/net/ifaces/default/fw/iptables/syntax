@@ -184,7 +184,7 @@ tcp-dst-port: -mtcp --destination-port
 tcp-dest-port: -mtcp --destination-port
 tcp-flags: -mtcp --tcp-flags
 flags: -mtcp --tcp-flags
-tcp-syn: -mtcp --syn
+tcp-syn: --syn
 tcp-option: -mtcp --tcp-option
 tcp-mss: -mtcp --mss
 tcpmss: -mtcpmss --mss
