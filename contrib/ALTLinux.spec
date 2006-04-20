@@ -1,6 +1,6 @@
 Name:		etcnet
-Version:	0.8.2
-Release:	alt1
+Version:	0.8.3
+Release:	alt0.2
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
