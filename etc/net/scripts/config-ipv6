@@ -26,13 +26,16 @@ case $ACTION in
 			SRCFILE=`profiled_filename $MYIFACEDIR/ipv6route`
 			[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
 			while read FIRST REST; do
-			# If there is no operation, substitute default, otherwise keep.
+				# If 'dev' is not specified, add current dev.
+				SUFFIX=''
+				echo "$FIRST $REST" | egrep -q '[[:space:]]dev[[:space:]]' || SUFFIX="dev $NAME"
+				# If operation is not specified, use 'append'.
 				case "$FIRST" in
 					add|del|change|append|replace)
-						$IP -6 route $FIRST $REST dev $NAME
+						$IP -6 route $FIRST $REST $SUFFIX
 					;;
 					*)
-						$IP -6 route append $FIRST $REST dev $NAME
+						$IP -6 route append $FIRST $REST $SUFFIX
 					;;
 				esac
 				print_progress
