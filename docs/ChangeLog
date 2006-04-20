@@ -1,6 +1,7 @@
 0.8.3
 	bugfix: trim lines read from config files to avoid xargs concatenate them
 	bugfix: allow custom 'dev' in ipv4route/ipv6route
+	bugfix: handle VERBOSE and PROGRESS again
 0.8.2 2005-03-31
 	bugfix: ifplugd code
 	bugfix: profile name detection

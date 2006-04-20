@@ -152,33 +152,23 @@ print_error()
 	logger -p daemon.info -t /etc/net -- "ERROR: $0: $@" &
 }
 
-# Don't display progress if not verbose.
-if is_yes "$VERBOSE"; then
-	print_message()
-	{
-		echo "$@"
-		return 0
-	}
-	if is_yes "$PROGRESS"; then
-		print_progress()
-		{
-			echo -n ${1:-.}
-			return 0
-		}
-		print_nack()
-		{
-			echo -n ${1:-!}
-			return 0
-		}
-	else
-		print_progress() { return 0; }
-		print_nack() { return 0; }
-	fi
-else
-	print_message() { return 0; }
-	print_progress() { return 0; }
-	print_nack() { return 0; }
-fi
+print_message()
+{
+	is_yes "$VERBOSE" && echo "$@"
+	return 0
+}
+
+print_progress()
+{
+	is_yes "$VERBOSE" && is_yes "$PROGRESS" && echo -n ${1:-.}
+	return 0
+}
+
+print_nack()
+{
+	is_yes "$VERBOSE" && is_yes "$PROGRESS" && echo -n ${1:-!}
+	return 0
+}
 
 iface_is_up()
 {
