@@ -15,7 +15,7 @@ TABLE=filter
 CHAIN=
 MYIFACEDIR=
 TABLES="mangle filter nat"
-ACTIONS="start stop restart load unload reload flush show count rule"
+ACTIONS="start stop restart load unload reload flush show list count counters rule"
 
 usage()
 {
@@ -148,31 +148,6 @@ guess_options()
 	}
 }
 
-iptables_local_start()
-{
-	iptabled_preload
-	iptables_start "$NAME"
-}
-
-iptables_local_stop()
-{
-	iptables_preload
-	iptables_stop "$NAME"
-}
-
-iptables_local_load()
-{
-	iptables_preload
-	cd $MYIFACEDIR/fw/$FW_TYPE/
-	iptables_load_rules_from_file
-}
-
-iptables_local_unload()
-{
-	iptables_preload
-	cd $MYIFACEDIR/fw/$FW_TYPE/
-	iptables_flush_rules_from_file
-}
 
 . ${SCRIPTDIR:=/etc/net/scripts}/functions
 pickup_defaults
@@ -220,24 +195,33 @@ case "$FW_TYPE" in
 		}
 		case "$ACTION" in
 			start)
-				iptables_local_start
+				iptabled_preload
+				iptables_local_start "$NAME"
 				;;
 			stop)
-				iptables_local_stop
+				iptabled_preload
+				iptables_local_stop "$NAME"
 				;;
 			restart)
-				iptables_local_stop
-				iptables_local_start
+				iptabled_preload
+				iptables_local_stop "$NAME"
+				iptables_local_start "$NAME"
 				;;
 			load)
-				iptables_local_load
+				iptables_preload
+				cd $MYIFACEDIR/fw/$FW_TYPE/
+				iptables_load_rules_from_file
 				;;
 			unload)
-				iptables_local_unload
+				iptables_preload
+				cd $MYIFACEDIR/fw/$FW_TYPE/
+				iptables_flush_rules_from_file
 				;;
 			reload)
-				iptables_local_load
-				iptables_local_unload
+				iptables_preload
+				cd $MYIFACEDIR/fw/$FW_TYPE/
+				iptables_flush_rules_from_file
+				iptables_load_rules_from_file
 				;;
 			flush)
 				iptables_local_flush
