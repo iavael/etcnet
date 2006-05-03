@@ -8,6 +8,7 @@ delete: -D
 del: -D
 # Builtin targets
 accept: -j ACCEPT
+allow: -j ACCEPT
 pass: -j ACCEPT
 drop: -j DROP
 deny: -j DROP
