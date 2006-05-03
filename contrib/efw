@@ -164,15 +164,13 @@ iptables_local_load()
 {
 	iptables_preload
 	cd $MYIFACEDIR/fw/$FW_TYPE/
-	chain=$MYIFACEDIR/fw/$FW_TYPE/$chain
 	iptables_load_rules_from_file
 }
 
 iptables_local_unload()
 {
 	iptables_preload
-	table=$MYIFACEDIR/fw/$FW_TYPE/$table
-	chain=$MYIFACEDIR/fw/$FW_TYPE/$chain
+	cd $MYIFACEDIR/fw/$FW_TYPE/
 	iptables_flush_rules_from_file
 }
 
@@ -205,7 +203,7 @@ echo "action is $ACTION"
 echo ""
 
 export table=$TABLE
-export chain=$CHAIN
+export chain=$TABLE/$CHAIN
 
 SourceIfNotEmpty "$MYIFACEDIR/fw/options"
 
