@@ -24,7 +24,7 @@ usage()
 	echo " iface   - 'default' (by default) or real interface name"
 	echo " table   - 'mangle', 'filter' (by default), 'nat'"
 	echo " chain   -  system or user defined chain name (case sensitive!)"
-	echo " action  - 'start','stop','restart','load','unload','reload','flush','show','count','rule'"
+	echo " action  - 'start','stop','restart','load','unload','reload','flush','show','list,''count','counters','rule'"
 	echo ""
 	echo " start   - process all tables and chains for given interface (even when chain or table is defined)"
 	echo " stop    - process all tables and chains for given interface (even when chain or table is defined)"
