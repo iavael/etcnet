@@ -1,12 +1,12 @@
-0.8.3
+0.8.3	2006-05-15
 	bugfix: trim lines read from config files to avoid xargs concatenate them
 	bugfix: allow custom 'dev' in ipv4route/ipv6route
 	bugfix: handle VERBOSE and PROGRESS again
-0.8.2 2005-03-31
+0.8.2 2006-03-31
 	bugfix: ifplugd code
 	bugfix: profile name detection
 	change: DONT_FLUSH is considered on ifdown too
-0.8.1 2005-01-23
+0.8.1 2006-01-23
 	bugfix: nullglob shell option was breaking egrep call
 0.8.0 2005-12-29
 	bugfix: IPv6/sit
