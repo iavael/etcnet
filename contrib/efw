@@ -195,17 +195,17 @@ case "$FW_TYPE" in
 		}
 		case "$ACTION" in
 			start)
-				iptabled_preload
-				iptables_local_start "$NAME"
+				iptables_preload
+				iptables_start "$NAME"
 				;;
 			stop)
-				iptabled_preload
-				iptables_local_stop "$NAME"
+				iptables_preload
+				iptables_stop "$NAME"
 				;;
 			restart)
-				iptabled_preload
-				iptables_local_stop "$NAME"
-				iptables_local_start "$NAME"
+				iptables_preload
+				iptables_stop "$NAME"
+				iptables_start "$NAME"
 				;;
 			load)
 				iptables_preload
