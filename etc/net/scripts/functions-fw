@@ -329,7 +329,7 @@ iptables_stop()
 					iptables_flush_rules_from_file "$TABLE" "$CHAIN"
 				done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
 			else
-				for chain in "$TABLE"/*; do
+				for CHAIN in "$TABLE"/*; do
 					CHAIN=`basename $CHAIN`
 					iptables_flush_rules_from_file "$TABLE" "$CHAIN"
 				done
