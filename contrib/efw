@@ -6,16 +6,14 @@
 # 1. When interface is 'all' we can't guess correct interfaces processing order
 #    like etcnet does so process it by bash sort order
 # 2. Guessing may not work correct
-# 3. Что будет, если указано: efw rule "some rule"? оно же попадет под полный
-# разбор и заглючит, если $#==4
 
 # default values
-NAME=default
-TABLE=filter
-CHAIN=
-MYIFACEDIR=
-TABLES="mangle filter nat"
-ACTIONS="start stop restart load unload reload flush show list count counters rule"
+local NAME=default
+local TABLE=filter
+local CHAIN=
+local MYIFACEDIR=
+local TABLES="mangle filter nat"
+local ACTIONS="start stop restart load unload reload flush show list count counters rule"
 
 usage()
 {
@@ -177,9 +175,6 @@ echo "chain is $CHAIN"
 echo "action is $ACTION"
 echo ""
 
-export table=$TABLE
-export chain=$TABLE/$CHAIN
-
 SourceIfNotEmpty "$MYIFACEDIR/fw/options"
 
 case "$FW_TYPE" in
@@ -188,9 +183,9 @@ case "$FW_TYPE" in
 		# Load own interface syntax if exists
 		[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && {
 			[ -f "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && {
-				IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$FW_TYPE"
-				export iptables_syntax=
-				export iptables_sed_rules=
+				export IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$FW_TYPE"
+				export IPTABLES_SYNTAX=
+				export IPTABLES_SED_RULES=
 			}
 		}
 		case "$ACTION" in
@@ -210,18 +205,18 @@ case "$FW_TYPE" in
 			load)
 				iptables_preload
 				cd $MYIFACEDIR/fw/$FW_TYPE/
-				iptables_load_rules_from_file
+				iptables_load_rules_from_file "$TABLE" "$CHAIN"
 				;;
 			unload)
 				iptables_preload
 				cd $MYIFACEDIR/fw/$FW_TYPE/
-				iptables_flush_rules_from_file
+				iptables_flush_rules_from_file "$TABLE" "$CHAIN"
 				;;
 			reload)
 				iptables_preload
 				cd $MYIFACEDIR/fw/$FW_TYPE/
-				iptables_flush_rules_from_file
-				iptables_load_rules_from_file
+				iptables_flush_rules_from_file "$TABLE" "$CHAIN"
+				iptables_load_rules_from_file "$TABLE" "$CHAIN"
 				;;
 			flush)
 				iptables_local_flush
