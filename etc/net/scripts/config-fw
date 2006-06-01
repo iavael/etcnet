@@ -11,9 +11,6 @@ usage()
 
 [ -z "$1" -o -z "$2" ] && usage
 
-local NAME
-local ACTION
-
 NAME=$1
 ACTION=$2
 

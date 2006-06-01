@@ -8,12 +8,12 @@
 # 2. Guessing may not work correct
 
 # default values
-local NAME=default
-local TABLE=filter
-local CHAIN=
-local MYIFACEDIR=
-local TABLES="mangle filter nat"
-local ACTIONS="start stop restart load unload reload flush show list count counters rule"
+NAME=default
+TABLE=filter
+CHAIN=
+MYIFACEDIR=
+TABLES="mangle filter nat"
+ACTIONS="start stop restart load unload reload flush show list count counters rule"
 
 usage()
 {
