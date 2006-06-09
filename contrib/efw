@@ -162,7 +162,7 @@ iptables_local_load_rules_from_file()
 		[ -d "$CTABLE" ] || continue
 		for CCHAIN in "$CTABLE"/$CHAIN; do
 			CCHAIN=`basename $CCHAIN`
-			[ "$CTABLE/$CCHAIN" = "loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ] || [ ! -s "$CTABLE/$CCHAIN" ] && continue
+			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ] || [ ! -s "$CTABLE/$CCHAIN" ] && continue
 			iptables_load_rules_from_file "$CTABLE" "$CCHAIN"
 		done
 	done
@@ -177,7 +177,7 @@ iptables_local_flush_rules_from_file()
 		[ -d "$CTABLE" ] || continue
 		for CCHAIN in "$CTABLE"/$CHAIN; do
 			CCHAIN=`basename $CCHAIN`
-			[ "$CTABLE/$CCHAIN" = "loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ] || [ ! -s "$CTABLE/$CCHAIN" ] && continue
+			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ] || [ ! -s "$CTABLE/$CCHAIN" ] && continue
 			iptables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$@"
 		done
 	done
