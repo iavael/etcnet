@@ -19,9 +19,9 @@ usage()
 {
 	echo "Usage: $0 [iface] [table] [chain] <action> [iptables rule or action options]" >&2
 	echo ""
-	echo " iface   - 'default' (by default) or real interface name"
-	echo " table   - 'mangle', 'filter' (by default), 'nat'"
-	echo " chain   -  system or user defined chain name (case sensitive!)"
+	echo " iface   - 'default' (by default), real interface name or 'all' for all interfaces"
+	echo " table   - 'mangle', 'filter' (by default), 'nat' or 'all' for all tables"
+	echo " chain   -  system or user defined chain name (case sensitive!) or 'all' for all chains"
 	echo " action  - 'start','stop','restart','load','unload','reload','flush','show','list,''count','counters','rule'"
 	echo ""
 	echo " start   - process all tables and chains for given interface (even when chain or table is defined)"
@@ -53,15 +53,15 @@ guess_options()
 	[ $# -ge 4 ] && 
 	{
 		NAME="$1"
-		[ "$NAME" != 'default' ] && 
+		[ "$NAME" != "default" ] && [ "$NAME" != "all" ] && 
 		{
 			[ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
 			[ -d "$MYIFACEDIR" ] || {
-				print_error "interface configuration directory '$MYIFACEDIR' not found"
+				print_error "interface configuration directory $MYIFACEDIR not found"
 				exit 1
 			}
 		}
-		egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" ||
+		[ "$2" = "all" ] || egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" ||
 		{
 			print_error "Unknown firewall table $2"
 			exit 1
@@ -78,7 +78,7 @@ guess_options()
 	# Three options. Guess first and shift
 	[ $# -eq 3 ] && 
 	{
-			[ "$1" != 'default' ] && 
+			[ "$1" != "default" ] && [ "$1" != "all" ]  && 
 			{
 				# May be it's and interface name
 				[ -d $IFACEDIR/$1@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$1@$NETHOST || MYIFACEDIR=$IFACEDIR/$1
@@ -86,12 +86,14 @@ guess_options()
 				{
 					# Yes, it's an interface name
 					NAME="$1"
-					egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" || CHAIN="$2"
+					{
+						[ "$2" = "all" ] || egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2"
+					} || CHAIN="$2"
 				} ||
 				{
 					# No, it's not an interface name
 					MYIFACEDIR=
-					egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$TABLES") && 
+					[ "$1" = "all" } || egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$TABLES") && 
 					{
 						TABLE="$1"
 						CHAIN="$2"
@@ -103,9 +105,11 @@ guess_options()
 				}
 			} ||
 			{
-				# Yes, it's an interface name
+				# Yes, it's an interface name or 'all'
 				NAME="$1"
-				egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" || CHAIN="$2"
+				{
+					[ "$2" = "all" ] || egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2"
+				} || CHAIN="$2"
 			}
 			shift 2
 	}
@@ -113,7 +117,7 @@ guess_options()
 	# Two options. Guest first and shift
 	[ $# -eq 2 ] && 
 	{
-		[ "$1" != 'default' ] && 
+		[ "$1" != "default" ] && [ "$1" != "all" ] && 
 			{
 				# May be it's and interface name
 				[ -d $IFACEDIR/$1@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$1@$NETHOST || MYIFACEDIR=$IFACEDIR/$1
@@ -125,11 +129,13 @@ guess_options()
 				{
 					# No
 					MYIFACEDIR=
-					egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$1" || CHAIN="$1"
+					{
+						[ "$1" = "all" ] || egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$1"
+					} || CHAIN="$1"
 				}
 			} ||
 			{
-				# Yes, it's an interface name
+				# Yes, it's an interface name or 'all'
 				NAME="$1"
 			}
 			shift
@@ -144,6 +150,37 @@ guess_options()
 			exit 1
 		}
 	}
+}
+
+
+iptables_local_load_rules_from_file()
+{
+	[ "$TABLE" = "all" ] && TABLE="*"
+	[ "$CHAIN" = "all" ] && CHAIN="*"
+	
+	for CTABLE in $TABLE; do
+		[ -d "$CTABLE" ] || continue
+		for CCHAIN in "$CTABLE"/$CHAIN; do
+			CCHAIN=`basename $CCHAIN`
+			[ "$CTABLE/$CCHAIN" = "loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ] || [ ! -s "$CTABLE/$CCHAIN" ] && continue
+			iptables_load_rules_from_file "$CTABLE" "$CCHAIN"
+		done
+	done
+}
+
+iptables_local_flush_rules_from_file()
+{
+	[ "$TABLE" = "all" ] && TABLE="*"
+	[ "$CHAIN" = "all" ] && CHAIN="*"
+	
+	for CTABLE in $TABLE; do
+		[ -d "$CTABLE" ] || continue
+		for CCHAIN in "$CTABLE"/$CHAIN; do
+			CCHAIN=`basename $CCHAIN`
+			[ "$CTABLE/$CCHAIN" = "loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ] || [ ! -s "$CTABLE/$CCHAIN" ] && continue
+			iptables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$@"
+		done
+	done
 }
 
 
@@ -165,78 +202,82 @@ fi
 
 [ $# -lt 1 ] && usage || guess_options $@
 
-[ -z "$MYIFACEDIR" ] && {
-	[ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
-}
-
 echo "interface is $NAME"
 echo "table is $TABLE"
 echo "chain is $CHAIN"
 echo "action is $ACTION"
 echo ""
 
-SourceIfNotEmpty "$MYIFACEDIR/fw/options"
+[ "$NAME" = "all" ] && NAME="*"
 
-case "$FW_TYPE" in
-	iptables)
-	 	[ -d "$MYIFACEDIR/fw/$FW_TYPE" ] || exit 0
-		# Load own interface syntax if exists
-		[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && {
-			[ -f "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && {
-				export IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$FW_TYPE"
-				export IPTABLES_SYNTAX=
-				export IPTABLES_SED_RULES=
+for IFACE in "$IFACEDIR"/$NAME; do
+	[ -d "$IFACE" ] || continue
+	NAME=`basename $IFACE`
+	[ -z "$MYIFACEDIR" ] && {
+		[ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
+	}
+	SourceIfNotEmpty "$MYIFACEDIR/fw/options"
+	case "$FW_TYPE" in
+		iptables)
+		 	[ -d "$MYIFACEDIR/fw/$FW_TYPE" ] || continue
+			# Load own interface syntax if exists
+			[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && {
+				[ -f "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && {
+					export IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$FW_TYPE"
+					export IPTABLES_SYNTAX=
+					export IPTABLES_SED_RULES=
+				}
 			}
-		}
-		case "$ACTION" in
-			start)
-				iptables_preload
-				iptables_start "$NAME"
-				;;
-			stop)
-				iptables_preload
-				iptables_stop "$NAME"
-				;;
-			restart)
-				iptables_preload
-				iptables_stop "$NAME"
-				iptables_start "$NAME"
-				;;
-			load)
-				iptables_preload
-				cd $MYIFACEDIR/fw/$FW_TYPE/
-				iptables_load_rules_from_file "$TABLE" "$CHAIN"
-				;;
-			unload)
-				iptables_preload
-				cd $MYIFACEDIR/fw/$FW_TYPE/
-				iptables_flush_rules_from_file "$TABLE" "$CHAIN"
-				;;
-			reload)
-				iptables_preload
-				cd $MYIFACEDIR/fw/$FW_TYPE/
-				iptables_flush_rules_from_file "$TABLE" "$CHAIN"
-				iptables_load_rules_from_file "$TABLE" "$CHAIN"
-				;;
-			flush)
-				iptables_local_flush
-				;;
-			show|list)
-				iptables_local_show
-				;;
-			count|counters)
-				iptables_local_count
-				;;
-			rule)
-				iptables_local_rule
-				;;
-			*)
-				usage
-				;;
-#start stop restart load unload reload flush show count rule				
-		esac
-		;;
-	*)
-		echo "Firewall type $FW_TYPE isn't supported"
-esac
-
+			case "$ACTION" in
+				start)
+					iptables_preload
+					iptables_start "$NAME"
+					;;
+				stop)
+					iptables_preload
+					iptables_stop "$NAME"
+					;;
+				restart)
+					iptables_preload
+					iptables_stop "$NAME"
+					iptables_start "$NAME"
+					;;
+				load)
+					iptables_preload
+					cd $MYIFACEDIR/fw/$FW_TYPE/
+					iptables_local_load_rules_from_file
+					;;
+				unload)
+					iptables_preload
+					cd $MYIFACEDIR/fw/$FW_TYPE/
+					iptables_local_flush_rules_from_file
+					;;
+				reload)
+					iptables_preload
+					cd $MYIFACEDIR/fw/$FW_TYPE/
+					iptables_local_flush_rules_from_file
+					iptables_local_load_rules_from_file
+					;;
+				flush)
+					iptables_preload
+					cd $MYIFACEDIR/fw/$FW_TYPE/
+					iptables_local_flush_rules_from_file flush
+					;;
+				show|list)
+					iptables_local_show
+					;;
+				count|counters)
+					iptables_local_count
+					;;
+				rule)
+					iptables_local_rule
+					;;
+				*)
+					usage
+					;;
+			esac
+			;;
+		*)
+			echo "Firewall type $FW_TYPE isn't supported"
+	esac
+done

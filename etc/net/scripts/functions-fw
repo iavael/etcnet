@@ -126,6 +126,7 @@ iptables_preload()
 		}			
 }
 
+# iptables_load_rules_from_file <table> <chain>
 iptables_load_rules_from_file()
 {
 	local RULE
@@ -168,6 +169,7 @@ iptables_load_rules_from_file()
 	fi
 }
 
+# iptables_flush_rules_from_file <table> <chain> [flush]
 iptables_flush_rules_from_file()
 {
 	local RULE
@@ -179,7 +181,7 @@ iptables_flush_rules_from_file()
 	TABLE="$1"
 	CHAIN="$2"
 	if [ -f "$TABLE/$CHAIN" ] && [ -s "$TABLE/$CHAIN" ]; then
-		if [ "$NAME" != "default" ]; then
+		if [ "$NAME" != "default" ] && [ "$3" != "flush" ]; then
 			print_message "Unloading rules for chain $CHAIN in table $TABLE"
 			RULES=$(tac "$TABLE/$CHAIN")
 			while read RULE; do
