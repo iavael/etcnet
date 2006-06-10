@@ -13,7 +13,7 @@ TABLE=filter
 CHAIN=
 MYIFACEDIR=
 TABLES="mangle filter nat"
-ACTIONS="start stop restart load unload reload flush show list count counters rule"
+ACTIONS="start stop restart load unload reload flush show list count counters rule policy"
 
 usage()
 {
@@ -22,7 +22,7 @@ usage()
 	echo " iface   - 'default' (by default), real interface name or 'all' for all interfaces"
 	echo " table   - 'mangle', 'filter' (by default), 'nat' or 'all' for all tables"
 	echo " chain   -  system or user defined chain name (case sensitive!) or 'all' for all chains"
-	echo " action  - 'start','stop','restart','load','unload','reload','flush','show','list,''count','counters','rule'"
+	echo " action  - 'start','stop','restart','load','unload','reload','flush','show','list,''count','counters','rule','policy'"
 	echo ""
 	echo " start   - process all tables and chains for given interface (even when chain or table is defined)"
 	echo " stop    - process all tables and chains for given interface (even when chain or table is defined)"
@@ -36,6 +36,7 @@ usage()
 	echo " count   - show counters for given table and chains"
 	echo " counters - same as count"
 	echo " rule    - parse rule and pass it to iptables"
+	echo " policy  - set default policy for chain"
 	echo ""
 	echo "Options for action 'show' or 'list':"
 	echo " -n or numeric - numeric output for IP addresses, ports and services"
@@ -153,7 +154,7 @@ guess_options()
 }
 
 
-iptables_local_load_rules_from_file()
+iptables_local_rules_from_file()
 {
 	[ "$TABLE" = "all" ] && TABLE="*"
 	[ "$CHAIN" = "all" ] && CHAIN="*"
@@ -163,22 +164,46 @@ iptables_local_load_rules_from_file()
 		for CCHAIN in "$CTABLE"/$CHAIN; do
 			CCHAIN=`basename $CCHAIN`
 			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ] || [ ! -s "$CTABLE/$CCHAIN" ] && continue
-			iptables_load_rules_from_file "$CTABLE" "$CCHAIN"
+			[ "$1" = "unload" ] && iptables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" \
+			|| iptables_load_rules_from_file "$CTABLE" "$CCHAIN"
 		done
 	done
 }
 
-iptables_local_flush_rules_from_file()
+iptables_local_rule()
 {
+	local RULE
 	[ "$TABLE" = "all" ] && TABLE="*"
 	[ "$CHAIN" = "all" ] && CHAIN="*"
-	
+	RULE=`iptables_expand_string $@`
+	[ -z "$RULE" ] && return
 	for CTABLE in $TABLE; do
 		[ -d "$CTABLE" ] || continue
 		for CCHAIN in "$CTABLE"/$CHAIN; do
 			CCHAIN=`basename $CCHAIN`
-			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ] || [ ! -s "$CTABLE/$CCHAIN" ] && continue
-			iptables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$@"
+			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] && continue
+			read FIRST SECOND REST < <(echo $RULE)
+		    	case $FIRST in
+					"-A"|"-D")
+		        		iptables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
+						;;
+					"-P")
+		        		iptables_push_rule $FIRST $CCHAIN $SECOND $REST -t $CTABLE
+						;;
+					"-I")
+						case $SECOND in
+						    [0-9]*)
+			        			iptables_push_rule $FIRST $CCHAIN $SECOND -t $CTABLE $REST
+							    ;;
+							*)
+			        			iptables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
+								;;
+						esac
+						;;					    
+					*)
+		        		iptables_push_rule $CCHAIN -t $CTABLE $FIRST $SECOND $REST
+						;;
+				esac
 		done
 	done
 }
@@ -252,23 +277,23 @@ for IFACE in "$IFACEDIR"/$NAME; do
 				load)
 					iptables_preload
 					cd $MYIFACEDIR/fw/$FW_TYPE/
-					iptables_local_load_rules_from_file
+					iptables_local_rules_from_file
 					;;
 				unload)
 					iptables_preload
 					cd $MYIFACEDIR/fw/$FW_TYPE/
-					iptables_local_flush_rules_from_file
+					iptables_local_rules_from_file unload
 					;;
 				reload)
 					iptables_preload
 					cd $MYIFACEDIR/fw/$FW_TYPE/
-					iptables_local_flush_rules_from_file
-					iptables_local_load_rules_from_file
+					iptables_local_rules_from_file unload
+					iptables_local_rules_from_file
 					;;
 				flush)
 					iptables_preload
 					cd $MYIFACEDIR/fw/$FW_TYPE/
-					iptables_local_flush_rules_from_file flush
+					iptables_local_rules_from_file unload flush
 					;;
 				show|list)
 					iptables_local_show
@@ -277,7 +302,16 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					iptables_local_count
 					;;
 				rule)
-					iptables_local_rule
+					shift 4
+					iptables_preload
+					cd $MYIFACEDIR/fw/$FW_TYPE/
+					iptables_local_rule "$@"
+					;;
+				policy)
+					shift 3
+					iptables_preload
+					cd $MYIFACEDIR/fw/$FW_TYPE/
+					iptables_local_rule "$@"
 					;;
 				*)
 					usage

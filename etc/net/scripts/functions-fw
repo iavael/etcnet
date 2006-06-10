@@ -24,22 +24,22 @@ iptables_push_rule()
 {
 	: ${@:?missing args to $FUNCNAME}
     case $1 in
-	"-A"|"-I"|"-D")
+	"-A"|"-I"|"-D"|"-P")
 	    eval "$IPTABLES $@" || print_error "$IPTABLES $@"
-	;;
+		;;
 	*)
-    	    case ${IPTABLES_RULE_EMBEDDING:APPEND} in
+        case ${IPTABLES_RULE_EMBEDDING:APPEND} in
     		APPEND)
-	    	    eval "$IPTABLES -A $@" || print_error "$IPTABLES -A $@"
-		;;
-		INSERT)
-	    	    eval "$IPTABLES -I $@" || print_error "$IPTABLES -I $@"
-		;;
-		*)
-		print_error "Unknown type of rule embedding $IPTABLES_RULE_EMBEDDING"
-		;;
+	   			    eval "$IPTABLES -A $@" || print_error "$IPTABLES -A $@"
+					;;
+			INSERT)
+	    	    	eval "$IPTABLES -I $@" || print_error "$IPTABLES -I $@"
+					;;
+			*)
+					print_error "Unknown type of rule embedding $IPTABLES_RULE_EMBEDDING"
+					;;
 	    esac
-	;;
+		;;
     esac
 }
 
@@ -50,26 +50,29 @@ iptables_pop_rule()
 	"-A")
 	    shift
 	    eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"	    	    
-	;;
+		;;
 	"-I")
 	    PRE="$2"
 		case $3 in
 			[0-9]*)
 				shift 3
-			;;
+				;;
 			*)
 				shift 2
-			;;
+				;;
 		esac
 	    eval "$IPTABLES -D $PRE $@" || print_error "$IPTABLES -D $PRE $@"
-	;;	
+		;;	
 	"-D")
 	    shift
 	    iptables_push_rule $@
-	;;
+		;;
+	"-P")
+		continue
+		;;
 	*)
         eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"	    	        	
-	;;
+		;;
     esac
 }
 
@@ -111,9 +114,9 @@ iptables_expand_string()
 	local RULE
 	if is_yes "$IPTABLES_HUMAN_SYNTAX"; then
 		[ -z "$IPTABLES_SED_RULES" ] && print_error "Human syntax is enabled but no syntax file is loaded"
-		RULE=$(eval "echo $1"|sed  -e "$IPTABLES_SED_RULES;s/\ \ /\ /g;")
+		RULE=$(eval "echo $@"|sed  -e "$IPTABLES_SED_RULES;s/\ \ /\ /g;")
 	else
-		RULE=$(eval "echo $1")
+		RULE=$(eval "echo $@")
 	fi
 	echo "$RULE"|egrep -q "^[^#]" && echo "$RULE" || echo ""
 }
@@ -146,21 +149,24 @@ iptables_load_rules_from_file()
 				    read FIRST SECOND REST < <(echo $RULE)
     					case $FIRST in
 					    "-A"|"-D")
-        					iptables_push_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
-						;;
+    	    					iptables_push_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
+								;;
 					    "-I")
-						case $SECOND in
-						    [0-9]*)
-	        					iptables_push_rule $FIRST $CHAIN $SECOND -t $TABLE $REST
-						    ;;
-						    *)
-	        					iptables_push_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
-						    ;;
-						esac
-						;;					    
+								case $SECOND in
+							    	[0-9]*)
+			        						iptables_push_rule $FIRST $CHAIN $SECOND -t $TABLE $REST
+									    	;;
+							   		 *)
+		        							iptables_push_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
+									    	;;
+								esac
+								;;
+						"-P")
+	        					iptables_push_rule $FIRST $CHAIN $SECOND $REST -t $TABLE
+								;;
 					    *)
-        					iptables_push_rule $CHAIN -t $TABLE $FIRST $SECOND $REST
-					    ;;
+    	    					iptables_push_rule $CHAIN -t $TABLE $FIRST $SECOND $REST
+						    	;;
 						esac
 				}
 				print_progress
@@ -190,21 +196,24 @@ iptables_flush_rules_from_file()
 				    read  FIRST SECOND REST < <(echo $RULE)
 					case $FIRST in
 					    "-A"|"-D")
-        					iptables_pop_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
-						;;
+        						iptables_pop_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
+								;;
 					    "-I")
-						case $SECOND in
-						    [0-9]*)
-	        					iptables_pop_rule $FIRST $CHAIN $SECOND -t $TABLE $REST
-						    ;;
-						    *)
-	        					iptables_pop_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
-						    ;;
-						esac
-						;;					    
+								case $SECOND in
+								    [0-9]*)
+				        					iptables_pop_rule $FIRST $CHAIN $SECOND -t $TABLE $REST
+										    ;;
+								    *)
+	        								iptables_pop_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
+										    ;;
+								esac
+								;;
+						"-P")
+        						iptables_pop_rule $FIRST $CHAIN $SECOND $REST -t $TABLE
+								;;
 					    *)
-        					iptables_pop_rule $CHAIN -t $TABLE $FIRST $SECOND $REST
-					    ;;
+        						iptables_pop_rule $CHAIN -t $TABLE $FIRST $SECOND $REST
+							    ;;
 						esac
 				}				
 				print_progress
