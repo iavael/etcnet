@@ -24,7 +24,7 @@ iptables_push_rule()
 {
 	: ${@:?missing args to $FUNCNAME}
     case $1 in
-	"-A"|"-I"|"-D"|"-P")
+	"-A"|"-I"|"-D")
 	    eval "$IPTABLES $@" || print_error "$IPTABLES $@"
 		;;
 	*)
@@ -161,9 +161,6 @@ iptables_load_rules_from_file()
 									    	;;
 								esac
 								;;
-						"-P")
-	        					iptables_push_rule $FIRST $CHAIN $SECOND $REST -t $TABLE
-								;;
 					    *)
     	    					iptables_push_rule $CHAIN -t $TABLE $FIRST $SECOND $REST
 						    	;;
@@ -207,9 +204,6 @@ iptables_flush_rules_from_file()
 	        								iptables_pop_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
 										    ;;
 								esac
-								;;
-						"-P")
-        						iptables_pop_rule $FIRST $CHAIN $SECOND $REST -t $TABLE
 								;;
 					    *)
         						iptables_pop_rule $CHAIN -t $TABLE $FIRST $SECOND $REST

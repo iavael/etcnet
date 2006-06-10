@@ -308,10 +308,10 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					iptables_local_rule "$@"
 					;;
 				policy)
-					shift 3
+					shift 4
 					iptables_preload
 					cd $MYIFACEDIR/fw/$FW_TYPE/
-					iptables_local_rule "$@"
+					iptables_local_rule "-P $@"
 					;;
 				*)
 					usage

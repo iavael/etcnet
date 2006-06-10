@@ -1,5 +1,5 @@
 # All chains and targets are case-sensitive !
-policy: -P
+policy: 
 insert: -I
 ins: -I
 append: -A
