@@ -30,25 +30,20 @@ bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, usbnet
 and PPP. Due to its modular structure, support for new interface types can be
 added without overall design changes.
 
-%package full
-Summary:	/etc/net plus everything it can work with
-Summary(ru_RU.KOI8-R): /etc/net и всё, с чем он может работать
-Group:		System/Configuration/Networking
-Requires:	%name = %version-%release, wireless-tools
-Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables
-Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2, ipsecadm >= 0.9-alt8
-Requires:	hotplug, ncpfs, pcmcia-cs >= 3.2.8-alt2, ppp, vlan-utils24
-Requires:	pptp-client, wpa_supplicant, zcip, rp-pppoe-base >= 3.6-alt2
-
-%description full
-This virtual package requires /etc/net and all packages that may appear useful
-for /etc/net. Accurate requirements should result in correct package versions
-in ALTLinux system.
-
-%description -l ru_RU.KOI8-R full
-Этот виртуальный пакет требует /etc/net и все пакеты, которые могут оказаться
-полезными для /etc/net. Точные зависимости должны обеспечивать правильные версии
-пакетов в системе ALTLinux.
+# This is yet to be researched on Fedora.
+#%package full
+#Summary:	/etc/net plus everything it can work with
+#Group:		System/Configuration/Networking
+#Requires:	%name = %version-%release, wireless-tools
+#Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables
+#Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2, ipsecadm >= 0.9-alt8
+#Requires:	hotplug, ncpfs, pcmcia-cs >= 3.2.8-alt2, ppp, vlan-utils24
+#Requires:	pptp-client, wpa_supplicant, zcip, rp-pppoe-base >= 3.6-alt2
+#
+#%description full
+#This virtual package requires /etc/net and all packages that may appear useful
+#for /etc/net. Accurate requirements should result in correct package versions
+#in ALTLinux system.
 
 
 %prep
@@ -110,11 +105,11 @@ fi
 /sbin/ifup
 /sbin/ifdown
 
-%files full
+#%files full
 
 %clean
 rm -rf %{buildroot}
 
 %changelog
-* Thu Dec 29 2005 Denis Ovsienko <linux@pilot.org.ua> - 0.8.3-1
+* Thu Jun 15 2006 Denis Ovsienko <linux@pilot.org.ua> - 0.8.3-fc5.0.test4
 - initial Fedora build
