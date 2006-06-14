@@ -3,8 +3,8 @@
 pickup_defaults
 pickup_options
 
-: ${TUNLOCAL:?missing PHYSLOCAL}
-: ${TUNREMOTE:?missing PHYSREMOTE}
+: ${TUNLOCAL:?missing TUNLOCAL}
+: ${TUNREMOTE:?missing TUNREMOTE}
 : ${TUNSPI:?missing SPI}
 
 [ -x "${IPSECADM:=$DEFAULT_IPSECADM}" ] || {
