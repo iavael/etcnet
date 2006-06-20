@@ -13,30 +13,36 @@ TABLE=filter
 CHAIN=
 MYIFACEDIR=
 TABLES="mangle filter nat"
-ACTIONS="start stop restart load unload reload flush show list count counters rule policy"
+ACTIONS="start stop restart load unload reload flush show list count counters rule new create remove delete zero policy rename"
 
 usage()
 {
 	echo "Usage: $0 [iface] [table] [chain] <action> [iptables rule or action options]" >&2
 	echo ""
-	echo " iface   - 'default' (by default), real interface name or 'all' for all interfaces"
-	echo " table   - 'mangle', 'filter' (by default), 'nat' or 'all' for all tables"
-	echo " chain   -  system or user defined chain name (case sensitive!) or 'all' for all chains"
-	echo " action  - 'start','stop','restart','load','unload','reload','flush','show','list,''count','counters','rule','policy'"
+	echo " iface    - 'default' (by default), real interface name or 'all' for all interfaces"
+	echo " table    - 'mangle', 'filter' (by default), 'nat' or 'all' for all tables"
+	echo " chain    -  system or user defined chain name (case sensitive!) or 'all' for all chains"
+	echo " action   - 'start','stop','restart','load','unload','reload','flush','show|list','count|counters','rule','new|create','remove|delete','zero','policy','rename'"
 	echo ""
-	echo " start   - process all tables and chains for given interface (even when chain or table is defined)"
-	echo " stop    - process all tables and chains for given interface (even when chain or table is defined)"
-	echo " restart - equivalent to stop then start"	  
-	echo " load    - load rules for given interface, table and chain"
-	echo " unload  - unload rules for given interface, table and chain"
-	echo " reload  - equivalent to unload then load"	  
-	echo " flush   - flush rules for given interface, table and chain"
-	echo " show    - list rules for given interface, table and chain"
-	echo " list    - same as show"
-	echo " count   - show counters for given table and chains"
+	echo " start    - process all tables and chains for given interface (even when chain or table is defined)"
+	echo " stop     - process all tables and chains for given interface (even when chain or table is defined)"
+	echo " restart  - equivalent to stop then start"	  
+	echo " load     - load rules for given interface, table and chain"
+	echo " unload   - unload rules for given interface, table and chain"
+	echo " reload   - equivalent to unload then load"	  
+	echo " flush    - flush rules for given interface, table and chain"
+	echo " show     - list rules for given interface, table and chain"
+	echo " list     - same as show"
+	echo " count    - show counters for given table and chains"
 	echo " counters - same as count"
-	echo " rule    - parse rule and pass it to iptables"
-	echo " policy  - set default policy for chain"
+	echo " rule     - parse rule and pass it to iptables"
+	echo " new      - create new chain"
+	echo " create   - same as new"
+	echo " remove   - remove chain"
+	echo " delete   - same as remove"
+	echo " zero     - zero packet and byte counters in chain"
+	echo " policy   - set default policy for chain"
+	echo " rename   - rename chain"
 	echo ""
 	echo "Options for action 'show' or 'list':"
 	echo " -n or numeric - numeric output for IP addresses, ports and services"
@@ -212,8 +218,19 @@ iptables_local_rule()
 export VERBOSE=on
 export PROGRESS=on
 
+if [ ! -s ${SCRIPTDIR:=/etc/net/scripts}/functions ]; then
+        echo "Error: $SCRIPTDIR/functions not found!"
+		exit 1
+fi
+
 . ${SCRIPTDIR:=/etc/net/scripts}/functions
 pickup_defaults
+
+if [ ! -s ${SCRIPTDIR:=/etc/net/scripts}/functions-fw ]; then
+        echo "Error: $SCRIPTDIR/functions-fw not found!"
+		exit 1
+fi
+
 . ${SCRIPTDIR:=/etc/net/scripts}/functions-fw
 
 [ -z "$NETPROFILE" ] && init_netprofile
@@ -296,10 +313,12 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					iptables_local_rules_from_file unload flush
 					;;
 				show|list)
-					iptables_local_show
+					echo "Not implemented yet"
+					exit 1
 					;;
 				count|counters)
-					iptables_local_count
+					echo "Not implemented yet"
+					exit 1
 					;;
 				rule)
 					shift 4
@@ -307,11 +326,27 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					cd $MYIFACEDIR/fw/$FW_TYPE/
 					iptables_local_rule "$@"
 					;;
+				new|create)
+					echo "Not implemented yet"
+					exit 1
+					;;
+				remove|delete)
+					echo "Not implemented yet"
+					exit 1
+					;;
+				zero)
+					echo "Not implemented yet"
+					exit 1
+					;;
 				policy)
 					shift 4
 					iptables_preload
 					cd $MYIFACEDIR/fw/$FW_TYPE/
 					iptables_local_rule "-P $@"
+					;;
+				rename)
+					echo "Not implemented yet"
+					exit 1
 					;;
 				*)
 					usage

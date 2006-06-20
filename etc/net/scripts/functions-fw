@@ -20,6 +20,21 @@ iptables_flush_chain()
 	eval "$IPTABLES -F $@" || print_error "$IPTABLES -F $@"
 }
 
+iptables_zero_chain()
+{
+	eval "$IPTABLES -Z $@" || print_error "$IPTABLES -Z $@"
+}
+
+iptables_rename_chain()
+{
+	eval "$IPTABLES -E $@" || print_error "$IPTABLES -E $@"
+}
+
+iptables_list_chain()
+{
+	eval "$IPTABLES -L $@" || print_error "$IPTABLES -L $@"
+}
+
 iptables_push_rule()
 {
 	: ${@:?missing args to $FUNCNAME}
