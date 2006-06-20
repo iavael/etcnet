@@ -194,7 +194,7 @@ iptables_local_rule()
 		        		iptables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
 						;;
 					"-P")
-		        		iptables_push_rule $FIRST $CCHAIN $SECOND $REST -t $CTABLE
+		 	      		iptables_chain_policy `echo $CCHAIN $SECOND $REST -t $CTABLE|sed -e 's/-j//g'`
 						;;
 					"-I")
 						case $SECOND in
@@ -211,6 +211,55 @@ iptables_local_rule()
 						;;
 				esac
 		done
+	done
+}
+
+iptables_local_create_chain()
+{
+	[ "$TABLE" = "all" ] && TABLE=$TABLES
+	for CTABLE in $TABLE; do
+		iptables_create_chain $CHAIN -t $CTABLE
+	done
+}
+
+iptables_local_delete_chain()
+{
+	[ "$TABLE" = "all" ] && TABLE=$TABLES
+	for CTABLE in $TABLE; do
+		# We can delete only user-defined chains so just don't pass chain name
+		# in case of 'all' chain
+		[ "$CHAIN" = "all" ] && iptables_delete_chain -t $CTABLE || iptables_delete_chain $CHAIN -t $CTABLE
+	done
+}
+
+iptables_local_list_chain()
+{
+	local LIST_ARGS
+	[ $# -eq 0 ] || 
+	{
+		iptables_preload
+		LIST_ARGS=`iptables_expand_string $@`
+	}
+	[ "$TABLE" = "all" ] && TABLE=$TABLES
+	for CTABLE in $TABLE; do
+		printf "\nTable $CTABLE\n\n"
+		[ "$CHAIN" = "all" ] && iptables_list_chain -t $CTABLE $LIST_ARGS || iptables_list_chain $CHAIN -t $CTABLE $LIST_ARGS
+	done
+}
+
+iptables_local_zero_chain()
+{
+	[ "$TABLE" = "all" ] && TABLE=$TABLES
+	for CTABLE in $TABLE; do
+		[ "$CHAIN" = "all" ] && iptables_zero_chain -t $CTABLE || iptables_zero_chain $CHAIN -t $CTABLE
+	done
+}
+
+iptables_local_rename_chain()
+{
+	[ "$TABLE" = "all" ] && TABLE=$TABLES
+	for CTABLE in $TABLE; do
+		iptables_rename_chain $CHAIN $@ -t $CTABLE
 	done
 }
 
@@ -313,40 +362,89 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					iptables_local_rules_from_file unload flush
 					;;
 				show|list)
-					echo "Not implemented yet"
-					exit 1
+					case $# in
+						1)
+							shift 1
+							;;
+						2)
+							shift 2
+							;;
+						3)
+							shift 3
+							;;
+						*)
+							shift 4
+							;;
+					esac
+					iptables_local_list_chain $@
 					;;
 				count|counters)
 					echo "Not implemented yet"
 					exit 1
 					;;
 				rule)
-					shift 4
+					case $# in
+						1)
+							shift 1
+							;;
+						2)
+							shift 2
+							;;
+						3)
+							shift 3
+							;;
+						*)
+							shift 4
+							;;
+					esac
 					iptables_preload
 					cd $MYIFACEDIR/fw/$FW_TYPE/
 					iptables_local_rule "$@"
 					;;
 				new|create)
-					echo "Not implemented yet"
-					exit 1
+					iptables_local_create_chain
 					;;
 				remove|delete)
-					echo "Not implemented yet"
-					exit 1
+					iptables_local_delete_chain
 					;;
 				zero)
-					echo "Not implemented yet"
-					exit 1
+					iptables_local_zero_chain
 					;;
 				policy)
-					shift 4
+					case $# in
+						1)
+							shift 1
+							;;
+						2)
+							shift 2
+							;;
+						3)
+							shift 3
+							;;
+						*)
+							shift 4
+							;;
+					esac
 					iptables_preload
 					cd $MYIFACEDIR/fw/$FW_TYPE/
 					iptables_local_rule "-P $@"
 					;;
 				rename)
-					echo "Not implemented yet"
-					exit 1
+					case $# in
+						1)
+							shift 1
+							;;
+						2)
+							shift 2
+							;;
+						3)
+							shift 3
+							;;
+						*)
+							shift 4
+							;;
+					esac
+					iptables_local_rename_chain $@
 					;;
 				*)
 					usage

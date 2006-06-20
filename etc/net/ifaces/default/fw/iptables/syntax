@@ -233,7 +233,12 @@ icmp: --protocol ICMP
 jump: -j 
 jump-to: -j
 any: 0.0.0.0/0
+numeric: -n
+exact: -x
+verbose: -v
+lines: --line-numbers
 with: 
+without: 
 and: 
 as: 
 if: 
