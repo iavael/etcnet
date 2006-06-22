@@ -65,3 +65,9 @@ NEVER_RMMOD=no
 # address for an interface, unless explicitly told. This option will add
 # 'broadcast +' to each IPv4 address line (see iproute2 manual).
 AUTO_BROADCAST=off
+
+IFGROUP[0]='lo dummy'
+IFGROUP[1]='eth plip usb dvb bnep'
+IFGROUP[2]='vlan bond bri teql'
+IFGROUP[3]='iptun ipsectun'
+IFGROUP[4]='ppp'

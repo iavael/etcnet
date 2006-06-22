@@ -1,3 +1,6 @@
+0.8.4
+	new feature: bluetooth (bnep) support
+	new feature: it is now possible to redefine interface groups
 0.8.3	2006-05-15
 	bugfix: trim lines read from config files to avoid xargs concatenate them
 	bugfix: allow custom 'dev' in ipv4route/ipv6route
