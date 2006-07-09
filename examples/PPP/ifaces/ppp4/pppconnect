@@ -1,0 +1,24 @@
+TIMEOUT         5
+#ECHO            ON
+ABORT           '\nBUSY\r'
+ABORT           '\nERROR\r'
+ABORT           '\nNO ANSWER\r'
+ABORT           '\nNO CARRIER\r'
+ABORT           '\nNO DIALTONE\r'
+ABORT           '\nRINGING\r\n\r\nRINGING\r'
+''              \rAT
+TIMEOUT         12
+SAY             "Press CTRL-C to close the connection at any stage!"
+SAY             "\nSetting up...\n"
+OK              ATH
+OK              "AT&D2&C1"
+OK              AT+CMEE=1
+SAY             "\ndefining PDP context...\n"
+OK              'ATE1+CGDCONT=1,"IP","internet.ltmsk"'
+OK              ATD*99**1*1#
+TIMEOUT         22
+SAY             "\nwaiting for connect...\n"
+CONNECT         ""
+SAY             "\nConnected."
+SAY             "\nIf the following ppp negotiations fail,\n"
+SAY             "try restarting the phone.\n"
