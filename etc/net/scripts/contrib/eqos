@@ -77,9 +77,11 @@ for IFACE in "$IFACEDIR"/$NAME; do
 	[ ! -d "$MYIFACEDIR/qos" ] &&
 	{
 		 echo "No QoS is configured for interface $NAME"
+		 echo ""
 		 MYIFACEDIR=""
 		 continue
 	}
+		export MYIFACEDIR
 		case "$ACTION" in
 			start)
 				echo "Start QoS for device $NAME:"
@@ -110,4 +112,5 @@ for IFACE in "$IFACEDIR"/$NAME; do
 		esac
 		echo ""
 		MYIFACEDIR=
+		export MYIFACEDIR
 done
