@@ -1,6 +1,5 @@
 #!/bin/bash
-# Firewall script
-#
+# etcnet firewall handler
 
 # Known issues:
 # 1. When interface is 'all' we can't guess correct interfaces processing order
@@ -17,6 +16,7 @@ ACTIONS="start stop restart load unload reload flush show list count counters ru
 
 usage()
 {
+	echo '/etc/net FireWall handler'
 	echo "Usage: $0 [iface] [table] [chain] <action> [iptables rule or action options]" >&2
 	echo ""
 	echo " iface    - 'default' (by default), real interface name or 'all' for all interfaces"
@@ -26,20 +26,20 @@ usage()
 	echo ""
 	echo " start    - process all tables and chains for given interface (even when chain or table is defined)"
 	echo " stop     - process all tables and chains for given interface (even when chain or table is defined)"
-	echo " restart  - equivalent to stop then start"	  
+	echo " restart  - equivalent to 'stop' then 'start'"
 	echo " load     - load rules for given interface, table and chain"
 	echo " unload   - unload rules for given interface, table and chain"
-	echo " reload   - equivalent to unload then load"	  
+	echo " reload   - equivalent to 'unload' then 'load'"
 	echo " flush    - flush rules for given interface, table and chain"
 	echo " show     - list rules for given interface, table and chain"
-	echo " list     - same as show"
+	echo " list     - same as 'show'"
 	echo " count    - show counters for given table and chains"
-	echo " counters - same as count"
+	echo " counters - same as 'count'"
 	echo " rule     - parse rule and pass it to iptables"
 	echo " new      - create new chain"
-	echo " create   - same as new"
+	echo " create   - same as 'new'"
 	echo " remove   - remove chain"
-	echo " delete   - same as remove"
+	echo " delete   - same as 'remove'"
 	echo " zero     - zero packet and byte counters in chain"
 	echo " policy   - set default policy for chain"
 	echo " rename   - rename chain"
@@ -49,6 +49,7 @@ usage()
 	echo " -v or verbose - verbose output of rules"
 	echo " -x or exact   - expand numbers instead of rounded numbers"
 	echo " --line-numbers or lines - display line number for each rule" 
+	echo ""
 	exit 1
 }
 
