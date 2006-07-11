@@ -76,6 +76,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 	}
 	[ ! -d "$MYIFACEDIR/qos" ] &&
 	{
+		 echo "No QoS is configured for interface $NAME"
 		 MYIFACEDIR=""
 		 continue
 	}
