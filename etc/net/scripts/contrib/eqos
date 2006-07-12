@@ -32,16 +32,18 @@ usage()
 # Be verbose in any way
 export VERBOSE=on
 export PROGRESS=on
+# We must define it
+export SCRIPTDIR=/etc/net/scripts
 
-if [ ! -s ${SCRIPTDIR:=/etc/net/scripts}/functions ]; then
+if [ ! -s $SCRIPTDIR/functions ]; then
         echo "Error: $SCRIPTDIR/functions not found!"
 		exit 1
 fi
 
-. ${SCRIPTDIR:=/etc/net/scripts}/functions
+. $SCRIPTDIR/functions
 pickup_defaults
 
-if [ ! -s ${SCRIPTDIR:=/etc/net/scripts}/config-qos ]; then
+if [ ! -s $SCRIPTDIR/config-qos ]; then
         echo "Error: $SCRIPTDIR/config-qos not found!"
 		exit 1
 fi
