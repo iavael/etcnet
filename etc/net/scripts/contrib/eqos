@@ -25,6 +25,7 @@ usage()
 	echo ""
 	echo "Options for actions 'show' or 'list' and 'stat' or 'stats':"
 	echo " - one of 'qdisc' (by default), 'class' or 'filter'"
+	echo " - component specific options (e.g. 'parent')"
 	echo ""
 	exit 1
 }
@@ -87,26 +88,26 @@ for IFACE in "$IFACEDIR"/$NAME; do
 		case "$ACTION" in
 			start)
 				echo "Start QoS for device $NAME:"
-				${SCRIPTDIR:=/etc/net/scripts}/config-qos $NAME start
+				$SCRIPTDIR/config-qos $NAME start
 				;;
 			stop)
 				echo "Stop QoS for device $NAME:"
-				${SCRIPTDIR:=/etc/net/scripts}/config-qos $NAME stop
+				$SCRIPTDIR/config-qos $NAME stop
 				;;
 			restart)
 				echo "Restart QoS for device $NAME:"
-				${SCRIPTDIR:=/etc/net/scripts}/config-qos $NAME stop
-				${SCRIPTDIR:=/etc/net/scripts}/config-qos $NAME start
+				$SCRIPTDIR/config-qos $NAME stop
+				$SCRIPTDIR/config-qos $NAME start
 				;;
 			show|list)
-				[ $# -ge 1 ] && STAT="$1"
+				[ $# -ge 1 ] && STAT="$1" && shift
 				echo "$STAT list on device $NAME:"
-				$TC $STAT show dev $NAME 
+				$TC $STAT show dev $NAME $@
 				;;
 			stat|stats)
-				[ $# -ge 1 ] && STAT="$1"
+				[ $# -ge 1 ] && STAT="$1" && shift
 				echo "$STAT statistics on device $NAME:"
-				$TC -s -d $STAT show dev $NAME 
+				$TC -s -d $STAT show dev $NAME $@
 				;;
 			*)
 				usage
