@@ -400,12 +400,61 @@ pickup_defaults()
 	fi
 }
 
+# This function returns 0, if we should perform link detection
+# before going on. If we cannot or should not check link presence,
+# this function returns 1.
+need_detection()
+{
+	[ "$TYPE" = "eth" ] || return 1
+	# Optional 1st arg is passed by ifup-common to handle USE_IFPLUGD=auto
+	case "${1:-$LINKDETECT}" in
+		[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
+			return 0
+		;;
+		[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|[Nn]|0)
+			return 1
+		;;
+		[Aa][Uu][Tt][Oo])
+			# Sometimes we need not ifplugstatus, but ifplugd. Let's hope they are
+			# packed in the same package.
+			[ -x "${IFPLUGSTATUS:-$DEFAULT_IFPLUGSTATUS}" ] || return 2
+			local driver pick
+			if [ -n "$MODULE" ]; then
+				driver=$MODULE
+			else
+				[ -x "${ETHTOOL:-$DEFAULT_ETHTOOL}" ] || return 1
+				driver=`${ETHTOOL:-$DEFAULT_ETHTOOL} -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
+			fi
+			for pick in $GOOD_MODULE_LIST; do
+				[ "$pick" = "$driver" ] && return 0
+			done
+		return 1
+		;;
+	esac
+}
+
+# This function stops DHCP client. Note that DHCP works not only
+# for pure Ethernet ifaces, so we don't keep this function in
+# functions-eth any more.
+stop_dhcp_client()
+{
+	local PIDFILE=/var/run/dhcpcd-$NAME.pid
+	if [ -s $PIDFILE ]; then
+		kill -SIGHUP `cat $PIDFILE`
+		# There probably should be a delay/wait loop here, dhcpcd doesn't die fast.
+		sleep ${DHCPCD_GRACE_TIME:-0}
+		# dhcpcd will bring down the interface when stopping. To keep etcnet logics
+		# to work (running shutdown scripts for example) we should bring it up again
+		$IP link set dev $NAME up
+	fi
+}
+
 declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type
 declare -frx pickup_options print_error print_message print_progress print_nack
 declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netprofile
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
-declare -frx have_ifplugd pickup_defaults trim
+declare -frx have_ifplugd pickup_defaults trim need_detection stop_dhcp_client
 declare -rx DENOISE DEFAULT_BONDMODE IFACEDIR LOCALSCRIPTDIR VARLIBDIR
 declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS
 declare -rx DEFAULT_IFPLUGD DEFAULT_IWCONFIG DEFAULT_WPA_SUPPLICANT DEFAULT_PLIPCONFIG

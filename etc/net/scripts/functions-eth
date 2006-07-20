@@ -34,48 +34,6 @@ wait_for_macaddr()
 	done
 }
 
-stop_dhcp_client()
-{
-	local PIDFILE=/var/run/dhcpcd-$NAME.pid
-	if [ -s $PIDFILE ]; then
-		kill -SIGHUP `cat $PIDFILE`
-		# There probably should be a delay/wait loop here, dhcpcd doesn't die fast.
-		sleep ${DHCPCD_GRACE_TIME:-0}
-		# dhcpcd will bring down the interface when stopping. To keep etcnet logics
-		# to work (running shutdown scripts for example) we should bring it up again
-		$IP link set dev $NAME up
-	fi
-}
-
-need_detection()
-{
-	# Optional 1st arg is passed by ifup-common to handle USE_IFPLUGD=auto
-	case "${1:-$LINKDETECT}" in
-		[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1)
-			return 0
-		;;
-		[Nn][Oo]|[Ff][Aa][Ll][Ss][Ee]|[Oo][Ff][Ff]|[Nn]|0)
-			return 1
-		;;
-		[Aa][Uu][Tt][Oo])
-			# Sometimes we need not ifplugstatus, but ifplugd. Let's hope they are
-			# packed in the same package.
-			[ -x "${IFPLUGSTATUS:-$DEFAULT_IFPLUGSTATUS}" ] || return 2
-			local driver pick
-			if [ -n "$MODULE" ]; then
-				driver=$MODULE
-			else
-				[ -x "${ETHTOOL:-$DEFAULT_ETHTOOL}" ] || return 1
-				driver=`${ETHTOOL:-$DEFAULT_ETHTOOL} -i $NAME | grep ^driver: | cut -d' ' -f2 2>/dev/null`
-			fi
-			for pick in $GOOD_MODULE_LIST; do
-				[ "$pick" = "$driver" ] && return 0
-			done
-		return 1
-		;;
-	esac
-}
-
 ifplugd_runs()
 {
 	$IFPLUGD --check-running --iface=${1:-$NAME} >/dev/null
