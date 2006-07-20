@@ -1,0 +1,133 @@
+#!/bin/bash
+
+# This file contains supplementary functions for config-ipv4
+try_static()
+{
+	local REALFILE=`profiled_filename $MYIFACEDIR/ipv4address`
+	if [ -s $REALFILE ]; then
+		local ADDRESSLINE
+		$DENOISE $REALFILE | while read ADDRESSLINE; do
+			is_yes "$AUTO_BROADCAST" && [ "$ADDRESSLINE" = "${ADDRESSLINE/broadcast/}" ] && \
+				ADDRESSLINE="$ADDRESSLINE broadcast +"
+			$IP -4 address add dev $NAME $ADDRESSLINE && print_progress
+		done
+	fi
+	return 0
+}
+
+dhcp_cmdline()
+{
+	local H
+	case `basename $DHCP_CLIENT` in
+		dhcpcd)
+			if [ -n "$DHCP_HOSTNAME" ]; then
+				case "$DHCP_HOSTNAME" in
+					AUTO)
+						H="-H"
+					;;
+					localhost)
+						[ -n "$HOSTNAME" -a "$HOSTNAME" != "localhost" -a "$HOSTNAME" != "localhost.localdomain" ] && \
+						H="-h $HOSTNAME"
+					;;
+					*)
+						H="-h $DHCP_HOSTNAME"
+					;;
+				esac
+			fi
+			echo "$H -d -t $DHCP_TIMEOUT $NAME"
+			;;
+		dhclient)
+				case "$DHCP_HOSTNAME" in
+					localhost)
+						[ -n "$HOSTNAME" -a "$HOSTNAME" != "localhost" -a "$HOSTNAME" != "localhost.localdomain" ] && \
+						H="-F $HOSTNAME"
+					;;
+					*)
+						H="-H $DHCP_HOSTNAME"
+					;;
+				esac
+			echo "$H -q -T $DHCP_TIMEOUT"
+			;;
+		*)
+			print_error "Can't pick command line for DHCP client '$DHCP_CLIENT'"
+			;;
+	esac
+}
+
+try_dhcp()
+{
+	[ -x "$DHCP_CLIENT" ] || {
+		print_error "$DHCP_CLIENT does not exist or is not executable. Try installing dhcpcd/dhclient RPM."
+		return 1
+	}
+	if need_detection; then
+		if check_eth_link $NAME; then
+			print_progress
+		else
+			print_nack
+			return 1
+		fi
+	fi
+	$DHCP_CMDLINE=`dhcp_cmdline`
+	$DHCP_CLIENT $DHCP_ARGS $DHCP_CMDLINE >/dev/null
+	local RET=$?
+	# dhcpcd sets iface down on failure, breaking dhcp-* BOOTPROTOs
+	if [ "$RET" != "0" ]; then
+		print_nack
+		! is_yes $KEEP_DOWN && $IP link set dev $NAME up
+	else
+		print_progress
+	fi
+	return $RET
+}
+
+try_ipv4ll()
+{
+	[ -x "$ZCIP_CLIENT" ] || {
+		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing zcip RPM."
+		return 1
+	}
+	if need_detection; then
+		if check_eth_link $NAME; then
+			print_progress
+		else
+			print_nack
+			return 1
+		fi
+	fi
+	$ZCIP_CLIENT -s -i $NAME
+	local RET=$?
+	if [ "$RET" != "0" ]; then
+		print_nack
+	else
+		print_progress
+	fi
+	return $RET
+}
+
+config_ipv4_routes_rules()
+{
+	# setup routes
+	local SRCFILE=`profiled_filename $MYIFACEDIR/ipv4route`
+	local SUFFIX
+	[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
+	while read FIRST REST; do
+		# If 'dev' is not specified, add current dev.
+		SUFFIX=''
+		echo "$FIRST $REST" | egrep -q '[[:space:]]dev[[:space:]]' || SUFFIX="dev $NAME"
+		# If operation is not specified, use 'append'.
+		case "$FIRST" in
+			add|del|change|append|replace)
+				$IP -4 route $FIRST $REST $SUFFIX
+			;;
+			*)
+				$IP -4 route append $FIRST $REST $SUFFIX
+			;;
+		esac
+		print_progress
+	done
+
+	# Setup rules only after routes are Ok, so that route tables are
+	# already populated when rule starts routing traffic to them.
+	process_ipv4rules add
+}
