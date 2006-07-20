@@ -36,7 +36,6 @@ create_vlan_iface()
 # Used by destroy-vlan and stop_vlantab()
 destroy_vlan_iface()
 {
-	local VCONFIG
 	[ -x "${VCONFIG:=$DEFAULT_VCONFIG}" ] || {
 		print_error "$VCONFIG does not exist or is not executable. Try installing vlan-utils24 RPM."
 		return 1
