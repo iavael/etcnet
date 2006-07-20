@@ -438,6 +438,8 @@ need_detection()
 # functions-eth any more.
 stop_dhcp_client()
 {
+	case `basename $DHCP_CLIENT` in
+		dhcpcd)
 	local PIDFILE=/var/run/dhcpcd-$NAME.pid
 	if [ -s $PIDFILE ]; then
 		kill -SIGHUP `cat $PIDFILE`
@@ -447,6 +449,11 @@ stop_dhcp_client()
 		# to work (running shutdown scripts for example) we should bring it up again
 		$IP link set dev $NAME up
 	fi
+			;;
+		dhclient)
+			killall dhclient
+			;;
+	esac
 }
 
 declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type
