@@ -188,7 +188,7 @@ start()
 		iptables_preload
 	 	$SCRIPTDIR/config-fw default start
 	}
-	$SYSCTL -p `profiled_filename /etc/net/sysctl.conf`
+	$SYSCTL -q -p `profiled_filename /etc/net/sysctl.conf`
 	declare -a START_GROUP
 	# 1. fill in the groups
 	local IFACECOUNT=0
@@ -272,7 +272,7 @@ reload()
 	declare -a STOP_GROUP START_GROUP
 	local IFACECOUNT=0
 	export MYIFACEDIR NAME
-	$SYSCTL -p `profiled_filename /etc/net/sysctl.conf`
+	$SYSCTL -q -p `profiled_filename /etc/net/sysctl.conf`
 	print_message -n "Computing interface groups: "
 	for MYIFACEDIR in $IFACEDIR/*; do
 		BNAME=`basename $MYIFACEDIR`
