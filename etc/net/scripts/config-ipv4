@@ -57,11 +57,37 @@ case $ACTION in
 			fi
 			return 0
 		}
-
+		dhcp_cmdline()
+		{
+			local RET
+			case `basename $DHCP_CLIENT` in
+				dhcpcd)
+			if [ -n "$DHCP_HOSTNAME" ]; then
+				case "$DHCP_HOSTNAME" in
+					AUTO)
+						RET="-H"
+					;;
+					localhost)
+						[ -n "$HOSTNAME" -a "$HOSTNAME" != "localhost" -a "$HOSTNAME" != "localhost.localdomain" ] && RET="-h $HOSTNAME"
+					;;
+					*)
+						RET="-h $DHCP_HOSTNAME"
+					;;
+				esac
+			fi
+			echo "$RET -d -t $DHCP_TIMEOUT $NAME"
+					;;
+				dhclient)
+					;;
+				*)
+					print_error "Can't pick command line for DHCP client '$DHCP_CLIENT'"
+					;;
+			esac
+		}
 		try_dhcp()
 		{
 			[ -x "$DHCP_CLIENT" ] || {
-				print_error "$DHCP_CLIENT does not exist or is not executable. Try installing dhcpcd RPM."
+				print_error "$DHCP_CLIENT does not exist or is not executable. Try installing dhcpcd/dhclient RPM."
 				return 1
 			}
 			if need_detection; then
@@ -72,20 +98,8 @@ case $ACTION in
 					return 1
 				fi
 			fi
-			if [ -n "$DHCP_HOSTNAME" ]; then
-				case "$DHCP_HOSTNAME" in
-					AUTO)
-						DHCP_ARGS="$DHCP_ARGS -H"
-					;;
-					localhost)
-						[ -n "$HOSTNAME" -a "$HOSTNAME" != "localhost" -a "$HOSTNAME" != "localhost.localdomain" ] && DHCP_ARGS="$DHCP_ARGS -h $HOSTNAME"
-					;;
-					*)
-						DHCP_ARGS="$DHCP_ARGS -h $DHCP_HOSTNAME"
-					;;
-				esac
-			fi
-			$DHCP_CLIENT $DHCP_ARGS -d -t $DHCP_TIMEOUT $NAME >/dev/null
+			$DHCP_CMDLINE=`dhcp_cmdline`
+			$DHCP_CLIENT $DHCP_ARGS $DHCP_CMDLINE >/dev/null
 			local RET=$?
 			# dhcpcd sets iface down on failure, breaking dhcp-* BOOTPROTOs
 			if [ "$RET" != "0" ]; then
