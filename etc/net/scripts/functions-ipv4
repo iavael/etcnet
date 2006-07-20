@@ -46,7 +46,7 @@ dhcp_cmdline()
 						H="-H $DHCP_HOSTNAME"
 					;;
 				esac
-			echo "$H -q -T $DHCP_TIMEOUT -sf /etc/net/scripts/ifup-dhclient $NAME"
+			echo "$H -q -T $DHCP_TIMEOUT -sf /etc/net/scripts/ifup-dhclient -pf /var/run/dhclient-$NAME.pid $NAME"
 			;;
 		*)
 			print_error "Can't pick command line for DHCP client '$DHCP_CLIENT'"

@@ -440,20 +440,20 @@ stop_dhcp_client()
 {
 	case `basename $DHCP_CLIENT` in
 		dhcpcd)
-	local PIDFILE=/var/run/dhcpcd-$NAME.pid
+			local PIDFILE=/var/run/dhcpcd-$NAME.pid
+			;;
+		dhclient)
+			local PIDFILE=/var/run/dhclient-$NAME.pid
+			;;
+	esac
 	if [ -s $PIDFILE ]; then
 		kill -SIGHUP `cat $PIDFILE`
 		# There probably should be a delay/wait loop here, dhcpcd doesn't die fast.
-		sleep ${DHCPCD_GRACE_TIME:-0}
+		sleep ${DHCP_GRACE_TIME:-0}
 		# dhcpcd will bring down the interface when stopping. To keep etcnet logics
 		# to work (running shutdown scripts for example) we should bring it up again
 		$IP link set dev $NAME up
 	fi
-			;;
-		dhclient)
-			killall dhclient
-			;;
-	esac
 }
 
 declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type
