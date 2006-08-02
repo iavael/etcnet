@@ -1,0 +1,17 @@
+This is an early build of /etc/net for Fedora, it is not provided as a part of
+Fedora Core or Extras or Rawhide. To install /etc/net you will need to setup
+an additional repository:
+
+cat > /etc/yum.repos.d/etcnet.repo << EOF
+[etcnet]
+name=Fedora Core $releasever - $basearch
+baseurl=http://moscow.etcnet.org/pub/etcnet/$releasever/RPMS
+enabled=1
+gpgcheck=1
+
+EOF
+
+# yum install etcnet
+You should be offered to upgrade initscripts.
+
+Thank you for interest.

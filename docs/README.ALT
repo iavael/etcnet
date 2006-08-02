@@ -1,22 +1,31 @@
-0A. apt-get install etcnet
-0B. apt-get install etcnet-full
+*** INSTALLATION ***
 
-1. vi /etc/sysconfig/network
-Pay attention to NETWORKING and CONFMETHOD variables:
+If you do not have etcnet package, it is enough to run:
+# apt-get install etcnet
+or
+# apt-get install etcnet-full
+with standard package sources configured. etcnet is present in Sisyphus and
+Compact-3.0
+
+*** POST-INSTALL CONFIGURATION ***
+
+You must review your /etc/sysconfig/network file and check NETWORKING
+and CONFMETHOD variables:
+
 NETWORKING=yes
 CONFMETHOD=etcnet
 
-Note that FORWARD_IPV4, GATEWAY and GATEWAYDEV variables are
-ignored by /etc/net.
+Please note that FORWARD_IPV4, GATEWAY and GATEWAYDEV variables are
+net-scripts specific and are ignored by /etc/net.
 
-2. Edit /etc/sysctl.conf and remove the lines that are present
+Edit /etc/sysctl.conf and remove the lines that are present
 in /etc/net/sysctl.conf.
 
-3. chkconfig --list network
-You may need to run 'chkconfig network reset' (known bug).
+# chkconfig --list network
+You may need to run 'chkconfig network reset' (this is a known bug).
 
-4. /etc/net is compatible with dhcpcd ONLY
 
-5. ALLOW_UNKNOWN feature
-Please note that USE_HOTPLUG is useless for PCMCIA cards w/o USE_PCMCIA
-enabled.
+*** MORE INFORMATION ***
+man etcnet
+man etcnet-options
+http://wiki.sisyphus.ru/admin/etcnet
