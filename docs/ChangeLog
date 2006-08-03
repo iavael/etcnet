@@ -4,8 +4,7 @@
 	bugfix: DHCP and VLAN interfaces did not work
 	change: DHCPCD_GRACE_TIME becomes DHCP_GRACE_TIME
 	change: firewall code refactoring and optimization
-	new: scripts 'eqos' and 'efw' for QoS and firewall manual
-	control
+	new: scripts 'eqos' and 'efw' for QoS and firewall manual control
 	new: complex example in documentation
 0.8.3	2006-05-15
 	bugfix: trim lines read from config files to avoid xargs concatenate them
