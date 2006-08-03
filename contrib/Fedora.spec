@@ -1,15 +1,17 @@
 Name:		etcnet
-Version:	0.8.3
-Release:	fc5.0.test4
+Version:	0.8.4
+Release:	fc5.0.2
 Summary:	/etc/net network configuration system
 License:	GPL
 Group:		System/Base
 URL:		http://etcnet.org/
 Source:		%name-%version.tar.gz
 Source1:	README.Fedora
+Source2:	50-RedHat
 Requires:	grep, iproute, wireless-tools >= 28-0.pre10.4, chkconfig, initscripts
 BuildArch:	noarch
 Conflicts:	net-scripts
+Conflicts:	initscripts <= 8.35-1
 # This is yet to be checked individually.
 #Conflicts:	ethtool < 3-alt4, pcmcia-cs < 3.2.8-alt2, ifplugd < 0.28-alt2
 Provides:	network-config-subsystem
@@ -66,6 +68,7 @@ done
 mkdir -p %buildroot%_man8dir %buildroot%_man5dir
 install -m 644 docs/etcnet*.8 %buildroot%_man8dir
 install -m 644 docs/etcnet*.5 %buildroot%_man5dir
+install -m 644 %SOURCE2 %buildroot/etc/net/options.d
 
 %post
 if [ $1 -eq 1 ]; then
