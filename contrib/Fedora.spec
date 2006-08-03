@@ -1,13 +1,16 @@
 Name:		etcnet
 Version:	0.8.4
-Release:	fc5.0.2
-Summary:	/etc/net network configuration system
+Release:	0.test2.%{?dist}
+Summary:	This is /etc/net network configuration system
 License:	GPL
-Group:		System/Base
+Group:		System Environment/Base
 URL:		http://etcnet.org/
-Source:		%name-%version.tar.gz
+Source:		%{name}-%{version}.tar.gz
 Source1:	README.Fedora
 Source2:	50-RedHat
+Requires(post):	/sbin/chkconfig
+Requires(preun):	/sbin/chkconfig
+Requires(preun):	/sbin/service
 Requires:	grep, iproute, wireless-tools >= 28-0.pre10.4, chkconfig, initscripts
 BuildArch:	noarch
 Conflicts:	net-scripts
@@ -16,9 +19,6 @@ Conflicts:	initscripts <= 8.35-1
 #Conflicts:	ethtool < 3-alt4, pcmcia-cs < 3.2.8-alt2, ifplugd < 0.28-alt2
 Provides:	network-config-subsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
-%define		_initdir /etc/rc.d/init.d
-%define		_man5dir /usr/share/man/man5
-%define		_man8dir /usr/share/man/man8
 
 %description
 /etc/net represents a new approach to Linux network configuration tasks.
@@ -56,18 +56,51 @@ install %{SOURCE1} .
 
 %install
 rm -rf %{buildroot}
-mkdir -p %buildroot%_initdir
-cp -a etc %buildroot
 
-ln -s ../../../etc/net/scripts/network.init %buildroot%_initdir/network
-mkdir -p %buildroot/sbin/
+mkdir -p %{buildroot}%{_initrddir}
+mkdir -p %{buildroot}%{_initrddir}/network
+
+ln -s ../../../etc/net/scripts/network.init %{buildroot}%{_initrddir}/network
+mkdir -p %{buildroot}/sbin/
+mkdir -p %{buildroot}%{_sysconfdir}
+mkdir -p %{buildroot}%{_sysconfdir}/net
+mkdir -p %{buildroot}%{_sysconfdir}/net/scripts
+
+cp -r etc/net/scripts %{buildroot}%{_sysconfdir}/net/scripts
+
+mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/default
+cp -r etc/net/ifaces/default %{buildroot}%{_sysconfdir}/net/ifaces/default
+
+mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/unknown
+cp -r etc/net/ifaces/unknown %{buildroot}%{_sysconfdir}/net/ifaces/unknown
+
+mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/lo
+cp -r etc/net/ifaces/lo %{buildroot}%{_sysconfdir}/net/ifaces/lo
+
+mkdir -p %{buildroot}%{_sysconfdir}/net/options.d
+cp -r etc/net/options.d %{buildroot}%{_sysconfdir}/net/options.d/
+
+install -m 644  etc/net/sysctl.conf %{buildroot}%{_sysconfdir}/net/sysctl.conf
+
+mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
+install -m 644  etc/sysconfig/network %{buildroot}%{_sysconfdir}/sysconfig/network
+
 for n in ifup ifdown; do
-	ln -s ../etc/net/scripts/$n %buildroot/sbin
+	ln -s ../etc/net/scripts/$n %{buildroot}/sbin
 done
 
-mkdir -p %buildroot%_man8dir %buildroot%_man5dir
-install -m 644 docs/etcnet*.8 %buildroot%_man8dir
-install -m 644 docs/etcnet*.5 %buildroot%_man5dir
+mkdir -p %{buildroot}%{_mandir}/man8
+mkdir -p %{buildroot}%{_mandir}/man5
+mkdir -p %{buildroot}%{_sysconfdir}/net
+mkdir -p %{buildroot}%{_sysconfdir}/net/scripts
+mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces
+mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/default
+mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/lo
+mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/unknown
+mkdir -p %{buildroot}%{_sysconfdir}/net/options.d
+install -m 644 docs/etcnet*.8 %{buildroot}%{_mandir}/man8
+install -m 644 docs/etcnet*.5 %{buildroot}%{_mandir}/man5
+
 install -m 644 %SOURCE2 %buildroot/etc/net/options.d
 
 %post
@@ -84,29 +117,31 @@ fi
 
 
 %files
-%dir %_sysconfdir/net
-%dir %_sysconfdir/net/scripts
-%dir %_sysconfdir/net/ifaces
-%dir %_sysconfdir/net/ifaces/default
-%dir %_sysconfdir/net/ifaces/lo
-%dir %_sysconfdir/net/ifaces/unknown
-%dir %_sysconfdir/net/options.d
-%_sysconfdir/net/scripts/*
-%config(noreplace) %verify(not md5 mtime size) %_sysconfdir/net/ifaces/default/*
-%config(noreplace) %verify(not md5 mtime size) %_sysconfdir/net/ifaces/unknown/*
-%config(noreplace) %verify(not md5 mtime size) %_sysconfdir/net/ifaces/lo/*
-%config(noreplace) %verify(not md5 mtime size) %_sysconfdir/net/sysctl.conf
-%config %_initdir/network
-%config %_sysconfdir/net/options.d/*
-%config %verify(not md5 mtime size) %_sysconfdir/sysconfig/network
+%defattr(-,root,root,-)
 %doc docs/README* docs/ChangeLog docs/TODO
 %doc examples/
 %doc contrib/
 %doc README.Fedora
-%_man5dir/*
-%_man8dir/*
 /sbin/ifup
 /sbin/ifdown
+%{_initrddir}/network
+%dir %{_sysconfdir}/net
+%dir %{_sysconfdir}/net/scripts
+%dir %{_sysconfdir}/net/ifaces
+%dir %{_sysconfdir}/net/ifaces/default
+%dir %{_sysconfdir}/net/ifaces/lo
+%dir %{_sysconfdir}/net/ifaces/unknown
+%dir %{_sysconfdir}/net/options.d
+%{_sysconfdir}/net/scripts/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/net/ifaces/default/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/net/ifaces/unknown/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/net/ifaces/lo/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/net/sysctl.conf
+%config(noreplace) %{_sysconfdir}/net/options.d/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/sysconfig/network
+%{_mandir}/man5/*
+%{_mandir}/man8/*
+
 
 #%files full
 
