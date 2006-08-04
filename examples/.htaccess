@@ -8,6 +8,6 @@ AddDescription "HTB user guide example port" QoS-HTB-user-guide
 AddDescription "simple VLAN configuration" VLAN-without-vlantab
 AddDescription "wireless example for IPW2100 card in WEP mode" WiFi-WEP-wpa2100
 AddDescription "iptables example by hiddenman" firewall-hiddenman
-AddDescription "huge example (without QoS) by hiddenman" complex-hiddenman
+AddDescription "Complex example (without QoS) by hiddenman" Complex-without-QoS
 AddDescription "LARTC multiple links example port" routing-LARTC-1
 AddDescription "dummy interfaces configuration" dummy
