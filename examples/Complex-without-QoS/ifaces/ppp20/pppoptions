@@ -1,0 +1,21 @@
+noipdefault
+noauth
+default-asyncmap
+hide-password
+mtu 1450
+mru 1450
+noaccomp
+noccp
+nobsdcomp
+nodeflate
+nopcomp
+novj
+novjccomp
+user adXXXXXX@dsl.ukrtel.net
+lcp-echo-interval 20
+lcp-echo-failure 3
+unit 20
+debug
+kdebug 7
+ipparam ppp20
+linkname ppp20

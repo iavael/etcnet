@@ -1,0 +1,4 @@
+add XXX.XXX.61.163 via 10.1.0.2 src 10.1.0.1 table tp-dmz-v11
+add XXX.XXX.61.158 via 10.1.0.2 src 10.1.0.1 table tp-dmz-v11
+add XXX.XXX.61.163 via 10.1.0.2 src 10.1.0.1
+add XXX.XXX.61.158 via 10.1.0.2 src 10.1.0.1

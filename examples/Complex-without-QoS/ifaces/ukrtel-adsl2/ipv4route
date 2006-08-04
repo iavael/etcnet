@@ -1,0 +1,4 @@
+# default
+add default via 10.6.0.1 src 10.6.0.2 table ukrtel-adsl2
+# vpn2
+XXX.XXX.72.136 via 10.6.0.1 src 10.6.0.2 table ukrtel-adsl2

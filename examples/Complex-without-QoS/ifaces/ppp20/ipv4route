@@ -1,0 +1,1 @@
+replace default via XXX.XXX.61.75 dev ppp20 src XXX.XXX.49.208 table ukrtel-adsl

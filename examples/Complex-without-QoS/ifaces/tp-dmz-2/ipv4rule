@@ -1,0 +1,8 @@
+del from 10.3.0.9
+add from 10.3.0.9 table ukrtel-adsl pref 105
+del from 10.3.0.254
+add from 10.3.0.254 table ukrtel-adsl pref 106
+del to 10.3.0.9
+add to 10.3.0.9 table ukrtel-adsl pref 115
+del to 10.3.0.254
+add to 10.3.0.254 table ukrtel-adsl pref 116

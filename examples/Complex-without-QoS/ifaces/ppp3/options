@@ -1,0 +1,5 @@
+TYPE=ppp
+USE_HOTPLUG=no
+ONBOOT=no
+BASIC_PPPOPTIONS="nolog"
+

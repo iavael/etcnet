@@ -1,0 +1,5 @@
+return if from $COMPANY1_PROXY_SKYPE_IP
+return if from $COMPANY1_DMZ_NET
+snat-to $COMPANY1_ROUTER_SHDSL_IP if to-iface $COMPANY1_ROUTER_SHDSL
+snat-to $COMPANY1_ROUTER_XDSL_IP if to-iface $COMPANY1_ROUTER_XDSL
+snat-to 10.10.12.2 if to-iface tun0

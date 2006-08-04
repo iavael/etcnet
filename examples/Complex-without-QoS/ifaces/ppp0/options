@@ -1,0 +1,9 @@
+TYPE=ppp
+USE_HOTPLUG=no
+ONBOOT=no
+#BASIC_PPPOPTIONS="nolog updetach"
+BASIC_PPPOPTIONS="nolog"
+sleep 1
+
+
+

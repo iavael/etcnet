@@ -1,0 +1,244 @@
+# pass to local servers
+#pass all from $COMPANY1_OFFICE_NET to $COMPANY1_ROUTER_INTERNAL_IP and from-iface $NAME
+pass all from $COMPANY1_OFFICE_NET to $COMPANY1_DMZ_NET and from-iface $NAME
+pass all from $COMPANY1_OFFICE_NET to $COMPANY1_DMZ_NET2 and from-iface $NAME
+pass all from $COMPANY1_OFFICE_NET to $COMPANY1_DMZ_NET3 and from-iface $NAME
+pass all from $COMPANY2_OFFICE_NET to $COMPANY1_SMTP_OUT_IP and from-iface $NAME
+pass all from $COMPANY2_OFFICE_NET to $COMPANY1_HTTP_PROXY_IP and from-iface $NAME
+pass all from $COMPANY2_OFFICE_NET to $COMPANY1_SOCKS_PROXY_IP and from-iface $NAME
+pass all from $COMPANY2_OFFICE_NET to $COMPANY2_COM_UA_IP and from-iface $NAME
+
+# pass established from local servers
+pass all to $COMPANY1_OFFICE_NET with state related,established and to-iface $NAME
+pass all to $COMPANY2_OFFICE_NET with state related,established and to-iface $NAME
+
+# pass from HTTP proxy to storage server 
+pass all to $COMPANY1_STORAGE_IP from $COMPANY1_HTTP_PROXY_IP and to-iface $NAME
+
+# pass from servers to company smtp
+pass all to $COMPANY2_SMTP_IP and to-iface $NAME
+
+# pass from company2 users to company2 ftp
+pass all from $COMPANY2_USER_1_IP to $COMPANY2_COM_UA_IP and to-iface $NAME
+pass all from $COMPANY2_USER_2_IP to $COMPANY2_COM_UA_IP and to-iface $NAME
+
+# pass from CCP client to CCP server
+pass all to $CCP_SERVER_IP from $CCP_CLIENT_IP and to-iface $NAME
+# pass from CCP server to CCP client
+pass all from $CCP_SERVER_IP to $CCP_CLIENT_IP and from-iface $NAME
+
+# pass from servers to First6 Last6
+pass all to $COMPANY1_USER_F6_LAST6_IP and to-iface $NAME
+
+# pass from servers to First30 Last30
+pass all to $COMPANY1_USER_F30_LAST30_IP and to-iface $NAME
+
+# pass from project1.devel.company.com to First7 Last7
+pass all from $COMPANY1_DEVEL_PROJECT1_IP to $COMPANY1_USER_F7_LAST7_IP and to-iface $NAME
+pass all from $COMPANY1_USER_F7_LAST7_IP to $PROJECT1_SERVER_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F7_LAST7_IP to $PROJECT1_SERVER_IP2 and from-iface $NAME
+
+# pass from project2.devel.company.com to First33 Last33
+pass all from $COMPANY1_DEVEL_PROJECT2_IP to $COMPANY1_USER_F33_LAST33_IP and to-iface $NAME
+
+# pass from voip vserver to First29 Last29
+pass all to $COMPANY1_USER_F29_LAST29_IP from $COMPANY1_VOIP_PROXY_IP and to-iface $NAME
+
+# vault.office.company.com
+pass all from $COMPANY1_STORAGE_IP and from-iface $NAME
+
+# all to project3.com
+# FIXME
+pass all from $COMPANY1_OFFICE_NET to $PROJECT3_COM_IP and from-iface $NAME
+pass all from $COMPANY1_OFFICE_NET to $PROJECT3_COM_IP2 and from-iface $NAME
+pass all from $COMPANY1_OFFICE_NET to $PROJECT3_COM_IP3 and from-iface $NAME
+pass all from $COMPANY1_OFFICE_NET to $PROJECT3_COM_IP4 and from-iface $NAME
+pass all from $COMPANY1_OFFICE_NET to $PROJECT3_COM_IP5 and from-iface $NAME
+
+# all to webmoney
+pass all from $COMPANY1_OFFICE_NET to $WEBMONEY_PROCESSING_IP and from-iface $NAME
+pass all from $COMPANY1_OFFICE_NET to $WEBMONEY_PROCESSING_NET and from-iface $NAME
+pass all from $COMPANY1_OFFICE_NET to $WEBMONEY_PROCESSING_NET2 and from-iface $NAME
+pass tcp from $COMPANY1_OFFICE_NET and dport $WEBMONEY_PROCESSING_DPORT and from-iface $NAME
+
+# First6 Last6 to all
+pass all from $COMPANY1_USER_F6_LAST6_IP and from-iface $NAME
+
+# First30 Last30 to all
+pass all from $COMPANY1_USER_F30_LAST30_IP and from-iface $NAME
+
+# First37 Last37 to all
+pass all from $COMPANY1_USER_F37_LAST37_IP and from-iface $NAME
+
+# pass from First18 Last18 project11.com.mt
+pass all from $COMPANY1_USER_F18_LAST18_IP to $PROJECT11_COM_MT_IP and from-iface $NAME
+
+# First17 Last17 to Yahoo mail servers
+pass all from $COMPANY1_USER_F17_LAST17_IP to $YAHOO_MAIL_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F17_LAST17_IP to $YAHOO_MAIL_IP2 and from-iface $NAME
+pass all from $COMPANY1_USER_F17_LAST17_IP to $YAHOO_MAIL_IP3 and from-iface $NAME
+pass all from $COMPANY1_USER_F17_LAST17_IP to $YAHOO_MAIL_IP4 and from-iface $NAME
+pass all from $COMPANY1_USER_F17_LAST17_IP to $YAHOO_MAIL_IP5 and from-iface $NAME
+
+# First24 Last24 to webmoney
+pass all from $COMPANY1_USER_F24_LAST24_IP to $WEBMONEY_PROCESSING_IP and from-iface $NAME
+pass tcp from $COMPANY1_USER_F24_LAST24_IP and dport $WEBMONEY_PROCESSING_DPORT and from-iface $NAME
+
+# First12 Last12 to project4.com
+pass all from $COMPANY1_USER_F12_LAST12_IP to $PROJECT4_COM_IP and from-iface $NAME
+
+# First38 Last38 to cornea.intercosmos.com
+pass all from $COMPANY1_USER_F38_LAST38_IP to $CORNEA_INTERCOSMOS_COM_IP and from-iface $NAME
+
+# First4 Last4 to project1 server for testing
+pass all from $COMPANY1_USER_F4_LAST4_IP to $PROJECT1_SERVER_IP and from-iface $NAME
+
+# First16 Last16 to company1corp.com
+#pass all from $COMPANY1_USER_F16_LAST16_IP to  and from-iface $NAME
+
+#### mail.company1corp.com ###
+pass all from $COMPANY1_USER_F41_LAST41_IP to $COMPANY1_EXTERNAL_VPN_IP2 and from-iface $NAME
+pass all from $COMPANY1_USER_F23_LAST23_IP to $COMPANY1_EXTERNAL_VPN_IP2 and from-iface $NAME
+pass all from $COMPANY1_USER_F4_LAST4_IP to $COMPANY1_EXTERNAL_VPN_IP2 and from-iface $NAME
+pass all from $COMPANY1_USER_F13_LAST13_IP to $COMPANY1_EXTERNAL_VPN_IP2 and from-iface $NAME
+pass all from $COMPANY1_USER_F8_LAST8_IP to $COMPANY1_EXTERNAL_VPN_IP2 and from-iface $NAME
+pass all from $COMPANY1_USER_F32_LAST32_IP to $COMPANY1_EXTERNAL_VPN_IP2 and from-iface $NAME
+pass all from $COMPANY1_USER_F24_LAST24_IP to $COMPANY1_EXTERNAL_VPN_IP2 and from-iface $NAME
+pass all from $COMPANY1_USER_F38_LAST38_IP to $COMPANY1_EXTERNAL_VPN_IP2 and from-iface $NAME
+
+# First10 Last10 to apiworld
+pass all from $COMPANY1_USER_F10_LAST10_IP to $APIWORLD_IP and from-iface $NAME
+
+# First20 Last20 to project5.com
+#pass all from $COMPANY1_USER_F20_LAST20_IP to $PROJECT5_COM_IP and from-iface $NAME
+
+# First34 Last34 to project6.com
+pass all from $COMPANY1_USER_F34_LAST34_IP to $PROJECT6_COM_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F34_LAST34_IP_2 to $PROJECT6_COM_IP and from-iface $NAME
+
+# First29 Last29 to all
+pass all from $COMPANY1_USER_F29_LAST29_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F29_LAST29_IP2 and from-iface $NAME
+
+# First2 Last2 to all SSH ports
+pass tcp from $COMPANY1_USER_F2_LAST2_IP and dport $SSH_DPORT and from-iface $NAME
+pass tcp from $COMPANY1_USER_F2_LAST2_IP and dport $SSH_DPORT2 and from-iface $NAME
+pass tcp from $COMPANY1_USER_F2_LAST2_IP and dport $SSH_DPORT3 and from-iface $NAME
+pass all from $COMPANY1_USER_F2_LAST2_IP to $PROJECT9_RU_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F2_LAST2_IP to $NPROJECT9_RU_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F2_LAST2_IP to $CRAWLER_PROJECT9_RU_IP and from-iface $NAME
+
+
+# First19 Last19 to project7.com
+pass all from $COMPANY1_USER_F19_LAST19_IP to $PROJECT7_COM_IP  and from-iface $NAME
+
+# First33 Last33 to gatekeeper.project2.com and project2.com
+pass all from $COMPANY1_USER_F33_LAST33_IP to $GATEKEEPER_PROJECT2_COM_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F33_LAST33_IP to $PROJECT2_COM_IP and from-iface $NAME
+
+pass tcp from $COMPANY1_USER_F33_LAST33_IP and dport 25 and from-iface $NAME
+
+## IRC FOR FIRST33
+pass tcp from $COMPANY1_USER_F33_LAST33_IP and dport 6667 and from-iface $NAME
+
+# First22 Last22 and First3 Last3 to smpp.clickatell.com
+pass all from $COMPANY1_USER_F22_LAST22_IP to $SMPP_CLICKATELL_COM_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F3_LAST3_IP to $SMPP_CLICKATELL_COM_IP and from-iface $NAME
+
+# First39 Last39 to many of :)
+pass all from $COMPANY1_USER_F39_LAST39_IP from-iface $NAME
+
+# First21 Last21
+pass all from $COMPANY1_USER_F21_LAST21_IP to $WEBMONEY_PROCESSING_NET and from-iface $NAME
+pass all from $COMPANY1_USER_F21_LAST21_IP to $WEBMONEY_PROCESSING_NET2 and from-iface $NAME
+
+# First15 Last15 to gatekeeper.project2.com
+#pass all from $COMPANY1_USER_F15_LAST15_IP to XXX.XXX.9.58 and from-iface $NAME
+pass all from $COMPANY1_USER_F15_LAST15_IP to $GATEKEEPER_PROJECT2_COM_IP and from-iface $NAME
+
+# First1 Last1 to old company1corp.com
+#pass all from $COMPANY1_USER_F1_LAST1_IP to XXX.XXX.9.12 and from-iface $NAME
+
+# First9 Last9 to project8.net
+###pass all from $COMPANY1_USER_F9_LAST9_IP to $PROJECT8_NET_IP and from-iface $NAME
+
+# VoIP phone to external server
+pass all from $COMPANY1_USER_VOIP_PHONE_IP and from-iface $NAME
+pass all from $COMPANY1_USER_VOIP_PHONE2_IP and from-iface $NAME
+
+# Terminal server to some external resources
+pass all from $COMPANY1_TERMINAL_SERVER_IP to $PROJECT8_NET_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER2_IP to $PROJECT8_NET_IP and from-iface $NAME
+# FIXME to mail.company1corp.com
+pass all from $COMPANY1_TERMINAL_SERVER_IP to $COMPANY1_EXTERNAL_VPN_IP2 and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER2_IP to $COMPANY1_EXTERNAL_VPN_IP2 and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER_IP to $GATEKEEPER_PORJECT2_COM_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER2_IP to $GATEKEEPER_PROJECT2_COM_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER_IP to $CORNEA_INTERCOSMOS_COM_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER2_IP to $CORNEA_INTERCOSMOS_COM_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER_IP to $MAIL2_HQHOST_NET_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER2_IP to $MAIL2_HQHOST_NET_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER_IP to $PROJECT9_RU_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER2_IP to $PROJECT9_RU_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER_IP to $IMAP_PROJECT9_RU_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER2_IP to $IMAP_PROJECT9_RU_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER_IP to $PROJECT10_COM_UA_IP and from-iface $NAME
+pass all from $COMPANY1_TERMINAL_SERVER2_IP to $PROJECT10_COM_UA_IP and from-iface $NAME
+
+
+# Company3 users to Company3 external servers
+pass all from $COMPANY3_USER_F11_LAST11_IP to $COMPANY3_L1_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F11_LAST11_IP to $COMPANY3_L3_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F11_LAST11_IP to $COMPANY3_L4_COM_IP and from-iface $NAME
+
+pass all from $COMPANY3_USER_F36_LAST36_IP to $COMPANY3_L1_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F36_LAST36_IP to $COMPANY3_L3_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F36_LAST36_IP to $COMPANY3_L4_COM_IP and from-iface $NAME
+
+pass all from $COMPANY3_USER_F40_LAST40_IP to $COMPANY3_L1_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F40_LAST40_IP to $COMPANY3_L3_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F40_LAST40_IP to $COMPANY3_L4_COM_IP and from-iface $NAME
+
+pass all from $COMPANY3_USER_F26_LAST26_IP to $COMPANY3_L1_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F26_LAST26_IP to $COMPANY3_L3_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F26_LAST26_IP to $COMPANY3_L4_COM_IP and from-iface $NAME
+
+pass all from $COMPANY3_USER_F27_LAST27_IP to $COMPANY3_L1_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F27_LAST27_IP to $COMPANY3_L3_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F27_LAST27_IP to $COMPANY3_L4_COM_IP and from-iface $NAME
+
+pass all from $COMPANY3_USER_F31_LAST31_IP to $COMPANY3_L3_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F31_LAST31_IP to $COMPANY3_L4_COM_IP and from-iface $NAME
+
+pass all from $COMPANY3_USER_F5_LAST5_IP to $COMPANY3_L3_COM_IP and from-iface $NAME
+pass all from $COMPANY3_USER_F5_LAST5_IP to $COMPANY3_L4_COM_IP and from-iface $NAME
+
+
+# First14 Last14 to Company3 external servers
+pass all from $COMPANY1_USER_F14_LAST14_IP to $COMPANY3_L3_COM_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F14_LAST14_IP to $COMPANY3_L4_COM_IP and from-iface $NAME
+
+# F8_LAST8 to pop.directnic.com mail
+pass all from $COMPANY1_USER_F8_LAST8_IP to $POP_DIRECTNIC_COM_IP and from-iface $NAME
+
+# First25 Last25 to Bank Nadra
+pass all from $COMPANY1_USER_F25_LAST25_IP to $BANKNADRA_DP_UA_IP and from-iface $NAME
+
+# First35 Last35 to PROJECT9.ru
+pass all from $COMPANY1_USER_F35_LAST35_IP to $PROJECT9_RU_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F35_LAST35_IP to $NPROJECT9_RU_IP and from-iface $NAME
+pass all from $COMPANY1_USER_F35_LAST35_IP to $CRAWLER_PROJECT9_RU_IP and from-iface $NAME
+
+pass tcp from $COMPANY1_USER_F28_LAST28_IP to $IMAP_PROJECT9_RU_IP and dport $IMAPS from-iface $NAME
+pass tcp from $COMPANY1_USER_F28_LAST28_IP to $IMAP_PROJECT9_RU_IP and dport $SMTPS from-iface $NAME
+
+## INFRA fixme
+#pass all from $COMPANY1_INFRA_IP to $COMPANY1_INFRA_EXT_IP and from-iface $NAME
+#pass all from $COMPANY1_INFRA_IP to $COMPANY1_INFRA_EXT_IP and from-iface $NAME
+pass all to $COMPANY1_INFRA_IP and to-iface $NAME
+pass all from $COMPANY1_INFRA_IP and from-iface $NAME
+
+# Reject other from and to
+reject-with icmp-host-unreachable if from-iface $NAME
+reject-with icmp-host-unreachable if to-iface $NAME
+

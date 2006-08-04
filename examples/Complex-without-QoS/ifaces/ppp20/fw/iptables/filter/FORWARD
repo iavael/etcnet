@@ -1,0 +1,21 @@
+accept all from XXX.XXX.44.208 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.44.207 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME 
+accept all from XXX.XXX.44.210 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.44.200 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.44.202 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.224.10 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.224.7 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.224.6 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.49.11 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.26.133 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.148.83 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.148.84 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.169.134 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.49.195 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.193.243 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.49.195 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.99.243 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.131.84 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept all from XXX.XXX.48.3 to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME
+accept udp from any to $COMPANY1_VOIP_PROXY_IP and dports 1024:65535 and from-iface $NAME 
+reject-with icmp-host-unreachable if all to $COMPANY1_VOIP_PROXY_IP and from-iface $NAME

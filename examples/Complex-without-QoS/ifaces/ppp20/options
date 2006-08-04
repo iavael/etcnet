@@ -1,0 +1,6 @@
+PPPTYPE=pppoe
+HOST=ukrtel-adsl
+PPPPERSIST=no
+PPPMAXFAIL=3
+SESSION=dp_si
+BASIC_PPPOPTIONS="nolog updetach"

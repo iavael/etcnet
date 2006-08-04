@@ -1,0 +1,3 @@
+accept if state related,established and from-iface $NAME
+drop tcp if from-iface $NAME and dport not 2222
+drop udp if from-iface $NAME and dport not 2222

@@ -1,0 +1,11 @@
+# vpn2
+del from XXX.XXX.230.199
+add from XXX.XXX.230.199 table ukrtel-xdsl pref 300 
+
+# outgoing http traffic
+#del fwmark 0x10
+#add fwmark 0x10 table ukrtel-xdsl pref 400
+
+# trafic to altlinux
+#add to XXX.XXX.24.7 table vpn2-xdsl
+#add to XXX.XXX.24.6 table vpn2-xdsl

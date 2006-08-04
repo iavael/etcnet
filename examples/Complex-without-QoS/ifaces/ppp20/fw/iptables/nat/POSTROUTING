@@ -1,0 +1,2 @@
+return if all from $COMPANY1_VOIP_PROXY_IP to $USER_F1_LAST1_IP
+snat-to $NAME_IP if all from $COMPANY1_VOIP_PROXY_IP

@@ -1,0 +1,5 @@
+ONBOOT=yes
+TYPE=dvb
+DVBTYPE=ss226
+PID=517
+SZAP_ARGS="-n 1 -x"

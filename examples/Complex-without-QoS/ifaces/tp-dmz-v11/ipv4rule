@@ -1,0 +1,9 @@
+del to XXX.XXX.61.158
+add to XXX.XXX.61.158 table tp-dmz-v11 pref 240
+del to XXX.XXX.61.163
+add to XXX.XXX.61.163 table tp-dmz-v11 pref 250
+del from XXX.XXX.61.158
+add from XXX.XXX.61.158 table tp-dmz-v11 pref 260
+del from XXX.XXX.61.163
+add from XXX.XXX.61.163 table tp-dmz-v11 pref 270
+

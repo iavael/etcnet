@@ -1,0 +1,5 @@
+TYPE=eth
+USE_HOTPLUG=no
+MODULE=tg3
+ONBOOT=yes
+

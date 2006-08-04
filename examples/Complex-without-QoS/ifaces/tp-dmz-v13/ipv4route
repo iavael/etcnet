@@ -1,0 +1,6 @@
+replace XXX.XXX.61.165 via 10.0.0.2 src 10.0.0.1 table tp-dmz-v13
+replace XXX.XXX.61.165 via 10.0.0.2 src 10.0.0.1 table um-dmz
+replace XXX.XXX.61.165 via 10.0.0.2 src 10.0.0.1
+replace XXX.XXX.61.164 via 10.0.0.2 src 10.0.0.1 table voip-shdsl
+replace XXX.XXX.61.164 via 10.0.0.2 src 10.0.0.1
+replace 10.4.0.1 via 10.0.0.2 src 10.0.0.1

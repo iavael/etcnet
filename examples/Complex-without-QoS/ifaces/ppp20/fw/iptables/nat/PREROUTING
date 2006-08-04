@@ -1,0 +1,1 @@
+dnat-to $COMPANY1_VOIP_PROXY_IP if all to $NAME_IP and from-iface $NAME

@@ -1,0 +1,29 @@
+lock
+crtscts
+nopersist
+asyncmap 0
+debug 10
+kdebug 10
+lcp-restart 1
+noccp
+novj
+novjccomp
+nodeflate
+multilink
+mpshortseq
+noauth
+lcp-echo-interval 5
+lcp-echo-failure 3
+lcp-max-configure 15
+lcp-max-terminate 2
+ipcp-accept-local
+ipcp-accept-remote
+maxfail 0
+unit 0
+modem
+115200
+ipparam ppp0
+linkname ppp0
+vj-max-slots 16
+#mrru 485
+/dev/ttyMX9

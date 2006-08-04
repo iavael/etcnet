@@ -1,0 +1,4 @@
+add XXX.XXX.61.155 via 10.0.1.2 src 10.0.1.1 table um-dmz
+add XXX.XXX.61.156 via 10.0.1.3 src 10.0.1.1 table um-dmz
+add XXX.XXX.61.157 via 10.0.1.4 src 10.0.1.1 table um-dmz
+add 10.3.0.0/24 dev tp-dmz-2 table um-dmz

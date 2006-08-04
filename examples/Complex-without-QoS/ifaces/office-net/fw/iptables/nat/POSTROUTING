@@ -1,0 +1,14 @@
+return if all from $COMPANY1_OFFICE_NET to $COMPANY1_DMZ_NET
+return if all from $COMPANY1_OFFICE_NET to $COMPANY1_DMZ_NET2
+return if all from $COMPANY1_OFFICE_NET to $COMPANY1_DMZ_NET3
+return if all from $COMPANY2_OFFICE_NET to $COMPANY1_DMZ_NET
+return if all from $COMPANY2_OFFICE_NET to $COMPANY1_DMZ_NET2
+return if all from $COMPANY2_OFFICE_NET to $COMPANY1_DMZ_NET3
+
+return if all from $COMPANY1_USER_F29_LAST29_IP to $COMPANY1_VOIP_PROXY_IP
+
+jump-to OFFICE-SNAT if all from $COMPANY1_OFFICE_NET
+jump-to OFFICE-SNAT if all from $COMPANY1_DMZ_NET
+jump-to OFFICE-SNAT if all from $COMPANY1_DMZ_NET2
+jump-to OFFICE-SNAT if all from $COMPANY1_DMZ_NET3
+

@@ -1,0 +1,8 @@
+del to XXX.XXX.61.165
+add to XXX.XXX.61.165 table tp-dmz-v13 pref 280
+del from XXX.XXX.61.165
+add from XXX.XXX.61.165 table tp-dmz-v13 pref 290
+del to XXX.XXX.61.164
+add to XXX.XXX.61.164 table voip-shdsl pref 100
+del from XXX.XXX.61.164
+add from XXX.XXX.61.164 table voip-shdsl pref 110

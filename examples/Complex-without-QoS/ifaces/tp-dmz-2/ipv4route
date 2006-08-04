@@ -1,0 +1,2 @@
+replace 10.3.0.254/32 via 10.3.0.1 table ukrtel-adsl
+replace 10.3.0.9/32 via 10.3.0.1 table ukrtel-adsl

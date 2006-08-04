@@ -1,0 +1,4 @@
+TYPE=vlan
+HOST=tp-dmz
+VID=13
+ONBOOT=yes

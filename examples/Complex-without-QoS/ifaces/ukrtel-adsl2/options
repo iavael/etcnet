@@ -1,0 +1,5 @@
+TYPE=eth
+USE_HOTPLUG=no
+MODULE=e1000
+ONBOOT=yes
+

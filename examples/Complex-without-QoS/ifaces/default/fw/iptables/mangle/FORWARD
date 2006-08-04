@@ -1,0 +1,2 @@
+clamp-mss-to-pmtu if tcp and tcp-flags SYN,RST SYN
+mark as 0x122 if tcp and tos is Minimize-Delay

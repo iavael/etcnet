@@ -1,0 +1,6 @@
+add 192.168.242.0/24 src 192.168.242.1 table um-dmz
+add 192.168.242.0/24 src 192.168.242.1 table ukrtel-adsl
+add 192.168.242.0/24 src 192.168.242.1 table ukrtel-adsl2
+add 192.168.242.0/24 src 192.168.242.1 table voip-shdsl
+
+
