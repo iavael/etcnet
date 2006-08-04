@@ -4,6 +4,7 @@
 
 usage()
 {
+	echo '/etc/net FireWall handler'
 	echo "Usage: $0 <interface> <action>" >&2
 	exit 1
 }
