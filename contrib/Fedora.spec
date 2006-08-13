@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.8.4
-Release:	0.test2.%{?dist}
+Release:	0.test3%{?dist}
 Summary:	This is /etc/net network configuration system
 License:	GPL
 Group:		System Environment/Base
@@ -58,27 +58,27 @@ install %{SOURCE1} .
 rm -rf %{buildroot}
 
 mkdir -p %{buildroot}%{_initrddir}
-mkdir -p %{buildroot}%{_initrddir}/network
 
 ln -s ../../../etc/net/scripts/network.init %{buildroot}%{_initrddir}/network
 mkdir -p %{buildroot}/sbin/
 mkdir -p %{buildroot}%{_sysconfdir}
 mkdir -p %{buildroot}%{_sysconfdir}/net
 mkdir -p %{buildroot}%{_sysconfdir}/net/scripts
+mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces
 
-cp -r etc/net/scripts %{buildroot}%{_sysconfdir}/net/scripts
+cp -r etc/net/scripts %{buildroot}%{_sysconfdir}/net
 
 mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/default
-cp -r etc/net/ifaces/default %{buildroot}%{_sysconfdir}/net/ifaces/default
+cp -r etc/net/ifaces/default %{buildroot}%{_sysconfdir}/net/ifaces
 
 mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/unknown
-cp -r etc/net/ifaces/unknown %{buildroot}%{_sysconfdir}/net/ifaces/unknown
+cp -r etc/net/ifaces/unknown %{buildroot}%{_sysconfdir}/net/ifaces
 
 mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/lo
-cp -r etc/net/ifaces/lo %{buildroot}%{_sysconfdir}/net/ifaces/lo
+cp -r etc/net/ifaces/lo %{buildroot}%{_sysconfdir}/net/ifaces
 
 mkdir -p %{buildroot}%{_sysconfdir}/net/options.d
-cp -r etc/net/options.d %{buildroot}%{_sysconfdir}/net/options.d/
+cp -r etc/net/options.d %{buildroot}%{_sysconfdir}/net
 
 install -m 644  etc/net/sysctl.conf %{buildroot}%{_sysconfdir}/net/sysctl.conf
 
@@ -91,13 +91,6 @@ done
 
 mkdir -p %{buildroot}%{_mandir}/man8
 mkdir -p %{buildroot}%{_mandir}/man5
-mkdir -p %{buildroot}%{_sysconfdir}/net
-mkdir -p %{buildroot}%{_sysconfdir}/net/scripts
-mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces
-mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/default
-mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/lo
-mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/unknown
-mkdir -p %{buildroot}%{_sysconfdir}/net/options.d
 install -m 644 docs/etcnet*.8 %{buildroot}%{_mandir}/man8
 install -m 644 docs/etcnet*.5 %{buildroot}%{_mandir}/man5
 
@@ -149,5 +142,7 @@ fi
 rm -rf %{buildroot}
 
 %changelog
+* Sun Aug 13 2006 Denis Ovsienko <linux@pilot.org.ua> - 0.8.4-0.test3
+- new snapshot and spec fixes
 * Thu Jun 15 2006 Denis Ovsienko <linux@pilot.org.ua> - 0.8.3-fc5.0.test4
 - initial Fedora build
