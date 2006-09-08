@@ -26,24 +26,15 @@ LOCKFILE=/var/lock/subsys/network
 
 type2group()
 {
-	local TYPE=${1:?missing 1st arg to $FUNCNAME}
-	case "$TYPE" in
-		lo|dummy)
-			echo '0'
-		;;
-		eth|plip|usb|dvb)
-			echo '1'
-		;;
-		vlan|bond|bri|teql)
-			echo '2'
-		;;
-		iptun|ipsectun)
-			echo '3'
-		;;
-		ppp)
-			echo '4'
-		;;
-	esac
+	local i t TYPE=${1:?missing 1st arg to $FUNCNAME}
+	for (( i=0; i < 5; i++ )); do
+		for t in ${IFGROUP[$i]}; do
+			if [ "$TYPE" = "$t" ]; then
+				echo $i
+				return
+			fi
+		done
+	done
 }
 
 group2name()
