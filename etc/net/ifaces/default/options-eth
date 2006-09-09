@@ -8,3 +8,4 @@ IFPLUGD_EXTRA_ARGS='--delay-up=0 --delay-down=10'
 LINKDETECT=auto
 CONFIG_WIRELESS=yes
 DHCP_HOSTNAME=localhost
+AUTO_BROADCAST=yes
