@@ -3,6 +3,8 @@
 	new feature: it is now possible to redefine interface groups
 	bugfix: DHCP and VLAN interfaces did not work
 	bugfix: sysctl.conf did not work for interfaces with dot in name
+	bugfix: could not set MAC address of VLAN interface
+	bugfix: missing ethtool was breaking Ethernet interface processing
 	change: DHCPCD_GRACE_TIME becomes DHCP_GRACE_TIME
 	change: firewall code refactoring and optimization
 	new: scripts 'eqos' and 'efw' for QoS and firewall manual control
