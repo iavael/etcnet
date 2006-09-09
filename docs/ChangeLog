@@ -7,6 +7,7 @@
 	bugfix: missing ethtool was breaking Ethernet interface processing
 	change: DHCPCD_GRACE_TIME becomes DHCP_GRACE_TIME
 	change: firewall code refactoring and optimization
+	change: configure broadcast address for Ethernet interfaces by default
 	new: scripts 'eqos' and 'efw' for QoS and firewall manual control
 	new: complex example in documentation
 0.8.3	2006-05-15
