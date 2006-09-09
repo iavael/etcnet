@@ -2,7 +2,7 @@ prefix := @prefix@
 etcnetdir := $(prefix)/etc/net
 sysconfdir := $(prefix)/etc/sysconfig
 sbindir := $(prefix)/sbin
-initdir := $(prefix)/etc/init.d
+initdir := $(prefix)/etc/rc.d/init.d
 mandir := $(prefix)/usr/share/man
 
 all:
@@ -27,6 +27,8 @@ install:
 	@install etc/net/ifaces/default/fw/iptables/mangle/* $(etcnetdir)/ifaces/default/fw/iptables/mangle
 	@install etc/net/ifaces/default/fw/iptables/nat/* $(etcnetdir)/ifaces/default/fw/iptables/nat
 	@# Finally done with default iface.
+	@install etc/net/ifaces/unknown/{options,README} $(etcnetdir)/ifaces/unknown
+	@install etc/net/ifaces/lo/{options,ipv4address} $(etcnetdir)/ifaces/lo
 	@install etc/net/options.d/* $(etcnetdir)/options.d
 	@install etc/net/scripts/contrib/* $(etcnetdir)/scripts/contrib
 	@install etc/net/scripts/{config-,create-,destroy-,functions,ifdown,ifup,setup-,shutdown-}* $(etcnetdir)/scripts
@@ -37,7 +39,7 @@ install:
 	@install docs/*.5 $(mandir)/man5
 
 # 2. Install aux files.
-	@install -D etc/sysconfig/network $(sysconfdir)
+	@install -D etc/sysconfig/network $(sysconfdir)/network
 	@install -D etc/net/scripts/network.init $(initdir)/network
 
 # 3. Create /sbin links.
