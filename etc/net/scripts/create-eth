@@ -11,4 +11,10 @@ if [ -n "$MODULE" ]; then
 else
 	$IP link set dev $NAME down
 fi
-[ -x "${ETHTOOL:=$DEFAULT_ETHTOOL}" ] && xargise_file $MYIFACEDIR/ethtool "$ETHTOOL -s $NAME"
+
+# Don't return error to ifup on missing ethtool binary
+if [ -x "${ETHTOOL:=$DEFAULT_ETHTOOL}" ]; then
+	xargise_file $MYIFACEDIR/ethtool "$ETHTOOL -s $NAME"
+else
+	exit 0
+fi
