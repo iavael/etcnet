@@ -1,12 +1,11 @@
 Name:		etcnet
 Version:	0.8.4
-Release:	0.test4%{?dist}
+Release:	0.test5%{?dist}
 Summary:	This is /etc/net network configuration system
 License:	GPL
 Group:		System Environment/Base
 URL:		http://etcnet.org/
 Source:		%{name}-%{version}.tar.gz
-Source2:	50-RedHat
 Requires(post):	/sbin/chkconfig
 Requires(preun):	/sbin/chkconfig
 Requires(preun):	/sbin/service
@@ -18,6 +17,10 @@ Conflicts:	initscripts <= 8.35-1
 #Conflicts:	ethtool < 3-alt4, pcmcia-cs < 3.2.8-alt2, ifplugd < 0.28-alt2
 Provides:	network-config-subsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+# We must lock on certain homebrew initscripts version, because Fedora package
+# is completely unpredictable. This can't be resolved ATM.
+Requires:	initscripts-8.39-1.etcnet.0
+
 
 %description
 /etc/net represents a new approach to Linux network configuration tasks.
@@ -54,9 +57,8 @@ added without overall design changes.
 
 %install
 rm -rf %{buildroot}
-
 make -f contrib/Makefile prefix=%{buildroot} install
-install -m 644 %SOURCE2 %buildroot/etc/net/options.d
+install -m 644 contrib/50-RedHat %buildroot/etc/net/options.d/
 
 %post
 if [ $1 -eq 1 ]; then
