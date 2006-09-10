@@ -1,5 +1,5 @@
 Name:		etcnet
-Version:	0.8.3
+Version:	0.8.4
 Release:	alt0.2
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
@@ -90,20 +90,10 @@ This package contains default options for a Linux server.
 %build
 
 %install
-mkdir -p %buildroot%_initdir
-cp -a etc %buildroot
+# Common part first, distribution-specific files later.
+make -f contrib/Makefile prefix=%{buildroot} install
 install -m 644 %SOURCE1 %buildroot/etc/net/options.d
 install -m 644 %SOURCE2 %buildroot/etc/net/options.d
-
-ln -s ../../../etc/net/scripts/network.init %buildroot%_initdir/network
-mkdir -p %buildroot/sbin/
-for n in ifup ifdown; do
-	ln -s ../etc/net/scripts/$n %buildroot/sbin
-done
-
-mkdir -p %buildroot%_man8dir %buildroot%_man5dir
-install -m 644 docs/etcnet*.8 %buildroot%_man8dir
-install -m 644 docs/etcnet*.5 %buildroot%_man5dir
 
 %post
 if [ $1 -eq 1 ]; then
@@ -125,6 +115,9 @@ if [ $2 -gt 0 ]; then
 	/sbin/chkconfig --add network
 fi
 
+%triggerpostun -- net-scripts
+/sbin/chkconfig --add network
+
 %files
 %dir %_sysconfdir/net
 %dir %_sysconfdir/net/scripts
@@ -143,7 +136,7 @@ fi
 %config %_sysconfdir/net/options.d/*
 %config(noreplace) %verify(not md5 mtime size) %_sysconfdir/sysconfig/network
 %doc docs/README* docs/ChangeLog docs/TODO
-%doc examples/
+%doc examples/ contrib/
 %_man5dir/*
 %_man8dir/*
 /sbin/ifup
@@ -158,7 +151,16 @@ fi
 %files full
 
 %changelog
-* Fri Mar 31 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.2-alt1
+* Sun Sep 10 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.4-alt0.1
+- trunk snapshot
+
+* Tue Jun 20 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.3-alt2
+- applied 2 patches by Dmitry Levin:
+ + /etc/net/scripts/network.init:type2group(): Handle venet type.
+ + Added %%triggerpostun script to save network service during
+   net-scripts -> etcnet migration.
+
+* Fri Mar 31 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.3-alt1
 - New version features bugfixes for #9171, #9172, #9035, #9200
 
 * Mon Jan 23 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.1-alt0.test1
