@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.8.4
-Release:	alt0.2
+Release:	alt0.3
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -8,8 +8,6 @@ Group:		System/Base
 Packager:	Denis Ovsienko <pilot@altlinux.ru>
 URL:		http://etcnet.org/
 Source:		%name-%version.tar.gz
-Source1:	50-ALTLinux-desktop
-Source2:	50-ALTLinux-server
 PreReq:		setup >= 0:2.1.9-ipl18mdk, service, startup >= 0:0.9.3-alt1
 Requires:	grep, sed, iproute2, ifrename >= 28-alt5.pre10, chkconfig
 BuildArch:	noarch
@@ -92,8 +90,8 @@ This package contains default options for a Linux server.
 %install
 # Common part first, distribution-specific files later.
 make -f contrib/Makefile prefix=%{buildroot} install
-install -m 644 %SOURCE1 %buildroot/etc/net/options.d
-install -m 644 %SOURCE2 %buildroot/etc/net/options.d
+install -m 644 contrib/50-ALTLinux-desktop %buildroot/etc/net/options.d
+install -m 644 contrib/50-ALTLinux-server  %buildroot/etc/net/options.d
 
 %post
 if [ $1 -eq 1 ]; then
