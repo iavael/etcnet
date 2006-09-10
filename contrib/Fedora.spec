@@ -1,12 +1,11 @@
 Name:		etcnet
 Version:	0.8.4
-Release:	0.test3%{?dist}
+Release:	0.test4%{?dist}
 Summary:	This is /etc/net network configuration system
 License:	GPL
 Group:		System Environment/Base
 URL:		http://etcnet.org/
 Source:		%{name}-%{version}.tar.gz
-Source1:	README.Fedora
 Source2:	50-RedHat
 Requires(post):	/sbin/chkconfig
 Requires(preun):	/sbin/chkconfig
@@ -50,50 +49,13 @@ added without overall design changes.
 
 %prep
 %setup -q
-install %{SOURCE1} .
 
 %build
 
 %install
 rm -rf %{buildroot}
 
-mkdir -p %{buildroot}%{_initrddir}
-
-ln -s ../../../etc/net/scripts/network.init %{buildroot}%{_initrddir}/network
-mkdir -p %{buildroot}/sbin/
-mkdir -p %{buildroot}%{_sysconfdir}
-mkdir -p %{buildroot}%{_sysconfdir}/net
-mkdir -p %{buildroot}%{_sysconfdir}/net/scripts
-mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces
-
-cp -r etc/net/scripts %{buildroot}%{_sysconfdir}/net
-
-mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/default
-cp -r etc/net/ifaces/default %{buildroot}%{_sysconfdir}/net/ifaces
-
-mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/unknown
-cp -r etc/net/ifaces/unknown %{buildroot}%{_sysconfdir}/net/ifaces
-
-mkdir -p %{buildroot}%{_sysconfdir}/net/ifaces/lo
-cp -r etc/net/ifaces/lo %{buildroot}%{_sysconfdir}/net/ifaces
-
-mkdir -p %{buildroot}%{_sysconfdir}/net/options.d
-cp -r etc/net/options.d %{buildroot}%{_sysconfdir}/net
-
-install -m 644  etc/net/sysctl.conf %{buildroot}%{_sysconfdir}/net/sysctl.conf
-
-mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
-install -m 644  etc/sysconfig/network %{buildroot}%{_sysconfdir}/sysconfig/network
-
-for n in ifup ifdown; do
-	ln -s ../etc/net/scripts/$n %{buildroot}/sbin
-done
-
-mkdir -p %{buildroot}%{_mandir}/man8
-mkdir -p %{buildroot}%{_mandir}/man5
-install -m 644 docs/etcnet*.8 %{buildroot}%{_mandir}/man8
-install -m 644 docs/etcnet*.5 %{buildroot}%{_mandir}/man5
-
+make -f contrib/Makefile prefix=%{buildroot} install
 install -m 644 %SOURCE2 %buildroot/etc/net/options.d
 
 %post
@@ -114,7 +76,6 @@ fi
 %doc docs/README* docs/ChangeLog docs/TODO
 %doc examples/
 %doc contrib/
-%doc README.Fedora
 /sbin/ifup
 /sbin/ifdown
 %{_initrddir}/network
@@ -144,5 +105,6 @@ rm -rf %{buildroot}
 %changelog
 * Sun Aug 13 2006 Denis Ovsienko <linux@pilot.org.ua> - 0.8.4-0.test3
 - new snapshot and spec fixes
+
 * Thu Jun 15 2006 Denis Ovsienko <linux@pilot.org.ua> - 0.8.3-fc5.0.test4
 - initial Fedora build

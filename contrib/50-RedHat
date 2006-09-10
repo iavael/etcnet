@@ -1,0 +1,3 @@
+# This file contains defaults for RedHat build of /etc/net
+# package.
+VCONFIG=/sbin/vconfig
