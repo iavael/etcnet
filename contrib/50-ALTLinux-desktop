@@ -1,0 +1,5 @@
+# Don't redefine type-specific options such as USE_IFPLUGD here. Use /etc/net/ifaces/default/options-*.
+RESOLV_POSTIN_CMD=/sbin/update_chrooted
+RESOLV_POSTIN_ARGS=conf
+ALLOW_UNKNOWN=on
+SILENT_REMOVABLES=yes
