@@ -206,6 +206,7 @@ get_mapped_ifname()
 	fi
 }
 
+# This function works for directories as well.
 profiled_filename()
 {
 	local CAND BASE=${1:?missing 1st arg to $FUNCNAME}
