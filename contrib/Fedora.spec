@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.8.4
-Release:	0.test5%{?dist}
+Release:	0.test7%{?dist}
 Summary:	This is /etc/net network configuration system
 License:	GPL
 Group:		System Environment/Base
