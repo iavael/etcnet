@@ -1,4 +1,4 @@
-#!/bin/ash -e
+#!/bin/bash
 
 PROG="${0##*/}"
 delim='='
