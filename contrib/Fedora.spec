@@ -19,7 +19,7 @@ Provides:	network-config-subsystem
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 # We must lock on certain homebrew initscripts version, because Fedora package
 # is completely unpredictable. This can't be resolved ATM.
-Requires:	initscripts-8.39-1.etcnet.0
+Requires:	initscripts = 8.39-1.etcnet.0
 
 
 %description
