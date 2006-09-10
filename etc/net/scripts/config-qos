@@ -26,31 +26,46 @@ case $ACTION in
 			local PARENTNODE=${2:?missing 2nd arg to $FUNCNAME}
 			local LAST_QDISC_HANDLE=$3
 			local EXTRAATTRS=$4
-			if [ -f $NODEDIR/class ]; then
+			local CANDCLASS=`profiled_filename $NODEDIR/class`
+			local CANDQDISC=`profiled_filename $NODEDIR/qdisc`
+			local RECLEVEL
+			if [ -f $CANDCLASS ]; then
 				NODETYPE=class
 				NODEIDPREFIX=classid
 				NODEID="$LAST_QDISC_HANDLE$NODENAME"
-				NODEATTRS="`head -1 $NODEDIR/class`"
-			elif [ -f $NODEDIR/qdisc ]; then
+				NODEATTRS="`head -1 $CANDCLASS`"
+			elif [ -f $CANDQDISC ]; then
 				NODETYPE=qdisc
 				NODEIDPREFIX=handle
 				NODEID="$NODENAME:"
 				LAST_QDISC_HANDLE=$NODEID
-				NODEATTRS=`head -1 $NODEDIR/qdisc`
+				NODEATTRS=`head -1 $CANDQDISC`
 			else
-				print_error "Unknown node type in $FUNCNAME, TDIR=$NODEDIR"
+				print_error "Unknown node type in $FUNCNAME, RECLEVEL=$RECLEVEL, CWD=$NODEDIR"
 				return 1
 			fi
 			$TC $NODETYPE add dev $NAME $PARENTNODE $NODEIDPREFIX $NODEID $EXTRAATTRS $NODEATTRS
 		# setup filters
-			if [ $NODETYPE = class -a -s $NODEDIR/filter ]; then
-				$DENOISE $NODEDIR/filter | while read FILTEREXPR; do
-					$TC filter add dev $NAME $PARENTNODE `head -1 $NODEDIR/extra.filter 2>/dev/null` $FILTEREXPR flowid $NODEID
+			local CANDFILTER=`profiled_filename $NODEDIR/filter`
+			local CANDEXTRAFILTER=`profiled_filename $NODEDIR/extra.filter`
+			if [ $NODETYPE = class -a -s $CANDFILTER ]; then
+				$DENOISE $CANDFILTER | while read FILTEREXPR; do
+					$TC filter add dev $NAME $PARENTNODE `head -1 $CANDEXTRAFILTER 2>/dev/null` $FILTEREXPR flowid $NODEID
 				done
 			fi
 			RECLEVEL=$((RECLEVEL+1))
-			for d in $NODEDIR/*; do
-				[ -d $d ] && $FUNCNAME $d "parent $NODEID" "$LAST_QDISC_HANDLE" "`head -1 $NODEDIR/extra 2>/dev/null`"
+			local CANDEXTRA=`profiled_filename $NODEDIR/extra`
+			local cdir
+			for cdir in $NODEDIR/*; do
+				# Take base name of each directory and build up the best match
+				# for current profile and host. If the full name and the best
+				# match are equal, go on.
+				[ -d $cdir ] || continue
+				local base=${d%#*}
+				base=${base%@*}
+				local bestmatch=`profiled_filename $base`
+				[ "$bestmatch" = "$cdir" ] || continue
+				$FUNCNAME `profiled_filename $cdir` "parent $NODEID" "$LAST_QDISC_HANDLE" "`head -1 $CANDEXTRA 2>/dev/null`"
 			done
 			RECLEVEL=$((RECLEVEL-1))
 			return 0
