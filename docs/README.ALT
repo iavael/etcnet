@@ -4,28 +4,6 @@ If you do not have etcnet package, it is enough to run:
 # apt-get install etcnet
 or
 # apt-get install etcnet-full
-with standard package sources configured. etcnet is present in Sisyphus and
-Compact-3.0
+Having standard package sources configured, etcnet is available for
+Sisyphus and Compact-3.0
 
-*** POST-INSTALL CONFIGURATION ***
-
-You must review your /etc/sysconfig/network file and check NETWORKING
-and CONFMETHOD variables:
-
-NETWORKING=yes
-CONFMETHOD=etcnet
-
-Please note that FORWARD_IPV4, GATEWAY and GATEWAYDEV variables are
-net-scripts specific and are ignored by /etc/net.
-
-Edit /etc/sysctl.conf and remove the lines that are present
-in /etc/net/sysctl.conf.
-
-# chkconfig --list network
-You may need to run 'chkconfig network reset' (this is a known bug).
-
-
-*** MORE INFORMATION ***
-man etcnet
-man etcnet-options
-http://wiki.sisyphus.ru/admin/etcnet
