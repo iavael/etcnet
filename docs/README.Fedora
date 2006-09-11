@@ -1,17 +1,23 @@
-This is an early build of /etc/net for Fedora, it is not provided as a part of
-Fedora Core or Extras or Rawhide. To install /etc/net you will need to setup
-an additional repository:
+This document explains how to get a working installation of /etc/net
+on a Fedora system.
+
+Step 1. Backup your configuration
+
+Step 2. Setup external repository:
 
 cat > /etc/yum.repos.d/etcnet.repo << EOF
 [etcnet]
-name=Fedora Core $releasever - $basearch
-baseurl=http://moscow.etcnet.org/pub/etcnet/$releasever/RPMS
+name=/etc/net for Fedora
+baseurl=http://etcnet.org/repo/fc$releasever/$basearch/RPMS
 enabled=1
-gpgcheck=1
-
+gpgcheck=0
 EOF
 
-# yum install etcnet
-You should be offered to upgrade initscripts.
+Step 3. yum install etcnet
+You should be prompted to install "etcnet" and to update "initscripts".
 
-Thank you for interest.
+Step 4. Configure your system.
+Run /etc/net/scripts/contrib/initconf and examine its output. It usually
+generates adequate configurations for simple setups. If you are happy
+with its suggestions, run the scripts once more with "write" parameter
+and it should be done.
