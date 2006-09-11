@@ -15,9 +15,3 @@ EOF
 
 Step 3. yum install etcnet
 You should be prompted to install "etcnet" and to update "initscripts".
-
-Step 4. Configure your system.
-Run /etc/net/scripts/contrib/initconf and examine its output. It usually
-generates adequate configurations for simple setups. If you are happy
-with its suggestions, run the scripts once more with "write" parameter
-and it should be done.

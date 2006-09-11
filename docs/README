@@ -1,5 +1,8 @@
-*** README for /etc/net version 0.8.4 ***
+/etc/net version 0.8.4
 
+===
+=== INTRODUCTION
+===
 /etc/net (etcnet) is a modern network configuration system for Linux.
 The project's goal is to make network management in Linux more
 convenient; to make modern networking technologies available.
@@ -7,10 +10,54 @@ convenient; to make modern networking technologies available.
 wireless Ethernet, IP tunnels, IPSec static tunnels, VLANs, PLIP, Ethernet
 bonding and bridges, traffic equalizers, dummy, DVB and usbnet interfaces,
 PPP, PPTP and PPPoE. /etc/net supports IPv4, IPv6 and IPX.
-For details about /etc/net design configuration see etcnet(8) manpage,
-project's web-site (http://etcnet.org/) and configuration examples.
 
-COPYRIGHT AND LICENSE
+===
+=== INSTALLATION
+===
+Please refer to distribution-specific INSTALL file.
+Right after the installation you usually have a running system and the
+default /etc/net configuration, which only brings up loopback interface.
+If you reboot, you will end up with a networkless Linux host.
+
+===
+=== CONFIGURATION
+===
+You can start building the configuration for your next reboot from scratch
+or you can run /etc/net/scripts/contrib/initconf and examine its output.
+The script usually generates adequate configurations for simple setups.
+If you are happy with its suggestions, run the scripts once more with
+"write" parameter and you will have something to continue with.
+
+After you are done with /etc/net configuration, you probaly have to fix
+some things in the rest of the system:
+
+You must review your /etc/sysconfig/network file and check NETWORKING
+and CONFMETHOD variables:
+
+NETWORKING=yes
+CONFMETHOD=etcnet
+
+Please note that FORWARD_IPV4, GATEWAY and GATEWAYDEV variables are
+net-scripts specific and are ignored by /etc/net.
+
+Edit /etc/sysctl.conf and remove the lines that are present
+in /etc/net/sysctl.conf.
+
+# chkconfig --list network
+You may need to run 'chkconfig network reset' (this is a known bug).
+
+===
+=== MORE INFORMATION
+===
+For details about /etc/net design and configuration please see etcnet and
+etcnet-options manpages, project's web-site (http://etcnet.org/) and
+configuration examples, included in the distribution tarball.
+Russian tips collection is located at http://wiki.sisyphus.ru/admin/etcnet
+
+
+===
+=== COPYRIGHT AND LICENSE
+===
 Copyright (c) 2004-2006
 Denis Ovsienko <pilot/@/etcnet.org>
 Andrew Kornilov <hiddenman/@/altlinux.org>
