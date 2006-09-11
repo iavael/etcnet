@@ -5,9 +5,7 @@
 - patch: kernel: support more than one teql interfaces
 - SkyStar-1 support
 - USB ZyXEL support
-+ QoS profiles support
 - iANS support ?
 - CARP support: UCARP_ADDRESS UCARP_OPTIONS
-+ functions-ipv4
 - sysctl doesn't work for PPP
 - move stop_dhcp_client to functions-ipv4
