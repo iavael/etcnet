@@ -1,0 +1,8 @@
+
+*** Bluetooth network configuration in /etc/net ***
+
+To set up a BT connection between two /etc/net managed Linux hosts,
+you will need 2 BT interfaces with distinct MAC addresses. BT MAC
+addresses are 6 bytes long, like Ethernet MAC addresses, and can
+be displayed with "hcitool dev" command. You need "bluetooth" service
+running to access BT interfaces.
