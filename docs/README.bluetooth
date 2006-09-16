@@ -6,3 +6,33 @@ you will need 2 BT interfaces with distinct MAC addresses. BT MAC
 addresses are 6 bytes long, like Ethernet MAC addresses, and can
 be displayed with "hcitool dev" command. You need "bluetooth" service
 running to access BT interfaces.
+
+After that you normally use one Linux host as a "server" and another
+one as a "client". To make the server side wait for connections, make
+sure you have hcid and pand services are running with the right options.
+
+pand startup is configured in /etc/sysconfig/bluetooth:
+PAND_ENABLE=true
+PAND_OPTIONS="--listen --role NAP"
+hcid is configured in /etc/bluetooth/hcid.conf
+
+After this setup is done, Linux BT system will accept client connections,
+create a BNEP interface and pass the rest of configuration task to /etc/net
+via a hotplug call. Your server BNEP interface will look as follows:
+/etc/net/ifaces/bluetooth/options:
+USE_HOTPLUG=yes
+TYPE=eth
+Yes, at server side it is treated as an Ethernet interface, this could be
+changed somewhere in future. Don't forget to add an entry for BT device into
+/etc/net/iftab.
+
+Client configuration would be done in /etc/net/ifaces/bluetooth/options:
+
+TYPE=bnep
+USE_HOTPLUG=no
+NAP=00:01:02:03:04:05
+
+After that "ifup bluetooth" at client side should create a new interface,
+it usually takes up 10 seconds. You will probably want to run IPv4 or IPv6
+over the newly created interface, just add ipv[46]address/ipv[46]route files
+where appropriate.
