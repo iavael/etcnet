@@ -129,7 +129,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %_sysconfdir/net/ifaces/unknown/*
 %config(noreplace) %verify(not md5 mtime size) %_sysconfdir/net/ifaces/lo/*
 %config(noreplace) %verify(not md5 mtime size) %_sysconfdir/net/sysctl.conf
-%config %_initdir/network
+%_initdir/network
 %exclude %_sysconfdir/net/options.d/50-*
 %config %_sysconfdir/net/options.d/*
 %config(noreplace) %verify(not md5 mtime size) %_sysconfdir/sysconfig/network
