@@ -1,0 +1,207 @@
+--- initscripts-8.39-1.spec	2006-09-05 17:57:28.000000000 +0400
++++ initscripts.spec	2006-09-10 14:41:05.000000000 +0400
+@@ -3,8 +3,9 @@
+ Version: 8.39
+ License: GPL
+ Group: System Environment/Base
+-Release: 1
++Release: 1.etcnet.0
+ Source: initscripts-%{version}.tar.bz2
++Patch1: initscripts-8.39-sysctlsplit.patch
+ URL: http://fedora.redhat.com/projects/additional-projects/initscripts/
+ BuildRoot: /%{_tmppath}/%{name}-%{version}-%{release}-root
+ Requires: mingetty, /bin/awk, /bin/sed, mktemp, e2fsprogs >= 1.15
+@@ -13,13 +14,12 @@
+ Requires: module-init-tools
+ Requires: util-linux >= 2.10s-11, mount >= 2.11l
+ Requires: bash >= 3.0, SysVinit >= 2.85-38
+-Requires: /sbin/ip, /sbin/arping, net-tools
+ Requires: /etc/redhat-release, dev
+-Requires: ethtool >= 1.8-2, /sbin/runuser
++Requires: /sbin/runuser
+ Requires: udev >= 078-1
++Requires: network-config-subsystem
+ Conflicts: mkinitrd < 4.0, kernel < 2.6.12
+ Conflicts: ypbind < 1.6-12, psacct < 6.3.2-12, kbd < 1.06-19, lokkit < 0.50-14
+-Conflicts: dhclient < 3.0.3-7
+ Conflicts: tcsh < 6.13-5
+ Conflicts: xorg-x11, glib2 < 2.11.1-2
+ Obsoletes: rhsound sapinit
+@@ -27,14 +27,27 @@
+ Prereq: /sbin/chkconfig, /usr/sbin/groupadd, /bin/sed, coreutils
+ BuildRequires: glib2-devel popt gettext pkgconfig
+ 
++%package -n net-scripts
++Summary: Network scripts, former part of initscripts package.
++Group: System Environment/Base
++Provides: network-config-subsystem
++Conflicts: etcnet, dhclient < 3.0.3-7
++Requires: initscripts = %{version}-%{release}, /sbin/arping, ethtool >= 1.8-2
++Requires: /sbin/ip, net-tools
++
++
+ %description
+ The initscripts package contains the basic system scripts used to boot
+ your Red Hat system, change runlevels, and shut the system down
+-cleanly.  Initscripts also contains the scripts that activate and
++cleanly.
++
++%description -n net-scripts
++This package contains traditional set of scripts, that activate and
+ deactivate most network interfaces.
+ 
+ %prep
+ %setup -q
++%patch1 -p1
+ 
+ %build
+ make
+@@ -65,17 +78,22 @@
+ chmod 600 /var/log/btmp
+ 
+ /sbin/chkconfig --add netfs
+-/sbin/chkconfig --add network
+ 
+ # Handle converting prefdm to run-once
+ if fgrep -q "x:5:respawn:/etc/X11/prefdm -nodaemon" /etc/inittab ; then
+     sed --in-place=.rpmsave 's|^x:5:respawn:/etc/X11/prefdm -nodaemon|x:5:once:/etc/X11/prefdm -nodaemon|g' /etc/inittab
+ fi
+ 
++%post -n net-scripts
++/sbin/chkconfig --add network
+ 
+ %preun
+ if [ $1 = 0 ]; then
+   /sbin/chkconfig --del netfs
++fi
++
++%preun -n net-scripts
++if [ $1 = 0 ]; then
+   /sbin/chkconfig --del network
+ fi
+ 
+@@ -87,19 +105,16 @@
+ %clean
+ rm -rf $RPM_BUILD_ROOT
+ 
+-%files -f %{name}.lang
++%files -n net-scripts
+ %defattr(-,root,root)
+ %dir /etc/sysconfig/network-scripts
+-%config(noreplace) %verify(not md5 mtime size) /etc/adjtime
+-%config(noreplace) /etc/sysconfig/init
+-%config(noreplace) /etc/sysconfig/readonly-root
+-/etc/sysconfig/network-scripts/ifdown
++/sbin/ifup
+ /sbin/ifdown
+ %config /etc/sysconfig/network-scripts/ifdown-post
++%config(noreplace) /etc/sysconfig/network-scripts/sysctl.conf
++/etc/sysconfig/network-scripts/ifdown
+ /etc/sysconfig/network-scripts/ifup
+-/sbin/ifup
+-%dir /etc/sysconfig/console
+-%dir /etc/sysconfig/modules
++%config /etc/rc.d/init.d/network
+ %dir /etc/sysconfig/networking
+ %dir /etc/sysconfig/networking/devices
+ %dir /etc/sysconfig/networking/profiles
+@@ -141,6 +156,16 @@
+ %config /etc/sysconfig/network-scripts/ifup-ctc
+ %config /etc/sysconfig/network-scripts/ifup-iucv
+ %endif
++%doc static-routes-ipv6 ipv6-tunnel.howto ipv6-6to4.howto changes.ipv6
++
++
++%files -f %{name}.lang
++%defattr(-,root,root)
++%config(noreplace) %verify(not md5 mtime size) /etc/adjtime
++%config(noreplace) /etc/sysconfig/init
++%config(noreplace) /etc/sysconfig/readonly-root
++%dir /etc/sysconfig/console
++%dir /etc/sysconfig/modules
+ /etc/rwtab
+ %dir /etc/rwtab.d
+ /etc/udev/rules.d/*
+@@ -154,7 +179,11 @@
+ %dir /etc/rc.d/init.d
+ /etc/rc.local
+ /etc/rc.sysinit
+-%config /etc/rc.d/init.d/*
++%config /etc/rc.d/init.d/functions
++%config /etc/rc.d/init.d/halt
++%config /etc/rc.d/init.d/killall
++%config /etc/rc.d/init.d/netfs
++%config /etc/rc.d/init.d/single
+ %config /etc/rc.d/rc
+ %config(noreplace) /etc/rc.d/rc.local
+ %config /etc/rc.d/rc.sysinit
+@@ -187,64 +216,18 @@
+ %config /etc/ppp/ipv6-up
+ %config /etc/ppp/ipv6-down
+ %config /etc/initlog.conf
+-%doc sysconfig.txt sysvinitfiles ChangeLog static-routes-ipv6 ipv6-tunnel.howto ipv6-6to4.howto changes.ipv6
++%doc sysconfig.txt sysvinitfiles ChangeLog
+ /var/lib/stateless
+ %ghost %attr(0600,root,utmp) /var/log/btmp
+ %ghost %attr(0664,root,utmp) /var/log/wtmp
+ %ghost %attr(0664,root,utmp) /var/run/utmp
+ 
+ %changelog
+-* Tue Sep  5 2006 Bill Nottingham <notting@redhat.com> 8.39-1
+-- translation updates
+-- Handle partitions on multipath/dmraid better (<pjones@redhat.com>)
+-- make /dev/mapper/control ourselves (<pjones@redhat.com>)
+-- init.d/network: simplify 'status' call
+-- fix actual 169.254 networks (#203591)
+-- rc.sysinit: don't run vgscan (#191879)
+-- init.d/halt: don't umount /dev/root<foo> (<oblin@mandriva.com>)
+-- rc.sysinit: catch more dmraid errors (#200683)
+-- support 'tmp' option in /etc/crypttab (#201382, <mitr@redhat.com>,
+-  <lv@lekv.de>)
+-- IPv6 updates (<pb@bieringer.de>, includes a fix for #143452)
+-
+-* Tue Aug  1 2006 Bill Nottingham <notting@redhat.com> 8.38-1
+-- translation updates
+-- bring down bonding slaves on ifdown (#199706)
+-- support LINKDELAY for dhcp (#191137)
+-- netfs: run multipath on netdev devices (#180977)
+-- halt: use /proc/mounts instead of /etc/mtab (#198426, <mitr@redhat.com>)
+-- rc.sysinit: fix getkey race (#191453, <mitr@redhat.com>)
+-- spec cleanups (#188614, <kloczek@rudy.mif.pg.gda.pl>)
+-- support aliases on vlan (#193133, <mitr@redhat.com>)
+-- clean up ifcfg file handling (<mitr@redhat.com>, <michal@harddata.com>)
+-- GRE and IPIP tunnel support (#168990, <mitr@redhat.com>,
+-  <razvan.vilt@linux360.ro>, <aaron.hope@unh.edu>, <sean@enertronllc.com>)
+-- rc.sysinit: don't format encrypted swap always (#127378)
+-- don't try to add routes to alias devices (#199825, #195656)
+-
+-* Fri Jul 21 2006 Bill Nottingham <notting@redhat.com> 8.37-1
+-- update translations
++* Sun Sep 10 2006 Denis Ovsienko <linux@pilot.org.ua> 8.39-1.etcnet
++- merge William's changes since 8.36
+ 
+-* Fri Jul 21 2006 Bill Nottingham <notting@redhat.com> 8.36-1
+-- rework automatic swapon - only run if AUTOSWAP=yes, and fix errors
+-  (#198695, #196179, #196208)
+-- redo single so it starts last in runlevel 1, and doesn't kill/start
+-  services itself
+-- add configurable delay for killproc() (#198429, <jorton@redhat.com>)
+-- fix loop in rename_device (#199242, <markmc@redhat.com>)
+-- rc.sysinit: stateless updates (#197972, <law@redhat.com>)
+-- support for copying dhcp leases from initramfs (#198601, <markmc@redhat.com>)
+-- readonly-root: SELinux works now in the kernel, allow it
+-- init.d/network: don't bring down network if root is on a network device
+-- init.d/halt: don't use -i to halt; causes problems with iscsi
+-- add support for routing rule-$device (#132252, <mitr@redhat.com>)
+-- fix rhgb output (#192604, <tonynelson@georgeanelson.com>)
+-- fix crypttab options for LUKS (#197656, <mitr@redhat.com>)
+-- ipsec: various fixes & new features (#150682, #168972, <mitr@redhat.com>, <alex@milivojevic.org>)
+-- ipsec: add check for IKE_METHOD (#197576, <john_smyth@mail.ru>)
+-- rename_device: ignore alias devices, fix race (#186355)
+-- ifup/ifdown: don't mark as %config
+-- rwtab: some additions/cleanup
++* Tue Jul 18 2006 Denis Ovsienko <linux@pilot.org.ua> 8.35-1.1
++- just bump up to follow rawhide version
+ 
+ * Mon Jun 12 2006 Bill Nottingham <notting@redhat.com> 8.35-1
+ - readonly root enhancments (modified from <law@redhat.com>, #193164)
