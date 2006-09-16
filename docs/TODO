@@ -1,4 +1,4 @@
-- bluetooth support
++ bluetooth support
 - xsupplicant support
 - Elektra support
 - patch: bridge-utils arg order

@@ -157,15 +157,15 @@ There are 6 options to control dependencies resolution:
 .IP IFDOWN_PARENTS=<boolean>
 .IP IFUP_CHILDREN=<boolean>
 .IP IFDOWN_CHILDREN=<boolean>
-.LP
-Those options are described in etcnet-options(5) manpage.
+.LP 
+Those options are described in etcnet\-options(5) manpage.
 NOTE:
 Interfaces from vlantab bypass traditional logic,
 they can't cause parent/child interface to become up/down. If parent interface
 is down at the moment of vlantab processing (ONBOOT=no or misconfiguration), all
 child VLAN interfaces will be just skipped.
 .SH "VLANTAB SYNTAX"
-vlantab provides a way to bulk-configure VLAN interfaces with only IPv4 address
+vlantab provides a way to bulk\-configure VLAN interfaces with only IPv4 address
 at each interface. For each VLAN interface you have to place a line:
 .IP "<host interface> <VLAN ID>"
 Create VLAN interface and automatically name it according to VLAN_NAMETYPE option value.
@@ -189,13 +189,13 @@ of network profile and network host.
 A profile is a configuration superset. E.g. when a notebook boots up in
 several different networks, it's desirable to select current configuration
 by just one parameter. Current profile name can be set via:
-.TP
+.TP 
 1. environment variable NETPROFILE (not a good idea I guess)
-.TP
+.TP 
 2. file /etc/net/profile (file should contain just one word, e.g. "office" w/o quotes)
-.TP
+.TP 
 3. kernel boot parameter "netprofile", e.g. "LILO: linux netprofile=home"
-.LP
+.LP 
 Specifying a profile does nothing by default. But if etcnet scripts know the
 current profile name (e.g. "home") and look for a configuration file (e.g. "options")
 and "options#home" exists, then "options#home" will be used instead of "options".
@@ -211,11 +211,11 @@ previous, but additional options#yourprofilename and iftab#yourprofilename for t
 different network card.
 
 To switch between configurations without editing /etc/net/profile one can use:
-.TP
+.TP 
 # service etcnet startwith office
-.TP
+.TP 
 # service etcnet restartwith home
-.LP
+.LP 
 If 'selectprofile' executable script exists in iface directory, it will be run with a
 single argument, which defines current stage of (de)configuration sequence. If you
 want to override current profile name during runtime, you should perform required
@@ -255,16 +255,14 @@ ppp option 'demand' can hang /etc/net startup forever
 .TP 
 CONFIG_IPV6 must be on to configure 6\-to\-4 (TYPE=iptun, TUNTYPE=sit) tunnels correctly
 .TP 
-Profiles don't work with QoS.
-.TP 
 If you configure dummy interfaces, 'dummy0' interface name must be always unused.
-.TP
+.TP 
 Bonding interface name can't be same as another kernel module name.
 .SH "SEE ALSO"
 .BR ip(8),
 .BR tc(8),
-.BR etcnet-options(5),
-.BR etcnet-qos(8),
-.BR etcnet-fw(8),
+.BR etcnet\-options(5),
+.BR etcnet\-qos(8),
+.BR etcnet\-fw(8),
 .BR ifrename(8),
 .BR iftab(5)

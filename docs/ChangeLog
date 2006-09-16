@@ -1,5 +1,5 @@
 0.8.4
-	new feature: bluetooth (bnep) support
+	new feature: initial BlueTooth (bnep) support
 	new feature: it is now possible to redefine interface groups
 	new feature: QoS profiles
 	new feature: dhclient support

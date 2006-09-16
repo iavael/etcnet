@@ -1,9 +1,12 @@
-*** INSTALLATION ***
+This document explains how to get a working installation of /etc/net
+on an ALTLinux system.
 
-If you do not have etcnet package, it is enough to run:
+Step 1. Install ALTLinux Compact 3.0 or ALTLinux Sisyphus
+
+Step 2. Backup your configuration
+
+Step 3. Install the package
+
 # apt-get install etcnet
 or
 # apt-get install etcnet-full
-Having standard package sources configured, etcnet is available for
-Sisyphus and Compact-3.0
-

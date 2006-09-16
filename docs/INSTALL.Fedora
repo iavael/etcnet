@@ -1,9 +1,11 @@
 This document explains how to get a working installation of /etc/net
 on a Fedora system.
 
-Step 1. Backup your configuration
+Step 1. Install Fedora Core 6 test 3
 
-Step 2. Setup external repository:
+Step 2. Backup your configuration
+
+Step 3. Setup external repository:
 
 cat > /etc/yum.repos.d/etcnet.repo << EOF
 [etcnet]
@@ -13,5 +15,5 @@ enabled=1
 gpgcheck=0
 EOF
 
-Step 3. yum install etcnet
+Step 4. yum install etcnet
 You should be prompted to install "etcnet" and to update "initscripts".
