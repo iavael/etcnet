@@ -20,27 +20,28 @@ install:
 	@install -d $(etcnetdir)/ifaces/unknown
 	@install -d $(etcnetdir)/options.d
 	@install -d $(etcnetdir)/scripts/contrib
-	@install etc/net/ifaces/default/{options,sysctl.conf}* $(etcnetdir)/ifaces/default
-	@install etc/net/ifaces/default/fw/options $(etcnetdir)/ifaces/default/fw
-	@install etc/net/ifaces/default/fw/iptables/{loadorder,modules,syntax} $(etcnetdir)/ifaces/default/fw/iptables
-	@install etc/net/ifaces/default/fw/iptables/filter/* $(etcnetdir)/ifaces/default/fw/iptables/filter
-	@install etc/net/ifaces/default/fw/iptables/mangle/* $(etcnetdir)/ifaces/default/fw/iptables/mangle
-	@install etc/net/ifaces/default/fw/iptables/nat/* $(etcnetdir)/ifaces/default/fw/iptables/nat
+	@install -m 644 etc/net/ifaces/default/{options,sysctl.conf}* $(etcnetdir)/ifaces/default
+	@install -m 644 etc/net/ifaces/default/fw/options $(etcnetdir)/ifaces/default/fw
+	@install -m 644 etc/net/ifaces/default/fw/iptables/{loadorder,modules,syntax} $(etcnetdir)/ifaces/default/fw/iptables
+	@install -m 644 etc/net/ifaces/default/fw/iptables/filter/* $(etcnetdir)/ifaces/default/fw/iptables/filter
+	@install -m 644 etc/net/ifaces/default/fw/iptables/mangle/* $(etcnetdir)/ifaces/default/fw/iptables/mangle
+	@install -m 644 etc/net/ifaces/default/fw/iptables/nat/* $(etcnetdir)/ifaces/default/fw/iptables/nat
 	@# Finally done with default iface.
-	@install etc/net/ifaces/unknown/{options,README} $(etcnetdir)/ifaces/unknown
-	@install etc/net/ifaces/lo/{options,ipv4address} $(etcnetdir)/ifaces/lo
-	@install etc/net/options.d/* $(etcnetdir)/options.d
-	@install etc/net/scripts/contrib/* $(etcnetdir)/scripts/contrib
-	@install etc/net/scripts/{config-,create-,destroy-,functions,ifdown,ifup,setup-,shutdown-}* $(etcnetdir)/scripts
-	@install etc/net/scripts/{ifplugd.action,network.init} $(etcnetdir)/scripts
-	@install etc/net/sysctl.conf $(etcnetdir)
+	@install -m 644 etc/net/ifaces/unknown/{options,README} $(etcnetdir)/ifaces/unknown
+	@install -m 644 etc/net/ifaces/lo/{options,ipv4address} $(etcnetdir)/ifaces/lo
+	@install -m 644 etc/net/options.d/* $(etcnetdir)/options.d
+	@install -m 755 etc/net/scripts/contrib/* $(etcnetdir)/scripts/contrib
+	@install -m 644 etc/net/scripts/functions* $(etcnetdir)/scripts
+	@install -m 755 etc/net/scripts/{config-,create-,destroy-,ifdown,ifup,setup-,shutdown-}* $(etcnetdir)/scripts
+	@install -m 755 etc/net/scripts/{ifplugd.action,network.init} $(etcnetdir)/scripts
+	@install -m 644 etc/net/sysctl.conf $(etcnetdir)
 	@install -d $(mandir)/man{5,8}
-	@install docs/*.8 $(mandir)/man8
-	@install docs/*.5 $(mandir)/man5
+	@install -m 644 docs/*.8 $(mandir)/man8
+	@install -m 644 docs/*.5 $(mandir)/man5
 
 # 2. Install aux files.
-	@install -D etc/sysconfig/network $(sysconfdir)/network
-	@install -D etc/net/scripts/network.init $(initdir)/network
+	@install -D -m 644 etc/sysconfig/network $(sysconfdir)/network
+	@install -D -m 755 etc/net/scripts/network.init $(initdir)/network
 
 # 3. Create /sbin links.
 	@install -d $(sbindir)
