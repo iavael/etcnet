@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.8.4
-Release:	0.test7%{?dist}
+Release:	1%{?dist}
 Summary:	This is /etc/net network configuration system
 License:	GPL
 Group:		System Environment/Base
@@ -105,8 +105,8 @@ fi
 rm -rf %{buildroot}
 
 %changelog
-* Sun Aug 13 2006 Denis Ovsienko <linux@pilot.org.ua> - 0.8.4-0.test3
-- new snapshot and spec fixes
+* Sat Sep 16 2006 Denis Ovsienko <linux@pilot.org.ua> - 0.8.4-1
+- 0.8.4 release for Fedora
 
 * Thu Jun 15 2006 Denis Ovsienko <linux@pilot.org.ua> - 0.8.3-fc5.0.test4
 - initial Fedora build

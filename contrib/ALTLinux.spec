@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.8.4
-Release:	alt0.3
+Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -149,8 +149,8 @@ fi
 %files full
 
 %changelog
-* Sun Sep 10 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.4-alt0.1
-- trunk snapshot
+* Sat Sep 16 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.4-alt1
+- building 0.8.4 for Sisyphus
 
 * Tue Jun 20 2006 Denis Ovsienko <pilot@altlinux.ru> 0.8.3-alt2
 - applied 2 patches by Dmitry Levin:
