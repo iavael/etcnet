@@ -7,7 +7,7 @@ Step 2. Backup your configuration
 
 Step 3. Setup external repository:
 
-# wget -o /etc/yum.repos.d/etcnet.repo http://etcnet.org/repo/etcnet.repo
+# wget -o /etc/yum.repos.d/etcnet.repo http://etcnet.org/repo/fedora/etcnet.repo
 
 Step 4. yum install etcnet
 You should be prompted to install "etcnet" and to update "initscripts".
