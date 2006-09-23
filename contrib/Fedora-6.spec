@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.8.4
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	This is /etc/net network configuration system
 License:	GPL
 Group:		System Environment/Base
@@ -58,7 +58,7 @@ added without overall design changes.
 %install
 rm -rf %{buildroot}
 make -f contrib/Makefile prefix=%{buildroot} install
-install -m 644 contrib/50-RedHat %buildroot/etc/net/options.d/
+install -m 644 contrib/50-Fedora-6 %buildroot/etc/net/options.d/
 
 %post
 if [ $1 -eq 1 ]; then
