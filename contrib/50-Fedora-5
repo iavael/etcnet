@@ -5,4 +5,4 @@ DHCP_CLIENT=/sbin/dhclient
 # dhclient in Fedora 5 isn't as advanced as the one in Fedora 6,
 # so we don't try to make it submit a hostname through a missing
 # command-line option.
-DHCP_HOSTNAME=NONE
+DHCP_HOSTNAME=
