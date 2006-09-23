@@ -1,4 +1,4 @@
-# This file contains defaults for RedHat build of /etc/net
+# This file contains defaults for Fedora 6 build of /etc/net
 # package.
 VCONFIG=/sbin/vconfig
 DHCP_CLIENT=/sbin/dhclient
