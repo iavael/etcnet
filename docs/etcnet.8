@@ -146,13 +146,13 @@ Autoprefix means that if fully specified variables (like in a traditional /etc/s
 is met, it will be processed as is, but for single word variables like rp_filter or forwarding
 appropriate prefix will be tried to find. Autoprefix works only for interface sysctl.conf and
 type\-specific sysctl.conf.
-.SH "RECURSION AND DEPENDENCIES (FIXME)"
+.SH "RECURSION AND DEPENDENCIES"
 Some interfaces require other interfaces to be up for proper initialization. Some
 dependencies are calculated automaticaly, but some need to be configured manually.
 If interface A has REQUIRES=B in it's options file, A is the child, B is the parent.
 There are 6 options to control dependencies resolution:
 .IP HOST=<interface>
-.IP REQUIRES=<interface>[ <interface>[ <interface>...]]
+.IP REQUIRES='<interface>\ [<interface>\ [<interface>...]]'
 .IP IFUP_PARENTS=<boolean>
 .IP IFDOWN_PARENTS=<boolean>
 .IP IFUP_CHILDREN=<boolean>
@@ -164,6 +164,8 @@ Interfaces from vlantab bypass traditional logic,
 they can't cause parent/child interface to become up/down. If parent interface
 is down at the moment of vlantab processing (ONBOOT=no or misconfiguration), all
 child VLAN interfaces will be just skipped.
+.LP 
+In most cases (if ever) the task will be done by proper REQUIRES option.
 .SH "VLANTAB SYNTAX"
 vlantab provides a way to bulk\-configure VLAN interfaces with only IPv4 address
 at each interface. For each VLAN interface you have to place a line:
