@@ -37,6 +37,7 @@ dhcp_cmdline()
 			echo "$H -d -t $DHCP_TIMEOUT $NAME"
 			;;
 		dhclient)
+			if [ -n "$DHCP_HOSTNAME" ]; then
 				case "$DHCP_HOSTNAME" in
 					localhost)
 						[ -n "$HOSTNAME" -a "$HOSTNAME" != "localhost" -a "$HOSTNAME" != "localhost.localdomain" ] && \
@@ -46,6 +47,7 @@ dhcp_cmdline()
 						H="-H $DHCP_HOSTNAME"
 					;;
 				esac
+			fi
 			echo "$H -q -T $DHCP_TIMEOUT -pf /var/run/dhclient-$NAME.pid $NAME"
 			;;
 		*)
