@@ -50,26 +50,20 @@ etcnet from hotplug.
 .B USE_PCMCIA
 Same for pcmcia_cs
 .TP 
-.B CONFIG_IPV4
-FIXME
-.TP 
-.B CONFIG_IPV6
-FIXME
-.TP 
-.B CONFIG_IPX
-FIXME
+.B CONFIG_IPV4, CONFIG_IPV6, CONFIG_IPX
+These boolean options define, if you want to perform configuration of particular protocol or not.
 .TP 
 .B CONFIG_QOS
-FIXME
+This boolean function enables Linux QoS configuration. This topic is explained in etcnet\-qos manpage.
 .TP 
 .B CONFIG_WIRELESS
-FIXME
+This boolean option enables wireless extensions configuration.
 .TP 
 .B CONFIG_FW
-FIXME
+This boolean option enables firewall configuration. This topic is explained in README.firewall file.
 .TP 
 .B KEEP_DOWN
-If set to yes, interface will not be set UP, but configured.
+If set to yes, an interface will not be set UP, but configured. You are unlikely to need this option enabled.
 .TP 
 .B DONT_FLUSH
 IPv4/IPv6. Don't flush existing addresses from interface before assigning new ones. Also don't flush addresses on deconfiguration.
