@@ -4,119 +4,119 @@
 .SH "DESCRIPTION"
 
 .SH "Common options"
-.TP
+.TP 
 .B TYPE
 This option defines interface type. It is required, if interface type cannot be
 found from interface name and if DISABLED is not set.
-.TP
+.TP 
 .B DISABLED
 Set to "yes" to ignore the interface. Note that setting DISABLED
 to "yes" in ifaces/default/options and having no "DISABLED=no"
-in interface-specific options file will effectively disable ALL
+in interface\-specific options file will effectively disable ALL
 interfaces.
-.TP
+.TP 
 .B BOOTPROTO
 BOOTPROTO can be any of the following: static, dhcp, ipv4ll.
 * "static": use ipv4address/ipv6address
-'static' has the same meaning as 'none' in initscripts/net-scripts sense.
+'static' has the same meaning as 'none' in initscripts/net\-scripts sense.
 If you don't want to assing any address to an interface, but still keep
 it up and running, you can just use 'static' and have no ipv4address file.
 * "dhcp": run DHCP client
 * "ipv4ll": run IPv4LL client (zcip)
 As far as I know, there are no working IPv6 DHCP
 implementations. IPv4LL is not required for IPv6 because of
-link-scope addresses.
-Additional feature is multi-method configurations (methods
-can be delimited by ' ', ',' or '-':
-* "dhcp-static": try DHCP, if it fails, configure static address(es)
-* "dhcp-ipv4ll": same, but fallback to IPv4LL
-* "dhcp-ipv4ll-static": try DHCP, fallback to IPv4LL (very unlikely to fail),
+link\-scope addresses.
+Additional feature is multi\-method configurations (methods
+can be delimited by ' ', ',' or '\-':
+* "dhcp\-static": try DHCP, if it fails, configure static address(es)
+* "dhcp\-ipv4ll": same, but fallback to IPv4LL
+* "dhcp\-ipv4ll\-static": try DHCP, fallback to IPv4LL (very unlikely to fail),
 fallback to static
 /etc/net will try to configure interface at the first succeeding
 method. Note that etcnet will process routes and rules despite of
 BOOTPROTO.
-.TP
+.TP 
 .B ONBOOT
 Defines if the interface will be automatically brought up during
 system startup or 'service network start' invocation.
-.TP
+.TP 
 .B USE_HOTPLUG
 If set to yes, iface will be skipped during boot.
 Note that standard hotplug calls /sbin/ifup and /sbin/ifdown.
-This should be changed to /etc/net/scripts/ifup-removable and
-/etc/net/scripts/ifdown-removable respectively, if you wish to use
+This should be changed to /etc/net/scripts/ifup\-removable and
+/etc/net/scripts/ifdown\-removable respectively, if you wish to use
 etcnet from hotplug.
-.TP
+.TP 
 .B USE_PCMCIA
 Same for pcmcia_cs
-.TP
+.TP 
 .B CONFIG_IPV4
 FIXME
-.TP
+.TP 
 .B CONFIG_IPV6
 FIXME
-.TP
+.TP 
 .B CONFIG_IPX
 FIXME
-.TP
+.TP 
 .B CONFIG_QOS
 FIXME
-.TP
+.TP 
 .B CONFIG_WIRELESS
 FIXME
-.TP
+.TP 
 .B CONFIG_FW
 FIXME
-.TP
+.TP 
 .B KEEP_DOWN
 If set to yes, interface will not be set UP, but configured.
-.TP
+.TP 
 .B DONT_FLUSH
 IPv4/IPv6. Don't flush existing addresses from interface before assigning new ones. Also don't flush addresses on deconfiguration.
-.TP
+.TP 
 .B IFUP_CHILDREN
 If set to yes, this variable will cause ifup call for all child (having current
 interface in their REQUIRES list) after the current interface is set up.
-.TP
+.TP 
 .B IFUP_PARENTS
 If set to yes, this variable will cause ifup call for all parent (listed in current
 REQUIRES list) before the current interface is set up.
-Note: this will not work for ifplugd-controlled interfaces.
-.TP
+Note: this will not work for ifplugd\-controlled interfaces.
+.TP 
 .B IFDOWN_CHILDREN
 If set to yes, this variable will cause ifdown call for all child (having current
 interface in their REQUIRES list) before the current interface is shut down.
-.TP
+.TP 
 .B IFDOWN_PARENTS
 If set to yes, this variable will cause ifdown call for all parent (listed in current
 REQUIRES list) after the current interface is shut down.
-Note: this will not work for ifplugd-controlled interfaces.
+Note: this will not work for ifplugd\-controlled interfaces.
 .SH "Ethernet options"
-.TP
+.TP 
 .B MODULE
 Kernel module name (or quoted list of names), which must be loaded before interface
 initialisation.
-.TP
+.TP 
 .B USE_IFPLUGD
 A special configuration method. The interface will be created, but no
 configuration will be done until cable is plugged in. When ifplugd
-detects cable presence on the interface, it will run ifup-ifplugd to
+detects cable presence on the interface, it will run ifup\-ifplugd to
 finish configuration. Values:
 no:   don't use this feature
 yes:  manage ifplugd for each such interface
 auto: same as 'yes', if ifplugd is available and the card supports
 link detection
-.TP
+.TP 
 .B PERSISTENT_IFPLUGD
 Two operational modes are possible with USE_IFPLUGD=auto: persistent ifplugd
 (ifplugd will be run once and then only suspended/resumed when needed) and
 temporary ifplugd (ifplugd will be killed at ifdown and started at ifup
 each time). Default mode is to keep persistent ifplugd process.
-.TP
+.TP 
 .B IFPLUGD_EXTRA_ARGS
 /etc/net will construct ifplugd arg list automatically, but you can
 add extra args with this option.
-.TP
+.TP 
 .B LINKDETECT
 LINKDETECT option allows to avoid DHCP/IPv4LL timeout, if ethernet cable is
 not plugged in during startup. This feature requires ifplugstatus
@@ -124,47 +124,47 @@ and is off by default, because not all network cards report correct link
 status. Possible values are: yes/no/auto.
 'auto' is a special value. If your network card is known to report right
 link status, LINKDETECT feature will take effect.
-.TP
+.TP 
 .B MACADDR_WAITTIME
 Some network card modules create network device first, then perform
 some initialization and after some time fill in MAC address data.
 Hotplug starts working immediately after the interface is created, so
 if you use mac address match rule in iftab, it may happen to broke.
-If this variable is set to non-zero, /etc/net will wait for specified
+If this variable is set to non\-zero, /etc/net will wait for specified
 amount of 0.1 sec times for MAC address to become not 00:00:00:00:00:00.
 WARNING: THIS IS EXPERIMENTAL FEATURE !!!
-.TP
+.TP 
 .B IWCONFIG
 Optional path to iwconfig.
-.TP
+.TP 
 .B WPA_SUPPLICANT
 Optional path to wpa_supplicant.
-.TP
+.TP 
 .B WPA_DRIVER
 Optional WPA driver name to pass to wpa_supplicant.
-.TP
+.TP 
 .B DHCP_ARGS
 Optional additional DHCP client arguments.
-.TP
+.TP 
 .B DHCP_HOSTNAME
 Possible values: 'localhost' (compute a valid hostname and send it to
-DHCP server with -h option), 'AUTO' (Get a hostname from DHCP server
-with -H option), any other string (send the string as a hostname with
--h). 'AUTO' value works with dhcpcd client only.
+DHCP server with \-h option), 'AUTO' (Get a hostname from DHCP server
+with \-H option), any other string (send the string as a hostname with
+\-h). 'AUTO' value works with dhcpcd client only.
 .SH "IP tunnels options"
-.TP
+.TP 
 .B TUNTYPE
 IP tunnel type: 'ipip' (default), 'gre' or 'sit'.
-.TP
+.TP 
 .B TUNLOCAL
 Local tunnel endpoint.
-.TP
+.TP 
 .B TUNREMOTE
 Remote tunnel endpoint.
-.TP
+.TP 
 .B TUNOPTIONS
 Append whatever you want (TTL, GRE keys etc). Don't set 'dev' here.
-.TP
+.TP 
 .B HOST
 Optional host interface. If set, this name will be used for 'dev' option.
 .SH "IPSec tunnels options"
@@ -172,182 +172,182 @@ At least one of cipher or digest must be configured.
 CIPHERFILE and DIGESTFILE are searched in iface dir.
 If CIPHER is defined, CIPHERFILE must be defined too,
 same for DIGEST and DIGESTFILE.
-.TP
+.TP 
 .B IPSECADM
 (Optional) location of ipsecadm.
-.TP
+.TP 
 .B TUNLOCAL
 Local endpoint.
-.TP
+.TP 
 .B TUNREMOTE
 Remote endpoint.
-.TP
+.TP 
 .B TUNSPI
 SPI must be defined for an IPSec tunnel. SPI is a hexadecimal
 number, values less than 0x2000 are reserved.
-.TP
+.TP 
 .B CIPHER
 Cipher name.
-.TP
+.TP 
 .B CIPHERFILE
 Dipher file name.
-.TP
+.TP 
 .B DIGEST
 Digest name.
-.TP
+.TP 
 .B DIGESTFILE
 Digest file name.
-.TP
+.TP 
 .B HOST
-"ipsecadm --nextdev" argument
+"ipsecadm \-\-nextdev" argument
 .SH "VLAN options"
-.TP
+.TP 
 .B VCONFIG
 Optional path to vconfig.
-.TP
+.TP 
 .B NAMETYPE
-Optional VLAN naming type, see vconfig --help for details. This option
+Optional VLAN naming type, see vconfig \-\-help for details. This option
 is also used when processing vlantab. Possible values: VLAN_PLUS_VID,
 VLAN_PLUS_VID_NO_PAD, DEV_PLUS_VID, DEV_PLUS_VID_NO_PAD (default).
-.TP
+.TP 
 .B HOST
 Required parent iface name.
-.TP
+.TP 
 .B VID
 Required VLAN ID.
 .SH "DVB options"
-.TP
+.TP 
 .B DVBTYPE
 This is a mandatory option. Currently supported values are:
-ss223 for SkyStar-2 rev. 2.3, ss226 for SkyStar-2 rev. 2.6,
+ss223 for SkyStar\-2 rev. 2.3, ss226 for SkyStar\-2 rev. 2.6,
 pentanet for Pent@NET, pentaval for Pent@VALUE
-.LP
-SkyStar-2 options
-.TP
+.LP 
+SkyStar\-2 options
+.TP 
 .B PID
-.TP
+.TP 
 .B SZAP
-.TP
+.TP 
 .B SZAP_ARGS
-.TP
+.TP 
 .B DVBNET
-.TP
+.TP 
 .B CHANNELS_CONF
 For SkyStar cards you can override channels.conf location (default is
 channels.conf in the interface's configuration directory.
-.LP
+.LP 
 Pent@NET options
-.TP
+.TP 
 .B PENTANETT
 pentanett location
-.TP
+.TP 
 .B PENTANET_CONF
 Config file name.
-.LP
+.LP 
 Pent@VALUE options
-.TP
+.TP 
 .B PENTAVALT
 pentavalt location
-.TP
+.TP 
 .B PENTAVAL_CONF
 config file name
 .SH "Bonding options"
-.TP
+.TP 
 .B IFENSLAVE
-.TP
+.TP 
 .B HOST
-.TP
+.TP 
 .B BONDMODE
 Operation mode (optional). Possible values: 0 for round robin (default),
-1 for active-backup, 2 for xor, 3 for broadcast, 4 for IEEE 802.3ad
+1 for active\-backup, 2 for xor, 3 for broadcast, 4 for IEEE 802.3ad
 Dynamic link aggregation.
-.TP
+.TP 
 .B BONDOPTIONS
 Additional options. This will have effect per interface. The list from
 modinfo bond is:
-.br
+.br 
 miimon:int: Link check interval in milliseconds
-.br
+.br 
 updelay:int: Delay before considering link up, in milliseconds
-.br
+.br 
 downdelay:int: Delay before considering link down, in milliseconds
-.br
+.br 
 use_carrier:int: Use netif_carrier_ok (vs MII ioctls) in miimon; 0 for off, 1 for on (default)
-.br
+.br 
 primary:string: Primary network device to use
-.br
+.br 
 lacp_rate:string: LACPDU tx rate to request from 802.3ad partner (slow/fast)
-.br
+.br 
 arp_interval:int: arp interval in milliseconds
-.br
+.br 
 arp_ip_target:string array (min = 1, max = 16): arp targets in n.n.n.n form
-.br
+.br 
 .SH "Bridge options"
-.TP
+.TP 
 .B BRCTL
 Optional override of brctl path.
-.TP
+.TP 
 .B HOST
 This variable must be defined for each bridge interface. This is a
-(quoted) space-separated list of slave ethernet interfaces combining the
+(quoted) space\-separated list of slave ethernet interfaces combining the
 bridge. Don't forget to create configurations for the slave interfaces
 too.
 .SH "PPP options"
-.LP
+.LP 
 This section assumes knowledge of pppd(8) manpage.
-.TP
+.TP 
 .B PPPTYPE
 PPP subtype. Valid types are: dialup, pptp, pppoe.
 pptp and pptp types will benefit from correctly set REQIURES and
 respectively HOST variables. dialup subtype will add 'modem' to
 pppd options list.
-.TP
+.TP 
 .B PPTP_SERVER
 For "pptp" subtype you must specify hostname or IP address of PPtP server
 you connect to. Otherwise leave PPPTYPE=dialup.
-.TP
+.TP 
 .B HOST
 pppoe client requires target interface name. You must specify it in
-the HOST variable, create-ppp will automatically construct correct
+the HOST variable, create\-ppp will automatically construct correct
 pty option for pppd. This option is mandatory if PPPTYPE=pppoe.
-.TP
+.TP 
 .B PPPOE
 Optional pppoe path.
-.TP
+.TP 
 .B PPPOE_EXTRA_OPTIONS
-.TP
+.TP 
 .B PPTP
-Optional pptp-client path.
-.TP
+Optional pptp\-client path.
+.TP 
 .B PPTP_EXTRA_OPTIONS
-.TP
+.TP 
 .B PPPD
 pppd location, optional
-.TP
+.TP 
 .B PPPOPTIONS
-Additional pppd args. Note that interface-specific options file
-will override PPPOPTIONS from options-ppp, not append.
-.TP
+Additional pppd args. Note that interface\-specific options file
+will override PPPOPTIONS from options\-ppp, not append.
+.TP 
 .B CHAT
 chat location, optional
-.TP
+.TP 
 .B CHATOPTIONS
 chat options (timeout, verbose mode etc)
-.TP
+.TP 
 .B PPPOPTIONSFILE
-.TP
+.TP 
 .B PPPINITCHAT
-.TP
+.TP 
 .B PPPCONNECTCHAT
-.TP
+.TP 
 .B PPPDISCONNECTCHAT
-.TP
+.TP 
 .B RESTORE_DEFAULTROUTE
 pppd does not save default route for us. We could save and restore it
-with ip-up/ip-down, but this option will do the trick for us.
-.TP
+with ip\-up/ip\-down, but this option will do the trick for us.
+.TP 
 .B PPPTIMEOUT
 Your PPP link will not hang for more seconds, than specified here.
-/etc/net will pass according  lcp-echo-interval and lcp-echo-failure
+/etc/net will pass according  lcp\-echo\-interval and lcp\-echo\-failure
 options to pppd, if this options is set.
 
