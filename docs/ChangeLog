@@ -1,3 +1,5 @@
+0.8.5
+	bugfix: file permissions in Makefile
 0.8.4 2006-09-16
 	new feature: initial BlueTooth (bnep) support
 	new feature: it is now possible to redefine interface groups
