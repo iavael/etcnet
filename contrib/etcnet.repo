@@ -1,0 +1,5 @@
+[etcnet]
+name=/etc/net for Fedora $releasever
+baseurl=http://etcnet.org/repo/fedora/$releasever/$basearch/RPMS
+enabled=1
+gpgcheck=0
