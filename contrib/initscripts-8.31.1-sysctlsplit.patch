@@ -1,0 +1,150 @@
+diff -Nur initscripts-8.31.1.orig/Makefile initscripts-8.31.1/Makefile
+--- initscripts-8.31.1.orig/Makefile	2006-01-21 00:55:53.000000000 +0300
++++ initscripts-8.31.1/Makefile	2006-06-14 23:47:34.000000000 +0400
+@@ -14,6 +14,7 @@
+ 
+ install:
+ 	mkdir -p $(ROOT)/etc/profile.d $(ROOT)/sbin $(ROOT)/usr/sbin
++	mkdir -p $(ROOT)/etc/sysconfig/network-scripts
+ 	mkdir -p $(ROOT)$(mandir)/man8
+ 
+ 	install -m644  inittab adjtime $(ROOT)/etc
+@@ -25,6 +26,7 @@
+ 	install -m755  sys-unconfig $(ROOT)/usr/sbin
+ 	install -m644  service.8 sys-unconfig.8 $(ROOT)$(mandir)/man8
+ 	install -m644 sysctl.conf $(ROOT)/etc/sysctl.conf
++	install -m644 sysctl.conf.network $(ROOT)/etc/sysconfig/network-scripts/sysctl.conf
+ 	if uname -m | grep -q sparc ; then \
+ 	  install -m644 sysctl.conf.sparc $(ROOT)/etc/sysctl.conf ; fi
+ 	if uname -m | grep -q s390 ; then \
+diff -Nur initscripts-8.31.1.orig/rc.d/init.d/network initscripts-8.31.1/rc.d/init.d/network
+--- initscripts-8.31.1.orig/rc.d/init.d/network	2006-02-03 04:57:12.000000000 +0300
++++ initscripts-8.31.1/rc.d/init.d/network	2006-06-15 00:00:36.000000000 +0400
+@@ -61,7 +61,7 @@
+ 		fi
+ 	fi
+   
+-	sysctl -e -p /etc/sysctl.conf >/dev/null 2>&1
++	sysctl -e -p /etc/sysconfig/network-scripts/sysctl.conf >/dev/null 2>&1
+ 
+ 	# bring up loopback interface
+ 	action $"Bringing up loopback interface: " ./ifup ifcfg-lo
+@@ -170,7 +170,7 @@
+  		fi
+  	fi
+ 	# Run this again to catch any interface-specific actions
+-	sysctl -e -p /etc/sysctl.conf >/dev/null 2>&1
++	sysctl -e -p /etc/sysconfig/network-scripts/sysctl.conf >/dev/null 2>&1
+  
+         touch /var/lock/subsys/network
+         ;;
+diff -Nur initscripts-8.31.1.orig/sysctl.conf initscripts-8.31.1/sysctl.conf
+--- initscripts-8.31.1.orig/sysctl.conf	2005-01-17 21:58:44.000000000 +0300
++++ initscripts-8.31.1/sysctl.conf	2006-06-14 23:43:33.000000000 +0400
+@@ -1,23 +1,16 @@
+ # Kernel sysctl configuration file for Red Hat Linux
+ #
++# PLEASE NOTE, that kernel sysctl settings are in /etc/sysctl.conf and
++# network sysctl settings are in /etc/sysconfig/network-scripts/sysctl.conf
++# or in /etc/net/sysctl.conf depending on the installed network
++# configuration system.
++#
+ # For binary values, 0 is disabled, 1 is enabled.  See sysctl(8) and
+ # sysctl.conf(5) for more details.
+ 
+-# Controls IP packet forwarding
+-net.ipv4.ip_forward = 0
+-
+-# Controls source route verification
+-net.ipv4.conf.default.rp_filter = 1
+-
+-# Do not accept source routing
+-net.ipv4.conf.default.accept_source_route = 0
+-
+ # Controls the System Request debugging functionality of the kernel
+ kernel.sysrq = 0
+ 
+ # Controls whether core dumps will append the PID to the core filename.
+ # Useful for debugging multi-threaded applications.
+ kernel.core_uses_pid = 1
+-
+-# Controls the use of TCP syncookies
+-net.ipv4.tcp_syncookies = 1
+diff -Nur initscripts-8.31.1.orig/sysctl.conf.network initscripts-8.31.1/sysctl.conf.network
+--- initscripts-8.31.1.orig/sysctl.conf.network	1970-01-01 03:00:00.000000000 +0300
++++ initscripts-8.31.1/sysctl.conf.network	2006-06-14 23:40:24.000000000 +0400
+@@ -0,0 +1,26 @@
++# Network sysctl configuration file for Red Hat Linux
++#
++# PLEASE NOTE, that kernel sysctl settings are in /etc/sysctl.conf and
++# network sysctl settings are in /etc/sysconfig/network-scripts/sysctl.conf
++#
++# For binary values, 0 is disabled, 1 is enabled.  See sysctl(8) and
++# sysctl.conf(5) for more details.
++
++# Controls IP packet forwarding
++net.ipv4.ip_forward = 0
++
++# Controls source route verification
++net.ipv4.conf.default.rp_filter = 1
++
++# Do not accept source routing
++net.ipv4.conf.default.accept_source_route = 0
++
++# Controls the System Request debugging functionality of the kernel
++kernel.sysrq = 0
++
++# Controls whether core dumps will append the PID to the core filename.
++# Useful for debugging multi-threaded applications.
++kernel.core_uses_pid = 1
++
++# Controls the use of TCP syncookies
++net.ipv4.tcp_syncookies = 1
+diff -Nur initscripts-8.31.1.orig/sysctl.conf.s390 initscripts-8.31.1/sysctl.conf.s390
+--- initscripts-8.31.1.orig/sysctl.conf.s390	2005-01-17 21:58:44.000000000 +0300
++++ initscripts-8.31.1/sysctl.conf.s390	2006-06-14 23:36:45.000000000 +0400
+@@ -3,18 +3,6 @@
+ # For binary values, 0 is disabled, 1 is enabled.  See sysctl(8) and
+ # sysctl.conf(5) for more details.
+ 
+-# Controls IP packet forwarding
+-net.ipv4.ip_forward = 0
+-
+-# Controls source route verification
+-net.ipv4.conf.default.rp_filter = 1
+-
+-# Do not accept source routing
+-net.ipv4.conf.default.accept_source_route = 0
+-
+ # Controls whether core dumps will append the PID to the core filename.
+ # Useful for debugging multi-threaded applications.
+ kernel.core_uses_pid = 1
+-
+-# Controls the use of TCP syncookies
+-net.ipv4.tcp_syncookies = 1
+diff -Nur initscripts-8.31.1.orig/sysctl.conf.sparc initscripts-8.31.1/sysctl.conf.sparc
+--- initscripts-8.31.1.orig/sysctl.conf.sparc	2005-01-17 21:58:44.000000000 +0300
++++ initscripts-8.31.1/sysctl.conf.sparc	2006-06-14 23:37:04.000000000 +0400
+@@ -3,15 +3,6 @@
+ # For binary values, 0 is disabled, 1 is enabled.  See sysctl(8) and
+ # sysctl.conf(5) for more details.
+ 
+-# Controls IP packet forwarding
+-net.ipv4.ip_forward = 0
+-
+-# Controls source route verification
+-net.ipv4.conf.default.rp_filter = 1
+-
+-# Do not accept source routing
+-net.ipv4.conf.default.accept_source_route = 0
+-
+ # Controls the System Request debugging functionality of the kernel
+ kernel.sysrq = 0
+ 
+@@ -21,6 +12,3 @@
+ 
+ # Controls stop-a on the sparc
+ kernel.stop-a = 0
+-
+-# Controls the use of TCP syncookies
+-net.ipv4.tcp_syncookies = 1
