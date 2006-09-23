@@ -1,4 +1,5 @@
 0.8.5
+	bugfix: mishandling of DHCP_HOSTNAME for Fedora 5
 	bugfix: file permissions in Makefile
 0.8.4 2006-09-16
 	new feature: initial BlueTooth (bnep) support
