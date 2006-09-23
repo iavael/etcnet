@@ -17,7 +17,7 @@ try_static()
 
 dhcp_cmdline()
 {
-	local H
+	local H T
 	case `basename $DHCP_CLIENT` in
 		dhcpcd)
 			if [ -n "$DHCP_HOSTNAME" ]; then
@@ -34,7 +34,8 @@ dhcp_cmdline()
 					;;
 				esac
 			fi
-			echo "$H -d -t $DHCP_TIMEOUT $NAME"
+			T=${DHCP_TIMEOUT:+-t $DHCP_TIMEOUT}
+			echo "$H -d $T $NAME"
 			;;
 		dhclient)
 			if [ -n "$DHCP_HOSTNAME" ]; then
@@ -48,7 +49,8 @@ dhcp_cmdline()
 					;;
 				esac
 			fi
-			echo "$H -q -T $DHCP_TIMEOUT -pf /var/run/dhclient-$NAME.pid $NAME"
+			T=${DHCP_TIMEOUT:+-T $DHCP_TIMEOUT}
+			echo "$H -q $T -pf /var/run/dhclient-$NAME.pid $NAME"
 			;;
 		*)
 			print_error "Can't pick command line for DHCP client '$DHCP_CLIENT'"

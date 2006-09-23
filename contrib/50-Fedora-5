@@ -6,3 +6,4 @@ DHCP_CLIENT=/sbin/dhclient
 # so we don't try to make it submit a hostname through a missing
 # command-line option.
 DHCP_HOSTNAME=
+DHCP_TIMEOUT=

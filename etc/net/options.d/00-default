@@ -27,11 +27,6 @@ RMMOD=/sbin/rmmod
 SYSCTL=/sbin/sysctl
 IFRENAME=/sbin/ifrename
 
-# DHCP
-DHCP_CLIENT=/sbin/dhcpcd
-DHCP_TIMEOUT=30
-DHCP_GRACE_TIME=2
-
 # IPv4LL
 ZCIP_CLIENT=/sbin/zcip
 
