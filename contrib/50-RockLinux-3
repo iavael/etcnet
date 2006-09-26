@@ -1,0 +1,8 @@
+# This file contains defaults for RockLinux 5 build of /etc/net
+# package.
+
+# Rock3 contains the same dhclient as Fedora 5 does, so we
+# use the same workaround here.
+DHCP_CLIENT=/sbin/dhclient
+DHCP_HOSTNAME=
+DHCP_TIMEOUT=
