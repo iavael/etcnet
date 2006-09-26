@@ -6,3 +6,6 @@
 DHCP_CLIENT=/sbin/dhclient
 DHCP_HOSTNAME=
 DHCP_TIMEOUT=
+
+# Temp hack
+IFRENAME=/usr/sbin/ifrename
