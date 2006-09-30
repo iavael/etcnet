@@ -1,4 +1,5 @@
 0.8.5
+	bugfix: name managements broke ethtool calls
 	bugfix: DHCP did not work for Fedora 5
 	bugfix: file permissions in Makefile
 0.8.4 2006-09-16
