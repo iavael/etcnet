@@ -1,4 +1,4 @@
-0.8.5
+0.8.5 2006-09-30
 	bugfix: name managements broke ethtool calls
 	bugfix: DHCP did not work for Fedora 5
 	bugfix: file permissions in Makefile
