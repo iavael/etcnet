@@ -1,0 +1,26 @@
+functions --- main function library
+
+functions-* --- function libraries for interface types,
+protocols and features. These scripts usually understand
+(or at least should understand) 'start' and 'stop' commands
+and can perform both configuration and unconfiguration
+respectively.
+
+create-* --- plumb an interface
+After one of those scripts finishes its work, there should be
+a new interface available. It can have any name, we are going
+to fix it later with iftab.
+
+config-* --- protocol and feature configurators
+
+setup-* --- post-config adjustments
+These scripts perform some tasks, that need to be done in the
+last turn. The interface is already properly named and has
+undergone general configuration, when these scripts are run.
+
+shutdown-* --- prepare for unconfiguration
+These scripts are run before any other unconfiguration has place.
+
+destroy-* --- unplumb interface
+After these scripts finish their work, chances are high to not
+see the interface in the interface table any more.
