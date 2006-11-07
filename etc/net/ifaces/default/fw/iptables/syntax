@@ -217,8 +217,10 @@ to: --dst
 dst: --dst
 destination: --dst
 sport: --source-port
+src-port: --source-port
 from-port: --source-port
 dport: --destination-port
+dst-port: --destination-port
 to-port: --destination-port
 in-iface: -i
 from-iface: -i
@@ -230,6 +232,7 @@ all: --protocol ALL
 tcp: --protocol TCP
 udp: --protocol UDP
 icmp: --protocol ICMP
+gre: --protocol GRE
 jump: -j 
 jump-to: -j
 any: 0.0.0.0/0
