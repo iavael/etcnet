@@ -116,8 +116,8 @@ iptables_create_sed_rules()
     IFS=":"
     while read SEARCH REPLACE; do
         print_progress
-        IPTABLES_SED_RULES+="s/\(^\|[^-]\b\)$SEARCH\(\b[^-]\|$\)/\1$REPLACE\2/g;"
-    done < <(echo "$REPLACES"|egrep "^[^#]"|sed -e 's/\//\\\\\//g')
+        IPTABLES_SED_RULES="${IPTABLES_SED_RULES}s/\(^\|[^-]\b\)$SEARCH\(\b[^-]\|$\)/\1$REPLACE\2/g;"
+    done < <(echo "$REPLACES"|egrep "^[^#]"|sed -e 's,/,\\\\/,g')
     IFS=$OLDIFS
     print_message
     export IPTABLES_SED_RULES
@@ -129,7 +129,7 @@ iptables_expand_string()
 	local RULE
 	if is_yes "$IPTABLES_HUMAN_SYNTAX"; then
 		[ -z "$IPTABLES_SED_RULES" ] && print_error "Human syntax is enabled but no syntax file is loaded"
-		RULE=$(eval "printf '%s\n' $@"|sed  -e "$IPTABLES_SED_RULES;s/\ \ /\ /g;")
+		RULE=$(eval "printf '%s\n' $@"|sed  -e "$IPTABLES_SED_RULES;s/[[:space:]]\+/\ /g")
 	else
 		RULE=$(eval "printf '%s\n' $@")
 	fi
