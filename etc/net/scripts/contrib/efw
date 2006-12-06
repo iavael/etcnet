@@ -170,9 +170,11 @@ iptables_local_rules_from_file()
 		[ -d "$CTABLE" ] || continue
 		for CCHAIN in "$CTABLE"/$CHAIN; do
 			CCHAIN=`basename $CCHAIN`
-			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ] || [ ! -s "$CTABLE/$CCHAIN" ] && continue
+			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ]  && continue
 			[ "$1" = "unload" ] && iptables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" \
-			|| iptables_load_rules_from_file "$CTABLE" "$CCHAIN"
+			|| {
+				[ -s "$CTABLE/$CCHAIN" ] && iptables_load_rules_from_file "$CTABLE" "$CCHAIN"
+			}
 		done
 	done
 }
@@ -322,7 +324,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 				 MYIFACEDIR=""
 				 continue
 			}
-			pickup_options
+			[ "$NAME" != "default" ] && pickup_options
 			# Load own interface syntax if exists
 			[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && {
 				[ -f "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && {
@@ -330,6 +332,11 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					export IPTABLES_SYNTAX=
 					export IPTABLES_SED_RULES=
 				}
+			}
+			# FIXME Where is the place of this?
+			[ ! -z "$TYPE" ] && {
+				IPV4ADDRESS=( $(iptables_get_ipv4) )
+				IPV6ADDRESS=( $(iptables_get_ipv6) )
 			}
 			case "$ACTION" in
 				start)

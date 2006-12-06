@@ -85,7 +85,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 		 continue
 	}
 		export MYIFACEDIR
-		pickup_options
+		[ "$NAME" != "default" ] && pickup_options
 		case "$ACTION" in
 			start)
 				echo "Start QoS for device $NAME:"
