@@ -2,6 +2,9 @@
 	bugfix: name managements broke ethtool calls
 	bugfix: DHCP did not work for Fedora 5
 	bugfix: file permissions in Makefile
+	bugfix: system iptables chains were not flushed
+	new feature: support of the variables from interface options file in the eqos and efw
+	new feature: bash arrays IPV4ADDRESS and IPV6ADDRESS in the firewall rules
 0.8.4 2006-09-16
 	new feature: initial BlueTooth (bnep) support
 	new feature: it is now possible to redefine interface groups
