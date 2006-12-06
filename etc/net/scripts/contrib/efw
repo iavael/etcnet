@@ -297,6 +297,7 @@ fi
 
 [ $# -lt 1 ] && usage || guess_options $@
 
+
 echo "interface is $NAME"
 echo "table is $TABLE"
 echo "chain is $CHAIN"
@@ -316,9 +317,12 @@ for IFACE in "$IFACEDIR"/$NAME; do
 		iptables)
 		 	[ ! -d "$MYIFACEDIR/fw/$FW_TYPE" ] &&
 			{
+				 echo "No firewall is configured for interface $NAME"
+				 echo ""
 				 MYIFACEDIR=""
 				 continue
 			}
+			pickup_options
 			# Load own interface syntax if exists
 			[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && {
 				[ -f "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && {
