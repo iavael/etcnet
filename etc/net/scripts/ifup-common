@@ -115,64 +115,64 @@ process_sysctl_conf()
 			case $VARNAME in
 			# *** IPv4 conf ***
 				force_igmp_version|disable_policy|disable_xfrm|arp_ignore|arp_announce)
-					VARPREFIX="net/ipv4/conf/$NAME."
+					VARPREFIX="net/ipv4/conf/$NAME/"
 				;;
 				arp_filter|tag|log_martians|bootp_relay|medium_id|proxy_arp)
-					VARPREFIX="net/ipv4/conf/$NAME."
+					VARPREFIX="net/ipv4/conf/$NAME/"
 				;;
 				accept_source_route|send_redirects|rp_filter|shared_media)
-					VARPREFIX="net/ipv4/conf/$NAME."
+					VARPREFIX="net/ipv4/conf/$NAME/"
 				;;
 				secure_redirects|mc_forwarding)
-					VARPREFIX="net/ipv4/conf/$NAME."
+					VARPREFIX="net/ipv4/conf/$NAME/"
 				;;
 			# *** IPv4 neigh ***
 				ipv4_locktime|ipv4_proxy_delay|ipv4_anycast_delay|ipv4_proxy_qlen|ipv4_unres_qlen)
 					VARNAME=${VARNAME#ipv4_}
-					VARPREFIX="net/ipv4/neigh/$NAME."
+					VARPREFIX="net/ipv4/neigh/$NAME/"
 				;;
 				ipv4_gc_stale_time|ipv4_delay_first_probe_time|ipv4_base_reachable_time)
 					VARNAME=${VARNAME#ipv4_}
-					VARPREFIX="net/ipv4/neigh/$NAME."
+					VARPREFIX="net/ipv4/neigh/$NAME/"
 				;;
 				ipv4_retrans_time|ipv4_app_solicit|ipv4_ucast_solicit|ipv4_mcast_solicit)
 					VARNAME=${VARNAME#ipv4_}
-					VARPREFIX="net/ipv4/neigh/$NAME."
+					VARPREFIX="net/ipv4/neigh/$NAME/"
 				;;
 			# *** IPv6 conf ***
 				accept_ra|autoconf|dad_transmits|force_mld_version|hop_limit)
-					VARPREFIX="net/ipv6/conf/$NAME."
+					VARPREFIX="net/ipv6/conf/$NAME/"
 				;;
 				max_addresses|max_desync_factor|mtu|regen_max_retry)
-					VARPREFIX="net/ipv6/conf/$NAME."
+					VARPREFIX="net/ipv6/conf/$NAME/"
 				;;
 				router_solicitation_delay|router_solicitation_interval|router_solicitations)
-					VARPREFIX="net/ipv6/conf/$NAME."
+					VARPREFIX="net/ipv6/conf/$NAME/"
 				;;
 				temp_prefered_lft|temp_valid_lft|use_tempaddr)
-					VARPREFIX="net/ipv6/conf/$NAME."
+					VARPREFIX="net/ipv6/conf/$NAME/"
 				;;
 			# *** IPv6 neigh ***
 				ipv6_locktime|ipv6_proxy_delay|ipv6_anycast_delay|ipv6_proxy_qlen|ipv6_unres_qlen)
 					VARNAME=${VARNAME#ipv6_}
-					VARPREFIX="net/ipv6/neigh/$NAME."
+					VARPREFIX="net/ipv6/neigh/$NAME/"
 				;;
 				ipv6_gc_stale_time|ipv6_delay_first_probe_time|ipv6_base_reachable_time)
 					VARNAME=${VARNAME#ipv6_}
-					VARPREFIX="net/ipv6/neigh/$NAME."
+					VARPREFIX="net/ipv6/neigh/$NAME/"
 				;;
 				ipv4_retrans_time|ipv6_app_solicit|ipv6_ucast_solicit|ipv6_mcast_solicit)
 					VARNAME=${VARNAME#ipv6_}
-					VARPREFIX="net/ipv6/neigh/$NAME."
+					VARPREFIX="net/ipv6/neigh/$NAME/"
 				;;
 			# *** IPv4/IPv6 common vars ***
 				ipv4_accept_redirects|ipv4_forwarding)
 					VARNAME=${VARNAME#ipv4_}
-					VARPREFIX="net/ipv4/conf/$NAME."
+					VARPREFIX="net/ipv4/conf/$NAME/"
 				;;
 				ipv6_accept_redirects|ipv6_forwarding)
 					VARNAME=${VARNAME#ipv6_}
-					VARPREFIX="net/ipv6/conf/$NAME."
+					VARPREFIX="net/ipv6/conf/$NAME/"
 				;;
 				*)
 					print_error "Can't autocomplete sysctl variable name '$VARNAME' in file '$SRCFILE'. Please fix"
