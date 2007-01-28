@@ -4,6 +4,7 @@
 	bugfix: file permissions in Makefile
 	bugfix: system iptables chains were not flushed
 	bugfix: QoS processor was broken
+	bugfix: treat module-init-tools properly
 	new feature: bash arrays IPV4ADDRESS and IPV6ADDRESS in the firewall rules
 0.8.4 2006-09-16
 	new feature: initial BlueTooth (bnep) support
