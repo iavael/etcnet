@@ -61,7 +61,7 @@ case $ACTION in
 				# for current profile and host. If the full name and the best
 				# match are equal, go on.
 				[ -d $cdir ] || continue
-				local base=${d%#*}
+				local base=${cdir%#*}
 				base=${base%@*}
 				local bestmatch=`profiled_filename $base`
 				[ "$bestmatch" = "$cdir" ] || continue
