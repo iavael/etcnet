@@ -4,7 +4,7 @@ pickup_defaults
 pickup_options
 
 # Let's hope we manage all TEQLs ourselves :-/
-$INSMOD -o $NAME sch_teql >/dev/null
+modprobe_with_rename -o $NAME sch_teql >/dev/null
 $IP link set dev teql0 name $NAME
 
 : ${HOST:?HOST must be set for $NAME}

@@ -4,5 +4,5 @@ pickup_defaults
 pickup_options
 
 # Let's hope we manage all TEQLs ourselves :-/
-$INSMOD -o $NAME dummy >/dev/null
+modprobe_with_rename -o $NAME dummy >/dev/null
 $IP link set dev dummy0 name $NAME

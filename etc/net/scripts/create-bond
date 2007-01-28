@@ -4,7 +4,7 @@ pickup_defaults
 pickup_options
 
 # TODO: max_bonds=1 to override modules.conf?
-$INSMOD bonding -o $NAME mode=${BONDMODE:-$DEFAULT_BONDMODE} $BONDOPTIONS >/dev/null
+modprobe_with_rename -o $NAME bonding mode=${BONDMODE:-$DEFAULT_BONDMODE} $BONDOPTIONS >/dev/null
 
 # We assume that there is no other bonding modules hanging around.
 # TODO: compute iface table difference and find newly appeared iface.
