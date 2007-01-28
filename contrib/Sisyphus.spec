@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.8.5
-Release:	alt1
+Release:	alt0.2
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -10,6 +10,7 @@ URL:		http://etcnet.org/
 Source:		%name-%version.tar.gz
 PreReq:		setup >= 0:2.1.9-ipl18mdk, service, startup >= 0:0.9.3-alt1
 Requires:	grep, sed, iproute2, ifrename >= 28-alt5.pre10, chkconfig
+Requires:	etcnet-defaults
 BuildArch:	noarch
 Conflicts:	net-scripts
 Conflicts:	ethtool < 3-alt4, ifplugd < 0.28-alt2
@@ -84,6 +85,8 @@ This package contains default options for a Linux server.
 
 %prep
 %setup -q
+# Don't package .htaccess (https://bugzilla.altlinux.org/show_bug.cgi?id=10101)
+find . -type f -a -name .htaccess -exec rm -f \{\} \;
 
 %build
 
