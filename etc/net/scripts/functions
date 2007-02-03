@@ -113,10 +113,11 @@ pickup_options()
 	# to determine iface type we must read it's config, but
 	# we should read global config and type config first.
 	# A workaround here.
-	local of
+	local of prof_of
 	for of in $MYIFACEDIR/options $MYIFACEDIR/options.d/*; do
-		[ -f "$of" -a "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
-		SourceIfNotEmpty `profiled_filename $of`
+		prof_of=`profiled_filename $of`
+		[ -f "$prof_of" -a "${prof_of%.rpm*}" = "$prof_of" -a "${prof_of%\~}" = "$prof_of" ] || continue
+		SourceIfNotEmpty $prof_of
 	done
 	is_yes "$DISABLED" && return
 	[ -z "$TYPE" ] && TYPE=`name2type $NAME`
@@ -130,20 +131,23 @@ pickup_options()
 
 	# source default options
 	for of in $IFACEDIR/default/options $IFACEDIR/default/options.d/*; do
-		[ -f "$of" -a "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
-		SourceIfNotEmpty `profiled_filename $of`
+		prof_of=`profiled_filename $of`
+		[ -f "$prof_of" -a "${prof_of%.rpm*}" = "$prof_of" -a "${prof_of%\~}" = "$prof_of" ] || continue
+		SourceIfNotEmpty $prof_of
 	done
 
 	# then source default options for our iface type
 	for of in $IFACEDIR/default/options-$TYPE $IFACEDIR/default/options-$TYPE.d/*; do
-		[ -f "$of" -a "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
-		SourceIfNotEmpty `profiled_filename $of`
+		prof_of=`profiled_filename $of`
+		[ -f "$prof_of" -a "${prof_of%.rpm*}" = "$prof_of" -a "${prof_of%\~}" = "$prof_of" ] || continue
+		SourceIfNotEmpty $prof_of
 	done
 
 	# and finally source iface options
 	for of in $MYIFACEDIR/options $MYIFACEDIR/options.d/*; do
-		[ -f "$of" -a "${of%.rpm*}" = "$of" -a "${of%\~}" = "$of" ] || continue
-		SourceIfNotEmpty `profiled_filename $of`
+		prof_of=`profiled_filename $of`
+		[ -f "$prof_of" -a "${prof_of%.rpm*}" = "$prof_of" -a "${prof_of%\~}" = "$prof_of" ] || continue
+		SourceIfNotEmpty $prof_of
 	done
 
 	# Load type-specific functions
