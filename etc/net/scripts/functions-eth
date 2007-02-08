@@ -25,7 +25,7 @@ wait_for_macaddr()
 		return
 	}
 	local i
-	for i in `seq 1 $MACADDR_WAITTIME`; do
+	for ((i=0; i<$MACADDR_WAITTIME; i++)) do
 		if $IP li sh dev $TARGET 2>/dev/null | fgrep -q 'link/ether 00:00:00:00:00:00'; then
 			usleep 100000
 		else

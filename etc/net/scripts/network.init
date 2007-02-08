@@ -132,7 +132,7 @@ start_group()
 # GROUP_SIZE is always not zero
 	print_message "Starting group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	local i
-	for i in `seq 1 $GROUP_SIZE`; do
+	for ((i=1; i<=$GROUP_SIZE; i++)) do
 		IFNAME=`echo "${START_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStarting $IFNAME: "
 		$SCRIPTDIR/ifup $IFNAME $*
@@ -155,7 +155,7 @@ stop_group()
 # GROUP_SIZE is always not zero
 	print_message "Stopping group $GROUP_ID/`group2name $GROUP_ID` ($GROUP_SIZE interfaces)"
 	local i
-	for i in `seq 1 $GROUP_SIZE`; do
+	for ((i=1; i<=$GROUP_SIZE; i++)) do
 		IFNAME=`echo "${STOP_GROUP[$GROUP_ID]}" | cut -d' ' -f$i`
 		print_message -n -e "\tStopping $IFNAME: "
 		$SCRIPTDIR/ifdown $IFNAME $*
