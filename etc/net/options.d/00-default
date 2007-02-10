@@ -48,6 +48,7 @@ ALLOW_UNKNOWN=no
 
 # FireWall defaults
 IPTABLES=/sbin/iptables
+EBTABLES=/sbin/ebtables
 
 # List of known-good network modules (ones that support link detection).
 GOOD_MODULE_LIST='eepro100 e100 8139too tulip 3c59x hostap via-rhine sk98lin'
