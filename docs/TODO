@@ -9,4 +9,4 @@
 - CARP support: UCARP_ADDRESS UCARP_OPTIONS
 - sysctl doesn't work for PPP
 - move stop_dhcp_client to functions-ipv4
-- firewall: ebtables support
++ firewall: ebtables support
