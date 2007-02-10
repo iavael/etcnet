@@ -173,20 +173,20 @@ iptables_load_rules_from_file()
 		    read FIRST SECOND REST < <(echo $RULE)
     		    case $FIRST in
 		        "-A"|"-D")
-    	    			    iptables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+    	    			    iptables_push_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
 				    ;;
 			"-I")
 				    case $SECOND in
 				        [0-9]*)
-			        		iptables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+			        		iptables_push_rule $FIRST $CHAIN $SECOND -t $TABLE $REST
 						;;
 					*)
-		        			iptables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+		        			iptables_push_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
 						;;
 				    esac
 				    ;;
 			*)
-    	    			    iptables_push_rule -t $TABLE $CHAIN $FIRST $SECOND $REST
+    	    			    iptables_push_rule $CHAIN -t $TABLE $FIRST $SECOND $REST
 				    ;;
 		    esac
 		}
@@ -216,20 +216,20 @@ iptables_flush_rules_from_file()
 		        read  FIRST SECOND REST < <(echo $RULE)
 		        case $FIRST in
 		            "-A"|"-D")
-					iptables_pop_rule $FIRST -t $TABLE $CHAIN  $SECOND $REST
+					iptables_pop_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
 					;;
 			    "-I")
 					case $SECOND in
 					    [0-9]*)
-				    		    iptables_pop_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+				    		    iptables_pop_rule $FIRST $CHAIN $SECOND -t $TABLE $REST
 						    ;;
 					    *)
-	        				    iptables_pop_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+	        				    iptables_pop_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
 						    ;;
 					esac
 					;;
 			    *)
-        			        iptables_pop_rule -t $TABLE $CHAIN $FIRST $SECOND $REST
+        			        iptables_pop_rule $CHAIN -t $TABLE $FIRST $SECOND $REST
 				        ;;
 			esac
 		    }				
@@ -239,7 +239,7 @@ iptables_flush_rules_from_file()
 	else
 	    # Flush rules only when stop networking
 	    print_message "Flushing the \"$CHAIN\" chain in the \"$TABLE\" table"
-	    iptables_flush_chain -t $TABLE $CHAIN
+	    iptables_flush_chain $CHAIN -t $TABLE
 	fi
     fi
 }
@@ -288,7 +288,7 @@ iptables_start()
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || \
 		{
 		    print_message "Creating the \"$CHAIN\" chain in the \"$TABLE\" table"
-		    iptables_create_chain -t $TABLE $CHAIN
+		    iptables_create_chain $CHAIN -t $TABLE
 		}
 	done
     done
@@ -388,7 +388,7 @@ iptables_stop()
 		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || \
 		    {
 			print_message "Deleting the \"$CHAIN\" chain from the \"$TABLE\" table"
-			iptables_delete_chain -t $TABLE $CHAIN
+			iptables_delete_chain $CHAIN -t $TABLE
 		    }
 	    done
     done
@@ -414,37 +414,37 @@ iptables_stop()
 ## ebtables
 ebtables_chain_policy()
 {
-    eval "$EBTABLES -P $@" || print_error "$EBTABLES -P $@"
+    eval "$EBTABLES -t $TABLE -P $@" || print_error "$EBTABLES -t $TABLE -P $@"
 }
 
 ebtables_create_chain()
 {
-    eval "$EBTABLES -N $@" || print_error "$EBTABLES -N $@"
+    eval "$EBTABLES -t $TABLE -N $@" || print_error "$EBTABLES -t $TABLE -N $@"
 }
 
 ebtables_delete_chain()
 {
-    eval "$EBTABLES -X $@" || print_error "$EBTABLES -X $@"
+    eval "$EBTABLES -t $TABLE -X $@" || print_error "$EBTABLES -t $TABLE -X $@"
 }
 
 ebtables_flush_chain()
 {
-    eval "$EBTABLES -F $@" || print_error "$EBTABLES -F $@"
+    eval "$EBTABLES -t $TABLE -F $@" || print_error "$EBTABLES -t $TABLE -F $@"
 }
 
 ebtables_zero_chain()
 {
-    eval "$EBTABLES -Z $@" || print_error "$EBTABLES -Z $@"
+    eval "$EBTABLES -t $TABLE -Z $@" || print_error "$EBTABLES -t $TABLE -Z $@"
 }
 
 ebtables_rename_chain()
 {
-    eval "$EBTABLES -E $@" || print_error "$EBTABLES -E $@"
+    eval "$EBTABLES -t $TABLE -E $@" || print_error "$EBTABLES -t $TABLE -E $@"
 }
 
 ebtables_list_chain()
 {
-    eval "$EBTABLES -L $@" || print_error "$EBTABLES -L $@"
+    eval "$EBTABLES -t $TABLE -L $@" || print_error "$EBTABLES -t $TABLE -L $@"
 }
 
 ebtables_push_rule()
@@ -452,15 +452,15 @@ ebtables_push_rule()
     : ${@:?missing args to $FUNCNAME}
     case $1 in
 	"-A"|"-I"|"-D")
-			eval "$EBTABLES $@" || print_error "$EBTABLES $@"
+			eval "$EBTABLES -t $TABLE $@" || print_error "$EBTABLES -t $TABLE $@"
 			;;
         *)
 			case ${EBTABLES_RULE_EMBEDDING:APPEND} in
 			    APPEND)
-				    eval "$EBTABLES -A $@" || print_error "$EBTABLES -A $@"
+				    eval "$EBTABLES -t $TABLE -A $@" || print_error "$EBTABLES -t $TABLE -A $@"
 				    ;;
 			    INSERT)
-				    eval "$EBTABLES -I $@" || print_error "$EBTABLES -I $@"
+				    eval "$EBTABLES -t $TABLE -I $@" || print_error "$EBTABLES -t $TABLE -I $@"
 				    ;;
 			    *)
 				    print_error "Unknown type of rule embedding $EBTABLES_RULE_EMBEDDING"
@@ -476,7 +476,7 @@ ebtables_pop_rule()
     case $1 in
 	"-A")
 		shift
-		eval "$EBTABLES -D $@" || print_error "$EBTABLES -D $@"	    	    
+		eval "$EBTABLES -t $TABLE -D $@" || print_error "$EBTABLES -t $TABLE -D $@"	    	    
 		;;
 	"-I")
 		PRE="$2"
@@ -488,7 +488,7 @@ ebtables_pop_rule()
 			    shift 2
 			    ;;
 		esac
-		eval "$EBTABLES -D $PRE $@" || print_error "$EBTABLES -D $PRE $@"
+		eval "$EBTABLES -t $TABLE -D $PRE $@" || print_error "$EBTABLES -t $TABLE -D $PRE $@"
 		;;	
 	"-D")
 		shift
@@ -498,7 +498,7 @@ ebtables_pop_rule()
 		continue
 		;;
 	*)
-		eval "$EBTABLES -D $@" || print_error "$EBTABLES -D $@"	    	        	
+		eval "$EBTABLES -t $TABLE -D $@" || print_error "$EBTABLES -t $TABLE -D $@"	    	        	
 		;;
     esac
 }
@@ -529,20 +529,20 @@ ebtables_load_rules_from_file()
 			read FIRST SECOND REST < <(echo $RULE)
     			case $FIRST in
 			    "-A"|"-D")
-					ebtables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+					ebtables_push_rule $FIRST $CHAIN $SECOND $REST
 					;;
 			    "-I")
 					case $SECOND in
 					    [0-9]*)
-						    ebtables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						    ebtables_push_rule $FIRST $CHAIN $SECOND $REST
 						    ;;
 					     *)
-						    ebtables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						    ebtables_push_rule $FIRST $CHAIN $SECOND $REST
 						    ;;
 					esac
 					;;
 			    *)
-					ebtables_push_rule -t $TABLE $CHAIN $FIRST $SECOND $REST
+					ebtables_push_rule $CHAIN $FIRST $SECOND $REST
 					;;
 			esac
 		    }
@@ -572,20 +572,20 @@ ebtables_flush_rules_from_file()
 			read  FIRST SECOND REST < <(echo $RULE)
 			case $FIRST in
 			    "-A"|"-D")
-					ebtables_pop_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+					ebtables_pop_rule $FIRST $CHAIN $SECOND $REST
 					;;
 			    "-I")
 					case $SECOND in
 					    [0-9]*)
-						    ebtables_pop_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						    ebtables_pop_rule $FIRST $CHAIN $SECOND $REST
 						    ;;
 					    *)
-						    ebtables_pop_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						    ebtables_pop_rule $FIRST $CHAIN $SECOND $REST
 						    ;;
 					esac
 								;;
 			    *)
-        				ebtables_pop_rule -t $TABLE $CHAIN $FIRST $SECOND $REST
+        				ebtables_pop_rule $CHAIN $FIRST $SECOND $REST
 					;;
 			esac
 		    }				
@@ -595,7 +595,7 @@ ebtables_flush_rules_from_file()
 	else
 	    # Flush rules only when stop networking
 	    print_message "Flushing the \"$CHAIN\" chain in the \"$TABLE\" table"
-	    ebtables_flush_chain -t $TABLE $CHAIN
+	    ebtables_flush_chain $CHAIN 
 	fi
     fi
 }
@@ -644,7 +644,7 @@ ebtables_start()
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
 		{
 		    print_message "Creating the \"$CHAIN\" chain in the \"$TABLE\" table"
-		    ebtables_create_chain -t $TABLE $CHAIN
+		    ebtables_create_chain $CHAIN 
 		}
 	done
     done
@@ -733,7 +733,7 @@ ebtables_stop()
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
 		{
 		    print_message "Deleting the \"$CHAIN\" chain from the \"$TABLE\" table"
-		    ebtables_delete_chain -t $TABLE $CHAIN
+		    ebtables_delete_chain $CHAIN
 		}
 	done
     done
@@ -749,7 +749,7 @@ ebtables_stop()
     if [ "$NAME" = "default" ]; then
 	print_message "Set ACCEPT policy for the \"INPUT\" chain"
 	ebtables_chain_policy INPUT ACCEPT
-	ebint_message "Set ACCEPT policy for the \"FORWARD\" chain"
+	print_message "Set ACCEPT policy for the \"FORWARD\" chain"
 	ebtables_chain_policy FORWARD ACCEPT
 	print_message "Set ACCEPT policy for the \"OUTPUT\" chain"
 	ebtables_chain_policy OUTPUT ACCEPT

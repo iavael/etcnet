@@ -1,5 +1,6 @@
 # Type of firewall. Now supported only iptables and ebtables. First defined->first started
-FW_TYPE=iptables ebtables
+# MUST be in the quotes
+FW_TYPE="iptables ebtables"
 
 # Enable "human" iptables syntax
 IPTABLES_HUMAN_SYNTAX=yes
