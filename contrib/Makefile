@@ -26,7 +26,7 @@ install:
 	@install -m 644 etc/net/ifaces/default/{options,sysctl.conf}* $(etcnetdir)/ifaces/default
 	@install -m 644 etc/net/ifaces/default/fw/options $(etcnetdir)/ifaces/default/fw
 	@install -m 644 etc/net/ifaces/default/fw/iptables/{loadorder,modules,syntax} $(etcnetdir)/ifaces/default/fw/iptables
-	@install -m 644 etc/net/ifaces/default/fw/ebtables/{loadorder,modules,syntax} $(etcnetdir)/ifaces/default/fw/ebtables
+	@install -m 644 etc/net/ifaces/default/fw/ebtables/{loadorder,modules} $(etcnetdir)/ifaces/default/fw/ebtables
 	@install -m 644 etc/net/ifaces/default/fw/iptables/filter/* $(etcnetdir)/ifaces/default/fw/iptables/filter
 	@install -m 644 etc/net/ifaces/default/fw/iptables/mangle/* $(etcnetdir)/ifaces/default/fw/iptables/mangle
 	@install -m 644 etc/net/ifaces/default/fw/iptables/nat/* $(etcnetdir)/ifaces/default/fw/iptables/nat
