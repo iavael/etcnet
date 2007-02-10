@@ -255,7 +255,7 @@ iptables_start()
     local TABLE
     local CHAIN
     
-    print_message "Starting iptables for $NAME"
+    [ "$NAME" = "default" ] &&  print_message "Starting iptables for $NAME" ||  print_message -e "\nStarting iptables for $NAME"
     # Set defaut policy
     if [ "$NAME" = "default" ]; then
 	[ -z "$IPTABLES_INPUT_POLICY" ] || \
@@ -343,7 +343,7 @@ iptables_stop()
     local TABLE
     local CHAIN
     
-    print_message "Stopping iptables for $NAME"
+    [ "$NAME" = "default" ] && print_message "Stopping iptables for $NAME" || print_message -e  "\nStopping iptables for $NAME"
     cd "$MYIFACEDIR/fw/$CFW_TYPE"
     # FIXME Where is the place of this?
     [ ! -z "$TYPE" ] && \
@@ -526,7 +526,7 @@ ebtables_load_rules_from_file()
 	local RULES
 
 	if [ -f "$TABLE/$CHAIN" ] && [ -s "$TABLE/$CHAIN" ]; then
-	    print_message -e "\tLoading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    print_message -n -e "\tLoading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
 	    RULES=$(< "$TABLE/$CHAIN")
 	    while read RULE; do
 		RULE=$(ebtables_expand_string "$RULE")
@@ -569,7 +569,7 @@ ebtables_flush_rules_from_file()
     if [ -f "$TABLE/$CHAIN" ]; then
 	if [ "$NAME" != "default" ] && [ "$3" != "flush" ]; then
 	    [ ! -s "$TABLE/$CHAIN" ] && return
-	    print_message -e "\tUnloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    print_message -n -e "\tUnloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
 	    RULES=$(tac "$TABLE/$CHAIN")
 	    while read RULE; do
 		RULE=$(ebtables_expand_string "$RULE")
@@ -614,7 +614,7 @@ ebtables_start()
     local TABLE
     local CHAIN
 
-    print_message "Starting ebtables for $NAME"
+    [ "$NAME" = "default" ] &&  print_message "Starting ebtables for $NAME" ||  print_message -e "\nStarting ebtables for $NAME"
     # Set defaut policy
     if [ "$NAME" = "default" ]; then
 	[ -z "$EBTABLES_INPUT_POLICY" ] || \
@@ -696,7 +696,7 @@ ebtables_stop()
     local TABLE
     local CHAIN
 
-    print_message "Stopping ebtables for $NAME"
+    [ "$NAME" = "default" ] && print_message "Stopping ebtables for $NAME" || print_message -e  "\nStopping ebtables for $NAME"
     cd "$MYIFACEDIR/fw/$CFW_TYPE"
 
     # FIXME  Double code
