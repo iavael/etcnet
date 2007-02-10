@@ -1,413 +1,757 @@
 #!/bin/bash
 
+## iptables
+
 iptables_get_ipv4()
 {
-	printf "$(ip addr show dev $NAME 2>/dev/null|grep  -ose "\binet\b.*\([0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\)"|cut	-f2 -d" "|cut -f1 -d"/")"
+    printf "$(ip addr show dev $NAME 2>/dev/null|grep  -ose "\binet\b.*\([0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\)"|cut -f2 -d" "|cut -f1 -d"/")"
 }
 
 iptables_get_ipv6()
 {
-	printf "$(ip addr show dev $NAME 2>/dev/null|grep  -ose "\binet6\b.*\([0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\)"|cut -f2 -d" "|cut -f1 -d"/")"
+    printf "$(ip addr show dev $NAME 2>/dev/null|grep  -ose "\binet6\b.*\([0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\)"|cut -f2 -d" "|cut -f1 -d"/")"
 }
 
 
 iptables_chain_policy()
 {
-	eval "$IPTABLES -P $@" || print_error "$IPTABLES -P $@"
+    eval "$IPTABLES -P $@" || print_error "$IPTABLES -P $@"
 }
 
 iptables_create_chain()
 {
-	eval "$IPTABLES -N $@" || print_error "$IPTABLES -N $@"
+    eval "$IPTABLES -N $@" || print_error "$IPTABLES -N $@"
 }
 
 iptables_delete_chain()
 {
-	eval "$IPTABLES -X $@" || print_error "$IPTABLES -X $@"
+    eval "$IPTABLES -X $@" || print_error "$IPTABLES -X $@"
 }
 
 iptables_flush_chain()
 {
-	eval "$IPTABLES -F $@" || print_error "$IPTABLES -F $@"
+    eval "$IPTABLES -F $@" || print_error "$IPTABLES -F $@"
 }
 
 iptables_zero_chain()
 {
-	eval "$IPTABLES -Z $@" || print_error "$IPTABLES -Z $@"
+    eval "$IPTABLES -Z $@" || print_error "$IPTABLES -Z $@"
 }
 
 iptables_rename_chain()
 {
-	eval "$IPTABLES -E $@" || print_error "$IPTABLES -E $@"
+    eval "$IPTABLES -E $@" || print_error "$IPTABLES -E $@"
 }
 
 iptables_list_chain()
 {
-	eval "$IPTABLES -L $@" || print_error "$IPTABLES -L $@"
+    eval "$IPTABLES -L $@" || print_error "$IPTABLES -L $@"
 }
 
 iptables_push_rule()
 {
-	: ${@:?missing args to $FUNCNAME}
+    : ${@:?missing args to $FUNCNAME}
     case $1 in
 	"-A"|"-I"|"-D")
-	    eval "$IPTABLES $@" || print_error "$IPTABLES $@"
-		;;
+			eval "$IPTABLES $@" || print_error "$IPTABLES $@"
+			;;
 	*)
-        case ${IPTABLES_RULE_EMBEDDING:APPEND} in
-    		APPEND)
+    			case ${IPTABLES_RULE_EMBEDDING:APPEND} in
+    			    APPEND)
 	   			    eval "$IPTABLES -A $@" || print_error "$IPTABLES -A $@"
-					;;
-			INSERT)
-	    	    	eval "$IPTABLES -I $@" || print_error "$IPTABLES -I $@"
-					;;
-			*)
-					print_error "Unknown type of rule embedding $IPTABLES_RULE_EMBEDDING"
-					;;
-	    esac
-		;;
+				    ;;
+			    INSERT)
+	    	    		    eval "$IPTABLES -I $@" || print_error "$IPTABLES -I $@"
+				    ;;
+			    *)
+				    print_error "Unknown type of rule embedding $IPTABLES_RULE_EMBEDDING"
+				    ;;
+			esac
+			;;
     esac
 }
 
 iptables_pop_rule()
 {
-	: ${@:?missing args to $FUNCNAME}
+    : ${@:?missing args to $FUNCNAME}
     case $1 in
 	"-A")
-	    shift
-	    eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"	    	    
+		shift
+		eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"	    	    
 		;;
 	"-I")
-	    PRE="$2"
-		case $3 in
-			[0-9]*)
+		PRE="$2"
+		    case $3 in
+		    	[0-9]*)
 				shift 3
 				;;
 			*)
 				shift 2
 				;;
-		esac
-	    eval "$IPTABLES -D $PRE $@" || print_error "$IPTABLES -D $PRE $@"
+		    esac
+		eval "$IPTABLES -D $PRE $@" || print_error "$IPTABLES -D $PRE $@"
 		;;	
 	"-D")
-	    shift
-	    iptables_push_rule $@
+		shift
+		iptables_push_rule $@
 		;;
 	"-P")
 		continue
 		;;
 	*)
-        eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"	    	        	
+    		eval "$IPTABLES -D $@" || print_error "$IPTABLES -D $@"	    	        	
 		;;
     esac
 }
 
 iptables_load_syntax()
 {
-	: ${1:?missing 1st arg to $FUNCNAME}
-	[ ! -f "$1" ] || [ ! -s "$1" ] && \
+    : ${1:?missing 1st arg to $FUNCNAME}
+    [ ! -f "$1" ] || [ ! -s "$1" ] && \
 	{
-		export IPTABLES_SYNTAX=
-		return 1
+	    IPTABLES_SYNTAX=
+	    return 1
 	}
-	export IPTABLES_SYNTAX=$(< "$1")
+    IPTABLES_SYNTAX=$(< "$1")
 }
 
 iptables_create_sed_rules()
 {
-	: ${1:?missing 1st arg to $FUNCNAME}
-	local SEARCH
-	local REPLACE
-    local REPLACES
+    local REPLACES=${1:?missing 1st arg to $FUNCNAME}
+    local SEARCH
+    local REPLACE
     local OLDIFS
-    export IPTABLES_SED_RULES=
+    IPTABLES_SED_RULES=
     print_message "Loading iptables data"
-    REPLACES="$1"
-    OLDIFS=$IFS
+    OLDIFS="$IFS"
     IFS=":"
     while read SEARCH REPLACE; do
         print_progress
         IPTABLES_SED_RULES="${IPTABLES_SED_RULES}s/\(^\|[^-]\b\)$SEARCH\(\b[^-]\|$\)/\1$REPLACE\2/g;"
     done < <(echo "$REPLACES"|egrep "^[^#]"|sed -e 's,/,\\\\/,g')
-    IFS=$OLDIFS
+    IFS="$OLDIFS"
     print_message
-    export IPTABLES_SED_RULES
 }
 
 iptables_expand_string()
 {
-	: ${1:?missing 1st arg to $FUNCNAME}
-	local RULE
-	if is_yes "$IPTABLES_HUMAN_SYNTAX"; then
-		[ -z "$IPTABLES_SED_RULES" ] && print_error "Human syntax is enabled but no syntax file is loaded"
-		RULE=$(eval "printf '%s\n' $@"|sed  -e "$IPTABLES_SED_RULES;s/[[:space:]]\+/\ /g")
-	else
-		RULE=$(eval "printf '%s\n' $@")
-	fi
-	printf '%s\n' "$RULE"|egrep -q "^[^#]" && printf '%s\n' "$RULE" || echo ""
+    : ${1:?missing 1st arg to $FUNCNAME}
+    local RULE
+    if is_yes "$IPTABLES_HUMAN_SYNTAX"; then
+	[ -z "$IPTABLES_SED_RULES" ] && print_error "Human syntax is enabled but no syntax file is loaded"
+	RULE=$(eval "printf '%s\n' $@"|sed  -e "$IPTABLES_SED_RULES;s/[[:space:]]\+/\ /g")
+    else
+	RULE=$(eval "printf '%s\n' $@")
+    fi
+    printf '%s\n' "$RULE"|egrep -q "^[^#]" && printf '%s\n' "$RULE" || echo ""
 }
 
 iptables_preload()
 {
-	is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$IPTABLES_SYNTAX" ] && { 
-		iptables_load_syntax ${IPTABLES_SYNTAX_DIR:=/etc/net/ifaces/default/fw/iptables}/syntax
-		iptables_create_sed_rules "$IPTABLES_SYNTAX"
-		}			
+    is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$IPTABLES_SYNTAX" ] && \
+	{ 
+	    iptables_load_syntax ${IPTABLES_SYNTAX_DIR:=/etc/net/ifaces/default/fw/iptables}/syntax
+	    iptables_create_sed_rules "$IPTABLES_SYNTAX"
+	}			
 }
 
 # iptables_load_rules_from_file <table> <chain>
 iptables_load_rules_from_file()
 {
-	local RULE
-	local RULES
-	local CHAIN
-	local TABLE
-	: ${1:?missing 1st arg to $FUNCNAME}
-	: ${2:?missing 2nd arg to $FUNCNAME}
-	TABLE="$1"
-	CHAIN="$2"
-	if [ -f "$TABLE/$CHAIN" ] && [ -s "$TABLE/$CHAIN" ]; then
-		print_message "Loading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
-		RULES=$(< "$TABLE/$CHAIN")
-		while read RULE; do
-				RULE=`iptables_expand_string "$RULE"`
-				[ -z "$RULE" ] || {
-				    read FIRST SECOND REST < <(echo $RULE)
-    					case $FIRST in
-					    "-A"|"-D")
-    	    					iptables_push_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
-								;;
-					    "-I")
-								case $SECOND in
-							    	[0-9]*)
-			        						iptables_push_rule $FIRST $CHAIN $SECOND -t $TABLE $REST
-									    	;;
-							   		 *)
-		        							iptables_push_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
-									    	;;
-								esac
-								;;
-					    *)
-    	    					iptables_push_rule $CHAIN -t $TABLE $FIRST $SECOND $REST
-						    	;;
-						esac
-				}
-				print_progress
-		done < <(echo "$RULES"|egrep "^[^#]")
-		print_message
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    local RULE
+    local RULES
+
+    if [ -f "$TABLE/$CHAIN" ] && [ -s "$TABLE/$CHAIN" ]; then
+	print_message "Loading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	RULES=$(< "$TABLE/$CHAIN")
+	while read RULE; do
+	    RULE=$(iptables_expand_string "$RULE")
+	    [ -z "$RULE" ] || \
+		{
+		    read FIRST SECOND REST < <(echo $RULE)
+    		    case $FIRST in
+		        "-A"|"-D")
+    	    			    iptables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+				    ;;
+			"-I")
+				    case $SECOND in
+				        [0-9]*)
+			        		iptables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						;;
+					*)
+		        			iptables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						;;
+				    esac
+				    ;;
+			*)
+    	    			    iptables_push_rule -t $TABLE $CHAIN $FIRST $SECOND $REST
+				    ;;
+		    esac
+		}
+	    print_progress
+	    done < <(echo "$RULES"|egrep "^[^#]")
+	    print_message
 	fi
 }
 
 # iptables_flush_rules_from_file <table> <chain> [flush]
 iptables_flush_rules_from_file()
 {
-	local RULE
-	local RULES
-	local CHAIN
-	local TABLE
-	: ${1:?missing 1st arg to $FUNCNAME}
-	: ${2:?missing 2nd arg to $FUNCNAME}
-	TABLE="$1"
-	CHAIN="$2"
-	if [ -f "$TABLE/$CHAIN" ]; then
-		if [ "$NAME" != "default" ] && [ "$3" != "flush" ]; then
-			[ ! -s "$TABLE/$CHAIN" ] && return
-			print_message "Unloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
-			RULES=$(tac "$TABLE/$CHAIN")
-			while read RULE; do
-				RULE=`iptables_expand_string "$RULE"`
-				[ -z "$RULE" ] || {
-				    read  FIRST SECOND REST < <(echo $RULE)
-					case $FIRST in
-					    "-A"|"-D")
-        						iptables_pop_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
-								;;
-					    "-I")
-								case $SECOND in
-								    [0-9]*)
-				        					iptables_pop_rule $FIRST $CHAIN $SECOND -t $TABLE $REST
-										    ;;
-								    *)
-	        								iptables_pop_rule $FIRST $CHAIN -t $TABLE $SECOND $REST
-										    ;;
-								esac
-								;;
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    local RULE
+    local RULES
+    
+    if [ -f "$TABLE/$CHAIN" ]; then
+	if [ "$NAME" != "default" ] && [ "$3" != "flush" ]; then
+	    [ ! -s "$TABLE/$CHAIN" ] && return
+	    print_message "Unloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    RULES=$(tac "$TABLE/$CHAIN")
+	    while read RULE; do
+		RULE=$(iptables_expand_string "$RULE")
+		[ -z "$RULE" ] || \
+		    {
+		        read  FIRST SECOND REST < <(echo $RULE)
+		        case $FIRST in
+		            "-A"|"-D")
+					iptables_pop_rule $FIRST -t $TABLE $CHAIN  $SECOND $REST
+					;;
+			    "-I")
+					case $SECOND in
+					    [0-9]*)
+				    		    iptables_pop_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						    ;;
 					    *)
-        						iptables_pop_rule $CHAIN -t $TABLE $FIRST $SECOND $REST
-							    ;;
-						esac
-				}				
-				print_progress
-			done < <(echo "$RULES"|egrep "^[^#]")
-			print_message
-		else
-			# Flush rules only when stop networking
-			print_message "Flushing the \"$CHAIN\" chain in the \"$TABLE\" table"
-			iptables_flush_chain $CHAIN -t $TABLE
-		fi
+	        				    iptables_pop_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						    ;;
+					esac
+					;;
+			    *)
+        			        iptables_pop_rule -t $TABLE $CHAIN $FIRST $SECOND $REST
+				        ;;
+			esac
+		    }				
+		print_progress
+		done < <(echo "$RULES"|egrep "^[^#]")
+		print_message
+	else
+	    # Flush rules only when stop networking
+	    print_message "Flushing the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    iptables_flush_chain -t $TABLE $CHAIN
 	fi
+    fi
 }
 
 
 iptables_start()
 {
-	local NAME
-	local MODULE
-	local TABLE
-	local CHAIN
-	: ${1:?missing 1st arg to $FUNCNAME}
-	NAME="$1"
-	print_message "Starting iptables for $NAME"
-	# Set defaut policy
-	if [ "$NAME" = "default" ]; then
-		[ -z "$IPTABLES_INPUT_POLICY" ] || {
-			print_message "Set $IPTABLES_INPUT_POLICY policy for the \"INPUT\" chain"
-			iptables_chain_policy INPUT "$IPTABLES_INPUT_POLICY"
+    local NAME=${1:?missing 1st arg to $FUNCNAME}
+    local MODULE
+    local TABLE
+    local CHAIN
+    
+    print_message "Starting iptables for $NAME"
+    # Set defaut policy
+    if [ "$NAME" = "default" ]; then
+	[ -z "$IPTABLES_INPUT_POLICY" ] || \
+	    {
+		print_message "Set $IPTABLES_INPUT_POLICY policy for the \"INPUT\" chain"
+		iptables_chain_policy INPUT "$IPTABLES_INPUT_POLICY"
+	    }
+	[ -z "$IPTABLES_FORWARD_POLICY" ] || \
+	    {
+		print_message "Set $IPTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain"
+		iptables_chain_policy FORWARD "$IPTABLES_FORWARD_POLICY"
+	    }
+	[ -z "$IPTABLES_OUTPUT_POLICY" ] || \
+	    {
+		print_message "Set $IPTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain"
+		iptables_chain_policy OUTPUT "$IPTABLES_OUTPUT_POLICY"
+	    }
+    fi
+    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    # Load modules
+    if [ -f "modules" ] && [ -s "modules" ]; then
+	while read MODULE; do
+	    print_message "Loading module $MODULE"
+	    $MODPROBE "$MODULE" || print_error "Can't load module $MODULE"
+	done < <(egrep "^[^#]" modules)
+    fi
+    # Create user chains
+    for TABLE in *; do
+	[ ! -d "$TABLE" ] && continue
+	for CHAIN in "$TABLE"/*; do
+	    CHAIN=$(basename "$CHAIN")
+	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || \
+		{
+		    print_message "Creating the \"$CHAIN\" chain in the \"$TABLE\" table"
+		    iptables_create_chain -t $TABLE $CHAIN
 		}
-		[ -z "$IPTABLES_FORWARD_POLICY" ] || {
-			print_message "Set $IPTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain"
-			iptables_chain_policy FORWARD "$IPTABLES_FORWARD_POLICY"
-		}
-		[ -z "$IPTABLES_OUTPUT_POLICY" ] || {
-			print_message "Set $IPTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain"
-			iptables_chain_policy OUTPUT "$IPTABLES_OUTPUT_POLICY"
-		}
-	fi
-	cd "$MYIFACEDIR/fw/$FW_TYPE"
-	# Load modules
-	if [ -f "modules" ] && [ -s "modules" ]; then
-		while read MODULE; do
-			print_message "Loading module $MODULE"
-			$MODPROBE "$MODULE" || print_error "Can't load module $MODULE"
-		done < <(egrep "^[^#]" modules)
-	fi
-	# Create user chains
-	for TABLE in *; do
-		[ ! -d "$TABLE" ] && continue
-		for CHAIN in "$TABLE"/*; do
-			CHAIN=`basename $CHAIN`
-			[ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-			egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") ||
-			{
-				print_message "Creating the \"$CHAIN\" chain in the \"$TABLE\" table"
-				iptables_create_chain $CHAIN -t $TABLE
-			}
-		done
 	done
-	# FIXME Where is the place of this?
-	[ ! -z "$TYPE" ] && {
-		IPV4ADDRESS=( $(iptables_get_ipv4) )
-		IPV6ADDRESS=( $(iptables_get_ipv6) )
+    done
+    # FIXME Where is the place of this?
+    [ ! -z "$TYPE" ] && \
+	{
+	    IPV4ADDRESS=( $(iptables_get_ipv4) )
+	    IPV6ADDRESS=( $(iptables_get_ipv6) )
 	}
 	
-	# FIXME  Double code
-	# Load rules after creating _all_ chains
-	if [ -f "loadorder" ] && [ -s "loadorder" ]; then
-		while read TABLE; do
-			[ ! -d "$TABLE" ] && continue
-			if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
-				while read CHAIN; do
-					iptables_load_rules_from_file "$TABLE" "$CHAIN"
-				done < <(egrep "^[^#]" "$TABLE/loadorder")
-			else
-				for CHAIN in "$TABLE"/*; do
-					CHAIN=`basename $CHAIN`
-					iptables_load_rules_from_file "$TABLE" "$CHAIN"
-				done
-			fi
-		done < <(egrep "^[^#]" loadorder)
-	else
-		for TABLE in *; do
-			[ ! -d "$TABLE" ] && continue
-			if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
-				while read CHAIN; do
-					iptables_load_rules_from_file "$TABLE" "$CHAIN"
-				done < <(egrep "^[^#]" "$TABLE/loadorder")
-			else
-				for CHAIN in "$TABLE"/*; do
-					CHAIN=`basename $CHAIN`
-					iptables_load_rules_from_file "$TABLE" "$CHAIN"
-				done
-			fi
+    # FIXME  Double code
+    # Load rules after creating _all_ chains
+    if [ -f "loadorder" ] && [ -s "loadorder" ]; then
+	while read TABLE; do
+	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    iptables_load_rules_from_file "$TABLE" "$CHAIN"
+		done < <(egrep "^[^#]" "$TABLE/loadorder")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    iptables_load_rules_from_file "$TABLE" "$CHAIN"
 		done
-	fi
+	    fi
+	done < <(egrep "^[^#]" loadorder)
+    else
+	for TABLE in *; do
+    	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    iptables_load_rules_from_file "$TABLE" "$CHAIN"
+		done < <(egrep "^[^#]" "$TABLE/loadorder")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    iptables_load_rules_from_file "$TABLE" "$CHAIN"
+		done
+	    fi
+	done
+    fi
 }
 
 iptables_stop()
 {
-	local NAME
-	local MODULE
-	local TABLE
-	local CHAIN
-	: ${1:?missing 1st arg to $FUNCNAME}
-	NAME="$1"
-	print_message "Stopping iptables for $NAME"
-	cd "$MYIFACEDIR/fw/$FW_TYPE"
-	# FIXME Where is the place of this?
-	[ ! -z "$TYPE" ] && {
-		IPV4ADDRESS=( $(iptables_get_ipv4) )
-		IPV6ADDRESS=( $(iptables_get_ipv6) )
+    local NAME=${1:?missing 1st arg to $FUNCNAME}
+    local MODULE
+    local TABLE
+    local CHAIN
+    
+    print_message "Stopping iptables for $NAME"
+    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    # FIXME Where is the place of this?
+    [ ! -z "$TYPE" ] && \
+	{
+	    IPV4ADDRESS=( $(iptables_get_ipv4) )
+	    IPV6ADDRESS=( $(iptables_get_ipv6) )
 	}
-	# FIXME  Double code
-	# Flush rules
-	if [ -f "loadorder" ] && [ -s "loadorder" ]; then
-		while read TABLE; do
-			[ ! -d "$TABLE" ] && continue
-			if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
-				while read CHAIN; do
-					iptables_flush_rules_from_file "$TABLE" "$CHAIN"
-				done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
-			else
-				for CHAIN in "$TABLE"/*; do
-					CHAIN=`basename $CHAIN`
-					iptables_flush_rules_from_file "$TABLE" "$CHAIN"
-				done
-			fi
-		done < <(tac loadorder|egrep "^[^#]")
-	else
-		for TABLE in *; do
-			[ ! -d "$TABLE" ] && continue
-			if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
-				while read CHAIN; do
-					iptables_flush_rules_from_file "$TABLE" "$CHAIN"
-				done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
-			else
-				for CHAIN in "$TABLE"/*; do
-					CHAIN=`basename $CHAIN`
-					iptables_flush_rules_from_file "$TABLE" "$CHAIN"
-				done
-			fi
-		done
-	fi
-
-	# Delete user chains
-	for TABLE in *; do
-		[ ! -d "$TABLE" ] && continue
+    # FIXME  Double code
+    # Flush rules
+    if [ -f "loadorder" ] && [ -s "loadorder" ]; then
+	while read TABLE; do
+	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    iptables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
+	    else
 		for CHAIN in "$TABLE"/*; do
-			CHAIN=`basename $CHAIN`
-			[ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-			egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") ||
-			{
-				print_message "Deleting the \"$CHAIN\" chain from the \"$TABLE\" table"
-				iptables_delete_chain $CHAIN -t $TABLE
-			}
+		    CHAIN=$(basename "$CHAIN")
+		    iptables_flush_rules_from_file "$TABLE" "$CHAIN"
 		done
+	    fi
+	done < <(tac loadorder|egrep "^[^#]")
+    else
+	for TABLE in *; do
+    	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    iptables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    iptables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done
+	    fi
 	done
+    fi
 
-	# Unload modules
-	if [ -f "modules" ] && [ -s "modules" ]; then
-		while read MODULE; do
-			print_message "Unloading module $MODULE"
-			$MODPROBE -r "$MODULE" || print_error "Can't unload module $MODULE"
-		done < <(tac modules|egrep "^[^#]")
+    # Delete user chains
+    for TABLE in *; do
+	[ ! -d "$TABLE" ] && continue
+	    for CHAIN in "$TABLE"/*; do
+		CHAIN=$(basename "$CHAIN")
+		[ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || \
+		    {
+			print_message "Deleting the \"$CHAIN\" chain from the \"$TABLE\" table"
+			iptables_delete_chain -t $TABLE $CHAIN
+		    }
+	    done
+    done
+
+    # Unload modules
+    if [ -f "modules" ] && [ -s "modules" ]; then
+	while read MODULE; do
+	    print_message "Unloading module $MODULE"
+	    $MODPROBE -r "$MODULE" || print_error "Can't unload module $MODULE"
+	done < <(tac modules|egrep "^[^#]")
+    fi
+    # Set ACCEPT policy
+    if [ "$NAME" = "default" ]; then
+	print_message "Set ACCEPT policy for the \"INPUT\" chain"
+	iptables_chain_policy INPUT ACCEPT
+	print_message "Set ACCEPT policy for the \"FORWARD\" chain"
+	iptables_chain_policy FORWARD ACCEPT
+	print_message "Set ACCEPT policy for the \"OUTPUT\" chain"
+	iptables_chain_policy OUTPUT ACCEPT
+    fi
+}
+
+## ebtables
+ebtables_chain_policy()
+{
+    eval "$EBTABLES -P $@" || print_error "$EBTABLES -P $@"
+}
+
+ebtables_create_chain()
+{
+    eval "$EBTABLES -N $@" || print_error "$EBTABLES -N $@"
+}
+
+ebtables_delete_chain()
+{
+    eval "$EBTABLES -X $@" || print_error "$EBTABLES -X $@"
+}
+
+ebtables_flush_chain()
+{
+    eval "$EBTABLES -F $@" || print_error "$EBTABLES -F $@"
+}
+
+ebtables_zero_chain()
+{
+    eval "$EBTABLES -Z $@" || print_error "$EBTABLES -Z $@"
+}
+
+ebtables_rename_chain()
+{
+    eval "$EBTABLES -E $@" || print_error "$EBTABLES -E $@"
+}
+
+ebtables_list_chain()
+{
+    eval "$EBTABLES -L $@" || print_error "$EBTABLES -L $@"
+}
+
+ebtables_push_rule()
+{
+    : ${@:?missing args to $FUNCNAME}
+    case $1 in
+	"-A"|"-I"|"-D")
+			eval "$EBTABLES $@" || print_error "$EBTABLES $@"
+			;;
+        *)
+			case ${EBTABLES_RULE_EMBEDDING:APPEND} in
+			    APPEND)
+				    eval "$EBTABLES -A $@" || print_error "$EBTABLES -A $@"
+				    ;;
+			    INSERT)
+				    eval "$EBTABLES -I $@" || print_error "$EBTABLES -I $@"
+				    ;;
+			    *)
+				    print_error "Unknown type of rule embedding $EBTABLES_RULE_EMBEDDING"
+				    ;;
+			esac
+			;;
+    esac
+}
+
+ebtables_pop_rule()
+{
+    : ${@:?missing args to $FUNCNAME}
+    case $1 in
+	"-A")
+		shift
+		eval "$EBTABLES -D $@" || print_error "$EBTABLES -D $@"	    	    
+		;;
+	"-I")
+		PRE="$2"
+		case $3 in
+		    [0-9]*)
+			    shift 3
+			    ;;
+		    *)
+			    shift 2
+			    ;;
+		esac
+		eval "$EBTABLES -D $PRE $@" || print_error "$EBTABLES -D $PRE $@"
+		;;	
+	"-D")
+		shift
+		ebtables_push_rule $@
+		;;
+	"-P")
+		continue
+		;;
+	*)
+		eval "$EBTABLES -D $@" || print_error "$EBTABLES -D $@"	    	        	
+		;;
+    esac
+}
+
+ebtables_expand_string()
+{
+    : ${1:?missing 1st arg to $FUNCNAME}
+    local RULE
+    RULE=$(eval "printf '%s\n' $@")
+    printf '%s\n' "$RULE"|egrep -q "^[^#]" && printf '%s\n' "$RULE" || echo ""
+}
+
+# ebtables_load_rules_from_file <table> <chain>
+ebtables_load_rules_from_file()
+{
+	local TABLE=${1:?missing 1st arg to $FUNCNAME}
+	local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+	local RULE
+	local RULES
+
+	if [ -f "$TABLE/$CHAIN" ] && [ -s "$TABLE/$CHAIN" ]; then
+	    print_message "Loading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    RULES=$(< "$TABLE/$CHAIN")
+	    while read RULE; do
+		RULE=$(ebtables_expand_string "$RULE")
+		[ -z "$RULE" ] || \
+		    {
+			read FIRST SECOND REST < <(echo $RULE)
+    			case $FIRST in
+			    "-A"|"-D")
+					ebtables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+					;;
+			    "-I")
+					case $SECOND in
+					    [0-9]*)
+						    ebtables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						    ;;
+					     *)
+						    ebtables_push_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						    ;;
+					esac
+					;;
+			    *)
+					ebtables_push_rule -t $TABLE $CHAIN $FIRST $SECOND $REST
+					;;
+			esac
+		    }
+		print_progress
+	    done < <(echo "$RULES"|egrep "^[^#]")
+	    print_message
 	fi
-	# Set ACCEPT policy
-	if [ "$NAME" = "default" ]; then
-		print_message "Set ACCEPT policy for the \"INPUT\" chain"
-		iptables_chain_policy INPUT ACCEPT
-		print_message "Set ACCEPT policy for the \"FORWARD\" chain"
-		iptables_chain_policy FORWARD ACCEPT
-		print_message "Set ACCEPT policy for the \"OUTPUT\" chain"
-		iptables_chain_policy OUTPUT ACCEPT
+}
+
+# ebtables_flush_rules_from_file <table> <chain> [flush]
+ebtables_flush_rules_from_file()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    local RULE
+    local RULES
+
+    if [ -f "$TABLE/$CHAIN" ]; then
+	if [ "$NAME" != "default" ] && [ "$3" != "flush" ]; then
+	    [ ! -s "$TABLE/$CHAIN" ] && return
+	    print_message "Unloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    RULES=$(tac "$TABLE/$CHAIN")
+	    while read RULE; do
+		RULE=$(ebtables_expand_string "$RULE")
+		[ -z "$RULE" ] || \
+		    {
+			read  FIRST SECOND REST < <(echo $RULE)
+			case $FIRST in
+			    "-A"|"-D")
+					ebtables_pop_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+					;;
+			    "-I")
+					case $SECOND in
+					    [0-9]*)
+						    ebtables_pop_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						    ;;
+					    *)
+						    ebtables_pop_rule $FIRST -t $TABLE $CHAIN $SECOND $REST
+						    ;;
+					esac
+								;;
+			    *)
+        				ebtables_pop_rule -t $TABLE $CHAIN $FIRST $SECOND $REST
+					;;
+			esac
+		    }				
+		print_progress
+	    done < <(echo "$RULES"|egrep "^[^#]")
+	    print_message
+	else
+	    # Flush rules only when stop networking
+	    print_message "Flushing the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    ebtables_flush_chain -t $TABLE $CHAIN
 	fi
+    fi
+}
+
+
+ebtables_start()
+{
+    local NAME=${1:?missing 1st arg to $FUNCNAME}
+    local MODULE
+    local TABLE
+    local CHAIN
+
+    print_message "Starting ebtables for $NAME"
+    # Set defaut policy
+    if [ "$NAME" = "default" ]; then
+	[ -z "$EBTABLES_INPUT_POLICY" ] || \
+	    {
+		print_message "Set $EBTABLES_INPUT_POLICY policy for the \"INPUT\" chain"
+		ebtables_chain_policy INPUT "$EBTABLES_INPUT_POLICY"
+	    }
+	[ -z "$EBTABLES_FORWARD_POLICY" ] || \
+	    {
+		print_message "Set $EBTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain"
+		ebtables_chain_policy FORWARD "$EBTABLES_FORWARD_POLICY"
+	    }
+	[ -z "$EBTABLES_OUTPUT_POLICY" ] || \
+	    {
+		print_message "Set $EBTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain"
+		ebtables_chain_policy OUTPUT "$EBTABLES_OUTPUT_POLICY"
+	    }
+    fi
+    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    # Load modules
+    if [ -f "modules" ] && [ -s "modules" ]; then
+	while read MODULE; do
+	    print_message "Loading module $MODULE"
+	    $MODPROBE "$MODULE" || print_error "Can't load module $MODULE"
+	done < <(egrep "^[^#]" modules)
+    fi
+    # Create user chains
+    for TABLE in *; do
+	[ ! -d "$TABLE" ] && continue
+	for CHAIN in "$TABLE"/*; do
+	    CHAIN=$(basename "$CHAIN")
+	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
+		{
+		    print_message "Creating the \"$CHAIN\" chain in the \"$TABLE\" table"
+		    ebtables_create_chain -t $TABLE $CHAIN
+		}
+	done
+    done
+	
+    # FIXME  Double code
+    # Load rules after creating _all_ chains
+    if [ -f "loadorder" ] && [ -s "loadorder" ]; then
+	while read TABLE; do
+	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    ebtables_load_rules_from_file "$TABLE" "$CHAIN"
+		done < <(egrep "^[^#]" "$TABLE/loadorder")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    ebtables_load_rules_from_file "$TABLE" "$CHAIN"
+		done
+	    fi
+	done < <(egrep "^[^#]" loadorder)
+    else
+	for TABLE in *; do
+	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    ebtables_load_rules_from_file "$TABLE" "$CHAIN"
+		done < <(egrep "^[^#]" "$TABLE/loadorder")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    ebtables_load_rules_from_file "$TABLE" "$CHAIN"
+		done
+	    fi
+	done
+    fi
+}
+
+ebtables_stop()
+{
+    local NAME=${1:?missing 1st arg to $FUNCNAME}
+    local MODULE
+    local TABLE
+    local CHAIN
+
+    print_message "Stopping ebtables for $NAME"
+    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+
+    # FIXME  Double code
+    # Flush rules
+    if [ -f "loadorder" ] && [ -s "loadorder" ]; then
+	while read TABLE; do
+	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    ebtables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    ebtables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done
+	    fi
+	done < <(tac loadorder|egrep "^[^#]")
+    else
+	for TABLE in *; do
+	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    ebtables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    ebtables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done
+	    fi
+	done
+    fi
+
+    # Delete user chains
+    for TABLE in *; do
+	[ ! -d "$TABLE" ] && continue
+	for CHAIN in "$TABLE"/*; do
+	    CHAIN=$(basename "$CHAIN")
+	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
+		{
+		    print_message "Deleting the \"$CHAIN\" chain from the \"$TABLE\" table"
+		    ebtables_delete_chain -t $TABLE $CHAIN
+		}
+	done
+    done
+
+    # Unload modules
+    if [ -f "modules" ] && [ -s "modules" ]; then
+	while read MODULE; do
+	    print_message "Unloading module $MODULE"
+	    $MODPROBE -r "$MODULE" || print_error "Can't unload module $MODULE"
+	done < <(tac modules|egrep "^[^#]")
+    fi
+    # Set ACCEPT policy
+    if [ "$NAME" = "default" ]; then
+	print_message "Set ACCEPT policy for the \"INPUT\" chain"
+	ebtables_chain_policy INPUT ACCEPT
+	ebint_message "Set ACCEPT policy for the \"FORWARD\" chain"
+	ebtables_chain_policy FORWARD ACCEPT
+	print_message "Set ACCEPT policy for the \"OUTPUT\" chain"
+	ebtables_chain_policy OUTPUT ACCEPT
+    fi
 }

@@ -1,5 +1,5 @@
-# Type of firewall. Now supported only iptables
-FW_TYPE=iptables
+# Type of firewall. Now supported only iptables and ebtables. First defined->first started
+FW_TYPE=iptables ebtables
 
 # Enable "human" iptables syntax
 IPTABLES_HUMAN_SYNTAX=yes
@@ -14,3 +14,17 @@ IPTABLES_OUTPUT_POLICY=ACCEPT
 
 # Default type of rule embedding. Can be APPEND or INSERT
 IPTABLES_RULE_EMBEDDING=APPEND
+
+# Enable "human" ebtables syntax. ebtables hasn't human syntex support now
+EBTABLES_HUMAN_SYNTAX=no
+
+# List of built in iptables chains
+EBTABLES_SYSTEM_CHAINS="BROUTING PREROUTING INPUT FORWARD OUTPUT POSTROUTING"
+
+# Default policy for built-in chains. Can be ACCEPT, DROP, CONTINUE, RETURN
+EBTABLES_INPUT_POLICY=ACCEPT
+EBTABLES_FORWARD_POLICY=ACCEPT
+EBTABLES_OUTPUT_POLICY=ACCEPT
+
+# Default type of rule embedding. Can be APPEND or INSERT
+EBTABLES_RULE_EMBEDDING=APPEND

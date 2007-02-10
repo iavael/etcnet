@@ -21,24 +21,25 @@ pickup_defaults
 [ -z "$NETPROFILE" ] && init_netprofile
 
 if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
-	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
+    MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
 else
-	MYIFACEDIR=$IFACEDIR/$NAME
+    MYIFACEDIR=$IFACEDIR/$NAME
 fi
 
 [ -d "$MYIFACEDIR" ] || {
-	print_error "interface configuration directory $MYIFACEDIR not found"
-	exit 1
+    print_error "interface configuration directory $MYIFACEDIR not found"
+    exit 1
 }
 
-[ -z "$CONFIG_FW" ] && {
+[ -z "$CONFIG_FW" ] && \
+    {
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
-}
+    }
 
 if  ! is_yes "$CONFIG_FW";  then
-	print_message "Firewall is disabled"
-	exit 1
+    print_message "Firewall is disabled"
+    exit 1
 fi
 
 SourceIfNotEmpty "$MYIFACEDIR/fw/options"
@@ -47,20 +48,21 @@ SourceIfNotEmpty "$MYIFACEDIR/fw/options"
 #init_netprofile
 #pickup_options
 
-case "$FW_TYPE" in
-	iptables)
-	 	[ -d "$MYIFACEDIR/fw/$FW_TYPE" ] || exit 0
-		export FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX IPTABLES_INPUT_POLICY \
-				IPTABLES_FORWARD_POLICY IPTABLES_OUTPUT_POLICY IPTABLES_RULE_EMBEDDING
-		# Load own interface syntax if exists
-		[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && {
-			[ -f "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && {
-				export IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$FW_TYPE"
-				export IPTABLES_SYNTAX=
-				export IPTABLES_SED_RULES=
+for CFW_TYPE in $FW_TYPE; do
+    case "$CFW_TYPE" in
+        iptables)
+		    [ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] || exit 0
+		    # Load own interface syntax if exists
+		    [ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && \
+			{
+			    [ -f "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && \
+				{
+				    IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$CFW_TYPE"
+				    IPTABLES_SYNTAX=
+				    IPTABLES_SED_RULES=
+				}
 			}
-		}
-		case "$ACTION" in
+		    case "$ACTION" in
 			start)
 				iptables_preload
 				iptables_start "$NAME"
@@ -83,9 +85,33 @@ case "$FW_TYPE" in
 				echo "${0##*/} {start|stop|restart|reload}"
 				exit 1
 				;;
-		esac
-		;;
+		    esac
+		    ;;
+	ebtables)
+		    [ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] || exit 0
+		    case "$ACTION" in
+		        start)
+			        ebtables_start "$NAME"
+			        ;;
+			stop)
+				ebtables_stop "$NAME"
+				;;
+			restart)
+				ebtables_stop "$NAME"
+				ebtables_start "$NAME"
+				;;
+			reload)
+				ebtables_stop "$NAME"
+				ebtables_start "$NAME"
+				;;
+			*)
+				echo "${0##*/} {start|stop|restart|reload}"
+				exit 1
+				;;
+		    esac
+		    ;;
+		
 	*)
-		echo "Firewall type $FW_TYPE isn't supported"
-esac
-
+		    echo "Firewall type $CFW_TYPE isn't supported"
+    esac
+done

@@ -88,7 +88,7 @@ guess_options()
 	{
 			[ "$1" != "default" ] && [ "$1" != "all" ]  && 
 			{
-				# May be it's and interface name
+				# May be it's an interface name
 				[ -d $IFACEDIR/$1@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$1@$NETHOST || MYIFACEDIR=$IFACEDIR/$1
 				[ -d "$MYIFACEDIR" ] &&
 				{

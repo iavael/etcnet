@@ -174,10 +174,20 @@ start()
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
 	is_yes "$CONFIG_FW" && {
 		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
-		export CONFIG_FW FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX IPTABLES_INPUT_POLICY \
-				IPTABLES_FORWARD_POLICY IPTABLES_OUTPUT_POLICY IPTABLES_RULE_EMBEDDING
-		iptables_preload
-	 	$SCRIPTDIR/config-fw default start
+		export CONFIG_FW
+		for CFW_TYPE in $FW_TYPE; do
+		    case CFW_TYPE in
+			iptables)
+			    iptables_preload
+			    ;;
+			ebtables)
+			    ;;
+			*)
+			    print_error "Unknown firewall type $CFW_TYPE"
+			    ;;
+		    esac
+		    $SCRIPTDIR/config-fw default start
+		done
 	}
 	$SYSCTL -q -p `profiled_filename /etc/net/sysctl.conf`
 	declare -a START_GROUP
@@ -222,8 +232,19 @@ stop()
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
 	is_yes "$CONFIG_FW" && {
 		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
-		export CONFIG_FW FW_TYPE IPTABLES_SYSTEM_CHAINS IPTABLES_HUMAN_SYNTAX IPTABLES_RULE_EMBEDDING
-		iptables_preload
+		export CONFIG_FW
+		for CFW_TYPE in $FW_TYPE; do
+		    case CFW_TYPE in
+			iptables)
+			    iptables_preload
+			    ;;
+			ebtables)
+			    ;;
+			*)
+			    print_error "Unknown firewall type $CFW_TYPE"
+			    ;;
+		    esac
+		done
 	}
 	declare -a STOP_GROUP
 	local IFACECOUNT=0
