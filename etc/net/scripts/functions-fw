@@ -15,7 +15,7 @@ iptables_get_ipv6()
 
 iptables_chain_policy()
 {
-    eval "$IPTABLES -P $@" || print_error "$IPTABLES -P $@"
+    eval "$IPTABLES -t filter -P $@" || print_error "$IPTABLES -P $@"
 }
 
 iptables_create_chain()
@@ -109,10 +109,10 @@ iptables_load_syntax()
     : ${1:?missing 1st arg to $FUNCNAME}
     [ ! -f "$1" ] || [ ! -s "$1" ] && \
 	{
-	    IPTABLES_SYNTAX=
+	    export IPTABLES_SYNTAX=
 	    return 1
 	}
-    IPTABLES_SYNTAX=$(< "$1")
+    export IPTABLES_SYNTAX=$(< "$1")
 }
 
 iptables_create_sed_rules()
@@ -121,15 +121,18 @@ iptables_create_sed_rules()
     local SEARCH
     local REPLACE
     local OLDIFS
+    local COUNTER=0
     IPTABLES_SED_RULES=
-    print_message "Loading iptables data"
+    print_message -n -e "\nLoading iptables data"
     OLDIFS="$IFS"
     IFS=":"
     while read SEARCH REPLACE; do
-        print_progress
+        [ $COUNTER -eq 20 ] && print_progress && COUNTER=0
         IPTABLES_SED_RULES="${IPTABLES_SED_RULES}s/\(^\|[^-]\b\)$SEARCH\(\b[^-]\|$\)/\1$REPLACE\2/g;"
+        COUNTER=$(( COUNTER+1 ))
     done < <(echo "$REPLACES"|egrep "^[^#]"|sed -e 's,/,\\\\/,g')
     IFS="$OLDIFS"
+    export IPTABLES_SED_RULES
     print_message
 }
 
@@ -164,7 +167,7 @@ iptables_load_rules_from_file()
     local RULES
 
     if [ -f "$TABLE/$CHAIN" ] && [ -s "$TABLE/$CHAIN" ]; then
-	print_message "Loading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	print_message -n -e "\tLoading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
 	RULES=$(< "$TABLE/$CHAIN")
 	while read RULE; do
 	    RULE=$(iptables_expand_string "$RULE")
@@ -191,9 +194,9 @@ iptables_load_rules_from_file()
 		    esac
 		}
 	    print_progress
-	    done < <(echo "$RULES"|egrep "^[^#]")
-	    print_message
-	fi
+	done < <(echo "$RULES"|egrep "^[^#]")
+	print_message
+    fi
 }
 
 # iptables_flush_rules_from_file <table> <chain> [flush]
@@ -207,7 +210,7 @@ iptables_flush_rules_from_file()
     if [ -f "$TABLE/$CHAIN" ]; then
 	if [ "$NAME" != "default" ] && [ "$3" != "flush" ]; then
 	    [ ! -s "$TABLE/$CHAIN" ] && return
-	    print_message "Unloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    print_message -n -e "\tUnloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
 	    RULES=$(tac "$TABLE/$CHAIN")
 	    while read RULE; do
 		RULE=$(iptables_expand_string "$RULE")
@@ -234,11 +237,11 @@ iptables_flush_rules_from_file()
 			esac
 		    }				
 		print_progress
-		done < <(echo "$RULES"|egrep "^[^#]")
-		print_message
+	    done < <(echo "$RULES"|egrep "^[^#]")
+	    print_message
 	else
 	    # Flush rules only when stop networking
-	    print_message "Flushing the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    print_message -e "\tFlushing the \"$CHAIN\" chain in the \"$TABLE\" table"
 	    iptables_flush_chain $CHAIN -t $TABLE
 	fi
     fi
@@ -257,17 +260,17 @@ iptables_start()
     if [ "$NAME" = "default" ]; then
 	[ -z "$IPTABLES_INPUT_POLICY" ] || \
 	    {
-		print_message "Set $IPTABLES_INPUT_POLICY policy for the \"INPUT\" chain"
+		print_message -e "\tSetting $IPTABLES_INPUT_POLICY policy for the \"INPUT\" chain"
 		iptables_chain_policy INPUT "$IPTABLES_INPUT_POLICY"
 	    }
 	[ -z "$IPTABLES_FORWARD_POLICY" ] || \
 	    {
-		print_message "Set $IPTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain"
+		print_message -e "\tSetting $IPTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain"
 		iptables_chain_policy FORWARD "$IPTABLES_FORWARD_POLICY"
 	    }
 	[ -z "$IPTABLES_OUTPUT_POLICY" ] || \
 	    {
-		print_message "Set $IPTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain"
+		print_message -e "\tSetting $IPTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain"
 		iptables_chain_policy OUTPUT "$IPTABLES_OUTPUT_POLICY"
 	    }
     fi
@@ -275,7 +278,7 @@ iptables_start()
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE; do
-	    print_message "Loading module $MODULE"
+	    print_message -e "\tLoading module $MODULE"
 	    $MODPROBE "$MODULE" || print_error "Can't load module $MODULE"
 	done < <(egrep "^[^#]" modules)
     fi
@@ -287,7 +290,7 @@ iptables_start()
 	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || \
 		{
-		    print_message "Creating the \"$CHAIN\" chain in the \"$TABLE\" table"
+		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
 		    iptables_create_chain $CHAIN -t $TABLE
 		}
 	done
@@ -330,6 +333,7 @@ iptables_start()
 	    fi
 	done
     fi
+    [ "$NAME" = "default" ] || print_message -n -e "\t"
 }
 
 iptables_stop()
@@ -387,7 +391,7 @@ iptables_stop()
 		[ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
 		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || \
 		    {
-			print_message "Deleting the \"$CHAIN\" chain from the \"$TABLE\" table"
+			print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
 			iptables_delete_chain $CHAIN -t $TABLE
 		    }
 	    done
@@ -396,25 +400,27 @@ iptables_stop()
     # Unload modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE; do
-	    print_message "Unloading module $MODULE"
+	    print_message -e "\tUnloading module $MODULE"
 	    $MODPROBE -r "$MODULE" || print_error "Can't unload module $MODULE"
 	done < <(tac modules|egrep "^[^#]")
     fi
     # Set ACCEPT policy
     if [ "$NAME" = "default" ]; then
-	print_message "Set ACCEPT policy for the \"INPUT\" chain"
+	print_message -e "\tSetting ACCEPT policy for the \"INPUT\" chain"
 	iptables_chain_policy INPUT ACCEPT
-	print_message "Set ACCEPT policy for the \"FORWARD\" chain"
+	print_message -e "\tSetting ACCEPT policy for the \"FORWARD\" chain"
 	iptables_chain_policy FORWARD ACCEPT
-	print_message "Set ACCEPT policy for the \"OUTPUT\" chain"
+	print_message -e "\tSetting ACCEPT policy for the \"OUTPUT\" chain"
 	iptables_chain_policy OUTPUT ACCEPT
+    else
+	print_message -n -e "\t"
     fi
 }
 
 ## ebtables
 ebtables_chain_policy()
 {
-    eval "$EBTABLES -t $TABLE -P $@" || print_error "$EBTABLES -t $TABLE -P $@"
+    eval "$EBTABLES -t filter -P $@" || print_error "$EBTABLES -t $TABLE -P $@"
 }
 
 ebtables_create_chain()
@@ -520,7 +526,7 @@ ebtables_load_rules_from_file()
 	local RULES
 
 	if [ -f "$TABLE/$CHAIN" ] && [ -s "$TABLE/$CHAIN" ]; then
-	    print_message "Loading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    print_message -e "\tLoading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
 	    RULES=$(< "$TABLE/$CHAIN")
 	    while read RULE; do
 		RULE=$(ebtables_expand_string "$RULE")
@@ -563,7 +569,7 @@ ebtables_flush_rules_from_file()
     if [ -f "$TABLE/$CHAIN" ]; then
 	if [ "$NAME" != "default" ] && [ "$3" != "flush" ]; then
 	    [ ! -s "$TABLE/$CHAIN" ] && return
-	    print_message "Unloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    print_message -e "\tUnloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
 	    RULES=$(tac "$TABLE/$CHAIN")
 	    while read RULE; do
 		RULE=$(ebtables_expand_string "$RULE")
@@ -594,7 +600,7 @@ ebtables_flush_rules_from_file()
 	    print_message
 	else
 	    # Flush rules only when stop networking
-	    print_message "Flushing the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    print_message -e "\tFlushing the \"$CHAIN\" chain in the \"$TABLE\" table"
 	    ebtables_flush_chain $CHAIN 
 	fi
     fi
@@ -613,17 +619,17 @@ ebtables_start()
     if [ "$NAME" = "default" ]; then
 	[ -z "$EBTABLES_INPUT_POLICY" ] || \
 	    {
-		print_message "Set $EBTABLES_INPUT_POLICY policy for the \"INPUT\" chain"
+		print_message -e "\tSetting $EBTABLES_INPUT_POLICY policy for the \"INPUT\" chain"
 		ebtables_chain_policy INPUT "$EBTABLES_INPUT_POLICY"
 	    }
 	[ -z "$EBTABLES_FORWARD_POLICY" ] || \
 	    {
-		print_message "Set $EBTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain"
+		print_message -e "\tSetting $EBTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain"
 		ebtables_chain_policy FORWARD "$EBTABLES_FORWARD_POLICY"
 	    }
 	[ -z "$EBTABLES_OUTPUT_POLICY" ] || \
 	    {
-		print_message "Set $EBTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain"
+		print_message -e "\tSetting $EBTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain"
 		ebtables_chain_policy OUTPUT "$EBTABLES_OUTPUT_POLICY"
 	    }
     fi
@@ -631,7 +637,7 @@ ebtables_start()
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE; do
-	    print_message "Loading module $MODULE"
+	    print_message -e "\tLoading module $MODULE"
 	    $MODPROBE "$MODULE" || print_error "Can't load module $MODULE"
 	done < <(egrep "^[^#]" modules)
     fi
@@ -643,7 +649,7 @@ ebtables_start()
 	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
 		{
-		    print_message "Creating the \"$CHAIN\" chain in the \"$TABLE\" table"
+		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
 		    ebtables_create_chain $CHAIN 
 		}
 	done
@@ -680,6 +686,7 @@ ebtables_start()
 	    fi
 	done
     fi
+    [ "$NAME" = "default" ] || print_message -n -e "\t"
 }
 
 ebtables_stop()
@@ -732,7 +739,7 @@ ebtables_stop()
 	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
 		{
-		    print_message "Deleting the \"$CHAIN\" chain from the \"$TABLE\" table"
+		    print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
 		    ebtables_delete_chain $CHAIN
 		}
 	done
@@ -741,17 +748,19 @@ ebtables_stop()
     # Unload modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE; do
-	    print_message "Unloading module $MODULE"
+	    print_message -e "\tUnloading module $MODULE"
 	    $MODPROBE -r "$MODULE" || print_error "Can't unload module $MODULE"
 	done < <(tac modules|egrep "^[^#]")
     fi
     # Set ACCEPT policy
     if [ "$NAME" = "default" ]; then
-	print_message "Set ACCEPT policy for the \"INPUT\" chain"
+	print_message -e "\tSetting ACCEPT policy for the \"INPUT\" chain"
 	ebtables_chain_policy INPUT ACCEPT
-	print_message "Set ACCEPT policy for the \"FORWARD\" chain"
+	print_message -e "\tSetting ACCEPT policy for the \"FORWARD\" chain"
 	ebtables_chain_policy FORWARD ACCEPT
-	print_message "Set ACCEPT policy for the \"OUTPUT\" chain"
+	print_message -e "\tSetting ACCEPT policy for the \"OUTPUT\" chain"
 	ebtables_chain_policy OUTPUT ACCEPT
+    else
+	print_message -n -e "\t"
     fi
 }

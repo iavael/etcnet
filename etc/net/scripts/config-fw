@@ -50,7 +50,7 @@ SourceIfNotEmpty "$MYIFACEDIR/fw/options"
 
 for CFW_TYPE in $FW_TYPE; do
     case "$CFW_TYPE" in
-        iptables)
+        "iptables")
 		    [ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] || exit 0
 		    # Load own interface syntax if exists
 		    [ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && \
@@ -87,7 +87,7 @@ for CFW_TYPE in $FW_TYPE; do
 				;;
 		    esac
 		    ;;
-	ebtables)
+	"ebtables")
 		    [ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] || exit 0
 		    case "$ACTION" in
 		        start)

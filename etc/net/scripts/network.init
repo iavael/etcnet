@@ -172,23 +172,24 @@ start()
 {
 	ExecIfExecutable $LOCALSCRIPTDIR/netup-pre $*
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
-	is_yes "$CONFIG_FW" && {
+	is_yes "$CONFIG_FW" && \
+	    {
 		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
 		export CONFIG_FW
 		for CFW_TYPE in $FW_TYPE; do
-		    case CFW_TYPE in
-			iptables)
-			    iptables_preload
-			    ;;
-			ebtables)
-			    ;;
+		    case "$CFW_TYPE" in
+			"iptables")
+				    iptables_preload
+				    ;;
+			"ebtables")
+				    ;;
 			*)
-			    print_error "Unknown firewall type $CFW_TYPE"
-			    ;;
+				    print_error "Unknown firewall type $CFW_TYPE"
+				    ;;
 		    esac
-		    $SCRIPTDIR/config-fw default start
 		done
-	}
+		$SCRIPTDIR/config-fw default start
+	    }
 	$SYSCTL -q -p `profiled_filename /etc/net/sysctl.conf`
 	declare -a START_GROUP
 	# 1. fill in the groups
@@ -230,22 +231,23 @@ stop()
 {
 	ExecIfExecutable $LOCALSCRIPTDIR/netdown-pre $*
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
-	is_yes "$CONFIG_FW" && {
+	is_yes "$CONFIG_FW" && \
+	    {
 		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
 		export CONFIG_FW
 		for CFW_TYPE in $FW_TYPE; do
-		    case CFW_TYPE in
-			iptables)
-			    iptables_preload
-			    ;;
-			ebtables)
-			    ;;
+		    case "$CFW_TYPE" in
+			"iptables")
+				    iptables_preload
+				    ;;
+			"ebtables")
+				    ;;
 			*)
-			    print_error "Unknown firewall type $CFW_TYPE"
-			    ;;
+				    print_error "Unknown firewall type $CFW_TYPE"
+				    ;;
 		    esac
 		done
-	}
+	    }
 	declare -a STOP_GROUP
 	local IFACECOUNT=0
 	print_message -n "Computing interface groups: "
