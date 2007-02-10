@@ -16,6 +16,9 @@ install:
 	@install -d $(etcnetdir)/ifaces/default/fw/iptables/filter
 	@install -d $(etcnetdir)/ifaces/default/fw/iptables/mangle
 	@install -d $(etcnetdir)/ifaces/default/fw/iptables/nat
+	@install -d $(etcnetdir)/ifaces/default/fw/ebtables/filter
+	@install -d $(etcnetdir)/ifaces/default/fw/ebtables/broute
+	@install -d $(etcnetdir)/ifaces/default/fw/ebtables/nat
 	@install -d $(etcnetdir)/ifaces/lo
 	@install -d $(etcnetdir)/ifaces/unknown
 	@install -d $(etcnetdir)/options.d
@@ -23,9 +26,13 @@ install:
 	@install -m 644 etc/net/ifaces/default/{options,sysctl.conf}* $(etcnetdir)/ifaces/default
 	@install -m 644 etc/net/ifaces/default/fw/options $(etcnetdir)/ifaces/default/fw
 	@install -m 644 etc/net/ifaces/default/fw/iptables/{loadorder,modules,syntax} $(etcnetdir)/ifaces/default/fw/iptables
+	@install -m 644 etc/net/ifaces/default/fw/ebtables/{loadorder,modules,syntax} $(etcnetdir)/ifaces/default/fw/ebtables
 	@install -m 644 etc/net/ifaces/default/fw/iptables/filter/* $(etcnetdir)/ifaces/default/fw/iptables/filter
 	@install -m 644 etc/net/ifaces/default/fw/iptables/mangle/* $(etcnetdir)/ifaces/default/fw/iptables/mangle
 	@install -m 644 etc/net/ifaces/default/fw/iptables/nat/* $(etcnetdir)/ifaces/default/fw/iptables/nat
+	@install -m 644 etc/net/ifaces/default/fw/ebtables/filter/* $(etcnetdir)/ifaces/default/fw/ebtables/filter
+	@install -m 644 etc/net/ifaces/default/fw/ebtables/broute/* $(etcnetdir)/ifaces/default/fw/ebtables/broute
+	@install -m 644 etc/net/ifaces/default/fw/ebtables/nat/* $(etcnetdir)/ifaces/default/fw/ebtables/nat
 	@# Finally done with default iface.
 	@install -m 644 etc/net/ifaces/unknown/{options,README} $(etcnetdir)/ifaces/unknown
 	@install -m 644 etc/net/ifaces/lo/{options,ipv4address} $(etcnetdir)/ifaces/lo
