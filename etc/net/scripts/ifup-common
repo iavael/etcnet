@@ -201,6 +201,9 @@ is_yes "$CONFIG_WIRELESS" && $SCRIPTDIR/config-wireless $NAME && print_progress
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
 
 # Order matters here.
+is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
+is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
+
 is_yes "$CONFIG_FW"  && $SCRIPTDIR/config-fw $NAME start
 is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos $NAME start
 

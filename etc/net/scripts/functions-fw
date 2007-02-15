@@ -295,13 +295,7 @@ iptables_start()
 		}
 	done
     done
-    # FIXME Where is the place of this?
-    [ ! -z "$TYPE" ] && \
-	{
-	    IPV4ADDRESS=( $(iptables_get_ipv4) )
-	    IPV6ADDRESS=( $(iptables_get_ipv6) )
-	}
-	
+
     # FIXME  Double code
     # Load rules after creating _all_ chains
     if [ -f "loadorder" ] && [ -s "loadorder" ]; then
@@ -345,12 +339,7 @@ iptables_stop()
     
     [ "$NAME" = "default" ] && print_message "Stopping iptables for $NAME" || print_message -e  "\nStopping iptables for $NAME"
     cd "$MYIFACEDIR/fw/$CFW_TYPE"
-    # FIXME Where is the place of this?
-    [ ! -z "$TYPE" ] && \
-	{
-	    IPV4ADDRESS=( $(iptables_get_ipv4) )
-	    IPV6ADDRESS=( $(iptables_get_ipv6) )
-	}
+
     # FIXME  Double code
     # Flush rules
     if [ -f "loadorder" ] && [ -s "loadorder" ]; then

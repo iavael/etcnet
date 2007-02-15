@@ -116,6 +116,8 @@ case "$USE_IFPLUGD" in
 esac
 
 if iface_is_up $NAME; then
+	is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
+	is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
 	ExecIfExecutable $SCRIPTDIR/shutdown-$TYPE $NAME && print_progress
 	ExecIfExecutable $LOCALSCRIPTDIR/ifdown-pre-local $NAME && print_progress
 	ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
