@@ -53,6 +53,7 @@ netmap: -j NETMAP --to
 netmap-to: -j NETMAP --to
 notrack: -j NOTRACK
 redirect: -j REDIRECT
+redirect-to: -j REDIRECT --to-ports
 redirect-to-ports: -j REDIRECT --to-ports
 reject: -j REJECT
 reject-with: -j REJECT --reject-with
