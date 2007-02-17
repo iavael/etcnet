@@ -398,41 +398,64 @@ iptables_stop()
 ## ebtables
 ebtables_chain_policy()
 {
-    eval "$EBTABLES -t filter -P $@" || print_error "$EBTABLES -t $TABLE -P $@"
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    : ${@:?missing args to $FUNCNAME}
+    eval "$EBTABLES -t $TABLE -P $@" || print_error "$EBTABLES -t $TABLE -P $@"
 }
 
 ebtables_create_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    : ${@:?missing args to $FUNCNAME}
     eval "$EBTABLES -t $TABLE -N $@" || print_error "$EBTABLES -t $TABLE -N $@"
 }
 
 ebtables_delete_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    : ${@:?missing args to $FUNCNAME}
     eval "$EBTABLES -t $TABLE -X $@" || print_error "$EBTABLES -t $TABLE -X $@"
 }
 
 ebtables_flush_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    : ${@:?missing args to $FUNCNAME}
     eval "$EBTABLES -t $TABLE -F $@" || print_error "$EBTABLES -t $TABLE -F $@"
 }
 
 ebtables_zero_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    : ${@:?missing args to $FUNCNAME}
     eval "$EBTABLES -t $TABLE -Z $@" || print_error "$EBTABLES -t $TABLE -Z $@"
 }
 
 ebtables_rename_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    : ${@:?missing args to $FUNCNAME}
     eval "$EBTABLES -t $TABLE -E $@" || print_error "$EBTABLES -t $TABLE -E $@"
 }
 
 ebtables_list_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    : ${@:?missing args to $FUNCNAME}
     eval "$EBTABLES -t $TABLE -L $@" || print_error "$EBTABLES -t $TABLE -L $@"
 }
 
 ebtables_push_rule()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
     : ${@:?missing args to $FUNCNAME}
     case $1 in
 	"-A"|"-I"|"-D")
@@ -456,6 +479,8 @@ ebtables_push_rule()
 
 ebtables_pop_rule()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
     : ${@:?missing args to $FUNCNAME}
     case $1 in
 	"-A")
@@ -476,7 +501,7 @@ ebtables_pop_rule()
 		;;	
 	"-D")
 		shift
-		ebtables_push_rule $@
+		ebtables_push_rule $TABLE $@
 		;;
 	"-P")
 		continue
@@ -513,20 +538,20 @@ ebtables_load_rules_from_file()
 			read FIRST SECOND REST < <(echo $RULE)
     			case $FIRST in
 			    "-A"|"-D")
-					ebtables_push_rule $FIRST $CHAIN $SECOND $REST
+					ebtables_push_rule $TABLE $FIRST $CHAIN $SECOND $REST
 					;;
 			    "-I")
 					case $SECOND in
 					    [0-9]*)
-						    ebtables_push_rule $FIRST $CHAIN $SECOND $REST
+						    ebtables_push_rule $TABLE $FIRST $CHAIN $SECOND $REST
 						    ;;
 					     *)
-						    ebtables_push_rule $FIRST $CHAIN $SECOND $REST
+						    ebtables_push_rule $TABLE $FIRST $CHAIN $SECOND $REST
 						    ;;
 					esac
 					;;
 			    *)
-					ebtables_push_rule $CHAIN $FIRST $SECOND $REST
+					ebtables_push_rule $TABLE $CHAIN $FIRST $SECOND $REST
 					;;
 			esac
 		    }
@@ -556,20 +581,20 @@ ebtables_flush_rules_from_file()
 			read  FIRST SECOND REST < <(echo $RULE)
 			case $FIRST in
 			    "-A"|"-D")
-					ebtables_pop_rule $FIRST $CHAIN $SECOND $REST
+					ebtables_pop_rule $TABLE $FIRST $CHAIN $SECOND $REST
 					;;
 			    "-I")
 					case $SECOND in
 					    [0-9]*)
-						    ebtables_pop_rule $FIRST $CHAIN $SECOND $REST
+						    ebtables_pop_rule $TABLE $FIRST $CHAIN $SECOND $REST
 						    ;;
 					    *)
-						    ebtables_pop_rule $FIRST $CHAIN $SECOND $REST
+						    ebtables_pop_rule $TABLE $FIRST $CHAIN $SECOND $REST
 						    ;;
 					esac
 								;;
 			    *)
-        				ebtables_pop_rule $CHAIN $FIRST $SECOND $REST
+        				ebtables_pop_rule $TABLE $CHAIN $FIRST $SECOND $REST
 					;;
 			esac
 		    }				
@@ -579,7 +604,7 @@ ebtables_flush_rules_from_file()
 	else
 	    # Flush rules only when stop networking
 	    print_message -e "\tFlushing the \"$CHAIN\" chain in the \"$TABLE\" table"
-	    ebtables_flush_chain $CHAIN 
+	    ebtables_flush_chain $TABLE $CHAIN 
 	fi
     fi
 }
@@ -593,23 +618,25 @@ ebtables_start()
     local CHAIN
 
     [ "$NAME" = "default" ] &&  print_message "Starting ebtables for $NAME" ||  print_message -e "\nStarting ebtables for $NAME"
-    # Set defaut policy
+    # Set defaut policy (filter table)
     if [ "$NAME" = "default" ]; then
+	TABLE=filter
 	[ -z "$EBTABLES_INPUT_POLICY" ] || \
 	    {
-		print_message -e "\tSetting $EBTABLES_INPUT_POLICY policy for the \"INPUT\" chain"
-		ebtables_chain_policy INPUT "$EBTABLES_INPUT_POLICY"
+		print_message -e "\tSetting $EBTABLES_INPUT_POLICY policy for the \"INPUT\" chain in the \"$TABLE\" table"
+		ebtables_chain_policy $TABLE INPUT "$EBTABLES_INPUT_POLICY"
 	    }
 	[ -z "$EBTABLES_FORWARD_POLICY" ] || \
 	    {
-		print_message -e "\tSetting $EBTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain"
-		ebtables_chain_policy FORWARD "$EBTABLES_FORWARD_POLICY"
+		print_message -e "\tSetting $EBTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain in the \"$TABLE\" table"
+		ebtables_chain_policy $TABLE FORWARD "$EBTABLES_FORWARD_POLICY"
 	    }
 	[ -z "$EBTABLES_OUTPUT_POLICY" ] || \
 	    {
-		print_message -e "\tSetting $EBTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain"
-		ebtables_chain_policy OUTPUT "$EBTABLES_OUTPUT_POLICY"
+		print_message -e "\tSetting $EBTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain in the \"$TABLE\" table"
+		ebtables_chain_policy $TABLE OUTPUT "$EBTABLES_OUTPUT_POLICY"
 	    }
+	TABLE=
     fi
     cd "$MYIFACEDIR/fw/$CFW_TYPE"
     # Load modules
@@ -628,7 +655,7 @@ ebtables_start()
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
 		{
 		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
-		    ebtables_create_chain $CHAIN 
+		    ebtables_create_chain $TABLE $CHAIN 
 		}
 	done
     done
@@ -718,7 +745,7 @@ ebtables_stop()
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
 		{
 		    print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
-		    ebtables_delete_chain $CHAIN
+		    ebtables_delete_chain $TABLE $CHAIN
 		}
 	done
     done
@@ -732,12 +759,14 @@ ebtables_stop()
     fi
     # Set ACCEPT policy
     if [ "$NAME" = "default" ]; then
-	print_message -e "\tSetting ACCEPT policy for the \"INPUT\" chain"
-	ebtables_chain_policy INPUT ACCEPT
-	print_message -e "\tSetting ACCEPT policy for the \"FORWARD\" chain"
-	ebtables_chain_policy FORWARD ACCEPT
-	print_message -e "\tSetting ACCEPT policy for the \"OUTPUT\" chain"
-	ebtables_chain_policy OUTPUT ACCEPT
+	TABLE=filter
+	print_message -e "\tSetting ACCEPT policy for the \"INPUT\" chain in the \"$TABLE\" table"
+	ebtables_chain_policy $TABLE INPUT ACCEPT
+	print_message -e "\tSetting ACCEPT policy for the \"FORWARD\" chain in the \"$TABLE\" table"
+	ebtables_chain_policy $TABLE FORWARD ACCEPT
+	print_message -e "\tSetting ACCEPT policy for the \"OUTPUT\" chain in the \"$TABLE\" table"
+	ebtables_chain_policy $TABLE OUTPUT ACCEPT
+	TABLE=
     else
 	print_message -n -e "\t"
     fi

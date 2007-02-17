@@ -229,7 +229,7 @@ iptables_local_rule()
 
 iptables_local_create_chain()
 {
-    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
 	iptables_create_chain $CHAIN -t $CTABLE
     done
@@ -237,7 +237,7 @@ iptables_local_create_chain()
 
 iptables_local_delete_chain()
 {
-    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
 	# We can delete only user-defined chains so just don't pass chain name
 	# in case of 'all' chain
@@ -253,7 +253,7 @@ iptables_local_list_chain()
 	    iptables_preload
 	    LIST_ARGS=$(iptables_expand_string $@)
 	}
-    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
 	printf "\nTable $CTABLE\n\n"
 	[ "$CHAIN" = "all" ] && iptables_list_chain -t $CTABLE $LIST_ARGS || iptables_list_chain $CHAIN -t $CTABLE $LIST_ARGS
@@ -262,7 +262,7 @@ iptables_local_list_chain()
 
 iptables_local_zero_chain()
 {
-    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
 	[ "$CHAIN" = "all" ] && iptables_zero_chain -t $CTABLE || iptables_zero_chain $CHAIN -t $CTABLE
     done
@@ -270,7 +270,7 @@ iptables_local_zero_chain()
 
 iptables_local_rename_chain()
 {
-    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
 	iptables_rename_chain $CHAIN $@ -t $CTABLE
     done
@@ -310,23 +310,23 @@ ebtables_local_rule()
 	    read FIRST SECOND REST < <(echo $RULE)
 	    case $FIRST in
 		"-A"|"-D")
-			    ebtables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
+			    ebtables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
 			    ;;
 		"-P")
-			    ebtables_chain_policy $(echo $CCHAIN $SECOND $REST -t $CTABLE|sed -e 's/-j//g')
+			    ebtables_chain_policy $CTABLE $(echo $CCHAIN $SECOND $REST|sed -e 's/-j//g')
 			    ;;
 		"-I")
 			    case $SECOND in
 			        [0-9]*)
-					ebtables_push_rule $FIRST $CCHAIN $SECOND -t $CTABLE $REST
+					ebtables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
 					;;
 				*)
-					ebtables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
+					ebtables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
 					;;
 			    esac
 			    ;;					    
 		*)
-			    ebtables_push_rule $CCHAIN -t $CTABLE $FIRST $SECOND $REST
+			    ebtables_push_rule $CTABLE $CCHAIN $FIRST $SECOND $REST
 			    ;;
 	    esac
 	done
@@ -335,45 +335,49 @@ ebtables_local_rule()
 
 ebtables_local_create_chain()
 {
-    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
-	ebtables_create_chain $CHAIN -t $CTABLE
+	ebtables_create_chain $CTABLE $CHAIN
     done
 }
 
 ebtables_local_delete_chain()
 {
-    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
 	# We can delete only user-defined chains so just don't pass chain name
 	# in case of 'all' chain
-	[ "$CHAIN" = "all" ] && ebtables_delete_chain -t $CTABLE || ebtables_delete_chain $CHAIN -t $CTABLE
+	[ "$CHAIN" = "all" ] && ebtables_delete_chain $CTABLE || ebtables_delete_chain $CTABLE $CHAIN
     done
 }
 
 ebtables_local_list_chain()
 {
     local LIST_ARGS
-    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    [ $# -eq 0 ] || 
+	{
+	    LIST_ARGS=$(ebtables_expand_string $@)
+	}
+    [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
 	printf "\nTable $CTABLE\n\n"
-	[ "$CHAIN" = "all" ] && ebtables_list_chain -t $CTABLE $LIST_ARGS || ebtables_list_chain $CHAIN -t $CTABLE $LIST_ARGS
+	[ "$CHAIN" = "all" ] && ebtables_list_chain $CTABLE $LIST_ARGS || ebtables_list_chain $CTABLE $CHAIN $LIST_ARGS
     done
 }
 
 ebtables_local_zero_chain()
 {
-    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
-	[ "$CHAIN" = "all" ] && ebtables_zero_chain -t $CTABLE || ebtables_zero_chain $CHAIN -t $CTABLE
+	[ "$CHAIN" = "all" ] && ebtables_zero_chain $CTABLE || ebtables_zero_chain $CTABLE $CHAIN
     done
 }
 
 ebtables_local_rename_chain()
 {
-    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
-	ebtables_rename_chain $CHAIN $@ -t $CTABLE
+	ebtables_rename_chain $CTABLE $CHAIN $@
     done
 }
 
@@ -459,6 +463,8 @@ for IFACE in "$IFACEDIR"/$NAME; do
 	    print_error "Firewall type isn't defined"
 	    continue
 	}
+    is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
+    is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
     for CFW_TYPE in $FW_TYPE; do
 	case "$CFW_TYPE" in
 	    "iptables")
@@ -486,8 +492,6 @@ for IFACE in "$IFACEDIR"/$NAME; do
 				    }
 			    }
 
-			is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
-			is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
 			case "$ACTION" in
 			    start)
 					iptables_preload
@@ -628,9 +632,6 @@ for IFACE in "$IFACEDIR"/$NAME; do
 				 continue
 			    }
 			[ "$NAME" != "default" ] && pickup_options
-			# Load own interface syntax if exists
-			is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
-			is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
 			case "$ACTION" in
 			    start)
 					ebtables_start "$NAME"

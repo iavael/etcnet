@@ -48,6 +48,11 @@ SourceIfNotEmpty "$MYIFACEDIR/fw/options"
 #init_netprofile
 #pickup_options
 
+[ -z "$FW_TYPE" ] &&
+    {
+	print_error "Firewall type isn't defined"
+	exit 1
+    }
 for CFW_TYPE in $FW_TYPE; do
     case "$CFW_TYPE" in
         "iptables")
