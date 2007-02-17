@@ -249,9 +249,7 @@ iptables_local_list_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
-    echo "ARGS before is $@"
     [ -z "$CHAIN" ] && shift || shift 2
-    echo "ARGS after is $@"
     local LIST_ARGS
     [ $# -eq 0 ] || 
 	{
