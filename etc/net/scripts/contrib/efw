@@ -11,16 +11,26 @@ NAME=default
 TABLE=filter
 CHAIN=
 MYIFACEDIR=
-TABLES="mangle filter nat"
+PROCESS_IPTABLES=yes
+PROCESS_EBTABLES=yes
+TABLES=
+IPTABLES_TABLES="mangle filter nat"
+EBTABLES_TABLES="broute filter nat"
 ACTIONS="start stop restart load unload reload flush show list count counters rule new create remove delete zero policy rename"
 
 usage()
 {
 	echo '/etc/net FireWall handler'
-	echo "Usage: $0 [iface] [table] [chain] <action> [iptables rule or action options]" >&2
+	echo "Usage: $0 [--ipt[ables]|--ebt[ables]|--no-ipt[ables]|--no-ebt[ables]] [iface] [table] [chain] <action> [iptables rule or action options]" >&2
+	echo ""
+	echo " --iptables    - process only with iptables firewall"
+	echo " --ebtables    - process only with ebtables firewall"
+	echo " --no-iptables - process with all types but without iptables"
+	echo " --no-ebtables - process with all types but without ebtables"
+	echo " By default all enabled types will be processed"
 	echo ""
 	echo " iface    - 'default' (by default), real interface name or 'all' for all interfaces"
-	echo " table    - 'mangle', 'filter' (by default), 'nat' or 'all' for all tables"
+	echo " table    - 'mangle' (iptables only), 'broute' (ebtables only), 'filter' (by default), 'nat' or 'all' for all tables"
 	echo " chain    -  system or user defined chain name (case sensitive!) or 'all' for all chains"
 	echo " action   - 'start','stop','restart','load','unload','reload','flush','show|list','count|counters','rule','new|create','remove|delete','zero','policy','rename'"
 	echo ""
@@ -35,7 +45,7 @@ usage()
 	echo " list     - same as 'show'"
 	echo " count    - show counters for given table and chains"
 	echo " counters - same as 'count'"
-	echo " rule     - parse rule and pass it to iptables"
+	echo " rule     - parse rule and pass it to iptables and/or ebtables"
 	echo " new      - create new chain"
 	echo " create   - same as 'new'"
 	echo " remove   - remove chain"
@@ -52,8 +62,6 @@ usage()
 	echo ""
 	exit 1
 }
-
-
 
 guess_options()
 {
@@ -169,7 +177,7 @@ iptables_local_rules_from_file()
 	for CTABLE in $TABLE; do
 		[ -d "$CTABLE" ] || continue
 		for CCHAIN in "$CTABLE"/$CHAIN; do
-			CCHAIN=`basename $CCHAIN`
+			CCHAIN=$(basename $CCHAIN)
 			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ]  && continue
 			[ "$1" = "unload" ] && iptables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" \
 			|| {
@@ -184,12 +192,12 @@ iptables_local_rule()
 	local RULE
 	[ "$TABLE" = "all" ] && TABLE="*"
 	[ "$CHAIN" = "all" ] && CHAIN="*"
-	RULE=`iptables_expand_string $@`
+	RULE=$(iptables_expand_string $@)
 	[ -z "$RULE" ] && return
 	for CTABLE in $TABLE; do
 		[ -d "$CTABLE" ] || continue
 		for CCHAIN in "$CTABLE"/$CHAIN; do
-			CCHAIN=`basename $CCHAIN`
+			CCHAIN=$(basename $CCHAIN)
 			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] && continue
 			read FIRST SECOND REST < <(echo $RULE)
 		    	case $FIRST in
@@ -197,7 +205,7 @@ iptables_local_rule()
 		        		iptables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
 						;;
 					"-P")
-		 	      		iptables_chain_policy `echo $CCHAIN $SECOND $REST -t $CTABLE|sed -e 's/-j//g'`
+		 	      		iptables_chain_policy $(echo $CCHAIN $SECOND $REST -t $CTABLE|sed -e 's/-j//g')
 						;;
 					"-I")
 						case $SECOND in
@@ -241,7 +249,7 @@ iptables_local_list_chain()
 	[ $# -eq 0 ] || 
 	{
 		iptables_preload
-		LIST_ARGS=`iptables_expand_string $@`
+		LIST_ARGS=$(iptables_expand_string $@)
 	}
 	[ "$TABLE" = "all" ] && TABLE=$TABLES
 	for CTABLE in $TABLE; do
@@ -297,8 +305,35 @@ if  ! is_yes "$CONFIG_FW";  then
 	exit 1
 fi
 
-[ $# -lt 1 ] && usage || guess_options $@
+case "$1" in
+    "--ipt*")
+			PROCESS_IPTABLES=yes
+			PROCESS_EBTABLES=no
+			TABLES=$IPTABLES_TABLES
+			shift
+			;;
+    "--ebt*")
+			PROCESS_IPTABLES=no
+			PROCESS_EBTABLES=yes
+			TABLES=$EBTABLES_TABLES
+			shift
+			;;
+    "--no-ipt*")
+			PROCESS_IPTABLES=no
+			TABLES=$EBTABLES_TABLES
+			shift
+			;;
+    "--no-ebt*")
+			PROCESS_EBTABLES=no
+			TABLES=$IPTABLES_TABLES
+			shift
+			;;
+    *)
+			TABLES="$IPTABLES_TABLES $EBTABLES_TABLES"
+			;;
+esac
 
+[ $# -lt 1 ] && usage || guess_options $@
 
 echo "interface is $NAME"
 echo "table is $TABLE"
@@ -309,162 +344,176 @@ echo ""
 [ "$NAME" = "all" ] && NAME="*"
 
 for IFACE in "$IFACEDIR"/$NAME; do
-	[ -d "$IFACE" ] || continue
-	NAME=`basename $IFACE`
-	[ -z "$MYIFACEDIR" ] && {
-		[ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
+    [ -d "$IFACE" ] || continue
+    NAME=$(basename $IFACE)
+    [ -z "$MYIFACEDIR" ] &&
+	{
+	    [ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
 	}
-	SourceIfNotEmpty "$MYIFACEDIR/fw/options"
-	case "$FW_TYPE" in
-		iptables)
-		 	[ ! -d "$MYIFACEDIR/fw/$FW_TYPE" ] &&
-			{
-				 echo "No firewall is configured for interface $NAME"
+    SourceIfNotEmpty "$MYIFACEDIR/fw/options"
+    [ -z "$FW_TYPE" ] &&
+	{
+	    print_error "Firewall type isn't defined"
+	    continue
+	}
+    for CFW_TYPE in $FW_TYPE; do
+	case "$CFW_TYPE" in
+	    "iptables")
+			is_yes "$PROCESS_IPTABLES" ||
+			    {
+				MYIFACEDIR=""
+				continue
+			    }
+		 	[ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] ||
+			    {
+				 echo "No iptables firewall is configured for interface $NAME"
 				 echo ""
 				 MYIFACEDIR=""
 				 continue
-			}
+			    }
 			[ "$NAME" != "default" ] && pickup_options
 			# Load own interface syntax if exists
-			[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && {
-				[ -f "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$FW_TYPE/syntax" ] && {
-					export IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$FW_TYPE"
+			[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" &&
+			    {
+				[ -f "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] &&
+				    {
+					export IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$CFW_TYPE"
 					export IPTABLES_SYNTAX=
 					export IPTABLES_SED_RULES=
-				}
-			}
-			# FIXME Where is the place of this?
-			[ ! -z "$TYPE" ] && {
-				IPV4ADDRESS=( $(iptables_get_ipv4) )
-				IPV6ADDRESS=( $(iptables_get_ipv6) )
-			}
+				    }
+			    }
+
+			is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
+			is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
 			case "$ACTION" in
-				start)
+			    start)
 					iptables_preload
 					iptables_start "$NAME"
 					;;
-				stop)
+			    stop)
 					iptables_preload
 					iptables_stop "$NAME"
 					;;
-				restart)
+			    restart)
 					iptables_preload
 					iptables_stop "$NAME"
 					iptables_start "$NAME"
 					;;
-				load)
+			    load)
 					iptables_preload
-					cd $MYIFACEDIR/fw/$FW_TYPE/
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
 					iptables_local_rules_from_file
 					;;
-				unload)
+			    unload)
 					iptables_preload
-					cd $MYIFACEDIR/fw/$FW_TYPE/
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
 					iptables_local_rules_from_file unload
 					;;
-				reload)
+			    reload)
 					iptables_preload
-					cd $MYIFACEDIR/fw/$FW_TYPE/
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
 					iptables_local_rules_from_file unload
 					iptables_local_rules_from_file
 					;;
-				flush)
+			    flush)
 					iptables_preload
-					cd $MYIFACEDIR/fw/$FW_TYPE/
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
 					iptables_local_rules_from_file unload flush
 					;;
-				show|list)
+			    show|list)
 					case $# in
-						1)
-							shift 1
-							;;
-						2)
-							shift 2
-							;;
-						3)
-							shift 3
-							;;
-						*)
-							shift 4
-							;;
+					    1)
+						shift 1
+						;;
+					    2)
+						shift 2
+						;;
+					    3)
+					    	shift 3
+					    	;;
+					    *)
+						shift 4
+						;;
 					esac
 					iptables_local_list_chain $@
 					;;
-				count|counters)
+			    count|counters)
 					echo "Not implemented yet"
 					exit 1
 					;;
-				rule)
+			    rule)
 					case $# in
-						1)
-							shift 1
-							;;
-						2)
-							shift 2
-							;;
-						3)
-							shift 3
-							;;
-						*)
-							shift 4
-							;;
+					    1)
+						shift 1
+						;;
+					    2)
+						shift 2
+					    	;;
+					    3)
+						shift 3
+						;;
+					    *)
+						shift 4
+						;;
 					esac
 					iptables_preload
-					cd $MYIFACEDIR/fw/$FW_TYPE/
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
 					iptables_local_rule "$@"
 					;;
-				new|create)
+			    new|create)
 					iptables_local_create_chain
 					;;
-				remove|delete)
+			    remove|delete)
 					iptables_local_delete_chain
 					;;
-				zero)
+			    zero)
 					iptables_local_zero_chain
 					;;
-				policy)
+			    policy)
 					case $# in
-						1)
-							shift 1
-							;;
-						2)
-							shift 2
-							;;
-						3)
-							shift 3
-							;;
-						*)
-							shift 4
-							;;
+					    1)
+						shift 1
+						;;
+					    2)
+						shift 2
+						;;
+					    3)
+						shift 3
+						;;
+					    *)
+						shift 4
+						;;
 					esac
 					iptables_preload
-					cd $MYIFACEDIR/fw/$FW_TYPE/
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
 					iptables_local_rule "-P $@"
 					;;
-				rename)
+			    rename)
 					case $# in
-						1)
-							shift 1
-							;;
-						2)
-							shift 2
-							;;
-						3)
-							shift 3
-							;;
-						*)
-							shift 4
-							;;
+					    1)
+						shift 1
+						;;
+					    2)
+						shift 2
+						;;
+					    3)
+						shift 3
+						;;
+					    *)
+						shift 4
+						;;
 					esac
 					iptables_local_rename_chain $@
 					;;
-				*)
+			    *)
 					usage
 					;;
 			esac
 			MYIFACEDIR=
 			;;
 		*)
-			echo "Firewall type $FW_TYPE isn't supported"
+			echo "Firewall type $CFW_TYPE isn't supported"
+			;;
 	esac
+    done
 done
