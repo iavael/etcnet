@@ -236,7 +236,7 @@ iptables_local_delete_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
-    shift 2 
+    [ -z "$CHAIN" ] && shift || shift 2
     [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
 	# We can delete only user-defined chains so just don't pass chain name
@@ -247,9 +247,11 @@ iptables_local_delete_chain()
 
 iptables_local_list_chain()
 {
+    echo "before is $@"
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
-    shift 2 
+    [ -z "$CHAIN" ] && shift || shift 2
+    echo "after is $@"
     local LIST_ARGS
     [ $# -eq 0 ] || 
 	{
@@ -267,7 +269,7 @@ iptables_local_zero_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
-    shift 2 
+    [ -z "$CHAIN" ] && shift || shift 2
     [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
 	[ "$CHAIN" = "all" ] && iptables_zero_chain $CTABLE || iptables_zero_chain $CTABLE $CHAIN
@@ -353,7 +355,7 @@ ebtables_local_delete_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
-    shift 2
+    [ -z "$CHAIN" ] && shift || shift 2
     [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
 	# We can delete only user-defined chains so just don't pass chain name
@@ -366,7 +368,7 @@ ebtables_local_list_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
-    shift 2
+    [ -z "$CHAIN" ] && shift || shift 2
     local LIST_ARGS
     [ $# -eq 0 ] || 
 	{
@@ -383,7 +385,7 @@ ebtables_local_zero_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
-    shift 2
+    [ -z "$CHAIN" ] && shift || shift 2
     [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
 	[ "$CHAIN" = "all" ] && ebtables_zero_chain $CTABLE || ebtables_zero_chain $CTABLE $CHAIN
