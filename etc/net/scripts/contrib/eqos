@@ -65,8 +65,8 @@ case $# in
 	;;
 esac
 
-echo "interface is $NAME"
-echo "action is $ACTION"
+echo "Interface is \"$NAME\""
+echo "Action is \"$ACTION\""
 echo ""
 
 [ "$NAME" = "all" ] && NAME="*"
@@ -80,7 +80,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 	}
     [ ! -d "$MYIFACEDIR/qos" ] &&
 	{
-	     echo "No QoS is configured for interface $NAME"
+	     echo "No QoS is configured for interface \"$NAME\""
 	     echo ""
 	     MYIFACEDIR=""
 	     continue
@@ -103,12 +103,12 @@ for IFACE in "$IFACEDIR"/$NAME; do
 		;;
 	show|list)
 		[ $# -ge 1 ] && STAT="$1" && shift
-		echo "$STAT list on device $NAME:"
+		echo "\"$STAT\" list on device $NAME:"
 		$TC $STAT show dev $NAME $@
 		;;
 	stat|stats)
 		[ $# -ge 1 ] && STAT="$1" && shift
-		echo "$STAT statistics on device $NAME:"
+		echo "\"$STAT\" statistics on device $NAME:"
 		$TC -s -d $STAT show dev $NAME $@
 		;;
 	*)

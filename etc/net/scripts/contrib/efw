@@ -74,19 +74,19 @@ guess_options()
 		    [ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
 		    [ -d "$MYIFACEDIR" ] ||
 			{
-			    print_error "interface configuration directory $MYIFACEDIR not found"
+			    print_error "interface configuration directory \"$MYIFACEDIR\" is not found"
 			    exit 1
 			}
 		}
 	    [ "$2" = "all" ] || egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" ||
 		{
-		    print_error "Unknown firewall table $2"
+		    print_error "Unknown firewall table \"$2\""
 		    exit 1
 		}
 	    CHAIN="$3"
 	    egrep -q "([^-]\b|^)$4(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION="$4" ||
 		{
-		    print_error "Unknown firewall action $4"
+		    print_error "Unknown firewall action \"$4\""
 		    exit 1
 		}
 	    return
@@ -116,7 +116,7 @@ guess_options()
 				    CHAIN="$2"
 				} || 
 				{
-				    print_error "Unknown firewall table $1"
+				    print_error "Unknown firewall table \"$1\""
 				    exit 1
 				}
 			}
@@ -164,7 +164,7 @@ guess_options()
 	{
 	    egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION=$1 ||
 		{
-		    print_error "Unknown firewall action $1"
+		    print_error "Unknown firewall action \"$1\""
 		    exit 1
 		}
 	}
@@ -442,10 +442,10 @@ esac
 
 [ $# -lt 1 ] && usage || guess_options $@
 
-echo "interface is $NAME"
-echo "table is $TABLE"
-echo "chain is $CHAIN"
-echo "action is $ACTION"
+echo "Interface is \"$NAME\""
+echo "Table is \"$TABLE\""
+echo "Chain is \"$CHAIN\""
+echo "Action is \"$ACTION\""
 echo ""
 
 [ "$NAME" = "all" ] && NAME="*"
@@ -458,28 +458,19 @@ for IFACE in "$IFACEDIR"/$NAME; do
 	    [ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
 	}
     SourceIfNotEmpty "$MYIFACEDIR/fw/options"
-    [ -z "$FW_TYPE" ] &&
-	{
-	    print_error "Firewall type isn't defined"
-	    continue
-	}
     is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
     is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
     for CFW_TYPE in $FW_TYPE; do
 	case "$CFW_TYPE" in
 	    "iptables")
-			is_yes "$PROCESS_IPTABLES" ||
-			    {
-				MYIFACEDIR=""
-				continue
-			    }
+			is_yes "$PROCESS_IPTABLES" || continue
 		 	[ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] ||
 			    {
-				 echo "No iptables firewall is configured for interface $NAME"
+				 echo "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
 				 echo ""
-				 MYIFACEDIR=""
 				 continue
 			    }
+			echo "Firewall type is \"$CFW_TYPE\""
 			[ "$NAME" != "default" ] && pickup_options
 			# Load own interface syntax if exists
 			[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" &&
@@ -545,7 +536,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					iptables_local_list_chain $@
 					;;
 			    count|counters)
-					echo "Not implemented yet"
+					print_error "Not implemented yet"
 					exit 1
 					;;
 			    rule)
@@ -619,18 +610,14 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			MYIFACEDIR=
 			;;
 	    "ebtables")
-			is_yes "$PROCESS_EBTABLES" ||
-			    {
-				MYIFACEDIR=""
-				continue
-			    }
+			is_yes "$PROCESS_EBTABLES" || continue
 		 	[ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] ||
 			    {
-				 echo "No ebtables firewall is configured for interface $NAME"
+				 echo "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
 				 echo ""
-				 MYIFACEDIR=""
 				 continue
 			    }
+			echo "Firewall type is \"$CFW_TYPE\""
 			[ "$NAME" != "default" ] && pickup_options
 			case "$ACTION" in
 			    start)
@@ -678,7 +665,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					ebtables_local_list_chain $@
 					;;
 			    count|counters)
-					echo "Not implemented yet"
+					print_error "Not implemented yet"
 					exit 1
 					;;
 			    rule)
@@ -750,8 +737,9 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			MYIFACEDIR=
 			;;
 		*)
-			echo "Firewall type $CFW_TYPE isn't supported"
+			echo "Firewall type \"$CFW_TYPE\" isn't supported"
 			;;
 	esac
     done
+    MYIFACEDIR=""
 done
