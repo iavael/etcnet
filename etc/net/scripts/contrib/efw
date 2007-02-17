@@ -249,7 +249,9 @@ iptables_local_list_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
-    shift $#
+    echo "ARGS before is $@"
+    [ -z "$CHAIN" ] && shift || shift 2
+    echo "ARGS after is $@"
     local LIST_ARGS
     [ $# -eq 0 ] || 
 	{
@@ -366,7 +368,7 @@ ebtables_local_list_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
-    shift $#
+    [ -z "$CHAIN" ] && shift || shift 2
     local LIST_ARGS
     [ $# -eq 0 ] || 
 	{
@@ -538,6 +540,8 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					iptables_local_rules_from_file $TABLE $CHAIN unload flush
 					;;
 			    show|list)
+					# FIXME BROKEN Double shift after each
+					# iteration
 					case $# in
 					    1)
 						shift 1
@@ -559,6 +563,8 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					exit 1
 					;;
 			    rule)
+					# FIXME BROKEN Double shift after each
+					# iteration
 					case $# in
 					    1)
 						shift 1
@@ -587,6 +593,8 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					iptables_local_zero_chain $TABLE $CHAIN
 					;;
 			    policy)
+					# FIXME BROKEN Double shift after each
+					# iteration
 					case $# in
 					    1)
 						shift 1
@@ -606,6 +614,8 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					iptables_local_rule $TABLE $CHAIN -P $@
 					;;
 			    rename)
+					# FIXME BROKEN Double shift after each
+					# iteration
 					case $# in
 					    1)
 						shift 1
@@ -667,6 +677,8 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					ebtables_local_rules_from_file $TABLE $CHAIN unload flush
 					;;
 			    show|list)
+					# FIXME BROKEN Double shift after each
+					# iteration
 					case $# in
 					    1)
 						shift 1
@@ -688,6 +700,8 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					exit 1
 					;;
 			    rule)
+					# FIXME BROKEN Double shift after each
+					# iteration
 					case $# in
 					    1)
 						shift 1
@@ -715,6 +729,8 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					ebtables_local_zero_chain $TABLE $CHAIN
 					;;
 			    policy)
+					# FIXME BROKEN Double shift after each
+					# iteration
 					case $# in
 					    1)
 						shift 1
@@ -733,6 +749,8 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					ebtables_local_rule $TABLE $CHAIN -P $@
 					;;
 			    rename)
+					# FIXME BROKEN Double shift after each
+					# iteration
 					case $# in
 					    1)
 						shift 1
