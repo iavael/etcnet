@@ -173,9 +173,10 @@ guess_options()
 # iptables suff
 iptables_local_rules_from_file()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
     [ "$TABLE" = "all" ] && TABLE="*"
     [ "$CHAIN" = "all" ] && CHAIN="*"
-	
     for CTABLE in $TABLE; do
 	[ -d "$CTABLE" ] || continue
 	for CCHAIN in "$CTABLE"/$CHAIN; do
@@ -191,6 +192,9 @@ iptables_local_rules_from_file()
 
 iptables_local_rule()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     local RULE
     [ "$TABLE" = "all" ] && TABLE="*"
     [ "$CHAIN" = "all" ] && CHAIN="*"
@@ -203,24 +207,14 @@ iptables_local_rule()
 	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] && continue
 	    read FIRST SECOND REST < <(echo $RULE)
 	    case $FIRST in
-		"-A"|"-D")
-			    iptables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
+		"-A"|"-D"|"-I")
+			    iptables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
 			    ;;
 		"-P")
-			    iptables_chain_policy $(echo $CCHAIN $SECOND $REST -t $CTABLE|sed -e 's/-j//g')
+			    iptables_chain_policy $CTABLE $(echo $CCHAIN $SECOND $REST|sed -e 's/-j//g')
 			    ;;
-		"-I")
-			    case $SECOND in
-			        [0-9]*)
-					iptables_push_rule $FIRST $CCHAIN $SECOND -t $CTABLE $REST
-				        ;;
-				*)
-			        	iptables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
-					;;
-			    esac
-			    ;;					    
 		*)
-			    iptables_push_rule $CCHAIN -t $CTABLE $FIRST $SECOND $REST
+			    iptables_push_rule $CTABLE $CCHAIN $FIRST $SECOND $REST
 			    ;;
 	    esac
 	done
@@ -229,24 +223,33 @@ iptables_local_rule()
 
 iptables_local_create_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
-	iptables_create_chain $CHAIN -t $CTABLE
+	iptables_create_chain $CTABLE $CHAIN
     done
 }
 
 iptables_local_delete_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
 	# We can delete only user-defined chains so just don't pass chain name
 	# in case of 'all' chain
-	[ "$CHAIN" = "all" ] && iptables_delete_chain -t $CTABLE || iptables_delete_chain $CHAIN -t $CTABLE
+	[ "$CHAIN" = "all" ] && iptables_delete_chain $CTABLE || iptables_delete_chain $CTABLE $CHAIN
     done
 }
 
 iptables_local_list_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     local LIST_ARGS
     [ $# -eq 0 ] || 
 	{
@@ -256,29 +259,38 @@ iptables_local_list_chain()
     [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
 	printf "\nTable $CTABLE\n\n"
-	[ "$CHAIN" = "all" ] && iptables_list_chain -t $CTABLE $LIST_ARGS || iptables_list_chain $CHAIN -t $CTABLE $LIST_ARGS
+	[ "$CHAIN" = "all" ] && iptables_list_chain $CTABLE $LIST_ARGS || iptables_list_chain $CTABLE $CHAIN $LIST_ARGS
     done
 }
 
 iptables_local_zero_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
-	[ "$CHAIN" = "all" ] && iptables_zero_chain -t $CTABLE || iptables_zero_chain $CHAIN -t $CTABLE
+	[ "$CHAIN" = "all" ] && iptables_zero_chain $CTABLE || iptables_zero_chain $CTABLE $CHAIN
     done
 }
 
 iptables_local_rename_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
     for CTABLE in $TABLE; do
-	iptables_rename_chain $CHAIN $@ -t $CTABLE
+	iptables_rename_chain $CTABLE $CHAIN $@
     done
 }
 
 # ebtables suff
 ebtables_local_rules_from_file()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     [ "$TABLE" = "all" ] && TABLE="*"
     [ "$CHAIN" = "all" ] && CHAIN="*"
 	
@@ -297,6 +309,9 @@ ebtables_local_rules_from_file()
 
 ebtables_local_rule()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     local RULE
     [ "$TABLE" = "all" ] && TABLE="*"
     [ "$CHAIN" = "all" ] && CHAIN="*"
@@ -309,22 +324,12 @@ ebtables_local_rule()
 	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] && continue
 	    read FIRST SECOND REST < <(echo $RULE)
 	    case $FIRST in
-		"-A"|"-D")
+		"-A"|"-D"|"-I")
 			    ebtables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
 			    ;;
 		"-P")
 			    ebtables_chain_policy $CTABLE $(echo $CCHAIN $SECOND $REST|sed -e 's/-j//g')
 			    ;;
-		"-I")
-			    case $SECOND in
-			        [0-9]*)
-					ebtables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
-					;;
-				*)
-					ebtables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
-					;;
-			    esac
-			    ;;					    
 		*)
 			    ebtables_push_rule $CTABLE $CCHAIN $FIRST $SECOND $REST
 			    ;;
@@ -335,6 +340,9 @@ ebtables_local_rule()
 
 ebtables_local_create_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
 	ebtables_create_chain $CTABLE $CHAIN
@@ -343,6 +351,9 @@ ebtables_local_create_chain()
 
 ebtables_local_delete_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
 	# We can delete only user-defined chains so just don't pass chain name
@@ -353,6 +364,9 @@ ebtables_local_delete_chain()
 
 ebtables_local_list_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     local LIST_ARGS
     [ $# -eq 0 ] || 
 	{
@@ -367,6 +381,9 @@ ebtables_local_list_chain()
 
 ebtables_local_zero_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
 	[ "$CHAIN" = "all" ] && ebtables_zero_chain $CTABLE || ebtables_zero_chain $CTABLE $CHAIN
@@ -375,6 +392,9 @@ ebtables_local_zero_chain()
 
 ebtables_local_rename_chain()
 {
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
     for CTABLE in $TABLE; do
 	ebtables_rename_chain $CTABLE $CHAIN $@
@@ -446,7 +466,6 @@ echo "Interface is \"$NAME\""
 echo "Table is \"$TABLE\""
 echo "Chain is \"$CHAIN\""
 echo "Action is \"$ACTION\""
-echo ""
 
 [ "$NAME" = "all" ] && NAME="*"
 
@@ -500,23 +519,23 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			    load)
 					iptables_preload
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					iptables_local_rules_from_file
+					iptables_local_rules_from_file $TABLE $CHAIN
 					;;
 			    unload)
 					iptables_preload
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					iptables_local_rules_from_file unload
+					iptables_local_rules_from_file $TABLE $CHAIN unload
 					;;
 			    reload)
 					iptables_preload
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					iptables_local_rules_from_file unload
-					iptables_local_rules_from_file
+					iptables_local_rules_from_file $TABLE $CHAIN unload
+					iptables_local_rules_from_file $TABLE $CHAIN
 					;;
 			    flush)
 					iptables_preload
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					iptables_local_rules_from_file unload flush
+					iptables_local_rules_from_file $TABLE $CHAIN unload flush
 					;;
 			    show|list)
 					case $# in
@@ -533,7 +552,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						shift 4
 						;;
 					esac
-					iptables_local_list_chain $@
+					iptables_local_list_chain $TABLE $CHAIN $@
 					;;
 			    count|counters)
 					print_error "Not implemented yet"
@@ -556,16 +575,16 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					esac
 					iptables_preload
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					iptables_local_rule "$@"
+					iptables_local_rule $TABLE $CHAIN $@
 					;;
 			    new|create)
-					iptables_local_create_chain
+					iptables_local_create_chain $TABLE $CHAIN
 					;;
 			    remove|delete)
-					iptables_local_delete_chain
+					iptables_local_delete_chain $TABLE $CHAIN
 					;;
 			    zero)
-					iptables_local_zero_chain
+					iptables_local_zero_chain $TABLE $CHAIN
 					;;
 			    policy)
 					case $# in
@@ -584,7 +603,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					esac
 					iptables_preload
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					iptables_local_rule "-P $@"
+					iptables_local_rule $TABLE $CHAIN -P $@
 					;;
 			    rename)
 					case $# in
@@ -601,13 +620,13 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						shift 4
 						;;
 					esac
-					iptables_local_rename_chain $@
+					iptables_local_rename_chain $TABLE $CHAIN $@
 					;;
 			    *)
 					usage
 					;;
 			esac
-			MYIFACEDIR=
+			echo ""
 			;;
 	    "ebtables")
 			is_yes "$PROCESS_EBTABLES" || continue
@@ -632,20 +651,20 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					;;
 			    load)
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					ebtables_local_rules_from_file
+					ebtables_local_rules_from_file $TABLE $CHAIN
 					;;
 			    unload)
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					ebtables_local_rules_from_file unload
+					ebtables_local_rules_from_file $TABLE $CHAIN unload
 					;;
 			    reload)
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					ebtables_local_rules_from_file unload
-					ebtables_local_rules_from_file
+					ebtables_local_rules_from_file $TABLE $CHAIN unload
+					ebtables_local_rules_from_file $TABLE $CHAIN
 					;;
 			    flush)
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					ebtables_local_rules_from_file unload flush
+					ebtables_local_rules_from_file $TABLE $CHAIN unload flush
 					;;
 			    show|list)
 					case $# in
@@ -662,7 +681,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						shift 4
 						;;
 					esac
-					ebtables_local_list_chain $@
+					ebtables_local_list_chain $TABLE $CHAIN $@
 					;;
 			    count|counters)
 					print_error "Not implemented yet"
@@ -684,16 +703,16 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						;;
 					esac
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					ebtables_local_rule "$@"
+					ebtables_local_rule $TABLE $CHAIN $@
 					;;
 			    new|create)
-					ebtables_local_create_chain
+					ebtables_local_create_chain $TABLE $CHAIN
 					;;
 			    remove|delete)
-					ebtables_local_delete_chain
+					ebtables_local_delete_chain $TABLE $CHAIN
 					;;
 			    zero)
-					ebtables_local_zero_chain
+					ebtables_local_zero_chain $TABLE $CHAIN
 					;;
 			    policy)
 					case $# in
@@ -711,7 +730,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						;;
 					esac
 					cd $MYIFACEDIR/fw/$CFW_TYPE/
-					ebtables_local_rule "-P $@"
+					ebtables_local_rule $TABLE $CHAIN -P $@
 					;;
 			    rename)
 					case $# in
@@ -728,13 +747,13 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						shift 4
 						;;
 					esac
-					ebtables_local_rename_chain $@
+					ebtables_local_rename_chain $TABLE $CHAIN $@
 					;;
 			    *)
 					usage
 					;;
 			esac
-			MYIFACEDIR=
+			echo ""
 			;;
 		*)
 			echo "Firewall type \"$CFW_TYPE\" isn't supported"
