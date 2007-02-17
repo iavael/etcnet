@@ -20,258 +20,361 @@ ACTIONS="start stop restart load unload reload flush show list count counters ru
 
 usage()
 {
-	echo '/etc/net FireWall handler'
-	echo "Usage: $0 [--ipt[ables]|--ebt[ables]|--no-ipt[ables]|--no-ebt[ables]] [iface] [table] [chain] <action> [iptables rule or action options]" >&2
-	echo ""
-	echo " --iptables    - process only with iptables firewall"
-	echo " --ebtables    - process only with ebtables firewall"
-	echo " --no-iptables - process with all types but without iptables"
-	echo " --no-ebtables - process with all types but without ebtables"
-	echo " By default all enabled types will be processed"
-	echo ""
-	echo " iface    - 'default' (by default), real interface name or 'all' for all interfaces"
-	echo " table    - 'mangle' (iptables only), 'broute' (ebtables only), 'filter' (by default), 'nat' or 'all' for all tables"
-	echo " chain    -  system or user defined chain name (case sensitive!) or 'all' for all chains"
-	echo " action   - 'start','stop','restart','load','unload','reload','flush','show|list','count|counters','rule','new|create','remove|delete','zero','policy','rename'"
-	echo ""
-	echo " start    - process all tables and chains for given interface (even when chain or table is defined)"
-	echo " stop     - process all tables and chains for given interface (even when chain or table is defined)"
-	echo " restart  - equivalent to 'stop' then 'start'"
-	echo " load     - load rules for given interface, table and chain"
-	echo " unload   - unload rules for given interface, table and chain"
-	echo " reload   - equivalent to 'unload' then 'load'"
-	echo " flush    - flush rules for given interface, table and chain"
-	echo " show     - list rules for given interface, table and chain"
-	echo " list     - same as 'show'"
-	echo " count    - show counters for given table and chains"
-	echo " counters - same as 'count'"
-	echo " rule     - parse rule and pass it to iptables and/or ebtables"
-	echo " new      - create new chain"
-	echo " create   - same as 'new'"
-	echo " remove   - remove chain"
-	echo " delete   - same as 'remove'"
-	echo " zero     - zero packet and byte counters in chain"
-	echo " policy   - set default policy for chain"
-	echo " rename   - rename chain"
-	echo ""
-	echo "Options for action 'show' or 'list':"
-	echo " -n or numeric - numeric output for IP addresses, ports and services"
-	echo " -v or verbose - verbose output of rules"
-	echo " -x or exact   - expand numbers instead of rounded numbers"
-	echo " --line-numbers or lines - display line number for each rule" 
-	echo ""
-	exit 1
+    echo '/etc/net FireWall handler'
+    echo "Usage: $0 [--ipt[ables]|--ebt[ables]|--no-ipt[ables]|--no-ebt[ables]] [iface] [table] [chain] <action> [iptables rule or action options]" >&2
+    echo ""
+    echo " --iptables    - process only with iptables firewall"
+    echo " --ebtables    - process only with ebtables firewall"
+    echo " --no-iptables - process with all types but without iptables"
+    echo " --no-ebtables - process with all types but without ebtables"
+    echo " By default all enabled types will be processed"
+    echo ""
+    echo " iface    - 'default' (by default), real interface name or 'all' for all interfaces"
+    echo " table    - 'mangle' (iptables only), 'broute' (ebtables only), 'filter' (by default), 'nat' or 'all' for all tables"
+    echo " chain    -  system or user defined chain name (case sensitive!) or 'all' for all chains"
+    echo " action   - 'start','stop','restart','load','unload','reload','flush','show|list','count|counters','rule','new|create','remove|delete','zero','policy','rename'"
+    echo ""
+    echo " start    - process all tables and chains for given interface (even when chain or table is defined)"
+    echo " stop     - process all tables and chains for given interface (even when chain or table is defined)"
+    echo " restart  - equivalent to 'stop' then 'start'"
+    echo " load     - load rules for given interface, table and chain"
+    echo " unload   - unload rules for given interface, table and chain"
+    echo " reload   - equivalent to 'unload' then 'load'"
+    echo " flush    - flush rules for given interface, table and chain"
+    echo " show     - list rules for given interface, table and chain"
+    echo " list     - same as 'show'"
+    echo " count    - show counters for given table and chains"
+    echo " counters - same as 'count'"
+    echo " rule     - parse rule and pass it to iptables and/or ebtables"
+    echo " new      - create new chain"
+    echo " create   - same as 'new'"
+    echo " remove   - remove chain"
+    echo " delete   - same as 'remove'"
+    echo " zero     - zero packet and byte counters in chain"
+    echo " policy   - set default policy for chain"
+    echo " rename   - rename chain"
+    echo ""
+    echo "Options for action 'show' or 'list':"
+    echo " -n or numeric - numeric output for IP addresses, ports and services"
+    echo " -v or verbose - verbose output of rules"
+    echo " -x or exact   - expand numbers instead of rounded numbers"
+    echo " --line-numbers or lines - display line number for each rule" 
+    echo ""
+    exit 1
 }
 
 guess_options()
 {
-	# Four options. Get interface name and shift
-	[ $# -ge 4 ] && 
+    # Four options. Get interface name and shift
+    [ $# -ge 4 ] && 
 	{
+	    NAME="$1"
+	    [ "$NAME" != "default" ] && [ "$NAME" != "all" ] && 
+		{
+		    [ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
+		    [ -d "$MYIFACEDIR" ] ||
+			{
+			    print_error "interface configuration directory $MYIFACEDIR not found"
+			    exit 1
+			}
+		}
+	    [ "$2" = "all" ] || egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" ||
+		{
+		    print_error "Unknown firewall table $2"
+		    exit 1
+		}
+	    CHAIN="$3"
+	    egrep -q "([^-]\b|^)$4(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION="$4" ||
+		{
+		    print_error "Unknown firewall action $4"
+		    exit 1
+		}
+	    return
+	}
+
+    # Three options. Guess first and shift
+    [ $# -eq 3 ] && 
+	{
+	    [ "$1" != "default" ] && [ "$1" != "all" ]  && 
+		{
+		    # May be it's an interface name
+		    [ -d $IFACEDIR/$1@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$1@$NETHOST || MYIFACEDIR=$IFACEDIR/$1
+		    [ -d "$MYIFACEDIR" ] &&
+			{
+			    # Yes, it's an interface name
+			    NAME="$1"
+			    {
+				[ "$2" = "all" ] || egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2"
+			    } || CHAIN="$2"
+			} ||
+			{
+			    # No, it's not an interface name
+			    MYIFACEDIR=
+			    [ "$1" = "all" ] || egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$TABLES") && 
+				{
+				    TABLE="$1"
+				    CHAIN="$2"
+				} || 
+				{
+				    print_error "Unknown firewall table $1"
+				    exit 1
+				}
+			}
+	    } ||
+	    {
+		# Yes, it's an interface name or 'all'
 		NAME="$1"
-		[ "$NAME" != "default" ] && [ "$NAME" != "all" ] && 
 		{
-			[ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
-			[ -d "$MYIFACEDIR" ] || {
-				print_error "interface configuration directory $MYIFACEDIR not found"
-				exit 1
-			}
-		}
-		[ "$2" = "all" ] || egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2" ||
-		{
-			print_error "Unknown firewall table $2"
-			exit 1
-		}
-		CHAIN="$3"
-		egrep -q "([^-]\b|^)$4(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION="$4" ||
-		{
-			print_error "Unknown firewall action $4"
-			exit 1
-		}
-		return
+		    [ "$2" = "all" ] || egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2"
+		} || CHAIN="$2"
+	    }
+	    shift 2
 	}
 
-	# Three options. Guess first and shift
-	[ $# -eq 3 ] && 
+    # Two options. Guest first and shift
+    [ $# -eq 2 ] && 
 	{
-			[ "$1" != "default" ] && [ "$1" != "all" ]  && 
+	    [ "$1" != "default" ] && [ "$1" != "all" ] && 
+		{
+		    # May be it's and interface name
+		    [ -d $IFACEDIR/$1@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$1@$NETHOST || MYIFACEDIR=$IFACEDIR/$1
+		    [ -d "$MYIFACEDIR" ] &&
 			{
-				# May be it's an interface name
-				[ -d $IFACEDIR/$1@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$1@$NETHOST || MYIFACEDIR=$IFACEDIR/$1
-				[ -d "$MYIFACEDIR" ] &&
-				{
-					# Yes, it's an interface name
-					NAME="$1"
-					{
-						[ "$2" = "all" ] || egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2"
-					} || CHAIN="$2"
-				} ||
-				{
-					# No, it's not an interface name
-					MYIFACEDIR=
-					[ "$1" = "all" } || egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$TABLES") && 
-					{
-						TABLE="$1"
-						CHAIN="$2"
-					} || 
-					{
-						print_error "Unknown firewall table $1"
-						exit 1
-					}
-				}
+			    # Yes, it's an interface name
+			    NAME="$1"
 			} ||
 			{
-				# Yes, it's an interface name or 'all'
-				NAME="$1"
+			    # No
+			    MYIFACEDIR=
 				{
-					[ "$2" = "all" ] || egrep -q "([^-]\b|^)$2(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$2"
-				} || CHAIN="$2"
+				    [ "$1" = "all" ] || egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$1"
+				} || CHAIN="$1"
 			}
-			shift 2
-	}
-
-	# Two options. Guest first and shift
-	[ $# -eq 2 ] && 
-	{
-		[ "$1" != "default" ] && [ "$1" != "all" ] && 
-			{
-				# May be it's and interface name
-				[ -d $IFACEDIR/$1@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$1@$NETHOST || MYIFACEDIR=$IFACEDIR/$1
-				[ -d "$MYIFACEDIR" ] &&
-				{
-					# Yes, it's an interface name
-					NAME="$1"
-				} ||
-				{
-					# No
-					MYIFACEDIR=
-					{
-						[ "$1" = "all" ] || egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$TABLES") && TABLE="$1"
-					} || CHAIN="$1"
-				}
-			} ||
-			{
-				# Yes, it's an interface name or 'all'
-				NAME="$1"
-			}
-			shift
+		} ||
+		{
+		    # Yes, it's an interface name or 'all'
+		    NAME="$1"
+		}
+		shift
 	
-		}
-	# One option
-	[ $# -eq 1 ] &&
+	}
+
+    # One option
+    [ $# -eq 1 ] &&
 	{
-		egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION=$1 ||
+	    egrep -q "([^-]\b|^)$1(\b[^-]|$)" < <(echo "$ACTIONS") && ACTION=$1 ||
 		{
-			print_error "Unknown firewall action $1"
-			exit 1
+		    print_error "Unknown firewall action $1"
+		    exit 1
 		}
 	}
 }
 
-
+# iptables suff
 iptables_local_rules_from_file()
 {
-	[ "$TABLE" = "all" ] && TABLE="*"
-	[ "$CHAIN" = "all" ] && CHAIN="*"
+    [ "$TABLE" = "all" ] && TABLE="*"
+    [ "$CHAIN" = "all" ] && CHAIN="*"
 	
-	for CTABLE in $TABLE; do
-		[ -d "$CTABLE" ] || continue
-		for CCHAIN in "$CTABLE"/$CHAIN; do
-			CCHAIN=$(basename $CCHAIN)
-			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ]  && continue
-			[ "$1" = "unload" ] && iptables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" \
-			|| {
-				[ -s "$CTABLE/$CCHAIN" ] && iptables_load_rules_from_file "$CTABLE" "$CCHAIN"
-			}
-		done
+    for CTABLE in $TABLE; do
+	[ -d "$CTABLE" ] || continue
+	for CCHAIN in "$CTABLE"/$CHAIN; do
+	    CCHAIN=$(basename $CCHAIN)
+	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ]  && continue
+	    [ "$1" = "unload" ] && iptables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" ||
+		{
+		    [ -s "$CTABLE/$CCHAIN" ] && iptables_load_rules_from_file "$CTABLE" "$CCHAIN"
+		}
 	done
+    done
 }
 
 iptables_local_rule()
 {
-	local RULE
-	[ "$TABLE" = "all" ] && TABLE="*"
-	[ "$CHAIN" = "all" ] && CHAIN="*"
-	RULE=$(iptables_expand_string $@)
-	[ -z "$RULE" ] && return
-	for CTABLE in $TABLE; do
-		[ -d "$CTABLE" ] || continue
-		for CCHAIN in "$CTABLE"/$CHAIN; do
-			CCHAIN=$(basename $CCHAIN)
-			[ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] && continue
-			read FIRST SECOND REST < <(echo $RULE)
-		    	case $FIRST in
-					"-A"|"-D")
-		        		iptables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
-						;;
-					"-P")
-		 	      		iptables_chain_policy $(echo $CCHAIN $SECOND $REST -t $CTABLE|sed -e 's/-j//g')
-						;;
-					"-I")
-						case $SECOND in
-						    [0-9]*)
-			        			iptables_push_rule $FIRST $CCHAIN $SECOND -t $CTABLE $REST
-							    ;;
-							*)
-			        			iptables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
-								;;
-						esac
-						;;					    
-					*)
-		        		iptables_push_rule $CCHAIN -t $CTABLE $FIRST $SECOND $REST
-						;;
-				esac
-		done
+    local RULE
+    [ "$TABLE" = "all" ] && TABLE="*"
+    [ "$CHAIN" = "all" ] && CHAIN="*"
+    RULE=$(iptables_expand_string $@)
+    [ -z "$RULE" ] && return
+    for CTABLE in $TABLE; do
+	[ -d "$CTABLE" ] || continue
+	for CCHAIN in "$CTABLE"/$CHAIN; do
+	    CCHAIN=$(basename $CCHAIN)
+	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] && continue
+	    read FIRST SECOND REST < <(echo $RULE)
+	    case $FIRST in
+		"-A"|"-D")
+			    iptables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
+			    ;;
+		"-P")
+			    iptables_chain_policy $(echo $CCHAIN $SECOND $REST -t $CTABLE|sed -e 's/-j//g')
+			    ;;
+		"-I")
+			    case $SECOND in
+			        [0-9]*)
+					iptables_push_rule $FIRST $CCHAIN $SECOND -t $CTABLE $REST
+				        ;;
+				*)
+			        	iptables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
+					;;
+			    esac
+			    ;;					    
+		*)
+			    iptables_push_rule $CCHAIN -t $CTABLE $FIRST $SECOND $REST
+			    ;;
+	    esac
 	done
+    done
 }
 
 iptables_local_create_chain()
 {
-	[ "$TABLE" = "all" ] && TABLE=$TABLES
-	for CTABLE in $TABLE; do
-		iptables_create_chain $CHAIN -t $CTABLE
-	done
+    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    for CTABLE in $TABLE; do
+	iptables_create_chain $CHAIN -t $CTABLE
+    done
 }
 
 iptables_local_delete_chain()
 {
-	[ "$TABLE" = "all" ] && TABLE=$TABLES
-	for CTABLE in $TABLE; do
-		# We can delete only user-defined chains so just don't pass chain name
-		# in case of 'all' chain
-		[ "$CHAIN" = "all" ] && iptables_delete_chain -t $CTABLE || iptables_delete_chain $CHAIN -t $CTABLE
-	done
+    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    for CTABLE in $TABLE; do
+	# We can delete only user-defined chains so just don't pass chain name
+	# in case of 'all' chain
+	[ "$CHAIN" = "all" ] && iptables_delete_chain -t $CTABLE || iptables_delete_chain $CHAIN -t $CTABLE
+    done
 }
 
 iptables_local_list_chain()
 {
-	local LIST_ARGS
-	[ $# -eq 0 ] || 
+    local LIST_ARGS
+    [ $# -eq 0 ] || 
 	{
-		iptables_preload
-		LIST_ARGS=$(iptables_expand_string $@)
+	    iptables_preload
+	    LIST_ARGS=$(iptables_expand_string $@)
 	}
-	[ "$TABLE" = "all" ] && TABLE=$TABLES
-	for CTABLE in $TABLE; do
-		printf "\nTable $CTABLE\n\n"
-		[ "$CHAIN" = "all" ] && iptables_list_chain -t $CTABLE $LIST_ARGS || iptables_list_chain $CHAIN -t $CTABLE $LIST_ARGS
-	done
+    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    for CTABLE in $TABLE; do
+	printf "\nTable $CTABLE\n\n"
+	[ "$CHAIN" = "all" ] && iptables_list_chain -t $CTABLE $LIST_ARGS || iptables_list_chain $CHAIN -t $CTABLE $LIST_ARGS
+    done
 }
 
 iptables_local_zero_chain()
 {
-	[ "$TABLE" = "all" ] && TABLE=$TABLES
-	for CTABLE in $TABLE; do
-		[ "$CHAIN" = "all" ] && iptables_zero_chain -t $CTABLE || iptables_zero_chain $CHAIN -t $CTABLE
-	done
+    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    for CTABLE in $TABLE; do
+	[ "$CHAIN" = "all" ] && iptables_zero_chain -t $CTABLE || iptables_zero_chain $CHAIN -t $CTABLE
+    done
 }
 
 iptables_local_rename_chain()
 {
-	[ "$TABLE" = "all" ] && TABLE=$TABLES
-	for CTABLE in $TABLE; do
-		iptables_rename_chain $CHAIN $@ -t $CTABLE
+    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    for CTABLE in $TABLE; do
+	iptables_rename_chain $CHAIN $@ -t $CTABLE
+    done
+}
+
+# ebtables suff
+ebtables_local_rules_from_file()
+{
+    [ "$TABLE" = "all" ] && TABLE="*"
+    [ "$CHAIN" = "all" ] && CHAIN="*"
+	
+    for CTABLE in $TABLE; do
+	[ -d "$CTABLE" ] || continue
+	for CCHAIN in "$CTABLE"/$CHAIN; do
+	    CCHAIN=$(basename $CCHAIN)
+	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ]  && continue
+	    [ "$1" = "unload" ] && ebtables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" ||
+		{
+		    [ -s "$CTABLE/$CCHAIN" ] && ebtables_load_rules_from_file "$CTABLE" "$CCHAIN"
+		}
 	done
+    done
+}
+
+ebtables_local_rule()
+{
+    local RULE
+    [ "$TABLE" = "all" ] && TABLE="*"
+    [ "$CHAIN" = "all" ] && CHAIN="*"
+    RULE=$(ebtables_expand_string $@)
+    [ -z "$RULE" ] && return
+    for CTABLE in $TABLE; do
+	[ -d "$CTABLE" ] || continue
+        for CCHAIN in "$CTABLE"/$CHAIN; do
+	CCHAIN=$(basename $CCHAIN)
+	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] && continue
+	    read FIRST SECOND REST < <(echo $RULE)
+	    case $FIRST in
+		"-A"|"-D")
+			    ebtables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
+			    ;;
+		"-P")
+			    ebtables_chain_policy $(echo $CCHAIN $SECOND $REST -t $CTABLE|sed -e 's/-j//g')
+			    ;;
+		"-I")
+			    case $SECOND in
+			        [0-9]*)
+					ebtables_push_rule $FIRST $CCHAIN $SECOND -t $CTABLE $REST
+					;;
+				*)
+					ebtables_push_rule $FIRST $CCHAIN -t $CTABLE $SECOND $REST
+					;;
+			    esac
+			    ;;					    
+		*)
+			    ebtables_push_rule $CCHAIN -t $CTABLE $FIRST $SECOND $REST
+			    ;;
+	    esac
+	done
+    done
+}
+
+ebtables_local_create_chain()
+{
+    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    for CTABLE in $TABLE; do
+	ebtables_create_chain $CHAIN -t $CTABLE
+    done
+}
+
+ebtables_local_delete_chain()
+{
+    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    for CTABLE in $TABLE; do
+	# We can delete only user-defined chains so just don't pass chain name
+	# in case of 'all' chain
+	[ "$CHAIN" = "all" ] && ebtables_delete_chain -t $CTABLE || ebtables_delete_chain $CHAIN -t $CTABLE
+    done
+}
+
+ebtables_local_list_chain()
+{
+    local LIST_ARGS
+    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    for CTABLE in $TABLE; do
+	printf "\nTable $CTABLE\n\n"
+	[ "$CHAIN" = "all" ] && ebtables_list_chain -t $CTABLE $LIST_ARGS || ebtables_list_chain $CHAIN -t $CTABLE $LIST_ARGS
+    done
+}
+
+ebtables_local_zero_chain()
+{
+    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    for CTABLE in $TABLE; do
+	[ "$CHAIN" = "all" ] && ebtables_zero_chain -t $CTABLE || ebtables_zero_chain $CHAIN -t $CTABLE
+    done
+}
+
+ebtables_local_rename_chain()
+{
+    [ "$TABLE" = "all" ] && TABLE=$TABLES
+    for CTABLE in $TABLE; do
+	ebtables_rename_chain $CHAIN $@ -t $CTABLE
+    done
 }
 
 # Be verbose in any way
@@ -306,24 +409,24 @@ if  ! is_yes "$CONFIG_FW";  then
 fi
 
 case "$1" in
-    "--ipt*")
+    --ipt*)
 			PROCESS_IPTABLES=yes
 			PROCESS_EBTABLES=no
 			TABLES=$IPTABLES_TABLES
 			shift
 			;;
-    "--ebt*")
+    --ebt*)
 			PROCESS_IPTABLES=no
 			PROCESS_EBTABLES=yes
 			TABLES=$EBTABLES_TABLES
 			shift
 			;;
-    "--no-ipt*")
+    --no-ipt*)
 			PROCESS_IPTABLES=no
 			TABLES=$EBTABLES_TABLES
 			shift
 			;;
-    "--no-ebt*")
+    --no-ebt*)
 			PROCESS_EBTABLES=no
 			TABLES=$IPTABLES_TABLES
 			shift
@@ -504,6 +607,140 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						;;
 					esac
 					iptables_local_rename_chain $@
+					;;
+			    *)
+					usage
+					;;
+			esac
+			MYIFACEDIR=
+			;;
+	    "ebtables")
+			is_yes "$PROCESS_EBTABLES" ||
+			    {
+				MYIFACEDIR=""
+				continue
+			    }
+		 	[ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] ||
+			    {
+				 echo "No ebtables firewall is configured for interface $NAME"
+				 echo ""
+				 MYIFACEDIR=""
+				 continue
+			    }
+			[ "$NAME" != "default" ] && pickup_options
+			# Load own interface syntax if exists
+			is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
+			is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
+			case "$ACTION" in
+			    start)
+					ebtables_start "$NAME"
+					;;
+			    stop)
+					ebtables_stop "$NAME"
+					;;
+			    restart)
+					ebtables_stop "$NAME"
+					ebtables_start "$NAME"
+					;;
+			    load)
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
+					ebtables_local_rules_from_file
+					;;
+			    unload)
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
+					ebtables_local_rules_from_file unload
+					;;
+			    reload)
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
+					ebtables_local_rules_from_file unload
+					ebtables_local_rules_from_file
+					;;
+			    flush)
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
+					ebtables_local_rules_from_file unload flush
+					;;
+			    show|list)
+					case $# in
+					    1)
+						shift 1
+						;;
+					    2)
+						shift 2
+						;;
+					    3)
+					    	shift 3
+					    	;;
+					    *)
+						shift 4
+						;;
+					esac
+					ebtables_local_list_chain $@
+					;;
+			    count|counters)
+					echo "Not implemented yet"
+					exit 1
+					;;
+			    rule)
+					case $# in
+					    1)
+						shift 1
+						;;
+					    2)
+						shift 2
+					    	;;
+					    3)
+						shift 3
+						;;
+					    *)
+						shift 4
+						;;
+					esac
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
+					ebtables_local_rule "$@"
+					;;
+			    new|create)
+					ebtables_local_create_chain
+					;;
+			    remove|delete)
+					ebtables_local_delete_chain
+					;;
+			    zero)
+					ebtables_local_zero_chain
+					;;
+			    policy)
+					case $# in
+					    1)
+						shift 1
+						;;
+					    2)
+						shift 2
+						;;
+					    3)
+						shift 3
+						;;
+					    *)
+						shift 4
+						;;
+					esac
+					cd $MYIFACEDIR/fw/$CFW_TYPE/
+					ebtables_local_rule "-P $@"
+					;;
+			    rename)
+					case $# in
+					    1)
+						shift 1
+						;;
+					    2)
+						shift 2
+						;;
+					    3)
+						shift 3
+						;;
+					    *)
+						shift 4
+						;;
+					esac
+					ebtables_local_rename_chain $@
 					;;
 			    *)
 					usage
