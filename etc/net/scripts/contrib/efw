@@ -175,6 +175,7 @@ iptables_local_rules_from_file()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    shift 2 
     [ "$TABLE" = "all" ] && TABLE="*"
     [ "$CHAIN" = "all" ] && CHAIN="*"
     for CTABLE in $TABLE; do
@@ -290,10 +291,9 @@ ebtables_local_rules_from_file()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
+    shift 2
     [ "$TABLE" = "all" ] && TABLE="*"
     [ "$CHAIN" = "all" ] && CHAIN="*"
-	
     for CTABLE in $TABLE; do
 	[ -d "$CTABLE" ] || continue
 	for CCHAIN in "$CTABLE"/$CHAIN; do
