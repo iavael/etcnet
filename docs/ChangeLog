@@ -2,7 +2,7 @@
 	bugfix: Nigel Kukard fixes pickup_options()
 	bugfix: don't trust b44 module any more
 	bugfix: don't depend on /usr/bin/seq
-	new feature: e<F9>btables support
+	new feature: ebtables support
 0.8.5 2007-01-28
 	bugfix: name managements broke ethtool calls
 	bugfix: DHCP did not work for Fedora 5
