@@ -10,6 +10,8 @@ usage()
 [ $# -eq 2 ] || usage
 NAME=$1
 ACTION=$2
+eval "IPV4ADDRESS=($3)"
+eval "IPV6ADDRESS=($4)"
 pickup_defaults
 $MODPROBE ipv6
 
