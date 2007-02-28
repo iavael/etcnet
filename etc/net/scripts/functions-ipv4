@@ -142,3 +142,4 @@ get_ipv4_addresses()
     printf "$(ip addr show dev $NAME 2>/dev/null|grep  -ose "\binet\b.*\([0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\)"|cut -f2 -d" "|cut -f1 -d"/")"
 }
 
+declare -ax IPV4ADDRESS
