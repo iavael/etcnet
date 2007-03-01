@@ -3,6 +3,7 @@
 	bugfix: don't trust b44 module any more
 	bugfix: don't depend on /usr/bin/seq
 	new feature: ebtables support
+	bugfix: variables IPV4ADDRES and IPV6ADDRESS are global now
 0.8.5 2007-01-28
 	bugfix: name managements broke ethtool calls
 	bugfix: DHCP did not work for Fedora 5
