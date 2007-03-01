@@ -7,7 +7,7 @@ usage()
 	exit 1
 }
 
-[ $# -eq 2 ] || usage
+[ $# -lt 2 ] || usage
 NAME=$1
 ACTION=$2
 eval "IPV4ADDRESS=($3)"
@@ -34,10 +34,10 @@ case $ACTION in
 				# If operation is not specified, use 'append'.
 				case "$FIRST" in
 					add|del|change|append|replace)
-						$IP -6 route $FIRST $REST $SUFFIX
+						$IP -6 route $(eval_string $FIRST $REST $SUFFIX)
 					;;
 					*)
-						$IP -6 route append $FIRST $REST $SUFFIX
+						$IP -6 route append $(eval_string $FIRST $REST $SUFFIX)
 					;;
 				esac
 				print_progress

@@ -7,7 +7,7 @@ usage()
 	exit 1
 }
 
-[ $# -eq 2 ] || usage
+[ $# -lt 2 ] || usage
 NAME=$1
 ACTION=$2
 eval "IPV4ADDRESS=($3)"
@@ -24,6 +24,7 @@ pickup_options
 process_ipv4rules()
 {
 	local OP=${1:?missing 1st arg to $FUNCNAME}
+	[ "$OP" = "del" ] && DENOISE="$DENOISE_REVERSE"
 	SRCFILE=`profiled_filename $MYIFACEDIR/ipv4rule`
 	[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
 	while read FIRST REST; do
@@ -39,7 +40,7 @@ process_ipv4rules()
 				FIRST="$OP $FIRST"
 			;;
 		esac
-		$IP -4 rule $FIRST $REST
+		$IP -4 rule $(eval_string $FIRST $REST)
 		print_progress
 	done
 }

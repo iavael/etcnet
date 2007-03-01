@@ -8,7 +8,7 @@ usage()
 }
 
 [ -d $MYIFACEDIR/qos/ -a -x $MYIFACEDIR/qos/ ] || exit 0
-[ $# -eq 2 ] || usage
+[ $# -lt 2 ] || usage
 NAME=$1
 ACTION=$2
 eval "IPV4ADDRESS=($3)"
