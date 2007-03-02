@@ -4,6 +4,7 @@
 
 # These are necessary constants.
 DENOISE="egrep ^[^#]"
+DENOISE_REVERSE="egrep ^[^#]|tac"
 DEFAULT_BONDMODE=0
 IFACEDIR=/etc/net/ifaces
 LOCALSCRIPTDIR=/etc/net
@@ -475,16 +476,10 @@ stop_dhcp_client()
 	fi
 }
 
-# Thanks git
-shell_quote_args()
+eval_string()
 {
-    local ARG
-    for ARG; do
-	if [ -z "${ARG##*[\"\$\`\\]*}" ]; then
-	    ARG="$(printf %s "$ARG" | sed -e 's/["$`\]/\\&/g')"
-        fi
-	printf '"%s" ' "$ARG"
-    done
+    : ${1:?missing 1st arg to $FUNCNAME}
+    eval "printf '%s\n' \"$@\""
 }
 
 declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type
@@ -494,7 +489,7 @@ declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_paren
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
 declare -frx have_ifplugd pickup_defaults trim need_detection stop_dhcp_client
 declare -frx modprobe_with_rename
-declare -frx shell_quote_args
+declare -frx eval_string
 declare -rx DENOISE DEFAULT_BONDMODE IFACEDIR LOCALSCRIPTDIR VARLIBDIR
 declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS
 declare -rx DEFAULT_IFPLUGD DEFAULT_IWCONFIG DEFAULT_WPA_SUPPLICANT DEFAULT_PLIPCONFIG

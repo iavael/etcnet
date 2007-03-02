@@ -9,7 +9,7 @@ try_static()
 		$DENOISE $REALFILE | while read ADDRESSLINE; do
 			is_yes "$AUTO_BROADCAST" && [ "$ADDRESSLINE" = "${ADDRESSLINE/broadcast/}" ] && \
 				ADDRESSLINE="$ADDRESSLINE broadcast +"
-			$IP -4 address add dev $NAME $ADDRESSLINE && print_progress
+			$IP -4 address add dev $NAME $(eval_string $ADDRESSLINE) && print_progress
 		done
 	fi
 	return 0
@@ -114,6 +114,7 @@ config_ipv4_routes_rules()
 	# setup routes
 	local SRCFILE=`profiled_filename $MYIFACEDIR/ipv4route`
 	local SUFFIX
+	IPV4ADDRESS=($(get_ipv4_addresses $NAME))
 	[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
 	while read FIRST REST; do
 		# If 'dev' is not specified, add current dev.
@@ -122,10 +123,10 @@ config_ipv4_routes_rules()
 		# If operation is not specified, use 'append'.
 		case "$FIRST" in
 			add|del|change|append|replace)
-				$IP -4 route $FIRST $REST $SUFFIX
+				$IP -4 route $(eval_string $FIRST $REST $SUFFIX)
 			;;
 			*)
-				$IP -4 route append $FIRST $REST $SUFFIX
+				$IP -4 route append $(eval_string $FIRST $REST $SUFFIX)
 			;;
 		esac
 		print_progress
