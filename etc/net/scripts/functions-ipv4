@@ -109,32 +109,64 @@ try_ipv4ll()
 	return $RET
 }
 
+process_ipv4rules()
+{
+	local OP=${1:?missing 1st arg to $FUNCNAME}
+	local REVERSE
+	[ "$OP" = "del" ] && REVERSE="|tac"
+	SRCFILE=`profiled_filename $MYIFACEDIR/ipv4rule`
+	[ -s "$SRCFILE" ] && eval "$DENOISE \"$SRCFILE\" $REVERSE" | \
+	while read FIRST REST; do
+		case "$FIRST" in
+			add)
+				[ $OP = "del" ] && FIRST=del
+			;;
+			del)
+				# should we restore deleted rules on iface shutdown?
+				 [ $OP = "del" ] && FIRST=add
+			;;
+			*)
+				FIRST="$OP $FIRST"
+			;;
+		esac
+		$IP -4 rule $(eval_string $FIRST $REST)
+		print_progress
+	done
+}
+
 config_ipv4_routes_rules()
 {
 	# setup routes
+	local OP=${1:?missing 1st arg to $FUNCNAME}
 	local SRCFILE=`profiled_filename $MYIFACEDIR/ipv4route`
 	local SUFFIX
 	IPV4ADDRESS=($(get_ipv4_addresses $NAME))
-	[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
+	[ "$OP" = "del" ] && REVERSE="|tac"
+	[ -s "$SRCFILE" ] && eval "$DENOISE \"$SRCFILE\" $REVERSE" | \
 	while read FIRST REST; do
 		# If 'dev' is not specified, add current dev.
 		SUFFIX=''
 		echo "$FIRST $REST" | egrep -q '[[:space:]]dev[[:space:]]' || SUFFIX="dev $NAME"
 		# If operation is not specified, use 'append'.
 		case "$FIRST" in
-			add|del|change|append|replace)
-				$IP -4 route $(eval_string $FIRST $REST $SUFFIX)
+			add|change|append|replace)
+				[ $OP = "del" ] && FIRST=del
+			;;
+			del)
+				# should we restore deleted rules on iface shutdown?
+				[ $OP = "del" ] && FIRST=add
 			;;
 			*)
-				$IP -4 route append $(eval_string $FIRST $REST $SUFFIX)
+				[ "$OP" = "add" ] && FIRST="append $FIRST" || FIRST="$OP $FIRST"
 			;;
 		esac
+		$IP -4 route $(eval_string $FIRST $REST $SUFFIX)
 		print_progress
 	done
 
 	# Setup rules only after routes are Ok, so that route tables are
 	# already populated when rule starts routing traffic to them.
-	process_ipv4rules add
+	process_ipv4rules $OP
 }
 
 get_ipv4_addresses()

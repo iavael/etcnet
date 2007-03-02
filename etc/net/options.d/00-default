@@ -48,6 +48,7 @@ ALLOW_UNKNOWN=no
 
 # FireWall defaults
 IPTABLES=/sbin/iptables
+IP6TABLES=/sbin/ip6tables
 EBTABLES=/sbin/ebtables
 
 # List of known-good network modules (ones that support link detection).

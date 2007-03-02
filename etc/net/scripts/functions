@@ -4,7 +4,6 @@
 
 # These are necessary constants.
 DENOISE="egrep ^[^#]"
-DENOISE_REVERSE="egrep ^[^#]|tac"
 DEFAULT_BONDMODE=0
 IFACEDIR=/etc/net/ifaces
 LOCALSCRIPTDIR=/etc/net

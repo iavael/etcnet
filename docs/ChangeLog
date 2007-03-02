@@ -2,8 +2,13 @@
 	bugfix: Nigel Kukard fixes pickup_options()
 	bugfix: don't trust b44 module any more
 	bugfix: don't depend on /usr/bin/seq
+	bugfix: variables IPV4ADDRESS and IPV6ADDRESS are global now
 	new feature: ebtables support
-	bugfix: variables IPV4ADDRES and IPV6ADDRESS are global now
+	new feature: shell and user-defined variables support in the iproute2 files
+	new feature: reverse iproute2 files parsing when interface stops
+	new feature: ip rules restoring is returned back
+	new feature: process iproute2 routes file when interface stops
+	new feature: process iproute2 rules file for IPv6
 0.8.5 2007-01-28
 	bugfix: name managements broke ethtool calls
 	bugfix: DHCP did not work for Fedora 5
