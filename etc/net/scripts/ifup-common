@@ -200,17 +200,19 @@ is_yes "$CONFIG_WIRELESS" && $SCRIPTDIR/config-wireless $NAME && print_progress
 # process ip neighbours
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
 
-# get ipv4 and/or ipv6 addresses of the interface
-is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && IPV4ADDRESS="$(get_ipv4_addresses $NAME)"
-is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && IPV6ADDRESS="$(get_ipv6_addresses $NAME)"
-
-# Order matters here.
-is_yes "$CONFIG_FW"  && $SCRIPTDIR/config-fw $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
-is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
-
+# first of all proccess iproute2 rules 
 is_yes "$CONFIG_IPV4" && $SCRIPTDIR/config-ipv4 $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
 is_yes "$CONFIG_IPV6" && $SCRIPTDIR/config-ipv6 $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
 is_yes "$CONFIG_IPX"  && $SCRIPTDIR/config-ipx $NAME start
+
+# get ipv4 and/or ipv6 addresses of the interface (after iproute2 rules processing)
+is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && IPV4ADDRESS="$(get_ipv4_addresses $NAME)"
+is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && IPV6ADDRESS="$(get_ipv6_addresses $NAME)"
+
+# start QoS and FireWall
+is_yes "$CONFIG_FW"  && $SCRIPTDIR/config-fw $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
+is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
+
 
 # handle resolver config
 MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`
