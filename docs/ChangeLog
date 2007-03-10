@@ -3,7 +3,7 @@
 	bugfix: don't trust b44 module any more
 	bugfix: don't depend on /usr/bin/seq
 	bugfix: variables IPV4ADDRESS and IPV6ADDRESS are global now
-	new feature: ebtables support
+	new feature: ip6tables and ebtables support
 	new feature: shell and user-defined variables support in the iproute2 files
 	new feature: reverse iproute2 files parsing when interface stops
 	new feature: ip rules restoring is returned back

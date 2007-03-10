@@ -181,6 +181,9 @@ start()
 			"iptables")
 				    iptables_preload
 				    ;;
+			"ip6tables")
+				    ip6tables_preload
+				    ;;
 			"ebtables")
 				    ;;
 			*)
@@ -239,6 +242,9 @@ stop()
 		    case "$CFW_TYPE" in
 			"iptables")
 				    iptables_preload
+				    ;;
+			"ip6tables")
+				    ip6tables_preload
 				    ;;
 			"ebtables")
 				    ;;

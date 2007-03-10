@@ -39,7 +39,7 @@ added without overall design changes.
 #Summary:	/etc/net plus everything it can work with
 #Group:		System/Configuration/Networking
 #Requires:	%name = %version-%release, wireless-tools
-#Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, ebtables
+#Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables
 #Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2, ipsecadm >= 0.9-alt8
 #Requires:	hotplug, ncpfs, pcmcia-cs >= 3.2.8-alt2, ppp, vlan-utils24
 #Requires:	pptp-client, wpa_supplicant, zcip, rp-pppoe-base >= 3.6-alt2

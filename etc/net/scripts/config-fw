@@ -53,6 +53,8 @@ SourceIfNotEmpty "$MYIFACEDIR/fw/options"
 for CFW_TYPE in $FW_TYPE; do
     case "$CFW_TYPE" in
         "iptables")
+		    # FIXME Does iptables support only IPv4?
+		    is_yes "$CONFIG_IPV4" || continue
 		    [ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] || continue
 		    # Load own interface syntax if exists
 		    [ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && \
@@ -82,6 +84,45 @@ for CFW_TYPE in $FW_TYPE; do
 				iptables_preload
 				iptables_stop "$NAME"
 				iptables_start "$NAME"
+				;;
+			*)
+				echo "${0##*/} {start|stop|restart|reload}"
+				exit 1
+				;;
+		    esac
+		    ;;
+        "ip6tables")
+		    # FIXME Does ip6tables support only IPv6?
+		    is_yes "$CONFIG_IPV6" || continue
+		    [ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] || continue
+		    # Load own interface syntax if exists
+		    [ "$NAME" != "default" ] && is_yes "$IP6TABLES_HUMAN_SYNTAX" && \
+			{
+			    [ -f "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && \
+				{
+				    IP6TABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$CFW_TYPE"
+				    IP6TABLES_SYNTAX=
+				    IP6TABLES_SED_RULES=
+				}
+			}
+		    case "$ACTION" in
+			start)
+				ip6tables_preload
+				ip6tables_start "$NAME"
+				;;
+			stop)
+				ip6tables_preload
+				ip6tables_stop "$NAME"
+				;;
+			restart)
+				ip6tables_preload
+				ip6tables_stop "$NAME"
+				ip6tables_start "$NAME"
+				;;
+			reload)
+				ip6tables_preload
+				ip6tables_stop "$NAME"
+				ip6tables_start "$NAME"
 				;;
 			*)
 				echo "${0##*/} {start|stop|restart|reload}"

@@ -16,6 +16,9 @@ install:
 	@install -d $(etcnetdir)/ifaces/default/fw/iptables/filter
 	@install -d $(etcnetdir)/ifaces/default/fw/iptables/mangle
 	@install -d $(etcnetdir)/ifaces/default/fw/iptables/nat
+	@install -d $(etcnetdir)/ifaces/default/fw/ip6tables/filter
+	@install -d $(etcnetdir)/ifaces/default/fw/ip6tables/mangle
+	@install -d $(etcnetdir)/ifaces/default/fw/ip6tables/nat
 	@install -d $(etcnetdir)/ifaces/default/fw/ebtables/filter
 	@install -d $(etcnetdir)/ifaces/default/fw/ebtables/broute
 	@install -d $(etcnetdir)/ifaces/default/fw/ebtables/nat
@@ -26,10 +29,14 @@ install:
 	@install -m 644 etc/net/ifaces/default/{options,sysctl.conf}* $(etcnetdir)/ifaces/default
 	@install -m 644 etc/net/ifaces/default/fw/options $(etcnetdir)/ifaces/default/fw
 	@install -m 644 etc/net/ifaces/default/fw/iptables/{loadorder,modules,syntax} $(etcnetdir)/ifaces/default/fw/iptables
+	@install -m 644 etc/net/ifaces/default/fw/ip6tables/{loadorder,modules,syntax} $(etcnetdir)/ifaces/default/fw/ip6tables
 	@install -m 644 etc/net/ifaces/default/fw/ebtables/{loadorder,modules} $(etcnetdir)/ifaces/default/fw/ebtables
 	@install -m 644 etc/net/ifaces/default/fw/iptables/filter/* $(etcnetdir)/ifaces/default/fw/iptables/filter
 	@install -m 644 etc/net/ifaces/default/fw/iptables/mangle/* $(etcnetdir)/ifaces/default/fw/iptables/mangle
 	@install -m 644 etc/net/ifaces/default/fw/iptables/nat/* $(etcnetdir)/ifaces/default/fw/iptables/nat
+	@install -m 644 etc/net/ifaces/default/fw/ip6tables/filter/* $(etcnetdir)/ifaces/default/fw/ip6tables/filter
+	@install -m 644 etc/net/ifaces/default/fw/ip6tables/mangle/* $(etcnetdir)/ifaces/default/fw/ip6tables/mangle
+	@install -m 644 etc/net/ifaces/default/fw/ip6tables/nat/* $(etcnetdir)/ifaces/default/fw/ip6tables/nat
 	@install -m 644 etc/net/ifaces/default/fw/ebtables/filter/* $(etcnetdir)/ifaces/default/fw/ebtables/filter
 	@install -m 644 etc/net/ifaces/default/fw/ebtables/broute/* $(etcnetdir)/ifaces/default/fw/ebtables/broute
 	@install -m 644 etc/net/ifaces/default/fw/ebtables/nat/* $(etcnetdir)/ifaces/default/fw/ebtables/nat

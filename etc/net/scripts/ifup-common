@@ -210,7 +210,7 @@ is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && IPV4ADDRE
 is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && IPV6ADDRESS="$(get_ipv6_addresses $NAME)"
 
 # start QoS and FireWall
-is_yes "$CONFIG_FW"  && $SCRIPTDIR/config-fw $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
+is_yes "$CONFIG_FW"   && $SCRIPTDIR/config-fw $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
 is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
 
 
