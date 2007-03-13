@@ -16,14 +16,14 @@ PROCESS_IP6TABLES=yes
 PROCESS_EBTABLES=yes
 TABLES=
 IPTABLES_TABLES="mangle filter nat"
-IP6TABLES_TABLES="mangle filter nat"
+IP6TABLES_TABLES="mangle filter"
 EBTABLES_TABLES="broute filter nat"
 ACTIONS="start stop restart load unload reload flush show list count counters rule new create remove delete zero policy rename"
 
 usage()
 {
     echo '/etc/net FireWall handler'
-    echo "Usage: $0 [--ipt[ables]|--ip6t[ables]|--ebt[ables]|--no-ipt[ables]|--no-ip6t[ables]|--no-ebt[ables]] [iface] [table] [chain] <action> [iptables rule or action options]" >&2
+    echo "Usage: $0 [--ipt[ables]|--ip6t[ables]|--ebt[ables]|--no-ipt[ables]|--no-ip6t[ables]|--no-ebt[ables]] [iface] [table] [chain] <action> [firewall rule or action options]" >&2
     echo ""
     echo " --iptables     - process only with iptables firewall"
     echo " --ip6tables    - process only with ip6tables firewall"
