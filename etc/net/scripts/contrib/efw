@@ -555,7 +555,7 @@ pickup_defaults
     SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
 }
 
-[ is_yes "$CONFIG_FW" ] ||
+is_yes "$CONFIG_FW" ||
 {
     print_message "Firewall is disabled"
     exit 1

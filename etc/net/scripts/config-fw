@@ -40,10 +40,11 @@ fi
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
     }
 
-if  ! is_yes "$CONFIG_FW";  then
+is_yes "$CONFIG_FW" ||
+{
     print_message "Firewall is disabled"
     exit 1
-fi
+}
 
 SourceIfNotEmpty "$MYIFACEDIR/fw/options"
 
@@ -63,7 +64,7 @@ for CFW_TYPE in $FW_TYPE; do
 			}
 		    [ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] || continue
 		    # Load own interface syntax if exists
-		    [ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && \
+		    [ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && 
 			{
 			    [ -f "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && 
 				{
@@ -109,7 +110,7 @@ for CFW_TYPE in $FW_TYPE; do
 		    # Load own interface syntax if exists
 		    [ "$NAME" != "default" ] && is_yes "$IP6TABLES_HUMAN_SYNTAX" && 
 			{
-			    [ -f "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && \
+			    [ -f "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && 
 				{
 				    IP6TABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$CFW_TYPE"
 				    IP6TABLES_SYNTAX=
