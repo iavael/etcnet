@@ -956,7 +956,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			is_yes "$PROCESS_EBTABLES" || continue
 		 	[ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] ||
 			    {
-				 print_message"No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
+				 print_message "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
 				 print_message
 				 continue
 			    }
