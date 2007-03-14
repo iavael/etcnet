@@ -114,7 +114,7 @@ iptables_pop_rule()
 iptables_load_syntax()
 {
     : ${1:?missing 1st arg to $FUNCNAME}
-    [ ! -f "$1" ] || [ ! -s "$1" ] && \
+    [ ! -f "$1" ] || [ ! -s "$1" ] && 
 	{
 	    export IPTABLES_SYNTAX=
 	    return 1
@@ -158,7 +158,7 @@ iptables_expand_string()
 
 iptables_preload()
 {
-    is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$IPTABLES_SYNTAX" ] && \
+    is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$IPTABLES_SYNTAX" ] && 
 	{ 
 	    iptables_load_syntax ${IPTABLES_SYNTAX_DIR:=/etc/net/ifaces/default/fw/iptables}/syntax
 	    iptables_create_sed_rules "$IPTABLES_SYNTAX"
@@ -177,7 +177,7 @@ iptables_load_rules_from_file()
 	RULES=$(< "$TABLE/$CHAIN")
 	while read RULE; do
 	    RULE=$(iptables_expand_string "$RULE")
-	    [ -z "$RULE" ] || \
+	    [ -z "$RULE" ] || 
 		{
 		    read FIRST SECOND REST < <(echo $RULE)
     		    case $FIRST in
@@ -209,7 +209,7 @@ iptables_flush_rules_from_file()
 	    RULES=$(tac "$TABLE/$CHAIN")
 	    while read RULE; do
 		RULE=$(iptables_expand_string "$RULE")
-		[ -z "$RULE" ] || \
+		[ -z "$RULE" ] || 
 		    {
 		        read  FIRST SECOND REST < <(echo $RULE)
 		        case $FIRST in
@@ -243,17 +243,17 @@ iptables_start()
     # Set defaut policy
     if [ "$NAME" = "default" ]; then
 	TABLE=filter
-	[ -z "$IPTABLES_INPUT_POLICY" ] || \
+	[ -z "$IPTABLES_INPUT_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $IPTABLES_INPUT_POLICY policy for the \"INPUT\" chain in the \"$TABLE\" table"
 		iptables_chain_policy $TABLE INPUT "$IPTABLES_INPUT_POLICY"
 	    }
-	[ -z "$IPTABLES_FORWARD_POLICY" ] || \
+	[ -z "$IPTABLES_FORWARD_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $IPTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain in the \"$TABLE\" table"
 		iptables_chain_policy $TABLE FORWARD "$IPTABLES_FORWARD_POLICY"
 	    }
-	[ -z "$IPTABLES_OUTPUT_POLICY" ] || \
+	[ -z "$IPTABLES_OUTPUT_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $IPTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain in the \"$TABLE\" table"
 		iptables_chain_policy $TABLE OUTPUT "$IPTABLES_OUTPUT_POLICY"
@@ -274,7 +274,7 @@ iptables_start()
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
 	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || \
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
 		    iptables_create_chain $TABLE $CHAIN
@@ -360,7 +360,7 @@ iptables_stop()
 	    for CHAIN in "$TABLE"/*; do
 		CHAIN=$(basename "$CHAIN")
 		[ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || \
+		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || 
 		    {
 			print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
 			iptables_delete_chain $TABLE $CHAIN
@@ -503,7 +503,7 @@ ip6tables_pop_rule()
 ip6tables_load_syntax()
 {
     : ${1:?missing 1st arg to $FUNCNAME}
-    [ ! -f "$1" ] || [ ! -s "$1" ] && \
+    [ ! -f "$1" ] || [ ! -s "$1" ] && 
 	{
 	    export IP6TABLES_SYNTAX=
 	    return 1
@@ -547,7 +547,7 @@ ip6tables_expand_string()
 
 ip6tables_preload()
 {
-    is_yes "$IP6TABLES_HUMAN_SYNTAX" && [ -z "$IP6TABLES_SYNTAX" ] && \
+    is_yes "$IP6TABLES_HUMAN_SYNTAX" && [ -z "$IP6TABLES_SYNTAX" ] && 
 	{ 
 	    ip6tables_load_syntax ${IP6TABLES_SYNTAX_DIR:=/etc/net/ifaces/default/fw/ip6tables}/syntax
 	    ip6tables_create_sed_rules "$IP6TABLES_SYNTAX"
@@ -566,7 +566,7 @@ ip6tables_load_rules_from_file()
 	RULES=$(< "$TABLE/$CHAIN")
 	while read RULE; do
 	    RULE=$(ip6tables_expand_string "$RULE")
-	    [ -z "$RULE" ] || \
+	    [ -z "$RULE" ] || 
 		{
 		    read FIRST SECOND REST < <(echo $RULE)
     		    case $FIRST in
@@ -598,7 +598,7 @@ ip6tables_flush_rules_from_file()
 	    RULES=$(tac "$TABLE/$CHAIN")
 	    while read RULE; do
 		RULE=$(ip6tables_expand_string "$RULE")
-		[ -z "$RULE" ] || \
+		[ -z "$RULE" ] || 
 		    {
 		        read  FIRST SECOND REST < <(echo $RULE)
 		        case $FIRST in
@@ -632,17 +632,17 @@ ip6tables_start()
     # Set defaut policy
     if [ "$NAME" = "default" ]; then
 	TABLE=filter
-	[ -z "$IP6TABLES_INPUT_POLICY" ] || \
+	[ -z "$IP6TABLES_INPUT_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $IP6TABLES_INPUT_POLICY policy for the \"INPUT\" chain in the \"$TABLE\" table"
 		ip6tables_chain_policy $TABLE INPUT "$IP6TABLES_INPUT_POLICY"
 	    }
-	[ -z "$IP6TABLES_FORWARD_POLICY" ] || \
+	[ -z "$IP6TABLES_FORWARD_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $IP6TABLES_FORWARD_POLICY policy for the \"FORWARD\" chain in the \"$TABLE\" table"
 		ip6tables_chain_policy $TABLE FORWARD "$IP6TABLES_FORWARD_POLICY"
 	    }
-	[ -z "$IP6TABLES_OUTPUT_POLICY" ] || \
+	[ -z "$IP6TABLES_OUTPUT_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $IP6TABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain in the \"$TABLE\" table"
 		ip6tables_chain_policy $TABLE OUTPUT "$IP6TABLES_OUTPUT_POLICY"
@@ -663,7 +663,7 @@ ip6tables_start()
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
 	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IP6TABLES_SYSTEM_CHAINS") || \
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IP6TABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
 		    ip6tables_create_chain $TABLE $CHAIN
@@ -749,7 +749,7 @@ ip6tables_stop()
 	    for CHAIN in "$TABLE"/*; do
 		CHAIN=$(basename "$CHAIN")
 		[ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IP6TABLES_SYSTEM_CHAINS") || \
+		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IP6TABLES_SYSTEM_CHAINS") || 
 		    {
 			print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
 			ip6tables_delete_chain $TABLE $CHAIN
@@ -909,7 +909,7 @@ ebtables_load_rules_from_file()
         RULES=$(< "$TABLE/$CHAIN")
         while read RULE; do
 	    RULE=$(ebtables_expand_string "$RULE")
-	    [ -z "$RULE" ] || \
+	    [ -z "$RULE" ] || 
 	        {
 		    read FIRST SECOND REST < <(echo $RULE)
 		    case $FIRST in
@@ -941,7 +941,7 @@ ebtables_flush_rules_from_file()
 	    RULES=$(tac "$TABLE/$CHAIN")
 	    while read RULE; do
 		RULE=$(ebtables_expand_string "$RULE")
-		[ -z "$RULE" ] || \
+		[ -z "$RULE" ] || 
 		    {
 			read  FIRST SECOND REST < <(echo $RULE)
 			case $FIRST in
@@ -975,17 +975,17 @@ ebtables_start()
     # Set defaut policy (filter table)
     if [ "$NAME" = "default" ]; then
 	TABLE=filter
-	[ -z "$EBTABLES_INPUT_POLICY" ] || \
+	[ -z "$EBTABLES_INPUT_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $EBTABLES_INPUT_POLICY policy for the \"INPUT\" chain in the \"$TABLE\" table"
 		ebtables_chain_policy $TABLE INPUT "$EBTABLES_INPUT_POLICY"
 	    }
-	[ -z "$EBTABLES_FORWARD_POLICY" ] || \
+	[ -z "$EBTABLES_FORWARD_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $EBTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain in the \"$TABLE\" table"
 		ebtables_chain_policy $TABLE FORWARD "$EBTABLES_FORWARD_POLICY"
 	    }
-	[ -z "$EBTABLES_OUTPUT_POLICY" ] || \
+	[ -z "$EBTABLES_OUTPUT_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $EBTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain in the \"$TABLE\" table"
 		ebtables_chain_policy $TABLE OUTPUT "$EBTABLES_OUTPUT_POLICY"
@@ -1006,7 +1006,7 @@ ebtables_start()
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
 	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
 		    ebtables_create_chain $TABLE $CHAIN 
@@ -1092,7 +1092,7 @@ ebtables_stop()
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
 	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
 		    ebtables_delete_chain $TABLE $CHAIN

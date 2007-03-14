@@ -530,32 +530,36 @@ ebtables_local_rename_chain()
 export VERBOSE=on
 export PROGRESS=on
 
-if [ ! -s ${SCRIPTDIR:=/etc/net/scripts}/functions ]; then
-        echo "Error: $SCRIPTDIR/functions not found!"
-		exit 1
-fi
+[ -s ${SCRIPTDIR:=/etc/net/scripts}/functions ] ||
+{
+    echo "ERROR: $SCRIPTDIR/functions not found!"
+    exit 1
+}
 
 . ${SCRIPTDIR:=/etc/net/scripts}/functions
 pickup_defaults
 
-if [ ! -s ${SCRIPTDIR:=/etc/net/scripts}/functions-fw ]; then
-        echo "Error: $SCRIPTDIR/functions-fw not found!"
-		exit 1
-fi
+[ -s ${SCRIPTDIR:=/etc/net/scripts}/functions-fw ] ||
+{
+    print_error "$SCRIPTDIR/functions-fw not found!"
+    exit 1
+}
 
 . ${SCRIPTDIR:=/etc/net/scripts}/functions-fw
 
 [ -z "$NETPROFILE" ] && init_netprofile
 
-[ -z "$CONFIG_FW" ] && {
-	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
-	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
+[ -z "$CONFIG_FW" ] &&
+{
+    SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
+    SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
 }
 
-if  ! is_yes "$CONFIG_FW";  then
-	print_message "Firewall is disabled"
-	exit 1
-fi
+[ is_yes "$CONFIG_FW" ] ||
+{
+    print_message "Firewall is disabled"
+    exit 1
+}
 
 # FIXME variable TABLES must be reworked 
 case "$1" in
@@ -603,10 +607,10 @@ esac
 
 [ $# -lt 1 ] && usage || guess_options $@
 
-echo "Interface is \"$NAME\""
-echo "Table is \"$TABLE\""
-echo "Chain is \"$CHAIN\""
-echo "Action is \"$ACTION\""
+print_message "Interface is \"$NAME\""
+print_message "Table is \"$TABLE\""
+print_message "Chain is \"$CHAIN\""
+print_message "Action is \"$ACTION\""
 
 [ "$NAME" = "all" ] && NAME="*"
 
@@ -628,11 +632,17 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			is_yes "$CONFIG_IPV4" || continue
 		 	[ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] ||
 			    {
-				 echo "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
-				 echo ""
+				 print_message "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
+				 print_message
 				 continue
 			    }
-			echo "Firewall type is \"$CFW_TYPE\""
+			[ -x "$IPTABLES" ] || 
+			    {
+				print_error "$IPTABLES not found. Please, install iptables package"
+				print_message
+				continue
+			    }
+			print_message "Firewall type is \"$CFW_TYPE\""
 			[ "$NAME" != "default" ] && pickup_options
 			# Load own interface syntax if exists
 			[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" &&
@@ -777,7 +787,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					usage
 					;;
 			esac
-			echo ""
+			print_message
 			;;
 	    "ip6tables")
 			is_yes "$PROCESS_IP6TABLES" || continue
@@ -785,11 +795,17 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			is_yes "$CONFIG_IPV6" || continue
 		 	[ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] ||
 			    {
-				 echo "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
-				 echo ""
+				 print_message "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
+				 print_message
 				 continue
 			    }
-			echo "Firewall type is \"$CFW_TYPE\""
+			[ -x "$IP6TABLES" ] || 
+			    {
+				print_error "$IP6TABLES not found. Please, install iptables-ipv6 package"
+				print_message
+				continue
+			    }
+			print_message "Firewall type is \"$CFW_TYPE\""
 			[ "$NAME" != "default" ] && pickup_options
 			# Load own interface syntax if exists
 			[ "$NAME" != "default" ] && is_yes "$IP6TABLES_HUMAN_SYNTAX" &&
@@ -934,17 +950,23 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					usage
 					;;
 			esac
-			echo ""
+			print_message
 			;;
 	    "ebtables")
 			is_yes "$PROCESS_EBTABLES" || continue
 		 	[ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] ||
 			    {
-				 echo "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
-				 echo ""
+				 print_message"No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
+				 print_message
 				 continue
 			    }
-			echo "Firewall type is \"$CFW_TYPE\""
+			[ -x "$EBTABLES" ] || 
+			    {
+				print_error "$EBTABLES not found. Please, install ebtables package"
+				print_message
+				continue
+			    }
+			print_message "Firewall type is \"$CFW_TYPE\""
 			[ "$NAME" != "default" ] && pickup_options
 			case "$ACTION" in
 			    start)
@@ -1069,10 +1091,10 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					usage
 					;;
 			esac
-			echo ""
+			print_message
 			;;
 		*)
-			echo "Firewall type \"$CFW_TYPE\" isn't supported"
+			print_error "Firewall type \"$CFW_TYPE\" isn't supported"
 			;;
 	esac
     done

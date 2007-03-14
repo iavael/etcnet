@@ -36,18 +36,20 @@ export PROGRESS=on
 # We must define it
 export SCRIPTDIR=/etc/net/scripts
 
-if [ ! -s $SCRIPTDIR/functions ]; then
-    echo "Error: $SCRIPTDIR/functions not found!"
+[ -s $SCRIPTDIR/functions ] ||
+{
+    echo "ERROR: $SCRIPTDIR/functions not found!"
     exit 1
-fi
+}
 
 . $SCRIPTDIR/functions
 pickup_defaults
 
-if [ ! -s $SCRIPTDIR/config-qos ]; then
-    echo "Error: $SCRIPTDIR/config-qos not found!"
+[ -s $SCRIPTDIR/config-qos ] ||
+{
+    print_error "$SCRIPTDIR/config-qos not found!"
     exit 1
-fi
+}
 
 [ -z "$NETPROFILE" ] && init_netprofile
 
@@ -65,9 +67,9 @@ case $# in
 	;;
 esac
 
-echo "Interface is \"$NAME\""
-echo "Action is \"$ACTION\""
-echo ""
+print_message "Interface is \"$NAME\""
+print_message "Action is \"$ACTION\""
+print_message
 
 [ "$NAME" = "all" ] && NAME="*"
 
@@ -80,8 +82,8 @@ for IFACE in "$IFACEDIR"/$NAME; do
 	}
     [ ! -d "$MYIFACEDIR/qos" ] &&
 	{
-	     echo "No QoS is configured for interface \"$NAME\""
-	     echo ""
+	     print_message "No QoS is configured for interface \"$NAME\""
+	     print_message
 	     MYIFACEDIR=""
 	     continue
 	}
@@ -89,33 +91,33 @@ for IFACE in "$IFACEDIR"/$NAME; do
     [ "$NAME" != "default" ] && pickup_options
     case "$ACTION" in
 	start)
-		echo "Start QoS for device $NAME:"
+		print_message "Starting QoS for device $NAME:"
 		$SCRIPTDIR/config-qos $NAME start
 		;;
 	stop)
-		echo "Stop QoS for device $NAME:"
+		print_message "Stopping QoS for device $NAME:"
 		$SCRIPTDIR/config-qos $NAME stop
 		;;
 	restart)
-		echo "Restart QoS for device $NAME:"
+		print_message "Restarting QoS for device $NAME:"
 		$SCRIPTDIR/config-qos $NAME stop
 		$SCRIPTDIR/config-qos $NAME start
 		;;
 	show|list)
 		[ $# -ge 1 ] && STAT="$1" && shift
-		echo "\"$STAT\" list on device $NAME:"
+		print_message "\"$STAT\" list on device $NAME:"
 		$TC $STAT show dev $NAME $@
 		;;
 	stat|stats)
 		[ $# -ge 1 ] && STAT="$1" && shift
-		echo "\"$STAT\" statistics on device $NAME:"
+		print_message "\"$STAT\" statistics on device $NAME:"
 		$TC -s -d $STAT show dev $NAME $@
 		;;
 	*)
 		usage
 		;;
     esac
-    echo ""
+    print_message
     MYIFACEDIR=
     export MYIFACEDIR
 done

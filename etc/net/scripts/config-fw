@@ -28,12 +28,13 @@ else
     MYIFACEDIR=$IFACEDIR/$NAME
 fi
 
-[ -d "$MYIFACEDIR" ] || {
+[ -d "$MYIFACEDIR" ] ||
+{
     print_error "interface configuration directory $MYIFACEDIR not found"
     exit 1
 }
 
-[ -z "$CONFIG_FW" ] && \
+[ -z "$CONFIG_FW" ] && 
     {
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
 	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
@@ -55,11 +56,16 @@ for CFW_TYPE in $FW_TYPE; do
         "iptables")
 		    # FIXME Does iptables support only IPv4?
 		    is_yes "$CONFIG_IPV4" || continue
+		    [ -x "$IPTABLES" ] || 
+			{
+			    print_error "$IPTABLES not found. Please, install iptables package"
+			    continue
+			}
 		    [ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] || continue
 		    # Load own interface syntax if exists
 		    [ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && \
 			{
-			    [ -f "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && \
+			    [ -f "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && 
 				{
 				    IPTABLES_SYNTAX_DIR="$MYIFACEDIR/fw/$CFW_TYPE"
 				    IPTABLES_SYNTAX=
@@ -86,7 +92,7 @@ for CFW_TYPE in $FW_TYPE; do
 				iptables_start "$NAME"
 				;;
 			*)
-				echo "${0##*/} {start|stop|restart|reload}"
+				print_message "${0##*/} {start|stop|restart|reload}"
 				exit 1
 				;;
 		    esac
@@ -94,9 +100,14 @@ for CFW_TYPE in $FW_TYPE; do
         "ip6tables")
 		    # FIXME Does ip6tables support only IPv6?
 		    is_yes "$CONFIG_IPV6" || continue
+		    [ -x "$IP6TABLES" ] || 
+			{
+			    print_error "$IP6TABLES not found. Please, install iptables-ipv6 package"
+			    continue
+			}
 		    [ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] || continue
 		    # Load own interface syntax if exists
-		    [ "$NAME" != "default" ] && is_yes "$IP6TABLES_HUMAN_SYNTAX" && \
+		    [ "$NAME" != "default" ] && is_yes "$IP6TABLES_HUMAN_SYNTAX" && 
 			{
 			    [ -f "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && [ -s "$MYIFACEDIR/fw/$CFW_TYPE/syntax" ] && \
 				{
@@ -125,13 +136,18 @@ for CFW_TYPE in $FW_TYPE; do
 				ip6tables_start "$NAME"
 				;;
 			*)
-				echo "${0##*/} {start|stop|restart|reload}"
+				print_message "${0##*/} {start|stop|restart|reload}"
 				exit 1
 				;;
 		    esac
 		    ;;
 	"ebtables")
 		    [ -d "$MYIFACEDIR/fw/$CFW_TYPE" ] || continue
+		    [ -x "$EBTABLES" ] || 
+			{
+			    print_error "$EBTABLES not found. Please, install ebtables package"
+			    continue
+			}
 		    case "$ACTION" in
 		        start)
 			        ebtables_start "$NAME"
@@ -148,13 +164,13 @@ for CFW_TYPE in $FW_TYPE; do
 				ebtables_start "$NAME"
 				;;
 			*)
-				echo "${0##*/} {start|stop|restart|reload}"
+				print_message "${0##*/} {start|stop|restart|reload}"
 				exit 1
 				;;
 		    esac
 		    ;;
 		
 	*)
-		    echo "Firewall type $CFW_TYPE isn't supported"
+		    print_error "Firewall type $CFW_TYPE isn't supported"
     esac
 done
