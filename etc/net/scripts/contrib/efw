@@ -611,6 +611,7 @@ print_message "Interface is \"$NAME\""
 print_message "Table is \"$TABLE\""
 print_message "Chain is \"$CHAIN\""
 print_message "Action is \"$ACTION\""
+print_message
 
 [ "$NAME" = "all" ] && NAME="*"
 
