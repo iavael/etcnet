@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ln -sf squid.conf.ovpn /etc/squid/squid.conf && /etc/init.d/squid condreload

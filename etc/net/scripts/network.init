@@ -385,6 +385,9 @@ check()
 			vlan)
 				check_bin_x "${VCONFIG:-$DEFAULT_VCONFIG}"
 			;;
+			ovpn)
+				check_bin_x "${OVPN:-$DEFAULT_OVPN}"
+			;;
 			bond)
 				check_bin_x "${IFENSLAVE:-$DEFAULT_IFENSLAVE}"
 			;;

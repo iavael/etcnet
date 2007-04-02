@@ -1,0 +1,42 @@
+#!/bin/bash
+
+pickup_defaults
+pickup_options
+
+: ${TUNTYPE:?missing TUNTYPE}
+
+[ -x "${OVPN:=$DEFAULT_OVPN}" ] || {
+	print_error "$OVPN does not exist or is not executable. Try installing openvpn RPM."
+	exit 1
+}
+
+case "${TUNTYPE:=tun}" in
+	tun|tap) $MODPROBE $TUNTYPE ;;
+	*)	print_error "TUNTYPE for $NAME must be either 'tun' or 'tap'"
+		exit 1
+esac
+
+is_yes "$RESTORE_DEFAULTROUTE" && { # Save default route(s)
+	[ -d /var/run/openvpn ] || mkdir /var/run/openvpn
+	$IP ro ls | grep ^default > /var/run/openvpn/$NAME.defaultroute
+	[ -s /var/run/openvpn/$NAME.defaultroute ] || rm -f /var/run/openvpn/$NAME.defaultroute
+}
+
+PROF_KEYFILE=`profiled_filename ${OVPNKEYFILE:-$DEFAULT_OVPNKEYFILE}`
+PROF_CONFFILE=`profiled_filename ${OVPNCONFFILE:-$DEFAULT_OVPNCONFFILE}`
+PROF_POSTSTART=`profiled_filename ${OVPNPOSTSTART:-$DEFAULT_OVPNPOSTSTART}`
+
+[ -d $OVPNCHROOTDIR/cache ] && cd $OVPNCHROOTDIR/cache
+sleep 3
+$OVPN	--daemon --dev $NAME --dev-type $TUNTYPE \
+		--ifconfig $TUNLOCAL $TUNREMOTE \
+		--remote $OVPN_SERVER --port $OVPN_PORT \
+		--secret "$MYIFACEDIR/$PROF_KEYFILE" \
+		--config "$MYIFACEDIR/$PROF_CONFFILE" \
+		--writepid /var/run/openvpn/$NAME.pid \
+		--user openvpn --group openvpn \
+		--persist-tun --persist-key \
+		--chroot $OVPNCHROOTDIR
+
+[ -x "$MYIFACEDIR/$PROF_POSTSTART" ] && "$MYIFACEDIR/$PROF_POSTSTART"
+

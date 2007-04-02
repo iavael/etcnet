@@ -20,6 +20,7 @@ VLAN_NAMETYPE=DEV_PLUS_VID_NO_PAD
 # tools
 IP=/sbin/ip
 TC=/sbin/tc
+OVPN=/usr/sbin/openvpn
 MODPROBE=/sbin/modprobe
 LSMOD=/sbin/lsmod
 INSMOD=/sbin/insmod
@@ -66,5 +67,5 @@ AUTO_BROADCAST=off
 IFGROUP[0]='lo dummy'
 IFGROUP[1]='eth plip usb dvb bnep'
 IFGROUP[2]='vlan bond bri teql'
-IFGROUP[3]='iptun ipsectun'
+IFGROUP[3]='iptun ipsectun ovpn'
 IFGROUP[4]='ppp'

@@ -12,6 +12,7 @@
 	new feature: ip rules restoring is returned back
 	new feature: process iproute2 routes file when interface stops
 	new feature: process iproute2 rules file for IPv6
+	new feature: initial OpenVPN support
 0.8.5 2007-01-28
 	bugfix: name managements broke ethtool calls
 	bugfix: DHCP did not work for Fedora 5
