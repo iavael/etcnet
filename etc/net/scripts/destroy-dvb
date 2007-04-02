@@ -12,6 +12,8 @@ case "${DVBTYPE:?missing DVBTYPE option for $NAME, please fix}" in
 		}
 		NUM=`echo $NAME|cut -f2 -d_`
 		${DVBNET:=$DEFAULT_DVBNET} -d $NUM
+		# With new kernels we can safely unload module
+		try_rmmod b2c2_flexcop_pci
 	;;
 	pentanet)
 		try_rmmod pentanet

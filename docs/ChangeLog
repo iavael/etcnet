@@ -5,6 +5,7 @@
 	bugfix: variables IPV4ADDRESS and IPV6ADDRESS are global now
 	bugfix: /usr/sbin/bctrl changed to /sbin/bctrl
 	bugfix: wrong variable handling in create-bnep
+	bugfix: correct SkyStar-2 DVB cards support
 	new feature: ip6tables and ebtables support
 	new feature: shell and user-defined variables support in the iproute2 files
 	new feature: reverse iproute2 files parsing when interface stops
