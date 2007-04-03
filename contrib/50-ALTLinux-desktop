@@ -7,4 +7,4 @@ DHCP_CLIENT=/sbin/dhcpcd
 DHCP_TIMEOUT=30
 DHCP_GRACE_TIME=2
 DHCP_HOSTNAME=localhost
-DEFAULT_BRCTL=/sbin/brctl
+BRCTL=/sbin/brctl
