@@ -3,7 +3,7 @@
 	bugfix: don't trust b44 module any more
 	bugfix: don't depend on /usr/bin/seq
 	bugfix: variables IPV4ADDRESS and IPV6ADDRESS are global now
-	bugfix: /usr/sbin/bctrl should be /sbin/bctrl in the ALTLinux
+	bugfix: /usr/sbin/bctrl changed to /sbin/bctrl in the ALTLinux defaults
 	bugfix: wrong variable handling in create-bnep
 	bugfix: correct SkyStar-2 DVB cards support
 	new feature: ip6tables and ebtables support
