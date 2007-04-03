@@ -10,7 +10,7 @@ URL:		http://etcnet.org/
 Source:		%name-%version.tar.gz
 PreReq:		setup >= 0:2.1.9-ipl18mdk, service, startup >= 0:0.9.3-alt1
 Requires:	grep, sed, iproute2, ifrename >= 28-alt5.pre10, chkconfig
-Requires:	etcnet-defaults
+Requires:	etcnet-defaults = %version-%release
 BuildArch:	noarch
 Conflicts:	net-scripts
 Conflicts:	ethtool < 3-alt4, ifplugd < 0.28-alt2
@@ -64,9 +64,9 @@ in ALTLinux system.
 %package defaults-desktop
 Summary:	/etc/net defaults for a Linux desktop
 Group:		System/Configuration/Networking
-Provides:	%name-defaults
+Provides:	%name-defaults = %version-%release
 Conflicts:	%name-defaults-server
-Requires:	%name
+Requires:	%name = %version-%release
 
 %description defaults-desktop
 This package contains default options for a Linux desktop.
@@ -75,9 +75,9 @@ This package contains default options for a Linux desktop.
 %package defaults-server
 Summary:	/etc/net defaults for a Linux server
 Group:		System/Configuration/Networking
-Provides:	%name-defaults
+Provides:	%name-defaults = %version-%release
 Conflicts:	%name-defaults-desktop
-Requires:	%name
+Requires:	%name = %version-%release
 
 %description defaults-server
 This package contains default options for a Linux server.
@@ -152,6 +152,9 @@ fi
 %files full
 
 %changelog
+* Sun Jan 28 2007 Denis Ovsienko <pilot@altlinux.ru> 0.8.5-alt2
+- fixing multi-package dependencies to use version and release
+
 * Sun Jan 28 2007 Denis Ovsienko <pilot@altlinux.ru> 0.8.5-alt1
 - bugfix release
 
