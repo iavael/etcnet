@@ -1,6 +1,6 @@
 Name:		etcnet
-Version:	0.8.5
-Release:	alt0.2
+Version:	0.8.6
+Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -152,6 +152,10 @@ fi
 %files full
 
 %changelog
+* Tue Apr 03 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.8.6-alt1
+- New major release
+- New dependencies in the full package
+
 * Sun Jan 28 2007 Denis Ovsienko <pilot@altlinux.ru> 0.8.5-alt2
 - fixing multi-package dependencies to use version and release
 
