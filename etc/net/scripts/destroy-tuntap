@@ -1,0 +1,11 @@
+#!/bin/bash
+
+pickup_defaults
+pickup_options
+
+[ -x "${TUNCTL:=$DEFAULT_TUNCTL}" ] || {
+	print_error "$TUNCTL does not exist or is not executable. Try installing tunctl RPM."
+	exit 1
+}
+
+$TUNCTL -d "$NAME" > /dev/null

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+pickup_defaults
+pickup_options
+
+if [ ! -c /dev/net/tun ]; then
+    $MODPROBE tun || {
+	print_error "tuntap kernel module not found"
+	exit 1
+    }
+    [ -c /dev/net/tun ] || {
+	print_error "tuntap control node does not exist"
+	exit 1
+    }
+fi
+
+[ -x "${TUNCTL:=$DEFAULT_TUNCTL}" ] || {
+	print_error "$TUNCTL does not exist or is not executable. Try installing tunctl RPM."
+	exit 1
+}
+
+$TUNCTL -t "$NAME" ${TUNTAP_USER:+-u $TUNTAP_USER} > /dev/null
