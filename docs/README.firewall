@@ -1,3 +1,7 @@
+Following documentation is obsolete and should be rewritten. etcnet supports now
+iptables, ip6tables and ebtables with basic support of profiles (by using 
+fw/type#profile)
+===================================================================================
 Firewall support in /etc/net
 1. Iptables configs structure
 
