@@ -154,6 +154,8 @@ fi
 %changelog
 * Wed Apr 11 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.0-alt0.1
 - Bumping to 0.9.0
+- tunctl dependency in the full package
+- Description update
 
 * Tue Apr 03 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.8.6-alt1
 - New major release
