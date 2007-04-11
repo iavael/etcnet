@@ -42,7 +42,7 @@ added without overall design changes.
 #Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables
 #Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2, ipsecadm >= 0.9-alt8
 #Requires:	hotplug, ncpfs, pcmcia-cs >= 3.2.8-alt2, ppp, vlan-utils24, bridge-utils
-#Requires:	pptp-client, wpa_supplicant, zcip, rp-pppoe-base >= 3.6-alt2, openvpn
+#Requires:	pptp-client, wpa_supplicant, zcip, rp-pppoe-base >= 3.6-alt2, openvpn, tunctl
 #
 #%description full
 #This virtual package requires /etc/net and all packages that may appear useful
