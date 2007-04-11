@@ -1,0 +1,9 @@
+comp-lzo
+comp-noadapt
+route-noexec
+tun-mtu 1400
+tls-client
+ns-cert-type server
+ping-restart 30
+persist-local-ip
+persist-remote-ip
