@@ -1,4 +1,4 @@
-0.9.0
+0.9.0 2007-04-12
 	bugfix: Nigel Kukard fixes pickup_options()
 	bugfix: don't trust b44 module any more
 	bugfix: don't depend on /usr/bin/seq
@@ -12,8 +12,8 @@
 	new feature: ip rules restoring is returned back
 	new feature: process iproute2 routes file when interface stops
 	new feature: process iproute2 rules file for IPv6
-	new feature: initial OpenVPN support
-	new feature: TUN/TAP interfaces support
+	new feature: initial OpenVPN support (TUN/TAP)
+	new feature: UML TUN/TAP interfaces support
 	new feature: initial firewall profiles support
 0.8.5 2007-01-28
 	bugfix: name managements broke ethtool calls
