@@ -61,7 +61,7 @@ iptables_push_rule()
 			eval "$IPTABLES -t $TABLE $@" || print_error "$IPTABLES -t $TABLE $@"
 			;;
 	*)
-    			case ${IPTABLES_RULE_EMBEDDING:APPEND} in
+    			case ${IPTABLES_RULE_EMBEDDING:-APPEND} in
     			    APPEND)
 	   			    eval "$IPTABLES -t $TABLE -A $@" || print_error "$IPTABLES -t $TABLE -A $@"
 				    ;;
@@ -260,7 +260,7 @@ iptables_start()
 	    }
 	TABLE=
     fi
-    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE; do
@@ -322,7 +322,7 @@ iptables_stop()
     local TABLE
     local CHAIN
     [ "$NAME" = "default" ] && print_message "Stopping iptables for $NAME" || print_message -e  "\nStopping iptables for $NAME"
-    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # FIXME  Double code
     # Flush rules
     if [ -f "loadorder" ] && [ -s "loadorder" ]; then
@@ -450,7 +450,7 @@ ip6tables_push_rule()
 			eval "$IP6TABLES -t $TABLE $@" || print_error "$IP6TABLES -t $TABLE $@"
 			;;
 	*)
-    			case ${IP6TABLES_RULE_EMBEDDING:APPEND} in
+    			case ${IP6TABLES_RULE_EMBEDDING:-APPEND} in
     			    APPEND)
 	   			    eval "$IP6TABLES -t $TABLE -A $@" || print_error "$IP6TABLES -t $TABLE -A $@"
 				    ;;
@@ -649,7 +649,7 @@ ip6tables_start()
 	    }
 	TABLE=
     fi
-    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE; do
@@ -711,7 +711,7 @@ ip6tables_stop()
     local TABLE
     local CHAIN
     [ "$NAME" = "default" ] && print_message "Stopping ip6tables for $NAME" || print_message -e  "\nStopping ip6tables for $NAME"
-    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # FIXME  Double code
     # Flush rules
     if [ -f "loadorder" ] && [ -s "loadorder" ]; then
@@ -839,7 +839,7 @@ ebtables_push_rule()
 			eval "$EBTABLES -t $TABLE $@" || print_error "$EBTABLES -t $TABLE $@"
 			;;
         *)
-			case ${EBTABLES_RULE_EMBEDDING:APPEND} in
+			case ${EBTABLES_RULE_EMBEDDING:-APPEND} in
 			    APPEND)
 				    eval "$EBTABLES -t $TABLE -A $@" || print_error "$EBTABLES -t $TABLE -A $@"
 				    ;;
@@ -992,7 +992,7 @@ ebtables_start()
 	    }
 	TABLE=
     fi
-    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE; do
@@ -1054,7 +1054,7 @@ ebtables_stop()
     local TABLE
     local CHAIN
     [ "$NAME" = "default" ] && print_message "Stopping ebtables for $NAME" || print_message -e  "\nStopping ebtables for $NAME"
-    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # FIXME  Double code
     # Flush rules
     if [ -f "loadorder" ] && [ -s "loadorder" ]; then
