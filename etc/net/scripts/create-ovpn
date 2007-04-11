@@ -11,10 +11,13 @@ pickup_options
 }
 
 case "${TUNTYPE:=tun}" in
-	tun|tap) $MODPROBE $TUNTYPE ;;
+	tun) REMOTE=$TUNREMOTE	;;
+	tap) REMOTE=$TUNMASK	;;
 	*)	print_error "TUNTYPE for $NAME must be either 'tun' or 'tap'"
 		exit 1
 esac
+
+$MODPROBE tun
 
 is_yes "$RESTORE_DEFAULTROUTE" && { # Save default route(s)
 	[ -d /var/run/openvpn ] || mkdir /var/run/openvpn
@@ -22,21 +25,26 @@ is_yes "$RESTORE_DEFAULTROUTE" && { # Save default route(s)
 	[ -s /var/run/openvpn/$NAME.defaultroute ] || rm -f /var/run/openvpn/$NAME.defaultroute
 }
 
+PROF_CAFILE=`profiled_filename ${OVPNCAFILE:-$DEFAULT_OVPNCAFILE}`
+PROF_CRTFILE=`profiled_filename ${OVPNCRTFILE:-$DEFAULT_OVPNCRTFILE}`
 PROF_KEYFILE=`profiled_filename ${OVPNKEYFILE:-$DEFAULT_OVPNKEYFILE}`
 PROF_CONFFILE=`profiled_filename ${OVPNCONFFILE:-$DEFAULT_OVPNCONFFILE}`
 PROF_POSTSTART=`profiled_filename ${OVPNPOSTSTART:-$DEFAULT_OVPNPOSTSTART}`
 
+grep "tls" "$MYIFACEDIR/$PROF_CONFFILE" >/dev/null && 
+	TLS_ARGS="--ca $MYIFACEDIR/$PROF_CAFILE --cert $MYIFACEDIR/$PROF_CRTFILE --key $MYIFACEDIR/$PROF_KEYFILE" ||
+	TLS_ARGS="--secret $MYIFACEDIR/$PROF_KEYFILE"
+
 [ -d $OVPNCHROOTDIR/cache ] && cd $OVPNCHROOTDIR/cache
 sleep 3
+
 $OVPN	--daemon --dev $NAME --dev-type $TUNTYPE \
-		--ifconfig $TUNLOCAL $TUNREMOTE \
-		--remote $OVPN_SERVER --port $OVPN_PORT \
-		--secret "$MYIFACEDIR/$PROF_KEYFILE" \
-		--config "$MYIFACEDIR/$PROF_CONFFILE" \
-		--writepid /var/run/openvpn/$NAME.pid \
-		--user openvpn --group openvpn \
-		--persist-tun --persist-key \
-		--chroot $OVPNCHROOTDIR
+	--ifconfig $TUNLOCAL $REMOTE $TLS_ARGS \
+	--remote $OVPN_SERVER --port $OVPN_PORT \
+	--config "$MYIFACEDIR/$PROF_CONFFILE" \
+	--writepid /var/run/openvpn/$NAME.pid \
+	--user openvpn --group openvpn \
+	--persist-tun --persist-key \
+	--chroot $OVPNCHROOTDIR
 
 [ -x "$MYIFACEDIR/$PROF_POSTSTART" ] && "$MYIFACEDIR/$PROF_POSTSTART"
-

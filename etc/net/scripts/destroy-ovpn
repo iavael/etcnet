@@ -9,6 +9,8 @@ kill `cat /var/run/openvpn/$NAME.pid`
 
 [ -x "$MYIFACEDIR/$PROF_POSTSTOP" ] && "$MYIFACEDIR/$PROF_POSTSTOP"
 
+try_rmmod tun
+
 is_yes "$RESTORE_DEFAULTROUTE" && [ -s /var/run/openvpn/$NAME.defaultroute ] && {
 	xargise_file /var/run/openvpn/$NAME.defaultroute "$IP ro ad"
 	rm -f /var/run/openvpn/$NAME.defaultroute
