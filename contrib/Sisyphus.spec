@@ -24,7 +24,7 @@ management, removable devices, full iproute2 command set, interface
 dependencies resolution, QoS and firewall configuration frameworks.
 /etc/net provides support for the following interface types: Ethernet, WiFi
 (WEP), IPv4/IPv6 tunnels, PSK IPSec tunnels, VLAN, PLIP, Ethernet bonding and
-bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, UML TUN/TAP,
+bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, TUN/TAP,
 OpenVPN TUN/TAP, usbnet and PPP. Due to its modular structure, support for new
 interface types can be added without overall design changes.
 
@@ -36,7 +36,7 @@ interface types can be added without overall design changes.
 интерфейсных зависимостей и структуры конфигурации QoS и firewall.
 /etc/net поддерживает следующие типы интерфейсов: Ethernet, WiFi (WEP), туннели
 IPv4/IPv6, туннели PSK IPSec, VLAN, PLIP, Ethernet bonding и bridging, traffic
-equalizer, Pent@NET, Pent@VALUE, SkyStar-2, UML TUN/TAP, OpenVPN TUN/TAP, 
+equalizer, Pent@NET, Pent@VALUE, SkyStar-2, TUN/TAP, OpenVPN TUN/TAP, 
 usbnet и PPP. Благодаря модульной структуре поддержка новых типов интерфейсов 
 может быть добавлена без изменения общего дизайна.
 
