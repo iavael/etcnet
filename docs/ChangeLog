@@ -1,4 +1,4 @@
-0.8.6
+0.9.0
 	bugfix: Nigel Kukard fixes pickup_options()
 	bugfix: don't trust b44 module any more
 	bugfix: don't depend on /usr/bin/seq
