@@ -27,12 +27,12 @@ Requires:	initscripts = 8.39-1.etcnet.0
 Inspired by the limitations of traditional network configuration subsystems,
 /etc/net provides builtin support for configuration profiles, interface name
 management, removable devices, full iproute2 command set, interface
-dependencies resolution and a QoS configuration framework.
+dependencies resolution, QoS and firewall configuration frameworks.
 /etc/net provides support for the following interface types: Ethernet, WiFi
 (WEP), IPv4/IPv6 tunnels, PSK IPSec tunnels, VLAN, PLIP, Ethernet bonding and
-bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, usbnet
-and PPP. Due to its modular structure, support for new interface types can be
-added without overall design changes.
+bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, UML TUN/TAP,
+OpenVPN TUN/TAP, usbnet and PPP. Due to its modular structure, support for new
+interface types can be added without overall design changes.
 
 # This is yet to be researched on Fedora.
 #%package full

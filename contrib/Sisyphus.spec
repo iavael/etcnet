@@ -21,24 +21,24 @@ Provides:	network-config-subsystem
 Inspired by the limitations of traditional network configuration subsystems,
 /etc/net provides builtin support for configuration profiles, interface name
 management, removable devices, full iproute2 command set, interface
-dependencies resolution and a QoS configuration framework.
+dependencies resolution, QoS and firewall configuration frameworks.
 /etc/net provides support for the following interface types: Ethernet, WiFi
 (WEP), IPv4/IPv6 tunnels, PSK IPSec tunnels, VLAN, PLIP, Ethernet bonding and
-bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, usbnet
-and PPP. Due to its modular structure, support for new interface types can be
-added without overall design changes.
+bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, UML TUN/TAP,
+OpenVPN TUN/TAP, usbnet and PPP. Due to its modular structure, support for new
+interface types can be added without overall design changes.
 
 %description -l ru_RU.KOI8-R
 /etc/net представляет новый подход к задачам конфигурации сети для Linux.
 Инициированный ограничениями традиционных подсистем конфигурации сети, /etc/net
 предоставляет встроенную поддержку профилей конфигурации, управления именами
 интерфейсов, сменных устройств, полного набора команд iproute2, разрешения
-интерфейсных зависимостей и структуры конфигурации QoS.
+интерфейсных зависимостей и структуры конфигурации QoS и firewall.
 /etc/net поддерживает следующие типы интерфейсов: Ethernet, WiFi (WEP), туннели
 IPv4/IPv6, туннели PSK IPSec, VLAN, PLIP, Ethernet bonding и bridging, traffic
-equalizer, Pent@NET, Pent@VALUE, SkyStar-2, usbnet и PPP. Благодаря модульной
-структуре поддержка новых типов интерфейсов может быть добавлена без изменения
-общего дизайна.
+equalizer, Pent@NET, Pent@VALUE, SkyStar-2, UML TUN/TAP, OpenVPN TUN/TAP, 
+usbnet и PPP. Благодаря модульной структуре поддержка новых типов интерфейсов 
+может быть добавлена без изменения общего дизайна.
 
 %package full
 Summary:	/etc/net plus everything it can work with
