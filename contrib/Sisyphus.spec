@@ -142,6 +142,8 @@ fi
 %_man8dir/*
 /sbin/ifup
 /sbin/ifdown
+/sbin/eqos
+/sbin/efw
 
 %files defaults-desktop
 %config %_sysconfdir/net/options.d/50-ALTLinux-desktop
@@ -154,6 +156,7 @@ fi
 %changelog
 * Thu Apr 12 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.1-alt0.1
 - Bugfix release
+- New symlinks 'efw' and 'eqos' in the /sbin
 
 * Wed Apr 11 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.0-alt0.1
 - Bumping to 0.9.0

@@ -59,4 +59,6 @@ install:
 	@install -d $(sbindir)
 	@ln -s ../etc/net/scripts/ifup $(sbindir)/ifup
 	@ln -s ../etc/net/scripts/ifdown $(sbindir)/ifdown
+	@ln -s ../etc/net/scripts/contrib/efw $(sbindir)/efw
+	@ln -s ../etc/net/scripts/contrib/eqos $(sbindir)/eqos
 	@echo Done!
