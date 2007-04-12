@@ -549,17 +549,15 @@ pickup_defaults
 
 [ -z "$NETPROFILE" ] && init_netprofile
 
-[ -z "$CONFIG_FW" ] &&
-{
-    SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
-    SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
-}
+SourceIfNotEmpty "$(profiled_filename /etc/net/ifaces/default/options)"
 
 is_yes "$CONFIG_FW" ||
 {
     print_message "Firewall is disabled"
     exit 1
 }
+
+SourceIfNotEmpty "$(profiled_filename /etc/net/ifaces/default/fw/options)"
 
 # FIXME variable TABLES must be reworked 
 case "$1" in
@@ -607,6 +605,8 @@ esac
 
 [ $# -lt 1 ] && usage || guess_options $@
 
+[ "$NAME" = "default" -o "$NAME" = "unknown" ] || pickup_options
+
 print_message "Interface is \"$NAME\""
 print_message "Table is \"$TABLE\""
 print_message "Chain is \"$CHAIN\""
@@ -622,7 +622,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 	{
 	    [ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
 	}
-    SourceIfNotEmpty "$MYIFACEDIR/fw/options"
+    SourceIfNotEmpty "$(profiled_filename $MYIFACEDIR/fw/options)"
     is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
     is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
     for CFW_TYPE in $FW_TYPE; do
