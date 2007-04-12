@@ -18,6 +18,7 @@ eval "IPV4ADDRESS=($3)"
 eval "IPV6ADDRESS=($4)"
 
 pickup_defaults
+pickup_options
 . ${SCRIPTDIR:=/etc/net/scripts}/functions-fw
 
 [ -z "$NETPROFILE" ] && init_netprofile
@@ -47,10 +48,6 @@ is_yes "$CONFIG_FW" ||
 }
 
 SourceIfNotEmpty "$MYIFACEDIR/fw/options"
-
-# FIXME
-#init_netprofile
-#pickup_options
 
 for CFW_TYPE in $FW_TYPE; do
     case "$CFW_TYPE" in
