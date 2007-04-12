@@ -605,7 +605,6 @@ esac
 
 [ $# -lt 1 ] && usage || guess_options $@
 
-[ "$NAME" = "default" -o "$NAME" = "unknown" ] || pickup_options
 
 print_message "Interface is \"$NAME\""
 print_message "Table is \"$TABLE\""
@@ -618,6 +617,7 @@ print_message
 for IFACE in "$IFACEDIR"/$NAME; do
     [ -d "$IFACE" ] || continue
     NAME=$(basename $IFACE)
+    [ "$NAME" = "default" -o "$NAME" = "unknown" ] || pickup_options
     [ -z "$MYIFACEDIR" ] &&
 	{
 	    [ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
