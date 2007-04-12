@@ -1,5 +1,6 @@
 0.9.1 2007-04-12
 	bugfix: firewall didn't start for the 'default' interface
+	bugfix: firewall didn't read options file in some cases
 	bugfix: ip6tables doesn't support the 'nat' table
 0.9.0 2007-04-12
 	bugfix: Nigel Kukard fixes pickup_options()
