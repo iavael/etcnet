@@ -1,5 +1,5 @@
 Name:		etcnet
-Version:	0.9.0
+Version:	0.9.1
 Release:	alt0.1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
@@ -152,6 +152,9 @@ fi
 %files full
 
 %changelog
+* Thu Apr 12 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.1-alt0.1
+- Bugfix release
+
 * Wed Apr 11 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.0-alt0.1
 - Bumping to 0.9.0
 - tunctl dependency in the full package
