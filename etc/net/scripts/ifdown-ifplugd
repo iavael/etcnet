@@ -64,11 +64,20 @@ esac
 ExecIfExecutable $LOCALSCRIPTDIR/ifdown-pre-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
 # The same things as ifdown does.
+
+# get ipv4 and/or ipv6 addresses of the interface. get them in any way
+# (interface can be "down", but has addresses)
+is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && IPV4ADDRESS="$(get_ipv4_addresses $NAME)"
+is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && IPV6ADDRESS="$(get_ipv6_addresses $NAME)"
+
+# stop QoS and FireWall before iproute2 rules stop
+is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos  $NAME stop "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
+is_yes "$CONFIG_FW"   && $SCRIPTDIR/config-fw   $NAME stop "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
+
 is_yes "$CONFIG_IPX"  && $SCRIPTDIR/config-ipx  $NAME stop
-is_yes "$CONFIG_IPV6" && $SCRIPTDIR/config-ipv6 $NAME stop
-is_yes "$CONFIG_IPV4" && $SCRIPTDIR/config-ipv4 $NAME stop
-is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos  $NAME stop
-is_yes "$CONFIG_FW"   && $SCRIPTDIR/config-fw   $NAME stop
+is_yes "$CONFIG_IPV6" && $SCRIPTDIR/config-ipv6 $NAME stop "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
+is_yes "$CONFIG_IPV4" && $SCRIPTDIR/config-ipv4 $NAME stop "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
+
 ExecIfExecutable $LOCALSCRIPTDIR/ifdown-post-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-post $NAME && print_progress
 
