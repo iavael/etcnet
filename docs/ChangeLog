@@ -1,6 +1,7 @@
 0.9.2
 	bugfix: ifdown-ifplugd didn't get IPv4 and IPv6 addresses on stop
 	new feature: iwpriv parameters file
+	change: allow empty bridges
 0.9.1 2007-04-12
 	bugfix: firewall didn't start for the 'default' interface
 	bugfix: firewall didn't read options file in some cases
