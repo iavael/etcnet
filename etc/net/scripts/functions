@@ -15,6 +15,7 @@ PROFILE_FILE=/etc/net/profile
 PROC_CMDLINE=/proc/cmdline
 DEFAULT_IFPLUGSTATUS=/usr/sbin/ifplugstatus
 DEFAULT_IFPLUGD=/usr/sbin/ifplugd
+DEFAULT_IWPRIV=/sbin/iwpriv
 DEFAULT_IWCONFIG=/sbin/iwconfig
 DEFAULT_WPA_SUPPLICANT=/usr/sbin/wpa_supplicant
 DEFAULT_PLIPCONFIG=/sbin/plipconfig

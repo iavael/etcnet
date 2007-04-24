@@ -14,9 +14,16 @@ NAME=$1
 pickup_defaults
 pickup_options
 
+# Dunno if $IFACEDIR/default/{iwpriv,iwconfig} can be of any use
+
+# configure private extensions
+if [ -x "${IWPRIV:=$DEFAULT_IWPRIV}" ]; then
+	xargise_file $IFACEDIR/default/iwpriv "$IWPRIV $NAME"
+	xargise_file $MYIFACEDIR/iwpriv "$IWPRIV $NAME"
+fi
+
 # configure WEP
 if [ -x "${IWCONFIG:=$DEFAULT_IWCONFIG}" ]; then
-	# Dunno if $IFACEDIR/default/iwconfig can be of any use
 	xargise_file $IFACEDIR/default/iwconfig "$IWCONFIG $NAME"
 	xargise_file $MYIFACEDIR/iwconfig "$IWCONFIG $NAME"
 fi
