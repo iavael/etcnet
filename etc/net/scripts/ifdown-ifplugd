@@ -51,15 +51,17 @@ case "$BOOTPROTO" in
 	;;
 esac
 
-case "$USE_IFPLUGD" in
-	[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1|[Aa][Uu][Tt][Oo])
+if [ "${0##/*}" = "ifdown-ifplugd" ]; then
+	case "$USE_IFPLUGD" in
+		[Yy][Ee][Ss]|[Tt][Rr][Uu][Ee]|[Oo][Nn]|[Yy]|1|[Aa][Uu][Tt][Oo])
 		# It's Ok, just do the job.
-	;;
-	*)
+		;;
+		*)
 		print_error "ERROR: USE_IFPLUGD is not enabled for $NAME"
 		exit 1
-	;;
-esac
+		;;
+	esac
+fi
 
 ExecIfExecutable $LOCALSCRIPTDIR/ifdown-pre-local $NAME && print_progress
 ExecIfExecutable $MYIFACEDIR/ifdown-pre $NAME && print_progress
