@@ -199,8 +199,10 @@ fi
 # handle wireless extensions, if any
 if is_yes "$CONFIG_WIRELESS" && is_wireless $NAME; then
     if ! is_yes $IN_WPA_CLI; then
-	$SCRIPTDIR/config-wireless $NAME && print_progress 
-	exit 0
+	$SCRIPTDIR/config-wireless $NAME
+	rc = $?
+	[ $rc -eq 2 ] || exit $rc
+	print_progress
     fi
 fi
 
