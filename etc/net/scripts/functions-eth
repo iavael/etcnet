@@ -18,8 +18,12 @@ check_eth_link ()
 # checks, if given iface is wireless one
 is_wireless ()
 {
-    # FIXME better way ?
-    [ -d "/sys/class/net/$1/wireless" ]
+	# FIXME better way ?
+	if [ -d "/sys/class" ]; then
+		[ -d "/sys/class/net/$1/wireless" ]
+	else
+		grep -q "^[[:blank:]]*$1:" /proc/net/wireless
+	fi
 }
 
 # see ifaces/default/options-eth
