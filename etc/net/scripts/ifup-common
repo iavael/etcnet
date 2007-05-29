@@ -204,7 +204,7 @@ fi
 if is_yes "$CONFIG_WIRELESS" && is_wireless $NAME; then
     if ! is_yes $IN_WPA_CLI; then
 	$SCRIPTDIR/config-wireless $NAME
-	rc = $?
+	rc=$?
 	[ $rc -eq 2 ] || exit $rc
 	print_progress
     fi
