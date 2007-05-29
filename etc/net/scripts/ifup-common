@@ -39,6 +39,10 @@ case "$USE_IFPLUGD" in
 		# A and D
 		if ! is_yes "$IN_IFPLUGD"; then
 			# D
+			! is_wireless $NAME || {
+				print_error "ERROR: USE_IFPLUGD=yes for $NAME, wireless card is unsupported"
+				exit 1
+			}
 			! is_yes "$HAVE_IFPLUGD" && exit 1
 			if is_yes "$PERSISTENT_IFPLUGD"; then
 				if ! ifplugd_runs; then
