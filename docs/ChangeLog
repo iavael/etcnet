@@ -1,6 +1,7 @@
 0.9.2 2007-04-27
 	bugfix: ifdown-ifplugd didn't get IPv4 and IPv6 addresses on stop
 	new feature: iwpriv parameters file
+	change: use wpa_supplicant/wpa_cli for wifi ifaces in ifplugd-like manner
 	change: allow empty bridges
 0.9.1 2007-04-12
 	bugfix: firewall didn't start for the 'default' interface

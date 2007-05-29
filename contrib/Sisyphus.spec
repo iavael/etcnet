@@ -1,11 +1,10 @@
 Name:		etcnet
 Version:	0.9.2
-Release:	alt1
+Release:	alt2
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
 Group:		System/Base
-Packager:	Denis Ovsienko <pilot@altlinux.ru>
 URL:		http://etcnet.org/
 Source:		%name-%version.tar.gz
 PreReq:		setup >= 0:2.1.9-ipl18mdk, service, startup >= 0:0.9.3-alt1
@@ -84,7 +83,7 @@ This package contains default options for a Linux server.
 
 
 %prep
-%setup -q
+%setup
 # Don't package .htaccess (https://bugzilla.altlinux.org/show_bug.cgi?id=10101)
 find . -type f -a -name .htaccess -exec rm -f \{\} \;
 
@@ -154,6 +153,9 @@ fi
 %files full
 
 %changelog
+* Tue May 29 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.2-alt2
+- use wpa_supplicant/wpa_cli instead of ifplugd for wifi ifaces (#11647)
+
 * Sun Apr 29 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.2-alt1
 - Minor bugfix release
 
