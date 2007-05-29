@@ -1,6 +1,6 @@
 Name:		etcnet
-Version:	0.9.1
-Release:	alt0.1
+Version:	0.9.2
+Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -154,6 +154,9 @@ fi
 %files full
 
 %changelog
+* Sun Apr 29 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.2-alt1
+- Minor bugfix release
+
 * Thu Apr 12 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.1-alt0.1
 - Bugfix release
 - New symlinks 'efw' and 'eqos' in the /sbin
