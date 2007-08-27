@@ -1,12 +1,12 @@
 Name:		etcnet
-Version:	0.9.2
-Release:	alt2
+Version:	0.9.3
+Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
 Group:		System/Base
 URL:		http://etcnet.org/
-Source:		%name-%version.tar.gz
+Source:		%name-%version-%release.tar
 PreReq:		setup >= 0:2.1.9-ipl18mdk, service, startup >= 0:0.9.3-alt1
 Requires:	grep, sed, iproute2, ifrename >= 28-alt5.pre10, chkconfig
 Requires:	etcnet-defaults = %version-%release
@@ -87,8 +87,6 @@ This package contains default options for a Linux server.
 # Don't package .htaccess (https://bugzilla.altlinux.org/show_bug.cgi?id=10101)
 find . -type f -a -name .htaccess -exec rm -f \{\} \;
 
-%build
-
 %install
 # Common part first, distribution-specific files later.
 make -f contrib/Makefile prefix=%{buildroot} install
@@ -153,6 +151,10 @@ fi
 %files full
 
 %changelog
+* Mon Aug 27 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.3-alt1
+- use avahi-autoipd instead of zcip for ipv4ll addresses
+- preliminary support for tunneling via openssh -w feature
+
 * Tue May 29 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.2-alt2
 - use wpa_supplicant/wpa_cli instead of ifplugd for wifi ifaces (#11647)
 
