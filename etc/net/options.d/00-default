@@ -30,7 +30,7 @@ IFRENAME=/sbin/ifrename
 TUNCTL=/usr/sbin/tunctl
 
 # IPv4LL
-ZCIP_CLIENT=/sbin/zcip
+ZCIP_CLIENT=/usr/sbin/avahi-autoipd
 
 # IPX tools
 IPX_INTERFACE=/sbin/ipx_interface

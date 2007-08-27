@@ -88,7 +88,7 @@ try_dhcp()
 try_ipv4ll()
 {
 	[ -x "$ZCIP_CLIENT" ] || {
-		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing zcip RPM."
+		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing avahi-autoipd RPM."
 		return 1
 	}
 	if need_detection; then
@@ -99,7 +99,7 @@ try_ipv4ll()
 			return 1
 		fi
 	fi
-	$ZCIP_CLIENT -s -i $NAME
+	$ZCIP_CLIENT --daemonize --wait $NAME
 	local RET=$?
 	if [ "$RET" != "0" ]; then
 		print_nack

@@ -486,6 +486,14 @@ stop_dhcp_client()
 	fi
 }
 
+stop_ipv4ll_client()
+{
+    local PIDFILE=/var/run/autoipd/avahi-autoipd.$NAME.pid
+    if [ -s $PIDFILE ]; then
+	kill `cat $PIDFILE`
+    fi
+}
+
 eval_string()
 {
     : ${1:?missing 1st arg to $FUNCNAME}

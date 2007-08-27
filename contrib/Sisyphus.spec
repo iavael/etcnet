@@ -47,7 +47,7 @@ Requires:	%name = %version-%release, wireless-tools
 Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables
 Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2, ipsecadm >= 0.9-alt8
 Requires:	hotplug, ncpfs, ppp, vlan-utils24, bridge-utils, openvpn, tunctl
-Requires:	pptp-client, wpa_supplicant, zcip, rp-pppoe-base >= 3.6-alt2
+Requires:	pptp-client, wpa_supplicant, avahi-autoipd, rp-pppoe-base >= 3.6-alt2
 
 %description full
 This virtual package requires /etc/net and all packages that may appear useful
