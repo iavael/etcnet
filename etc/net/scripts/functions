@@ -508,7 +508,7 @@ declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netp
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
 declare -frx have_ifplugd pickup_defaults trim need_detection stop_dhcp_client
-declare -frx modprobe_with_rename
+declare -frx stop_ipv4ll_client modprobe_with_rename
 declare -frx eval_string
 declare -rx DENOISE DEFAULT_BONDMODE IFACEDIR LOCALSCRIPTDIR VARLIBDIR
 declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS
