@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.9.3
-Release:	alt1
+Release:	alt2
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -151,6 +151,9 @@ fi
 %files full
 
 %changelog
+* Fri Aug 31 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.3-alt2
+- fixed bug in avahi-autoipd usage made in previous release
+
 * Mon Aug 27 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.3-alt1
 - use avahi-autoipd instead of zcip for ipv4ll addresses
 - preliminary support for tunneling via openssh -w feature
