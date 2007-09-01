@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.9.3
-Release:	alt2
+Release:	alt3
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -151,6 +151,9 @@ fi
 %files full
 
 %changelog
+* Sat Sep  1 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.3-alt3
+- probe several times for /dev/net/tun after `tun' module load (#12659)
+
 * Fri Aug 31 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.3-alt2
 - fixed bug in avahi-autoipd usage made in previous release
 
