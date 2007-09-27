@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ln -sf squid.conf.pppoe /etc/squid/squid.conf && /etc/init.d/squid condreload

@@ -9,7 +9,7 @@ try_static()
 		$DENOISE $REALFILE | while read ADDRESSLINE; do
 			is_yes "$AUTO_BROADCAST" && [ "$ADDRESSLINE" = "${ADDRESSLINE/broadcast/}" ] && \
 				ADDRESSLINE="$ADDRESSLINE broadcast +"
-			$IP -4 address add dev $NAME $ADDRESSLINE && print_progress
+			$IP -4 address add dev $NAME $(eval_string $ADDRESSLINE) && print_progress
 		done
 	fi
 	return 0
@@ -88,7 +88,7 @@ try_dhcp()
 try_ipv4ll()
 {
 	[ -x "$ZCIP_CLIENT" ] || {
-		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing zcip RPM."
+		print_error "$ZCIP_CLIENT does not exist or is not executable. Try installing avahi-autoipd RPM."
 		return 1
 	}
 	if need_detection; then
@@ -99,7 +99,7 @@ try_ipv4ll()
 			return 1
 		fi
 	fi
-	$ZCIP_CLIENT -s -i $NAME
+	$ZCIP_CLIENT --daemonize --wait $NAME
 	local RET=$?
 	if [ "$RET" != "0" ]; then
 		print_nack
@@ -109,37 +109,70 @@ try_ipv4ll()
 	return $RET
 }
 
+process_ipv4rules()
+{
+	local OP=${1:?missing 1st arg to $FUNCNAME}
+	local REVERSE
+	[ "$OP" = "del" ] && REVERSE="|tac"
+	SRCFILE=`profiled_filename $MYIFACEDIR/ipv4rule`
+	[ -s "$SRCFILE" ] && eval "$DENOISE \"$SRCFILE\" $REVERSE" | \
+	while read FIRST REST; do
+		case "$FIRST" in
+			add)
+				[ $OP = "del" ] && FIRST=del
+			;;
+			del)
+				# should we restore deleted rules on iface shutdown?
+				 [ $OP = "del" ] && FIRST=add
+			;;
+			*)
+				FIRST="$OP $FIRST"
+			;;
+		esac
+		$IP -4 rule $(eval_string $FIRST $REST)
+		print_progress
+	done
+}
+
 config_ipv4_routes_rules()
 {
 	# setup routes
+	local OP=${1:?missing 1st arg to $FUNCNAME}
 	local SRCFILE=`profiled_filename $MYIFACEDIR/ipv4route`
 	local SUFFIX
-	[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
+	IPV4ADDRESS=($(get_ipv4_addresses $NAME))
+	[ "$OP" = "del" ] && REVERSE="|tac"
+	[ -s "$SRCFILE" ] && eval "$DENOISE \"$SRCFILE\" $REVERSE" | \
 	while read FIRST REST; do
 		# If 'dev' is not specified, add current dev.
 		SUFFIX=''
 		echo "$FIRST $REST" | egrep -q '[[:space:]]dev[[:space:]]' || SUFFIX="dev $NAME"
 		# If operation is not specified, use 'append'.
 		case "$FIRST" in
-			add|del|change|append|replace)
-				$IP -4 route $FIRST $REST $SUFFIX
+			add|change|append|replace)
+				[ $OP = "del" ] && FIRST=del
+			;;
+			del)
+				# should we restore deleted rules on iface shutdown?
+				[ $OP = "del" ] && FIRST=add
 			;;
 			*)
-				$IP -4 route append $FIRST $REST $SUFFIX
+				[ "$OP" = "add" ] && FIRST="append $FIRST" || FIRST="$OP $FIRST"
 			;;
 		esac
+		$IP -4 route $(eval_string $FIRST $REST $SUFFIX)
 		print_progress
 	done
 
 	# Setup rules only after routes are Ok, so that route tables are
 	# already populated when rule starts routing traffic to them.
-	process_ipv4rules add
+	process_ipv4rules $OP
 }
 
 get_ipv4_addresses()
 {
     local NAME=${1:?missing 1st argument to $FUNCNAME}
-    printf "$(ip addr show dev $NAME 2>/dev/null|grep  -ose "\binet\b.*\([0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\)"|cut -f2 -d" "|cut -f1 -d"/")"
+    # FIXME should we parse it by more complex regexp?
+    printf "$($IP -4 addr show dev $NAME 2>/dev/null|grep  -ose "\binet\b.*\b"|cut -f2 -d" "|cut -f1 -d"/")"
 }
 
-declare -ax IPV4ADDRESS

@@ -13,7 +13,7 @@ usage()
 [ -z "$1" ] && usage
 export NAME=$1
 
-# forget everything we have inherited from ifplugd
+# forget everything we have inherited from ifplugd/wpa_cli
 export SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 pickup_defaults
@@ -37,4 +37,15 @@ is_yes "$DISABLED" && {
 seen_iface $NAME && exit 0
 add_seen_iface $NAME
 export SEEN_IFACES
-IN_IFPLUGD=yes $SCRIPTDIR/ifup-common $NAME
+
+case "${0##*/}" in
+    ifup-ifplugd)
+    IN_WPA_CLI=no IN_IFPLUGD=yes $SCRIPTDIR/ifup-common $NAME
+    ;;
+    ifup-wireless)
+    USE_IFPLUGD=no IN_IFPLUGD=no IN_WPA_CLI=yes $SCRIPTDIR/ifup-common $NAME
+    ;;
+    *)
+    $SCRIPTDIR/ifup-common $NAME
+    ;;
+esac

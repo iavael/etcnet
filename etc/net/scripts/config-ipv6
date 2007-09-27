@@ -7,14 +7,17 @@ usage()
 	exit 1
 }
 
-[ $# -eq 2 ] || usage
+[ $# -ge 2 ] || usage
 NAME=$1
 ACTION=$2
+eval "IPV4ADDRESS=($3)"
+eval "IPV6ADDRESS=($4)"
 pickup_defaults
 $MODPROBE ipv6
 
 case $ACTION in
 	start)
+		. $SCRIPTDIR/functions-ipv6
 		if ! is_yes "$DONT_FLUSH"; then
 			$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
 			$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
@@ -22,27 +25,12 @@ case $ACTION in
 		fi
 		xargise_file $MYIFACEDIR/ipv6address "$IP -6 address add dev $NAME"
 		if iface_is_up $NAME; then
-			# setup routes
-			SRCFILE=`profiled_filename $MYIFACEDIR/ipv6route`
-			[ -s "$SRCFILE" ] && $DENOISE "$SRCFILE" | \
-			while read FIRST REST; do
-				# If 'dev' is not specified, add current dev.
-				SUFFIX=''
-				echo "$FIRST $REST" | egrep -q '[[:space:]]dev[[:space:]]' || SUFFIX="dev $NAME"
-				# If operation is not specified, use 'append'.
-				case "$FIRST" in
-					add|del|change|append|replace)
-						$IP -6 route $FIRST $REST $SUFFIX
-					;;
-					*)
-						$IP -6 route append $FIRST $REST $SUFFIX
-					;;
-				esac
-				print_progress
-			done
+		    config_ipv6_routes_rules add
 		fi
 	;;
 	stop)
+		. $SCRIPTDIR/functions-ipv6
+		config_ipv6_routes_rules del
 		if ! is_yes "$DONT_FLUSH"; then
 			$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
 			$IP -6 address flush dev $NAME scope site >/dev/null 2>&1

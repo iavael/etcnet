@@ -14,18 +14,28 @@ NAME=$1
 pickup_defaults
 pickup_options
 
+# Dunno if $IFACEDIR/default/{iwpriv,iwconfig} can be of any use
+
+# configure private extensions
+if [ -x "${IWPRIV:=$DEFAULT_IWPRIV}" ]; then
+	xargise_file $IFACEDIR/default/iwpriv "$IWPRIV $NAME"
+	xargise_file $MYIFACEDIR/iwpriv "$IWPRIV $NAME"
+fi
+
 # configure WEP
 if [ -x "${IWCONFIG:=$DEFAULT_IWCONFIG}" ]; then
-	# Dunno if $IFACEDIR/default/iwconfig can be of any use
 	xargise_file $IFACEDIR/default/iwconfig "$IWCONFIG $NAME"
 	xargise_file $MYIFACEDIR/iwconfig "$IWCONFIG $NAME"
 fi
 
 # configure WPA
-if [ -x "${WPA_SUPPLICANT:=$DEFAULT_WPA_SUPPLICANT}" ]; then
-	prof_conf=`profiled_filename $MYIFACEDIR/wpa_supplicant.conf`
-	if [ -s "$prof_conf" ]; then
-		$WPA_SUPPLICANT -i$NAME${WPA_DRIVER:+ -D$WPA_DRIVER} -c $prof_conf 2>&1>/dev/null &
-		echo $! >/var/run/wpa_supplicant-$NAME.pid
-	fi
+prof_conf=`profiled_filename $MYIFACEDIR/wpa_supplicant.conf`
+if [ -x "${WPA_SUPPLICANT:=$DEFAULT_WPA_SUPPLICANT}" -a \
+	-x "${WPA_CLI:=$DEFAULT_WPA_CLI}" -a \
+	-s "$prof_conf" ]; then
+	$WPA_SUPPLICANT -i$NAME${WPA_DRIVER:+ -D$WPA_DRIVER} \
+		-B -P/var/run/wpa_supplicant-$NAME.pid -c $prof_conf && \
+	$WPA_CLI -i$NAME -B -P/var/run/wpa_cli-$NAME.pid -a $SCRIPTDIR/wpa_cli.action
+else
+	exit 2		# continue without wpa_cli
 fi

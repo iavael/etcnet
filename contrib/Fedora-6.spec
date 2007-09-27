@@ -27,22 +27,22 @@ Requires:	initscripts = 8.39-1.etcnet.0
 Inspired by the limitations of traditional network configuration subsystems,
 /etc/net provides builtin support for configuration profiles, interface name
 management, removable devices, full iproute2 command set, interface
-dependencies resolution and a QoS configuration framework.
+dependencies resolution, QoS and firewall configuration frameworks.
 /etc/net provides support for the following interface types: Ethernet, WiFi
 (WEP), IPv4/IPv6 tunnels, PSK IPSec tunnels, VLAN, PLIP, Ethernet bonding and
-bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, usbnet
-and PPP. Due to its modular structure, support for new interface types can be
-added without overall design changes.
+bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, TUN/TAP,
+OpenVPN TUN/TAP, usbnet and PPP. Due to its modular structure, support for new
+interface types can be added without overall design changes.
 
 # This is yet to be researched on Fedora.
 #%package full
 #Summary:	/etc/net plus everything it can work with
 #Group:		System/Configuration/Networking
 #Requires:	%name = %version-%release, wireless-tools
-#Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, ebtables
+#Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables
 #Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2, ipsecadm >= 0.9-alt8
-#Requires:	hotplug, ncpfs, pcmcia-cs >= 3.2.8-alt2, ppp, vlan-utils24
-#Requires:	pptp-client, wpa_supplicant, zcip, rp-pppoe-base >= 3.6-alt2
+#Requires:	hotplug, ncpfs, pcmcia-cs >= 3.2.8-alt2, ppp, vlan-utils24, bridge-utils
+#Requires:	pptp-client, wpa_supplicant, zcip, rp-pppoe-base >= 3.6-alt2, openvpn, tunctl
 #
 #%description full
 #This virtual package requires /etc/net and all packages that may appear useful

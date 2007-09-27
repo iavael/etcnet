@@ -1,0 +1,8 @@
+comp-lzo
+auth none
+tun-mtu 1500
+replay-window 640 15
+redirect-gateway
+ping-restart 30
+persist-local-ip
+persist-remote-ip

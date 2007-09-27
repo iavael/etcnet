@@ -8,7 +8,7 @@ pickup_options
 	exit 1
 }
 
-if [ -s "$BLUEZ_REMOTE" ]; then
+if [ -n "$BLUEZ_REMOTE" ]; then
 	$PAND --nodetach --ethernet $NAME --connect $BLUEZ_REMOTE $PAND_OPTIONS
 else
 	$PAND --nodetach --ethernet $NAME --search $PAND_OPTIONS

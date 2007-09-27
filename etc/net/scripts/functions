@@ -15,16 +15,15 @@ PROFILE_FILE=/etc/net/profile
 PROC_CMDLINE=/proc/cmdline
 DEFAULT_IFPLUGSTATUS=/usr/sbin/ifplugstatus
 DEFAULT_IFPLUGD=/usr/sbin/ifplugd
+DEFAULT_IWPRIV=/sbin/iwpriv
 DEFAULT_IWCONFIG=/sbin/iwconfig
 DEFAULT_WPA_SUPPLICANT=/usr/sbin/wpa_supplicant
+DEFAULT_WPA_CLI=/usr/sbin/wpa_cli
 DEFAULT_PLIPCONFIG=/sbin/plipconfig
 DEFAULT_VCONFIG=/usr/bin/vconfig
-DEFAULT_PENTANETT=/usr/sbin/pentanett
-DEFAULT_PENTAVALT=/usr/sbin/pentavalt
-DEFAULT_PENTANET_CONF=pentanet.conf
-DEFAULT_PENTAVAL_CONF=pentaval.conf
 DEFAULT_IPSECADM=/usr/sbin/ipsecadm
 DEFAULT_IFENSLAVE=/sbin/ifenslave
+DEFAULT_TUNCTL=/usr/sbin/tunctl
 DEFAULT_BRCTL=/usr/sbin/brctl
 DEFAULT_ETHTOOL=/usr/sbin/ethtool
 DEFAULT_PPPD=/usr/sbin/pppd
@@ -37,10 +36,24 @@ DEFAULT_CHATOPTIONS='-t 120'
 DEFAULT_PPPOE=/usr/sbin/pppoe
 DEFAULT_PPPOEOPTIONS='-U'
 DEFAULT_PPTP=/usr/sbin/pptp
+DEFAULT_PENTANETT=/usr/sbin/pentanett
+DEFAULT_PENTAVALT=/usr/sbin/pentavalt
+DEFAULT_PENTANET_CONF=pentanet.conf
+DEFAULT_PENTAVAL_CONF=pentaval.conf
 DEFAULT_SZAP=/usr/bin/szap
 DEFAULT_SZAP_ARGS='-n 1 -x'
 DEFAULT_DVBNET=/usr/bin/dvbnet
 DEFAULT_PAND=/usr/bin/pand
+DEFAULT_OSSH=/usr/bin/ssh
+DEFAULT_OSSHIDENTITY=identity
+DEFAULT_OVPN=/usr/sbin/openvpn
+DEFAULT_OVPNCONFFILE=ovpnoptions
+DEFAULT_OVPNCAFILE=ovpnca
+DEFAULT_OVPNCRTFILE=ovpncrt
+DEFAULT_OVPNKEYFILE=ovpnkey
+DEFAULT_OVPNPOSTSTART=poststart
+DEFAULT_OVPNPOSTSTOP=poststop
+OVPNCHROOTDIR=/var/lib/openvpn
 
 trim()
 {
@@ -475,19 +488,37 @@ stop_dhcp_client()
 	fi
 }
 
+stop_ipv4ll_client()
+{
+    local PIDFILE=/var/run/autoipd/avahi-autoipd.$NAME.pid
+    if [ -s $PIDFILE ]; then
+	kill `cat $PIDFILE`
+    fi
+}
+
+eval_string()
+{
+    : ${1:?missing 1st arg to $FUNCNAME}
+    eval "printf '%s\n' \"$@\""
+}
+
 declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type
 declare -frx pickup_options print_error print_message print_progress print_nack
 declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netprofile
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
 declare -frx have_ifplugd pickup_defaults trim need_detection stop_dhcp_client
-declare -frx modprobe_with_rename
+declare -frx stop_ipv4ll_client modprobe_with_rename
+declare -frx eval_string
 declare -rx DENOISE DEFAULT_BONDMODE IFACEDIR LOCALSCRIPTDIR VARLIBDIR
 declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS
-declare -rx DEFAULT_IFPLUGD DEFAULT_IWCONFIG DEFAULT_WPA_SUPPLICANT DEFAULT_PLIPCONFIG
+declare -rx DEFAULT_IFPLUGD DEFAULT_IWCONFIG DEFAULT_WPA_SUPPLICANT DEFAULT_WPA_CLI DEFAULT_PLIPCONFIG
 declare -rx DEFAULT_VCONFIG DEFAULT_PENTANETT DEFAULT_PENTAVALT DEFAULT_PENTANET_CONF
 declare -rx DEFAULT_PENTAVAL_CONF DEFAULT_IPSECADM DEFAULT_IFENSLAVE DEFAULT_BRCTL
 declare -rx DEFAULT_ETHTOOL DEFAULT_PPPD DEFAULT_CHAT DEFAULT_PPPOPTIONSFILE
 declare -rx DEFAULT_PPPINITCHAT DEFAULT_PPPCONNECTCHAT DEFAULT_PPPDISCONNECTCHAT
 declare -rx DEFAULT_CHATOPTIONS DEFAULT_PPPOE DEFAULT_PPPOEOPTIONS DEFAULT_PPTP
 declare -rx DEFAULT_SZAP DEFAULT_SZAP_ARGS DEFAULT_DVBNET DEFAULT_PAND
+declare -rx DEFAULT_OSSH DEFAULT_OSSHIDENTITY
+declare -rx DEFAULT_OVPN DEFAULT_OVPNCONFFILE DEFAULT_OVPNKEYFILE DEFAULT_OVPNPOSTSTART
+declare -rx DEFAULT_OVPNPOSTSTOP OVPNCHROOTDIR DEFAULT_OVPNCAFILE DEFAULT_OVPNCRTFILE

@@ -1,10 +1,69 @@
 #!/bin/bash
 
+process_ipv6rules()
+{
+	local OP=${1:?missing 1st arg to $FUNCNAME}
+	local REVERSE
+	[ "$OP" = "del" ] && REVERSE="|tac"
+	SRCFILE=`profiled_filename $MYIFACEDIR/ipv6rule`
+	[ -s "$SRCFILE" ] && eval "$DENOISE \"$SRCFILE\" $REVERSE" | \
+	while read FIRST REST; do
+		case "$FIRST" in
+			add)
+				[ $OP = "del" ] && FIRST=del
+			;;
+			del)
+				# should we restore deleted rules on iface shutdown?
+				 [ $OP = "del" ] && FIRST=add
+			;;
+			*)
+				FIRST="$OP $FIRST"
+			;;
+		esac
+		$IP -6 rule $(eval_string $FIRST $REST)
+		print_progress
+	done
+}
+
+config_ipv6_routes_rules()
+{
+	# setup routes
+	local OP=${1:?missing 1st arg to $FUNCNAME}
+	local SRCFILE=`profiled_filename $MYIFACEDIR/ipv6route`
+	local SUFFIX
+	IPV4ADDRESS=($(get_ipv6_addresses $NAME))
+	[ "$OP" = "del" ] && REVERSE="|tac"
+	[ -s "$SRCFILE" ] && eval "$DENOISE \"$SRCFILE\" $REVERSE" | \
+	while read FIRST REST; do
+		# If 'dev' is not specified, add current dev.
+		SUFFIX=''
+		echo "$FIRST $REST" | egrep -q '[[:space:]]dev[[:space:]]' || SUFFIX="dev $NAME"
+		# If operation is not specified, use 'append'.
+		case "$FIRST" in
+			add|change|append|replace)
+				[ $OP = "del" ] && FIRST=del
+			;;
+			del)
+				# should we restore deleted rules on iface shutdown?
+				[ $OP = "del" ] && FIRST=add
+			;;
+			*)
+				[ "$OP" = "add" ] && FIRST="append $FIRST" || FIRST="$OP $FIRST"
+			;;
+		esac
+		$IP -6 route $(eval_string $FIRST $REST $SUFFIX)
+		print_progress
+	done
+
+	# Setup rules only after routes are Ok, so that route tables are
+	# already populated when rule starts routing traffic to them.
+	process_ipv6rules $OP
+}
+
 get_ipv6_addresses()
 {
     local NAME=${1:?missing 1st argument to $FUNCNAME}
-    printf "$(ip addr show dev $NAME 2>/dev/null|grep  -ose "\binet6\b.*\([0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\)"|cut -f2 -d" "|cut -f1 -d"/")"
+    # FIXME should we parse braindamaged IPv6 by braindamaged regexp?
+    printf "$($IP -6 addr show dev $NAME 2>/dev/null|grep  -ose "\binet6\b.*\b"|cut -f2 -d" "|cut -f1 -d"/")"
 }
-
-declare -ax IPV6ADDRESS
 

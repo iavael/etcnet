@@ -39,6 +39,10 @@ case "$USE_IFPLUGD" in
 		# A and D
 		if ! is_yes "$IN_IFPLUGD"; then
 			# D
+			! is_wireless $NAME || {
+				print_error "ERROR: USE_IFPLUGD=yes for $NAME, wireless card is unsupported"
+				exit 1
+			}
 			! is_yes "$HAVE_IFPLUGD" && exit 1
 			if is_yes "$PERSISTENT_IFPLUGD"; then
 				if ! ifplugd_runs; then
@@ -184,32 +188,44 @@ process_sysctl_conf()
 	return 0
 }
 
+if ! is_yes $IN_WPA_CLI; then	# non-wifi or first pass for wifi
 # setup link-level params
-xargise_file $IFACEDIR/default/iplink "$IP link set dev $NAME"
-xargise_file $IFACEDIR/default/iplink-$TYPE "$IP link set dev $NAME"
-xargise_file $MYIFACEDIR/iplink "$IP link set dev $NAME"
+    xargise_file $IFACEDIR/default/iplink "$IP link set dev $NAME"
+    xargise_file $IFACEDIR/default/iplink-$TYPE "$IP link set dev $NAME"
+    xargise_file $MYIFACEDIR/iplink "$IP link set dev $NAME"
 
 # bring iface up
-if ! is_yes $KEEP_DOWN; then
+    if ! is_yes $KEEP_DOWN; then
 	$IP link set dev $NAME up && print_progress
+    fi
 fi
 
-# handle wireless extensions
-is_yes "$CONFIG_WIRELESS" && $SCRIPTDIR/config-wireless $NAME && print_progress
+# handle wireless extensions, if any
+if is_yes "$CONFIG_WIRELESS" && is_wireless $NAME; then
+    if ! is_yes $IN_WPA_CLI; then
+	$SCRIPTDIR/config-wireless $NAME
+	rc=$?
+	[ $rc -eq 2 ] || exit $rc
+	print_progress
+    fi
+fi
 
 # process ip neighbours
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh replace dev $NAME"
 
-# Order matters here.
-is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
-is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
-
-is_yes "$CONFIG_FW"  && $SCRIPTDIR/config-fw $NAME start
-is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos $NAME start
-
-is_yes "$CONFIG_IPV4" && $SCRIPTDIR/config-ipv4 $NAME start
-is_yes "$CONFIG_IPV6" && $SCRIPTDIR/config-ipv6 $NAME start
+# first of all proccess iproute2 rules 
+is_yes "$CONFIG_IPV4" && $SCRIPTDIR/config-ipv4 $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
+is_yes "$CONFIG_IPV6" && $SCRIPTDIR/config-ipv6 $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
 is_yes "$CONFIG_IPX"  && $SCRIPTDIR/config-ipx $NAME start
+
+# get ipv4 and/or ipv6 addresses of the interface (after iproute2 rules processing)
+is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && IPV4ADDRESS="$(get_ipv4_addresses $NAME)"
+is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && IPV6ADDRESS="$(get_ipv6_addresses $NAME)"
+
+# start QoS and FireWall
+is_yes "$CONFIG_FW"   && $SCRIPTDIR/config-fw $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
+is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
+
 
 # handle resolver config
 MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`

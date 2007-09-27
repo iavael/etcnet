@@ -1,9 +1,29 @@
-0.8.6
+0.9.2 2007-04-27
+	bugfix: ifdown-ifplugd didn't get IPv4 and IPv6 addresses on stop
+	new feature: iwpriv parameters file
+	change: use wpa_supplicant/wpa_cli for wifi ifaces in ifplugd-like manner
+	change: allow empty bridges
+0.9.1 2007-04-12
+	bugfix: firewall didn't start for the 'default' interface
+	bugfix: firewall didn't read options file in some cases
+	bugfix: ip6tables doesn't support the 'nat' table
+0.9.0 2007-04-12
 	bugfix: Nigel Kukard fixes pickup_options()
 	bugfix: don't trust b44 module any more
 	bugfix: don't depend on /usr/bin/seq
-	bugfix: /usr/sbin/bctrl should be /sbin/bctrl in the ALTLinux
-	new feature: ebtables support
+	bugfix: variables IPV4ADDRESS and IPV6ADDRESS are global now
+	bugfix: /usr/sbin/bctrl changed to /sbin/bctrl in the ALTLinux defaults
+	bugfix: wrong variable handling in create-bnep
+	bugfix: correct SkyStar-2 DVB cards support
+	new feature: ip6tables and ebtables support
+	new feature: shell and user-defined variables support in the iproute2 files
+	new feature: reverse iproute2 files parsing when interface stops
+	new feature: ip rules restoring is returned back
+	new feature: process iproute2 routes file when interface stops
+	new feature: process iproute2 rules file for IPv6
+	new feature: initial OpenVPN support (TUN/TAP)
+	new feature: TUN/TAP interfaces support
+	new feature: initial firewall profiles support
 0.8.5 2007-01-28
 	bugfix: name managements broke ethtool calls
 	bugfix: DHCP did not work for Fedora 5

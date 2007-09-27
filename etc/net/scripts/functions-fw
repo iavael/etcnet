@@ -61,7 +61,7 @@ iptables_push_rule()
 			eval "$IPTABLES -t $TABLE $@" || print_error "$IPTABLES -t $TABLE $@"
 			;;
 	*)
-    			case ${IPTABLES_RULE_EMBEDDING:APPEND} in
+    			case ${IPTABLES_RULE_EMBEDDING:-APPEND} in
     			    APPEND)
 	   			    eval "$IPTABLES -t $TABLE -A $@" || print_error "$IPTABLES -t $TABLE -A $@"
 				    ;;
@@ -114,7 +114,7 @@ iptables_pop_rule()
 iptables_load_syntax()
 {
     : ${1:?missing 1st arg to $FUNCNAME}
-    [ ! -f "$1" ] || [ ! -s "$1" ] && \
+    [ ! -f "$1" ] || [ ! -s "$1" ] && 
 	{
 	    export IPTABLES_SYNTAX=
 	    return 1
@@ -158,7 +158,7 @@ iptables_expand_string()
 
 iptables_preload()
 {
-    is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$IPTABLES_SYNTAX" ] && \
+    is_yes "$IPTABLES_HUMAN_SYNTAX" && [ -z "$IPTABLES_SYNTAX" ] && 
 	{ 
 	    iptables_load_syntax ${IPTABLES_SYNTAX_DIR:=/etc/net/ifaces/default/fw/iptables}/syntax
 	    iptables_create_sed_rules "$IPTABLES_SYNTAX"
@@ -177,7 +177,7 @@ iptables_load_rules_from_file()
 	RULES=$(< "$TABLE/$CHAIN")
 	while read RULE; do
 	    RULE=$(iptables_expand_string "$RULE")
-	    [ -z "$RULE" ] || \
+	    [ -z "$RULE" ] || 
 		{
 		    read FIRST SECOND REST < <(echo $RULE)
     		    case $FIRST in
@@ -209,7 +209,7 @@ iptables_flush_rules_from_file()
 	    RULES=$(tac "$TABLE/$CHAIN")
 	    while read RULE; do
 		RULE=$(iptables_expand_string "$RULE")
-		[ -z "$RULE" ] || \
+		[ -z "$RULE" ] || 
 		    {
 		        read  FIRST SECOND REST < <(echo $RULE)
 		        case $FIRST in
@@ -243,24 +243,24 @@ iptables_start()
     # Set defaut policy
     if [ "$NAME" = "default" ]; then
 	TABLE=filter
-	[ -z "$IPTABLES_INPUT_POLICY" ] || \
+	[ -z "$IPTABLES_INPUT_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $IPTABLES_INPUT_POLICY policy for the \"INPUT\" chain in the \"$TABLE\" table"
 		iptables_chain_policy $TABLE INPUT "$IPTABLES_INPUT_POLICY"
 	    }
-	[ -z "$IPTABLES_FORWARD_POLICY" ] || \
+	[ -z "$IPTABLES_FORWARD_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $IPTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain in the \"$TABLE\" table"
 		iptables_chain_policy $TABLE FORWARD "$IPTABLES_FORWARD_POLICY"
 	    }
-	[ -z "$IPTABLES_OUTPUT_POLICY" ] || \
+	[ -z "$IPTABLES_OUTPUT_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $IPTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain in the \"$TABLE\" table"
 		iptables_chain_policy $TABLE OUTPUT "$IPTABLES_OUTPUT_POLICY"
 	    }
 	TABLE=
     fi
-    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE; do
@@ -274,7 +274,7 @@ iptables_start()
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
 	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || \
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
 		    iptables_create_chain $TABLE $CHAIN
@@ -322,7 +322,7 @@ iptables_stop()
     local TABLE
     local CHAIN
     [ "$NAME" = "default" ] && print_message "Stopping iptables for $NAME" || print_message -e  "\nStopping iptables for $NAME"
-    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # FIXME  Double code
     # Flush rules
     if [ -f "loadorder" ] && [ -s "loadorder" ]; then
@@ -360,7 +360,7 @@ iptables_stop()
 	    for CHAIN in "$TABLE"/*; do
 		CHAIN=$(basename "$CHAIN")
 		[ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || \
+		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || 
 		    {
 			print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
 			iptables_delete_chain $TABLE $CHAIN
@@ -383,6 +383,395 @@ iptables_stop()
 	iptables_chain_policy $TABLE FORWARD ACCEPT
 	print_message -e "\tSetting ACCEPT policy for the \"OUTPUT\" chain in the \"$TABLE\" table"
 	iptables_chain_policy $TABLE OUTPUT ACCEPT
+	TABLE=
+    else
+	print_message -n -e "\t"
+    fi
+}
+
+## ip6tables
+
+ip6tables_chain_policy()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    eval "$IP6TABLES -t $TABLE -P $@" || print_error "$IP6TABLES -t $TABLE -P $@"
+}
+
+ip6tables_create_chain()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    eval "$IP6TABLES -t $TABLE -N $@" || print_error "$IP6TABLES -t $TABLE -N $@"
+}
+
+ip6tables_delete_chain()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    eval "$IP6TABLES -t $TABLE -X $@" || print_error "$IP6TABLES -t $TABLE -X $@"
+}
+
+ip6tables_flush_chain()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    eval "$IP6TABLES -t $TABLE -F $@" || print_error "$IP6TABLES -t $TABLE -F $@"
+}
+
+ip6tables_zero_chain()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    eval "$IP6TABLES -t $TABLE -Z $@" || print_error "$IP6TABLES -t $TABLE -Z $@"
+}
+
+ip6tables_rename_chain()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    eval "$IP6TABLES -t $TABLE -E $@" || print_error "$IP6TABLES -t $TABLE -E $@"
+}
+
+ip6tables_list_chain()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    eval "$IP6TABLES -t $TABLE -L $@" || print_error "$IP6TABLES -t $TABLE -L $@"
+}
+
+ip6tables_push_rule()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    : ${@:?missing args to $FUNCNAME}
+    case $1 in
+	"-A"|"-I"|"-D")
+			eval "$IP6TABLES -t $TABLE $@" || print_error "$IP6TABLES -t $TABLE $@"
+			;;
+	*)
+    			case ${IP6TABLES_RULE_EMBEDDING:-APPEND} in
+    			    APPEND)
+	   			    eval "$IP6TABLES -t $TABLE -A $@" || print_error "$IP6TABLES -t $TABLE -A $@"
+				    ;;
+			    INSERT)
+	    	    		    eval "$IP6TABLES -t $TABLE -I $@" || print_error "$IP6TABLES -t $TABLE -I $@"
+				    ;;
+			    *)
+				    print_error "Unknown type of rule embedding $IP6TABLES_RULE_EMBEDDING"
+				    ;;
+			esac
+			;;
+    esac
+}
+
+ip6tables_pop_rule()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    shift
+    : ${@:?missing args to $FUNCNAME}
+    case $1 in
+	"-A")
+		shift
+		eval "$IP6TABLES -t $TABLE -D $@" || print_error "$IP6TABLES -t $TABLE -D $@"	    	    
+		;;
+	"-I")
+		PRE="$2"
+		case $3 in
+		    [0-9]*)
+			    shift 3
+			    ;;
+		    *)
+			    shift 2
+			    ;;
+		esac
+		eval "$IP6TABLES -t $TABLE -D $PRE $@" || print_error "$IP6TABLES -t $TABLE -D $PRE $@"
+		;;	
+	"-D")
+		shift
+		ip6tables_push_rule -t $TABLE $@
+		;;
+	"-P")
+		continue
+		;;
+	*)
+    		eval "$IP6TABLES -t $TABLE -D $@" || print_error "$IP6TABLES -t $TABLE -D $@"	    	        	
+		;;
+    esac
+}
+
+ip6tables_load_syntax()
+{
+    : ${1:?missing 1st arg to $FUNCNAME}
+    [ ! -f "$1" ] || [ ! -s "$1" ] && 
+	{
+	    export IP6TABLES_SYNTAX=
+	    return 1
+	}
+    export IP6TABLES_SYNTAX=$(< "$1")
+}
+
+ip6tables_create_sed_rules()
+{
+    local REPLACES=${1:?missing 1st arg to $FUNCNAME}
+    local SEARCH
+    local REPLACE
+    local OLDIFS
+    local COUNTER=0
+    IP6TABLES_SED_RULES=
+    print_message -n -e "\nLoading ip6tables data"
+    OLDIFS="$IFS"
+    IFS=":"
+    while read SEARCH REPLACE; do
+        [ $COUNTER -eq 20 ] && print_progress && COUNTER=0
+        IP6TABLES_SED_RULES="${IP6TABLES_SED_RULES}s/\(^\|[^-]\b\)$SEARCH\(\b[^-]\|$\)/\1$REPLACE\2/g;"
+        COUNTER=$(( COUNTER+1 ))
+    done < <(echo "$REPLACES"|egrep "^[^#]"|sed -e 's,/,\\\\/,g')
+    IFS="$OLDIFS"
+    export IP6TABLES_SED_RULES
+    print_message
+}
+
+ip6tables_expand_string()
+{
+    : ${1:?missing 1st arg to $FUNCNAME}
+    local RULE
+    if is_yes "$IP6TABLES_HUMAN_SYNTAX"; then
+	[ -z "$IP6TABLES_SED_RULES" ] && print_error "Human syntax is enabled but no syntax file is loaded"
+	RULE=$(eval "printf '%s\n' $@"|sed  -e "$IP6TABLES_SED_RULES;s/[[:space:]]\+/\ /g")
+    else
+	RULE=$(eval "printf '%s\n' $@")
+    fi
+    printf '%s\n' "$RULE"|egrep -q "^[^#]" && printf '%s\n' "$RULE" || echo ""
+}
+
+ip6tables_preload()
+{
+    is_yes "$IP6TABLES_HUMAN_SYNTAX" && [ -z "$IP6TABLES_SYNTAX" ] && 
+	{ 
+	    ip6tables_load_syntax ${IP6TABLES_SYNTAX_DIR:=/etc/net/ifaces/default/fw/ip6tables}/syntax
+	    ip6tables_create_sed_rules "$IP6TABLES_SYNTAX"
+	}			
+}
+
+# ip6tables_load_rules_from_file <table> <chain>
+ip6tables_load_rules_from_file()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    local RULE
+    local RULES
+    if [ -f "$TABLE/$CHAIN" ] && [ -s "$TABLE/$CHAIN" ]; then
+	print_message -n -e "\tLoading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	RULES=$(< "$TABLE/$CHAIN")
+	while read RULE; do
+	    RULE=$(ip6tables_expand_string "$RULE")
+	    [ -z "$RULE" ] || 
+		{
+		    read FIRST SECOND REST < <(echo $RULE)
+    		    case $FIRST in
+		        "-A"|"-D"|"-I")
+    	    			    ip6tables_push_rule $TABLE $FIRST $CHAIN $SECOND $REST
+				    ;;
+			*)
+    	    			    ip6tables_push_rule $TABLE $CHAIN $FIRST $SECOND $REST
+				    ;;
+		    esac
+		}
+	    print_progress
+	done < <(echo "$RULES"|egrep "^[^#]")
+	print_message
+    fi
+}
+
+# ip6tables_flush_rules_from_file <table> <chain> [flush]
+ip6tables_flush_rules_from_file()
+{
+    local TABLE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    local RULE
+    local RULES
+    if [ -f "$TABLE/$CHAIN" ]; then
+	if [ "$NAME" != "default" ] && [ "$3" != "flush" ]; then
+	    [ ! -s "$TABLE/$CHAIN" ] && return
+	    print_message -n -e "\tUnloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    RULES=$(tac "$TABLE/$CHAIN")
+	    while read RULE; do
+		RULE=$(ip6tables_expand_string "$RULE")
+		[ -z "$RULE" ] || 
+		    {
+		        read  FIRST SECOND REST < <(echo $RULE)
+		        case $FIRST in
+		            "-A"|"-D"|"-I")
+					ip6tables_pop_rule $TABLE $FIRST $CHAIN $SECOND $REST
+					;;
+			    *)
+        			        ip6tables_pop_rule $TABLE $CHAIN $FIRST $SECOND $REST
+				        ;;
+			esac
+		    }				
+		print_progress
+	    done < <(echo "$RULES"|egrep "^[^#]")
+	    print_message
+	else
+	    # Flush rules only when stop networking
+	    print_message -e "\tFlushing the \"$CHAIN\" chain in the \"$TABLE\" table"
+	    ip6tables_flush_chain $TABLE $CHAIN
+	fi
+    fi
+}
+
+
+ip6tables_start()
+{
+    local NAME=${1:?missing 1st arg to $FUNCNAME}
+    local MODULE
+    local TABLE
+    local CHAIN
+    [ "$NAME" = "default" ] &&  print_message "Starting ip6tables for $NAME" ||  print_message -e "\nStarting ip6tables for $NAME"
+    # Set defaut policy
+    if [ "$NAME" = "default" ]; then
+	TABLE=filter
+	[ -z "$IP6TABLES_INPUT_POLICY" ] || 
+	    {
+		print_message -e "\tSetting $IP6TABLES_INPUT_POLICY policy for the \"INPUT\" chain in the \"$TABLE\" table"
+		ip6tables_chain_policy $TABLE INPUT "$IP6TABLES_INPUT_POLICY"
+	    }
+	[ -z "$IP6TABLES_FORWARD_POLICY" ] || 
+	    {
+		print_message -e "\tSetting $IP6TABLES_FORWARD_POLICY policy for the \"FORWARD\" chain in the \"$TABLE\" table"
+		ip6tables_chain_policy $TABLE FORWARD "$IP6TABLES_FORWARD_POLICY"
+	    }
+	[ -z "$IP6TABLES_OUTPUT_POLICY" ] || 
+	    {
+		print_message -e "\tSetting $IP6TABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain in the \"$TABLE\" table"
+		ip6tables_chain_policy $TABLE OUTPUT "$IP6TABLES_OUTPUT_POLICY"
+	    }
+	TABLE=
+    fi
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+    # Load modules
+    if [ -f "modules" ] && [ -s "modules" ]; then
+	while read MODULE; do
+	    print_message -e "\tLoading module $MODULE"
+	    $MODPROBE "$MODULE" || print_error "Can't load module $MODULE"
+	done < <(egrep "^[^#]" modules)
+    fi
+    # Create user chains
+    for TABLE in *; do
+	[ ! -d "$TABLE" ] && continue
+	for CHAIN in "$TABLE"/*; do
+	    CHAIN=$(basename "$CHAIN")
+	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IP6TABLES_SYSTEM_CHAINS") || 
+		{
+		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
+		    ip6tables_create_chain $TABLE $CHAIN
+		}
+	done
+    done
+    # FIXME  Double code
+    # Load rules after creating _all_ chains
+    if [ -f "loadorder" ] && [ -s "loadorder" ]; then
+	while read TABLE; do
+	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    ip6tables_load_rules_from_file "$TABLE" "$CHAIN"
+		done < <(egrep "^[^#]" "$TABLE/loadorder")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    ip6tables_load_rules_from_file "$TABLE" "$CHAIN"
+		done
+	    fi
+	done < <(egrep "^[^#]" loadorder)
+    else
+	for TABLE in *; do
+    	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    ip6tables_load_rules_from_file "$TABLE" "$CHAIN"
+		done < <(egrep "^[^#]" "$TABLE/loadorder")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    ip6tables_load_rules_from_file "$TABLE" "$CHAIN"
+		done
+	    fi
+	done
+    fi
+    [ "$NAME" = "default" ] || print_message -n -e "\t"
+}
+
+ip6tables_stop()
+{
+    local NAME=${1:?missing 1st arg to $FUNCNAME}
+    local MODULE
+    local TABLE
+    local CHAIN
+    [ "$NAME" = "default" ] && print_message "Stopping ip6tables for $NAME" || print_message -e  "\nStopping ip6tables for $NAME"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+    # FIXME  Double code
+    # Flush rules
+    if [ -f "loadorder" ] && [ -s "loadorder" ]; then
+	while read TABLE; do
+	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    ip6tables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    ip6tables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done
+	    fi
+	done < <(tac loadorder|egrep "^[^#]")
+    else
+	for TABLE in *; do
+    	    [ ! -d "$TABLE" ] && continue
+	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
+		while read CHAIN; do
+		    ip6tables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
+	    else
+		for CHAIN in "$TABLE"/*; do
+		    CHAIN=$(basename "$CHAIN")
+		    ip6tables_flush_rules_from_file "$TABLE" "$CHAIN"
+		done
+	    fi
+	done
+    fi
+    # Delete user chains
+    for TABLE in *; do
+	[ ! -d "$TABLE" ] && continue
+	    for CHAIN in "$TABLE"/*; do
+		CHAIN=$(basename "$CHAIN")
+		[ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IP6TABLES_SYSTEM_CHAINS") || 
+		    {
+			print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
+			ip6tables_delete_chain $TABLE $CHAIN
+		    }
+	    done
+    done
+    # Unload modules
+    if [ -f "modules" ] && [ -s "modules" ]; then
+	while read MODULE; do
+	    print_message -e "\tUnloading module $MODULE"
+	    $MODPROBE -r "$MODULE" || print_error "Can't unload module $MODULE"
+	done < <(tac modules|egrep "^[^#]")
+    fi
+    # Set ACCEPT policy
+    if [ "$NAME" = "default" ]; then
+	TABLE=filter
+	print_message -e "\tSetting ACCEPT policy for the \"INPUT\" chain in the \"$TABLE\" table"
+	ip6tables_chain_policy $TABLE INPUT ACCEPT
+	print_message -e "\tSetting ACCEPT policy for the \"FORWARD\" chain in the \"$TABLE\" table"
+	ip6tables_chain_policy $TABLE FORWARD ACCEPT
+	print_message -e "\tSetting ACCEPT policy for the \"OUTPUT\" chain in the \"$TABLE\" table"
+	ip6tables_chain_policy $TABLE OUTPUT ACCEPT
 	TABLE=
     else
 	print_message -n -e "\t"
@@ -450,7 +839,7 @@ ebtables_push_rule()
 			eval "$EBTABLES -t $TABLE $@" || print_error "$EBTABLES -t $TABLE $@"
 			;;
         *)
-			case ${EBTABLES_RULE_EMBEDDING:APPEND} in
+			case ${EBTABLES_RULE_EMBEDDING:-APPEND} in
 			    APPEND)
 				    eval "$EBTABLES -t $TABLE -A $@" || print_error "$EBTABLES -t $TABLE -A $@"
 				    ;;
@@ -520,7 +909,7 @@ ebtables_load_rules_from_file()
         RULES=$(< "$TABLE/$CHAIN")
         while read RULE; do
 	    RULE=$(ebtables_expand_string "$RULE")
-	    [ -z "$RULE" ] || \
+	    [ -z "$RULE" ] || 
 	        {
 		    read FIRST SECOND REST < <(echo $RULE)
 		    case $FIRST in
@@ -552,7 +941,7 @@ ebtables_flush_rules_from_file()
 	    RULES=$(tac "$TABLE/$CHAIN")
 	    while read RULE; do
 		RULE=$(ebtables_expand_string "$RULE")
-		[ -z "$RULE" ] || \
+		[ -z "$RULE" ] || 
 		    {
 			read  FIRST SECOND REST < <(echo $RULE)
 			case $FIRST in
@@ -586,24 +975,24 @@ ebtables_start()
     # Set defaut policy (filter table)
     if [ "$NAME" = "default" ]; then
 	TABLE=filter
-	[ -z "$EBTABLES_INPUT_POLICY" ] || \
+	[ -z "$EBTABLES_INPUT_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $EBTABLES_INPUT_POLICY policy for the \"INPUT\" chain in the \"$TABLE\" table"
 		ebtables_chain_policy $TABLE INPUT "$EBTABLES_INPUT_POLICY"
 	    }
-	[ -z "$EBTABLES_FORWARD_POLICY" ] || \
+	[ -z "$EBTABLES_FORWARD_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $EBTABLES_FORWARD_POLICY policy for the \"FORWARD\" chain in the \"$TABLE\" table"
 		ebtables_chain_policy $TABLE FORWARD "$EBTABLES_FORWARD_POLICY"
 	    }
-	[ -z "$EBTABLES_OUTPUT_POLICY" ] || \
+	[ -z "$EBTABLES_OUTPUT_POLICY" ] || 
 	    {
 		print_message -e "\tSetting $EBTABLES_OUTPUT_POLICY policy for the \"OUTPUT\" chain in the \"$TABLE\" table"
 		ebtables_chain_policy $TABLE OUTPUT "$EBTABLES_OUTPUT_POLICY"
 	    }
 	TABLE=
     fi
-    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE; do
@@ -617,7 +1006,7 @@ ebtables_start()
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
 	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
 		    ebtables_create_chain $TABLE $CHAIN 
@@ -665,7 +1054,7 @@ ebtables_stop()
     local TABLE
     local CHAIN
     [ "$NAME" = "default" ] && print_message "Stopping ebtables for $NAME" || print_message -e  "\nStopping ebtables for $NAME"
-    cd "$MYIFACEDIR/fw/$CFW_TYPE"
+    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # FIXME  Double code
     # Flush rules
     if [ -f "loadorder" ] && [ -s "loadorder" ]; then
@@ -703,7 +1092,7 @@ ebtables_stop()
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
 	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
-	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || \
+	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
 		    ebtables_delete_chain $TABLE $CHAIN

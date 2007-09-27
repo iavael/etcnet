@@ -20,15 +20,17 @@ VLAN_NAMETYPE=DEV_PLUS_VID_NO_PAD
 # tools
 IP=/sbin/ip
 TC=/sbin/tc
+OVPN=/usr/sbin/openvpn
 MODPROBE=/sbin/modprobe
 LSMOD=/sbin/lsmod
 INSMOD=/sbin/insmod
 RMMOD=/sbin/rmmod
 SYSCTL=/sbin/sysctl
 IFRENAME=/sbin/ifrename
+TUNCTL=/usr/sbin/tunctl
 
 # IPv4LL
-ZCIP_CLIENT=/sbin/zcip
+ZCIP_CLIENT=/usr/sbin/avahi-autoipd
 
 # IPX tools
 IPX_INTERFACE=/sbin/ipx_interface
@@ -48,6 +50,7 @@ ALLOW_UNKNOWN=no
 
 # FireWall defaults
 IPTABLES=/sbin/iptables
+IP6TABLES=/sbin/ip6tables
 EBTABLES=/sbin/ebtables
 
 # List of known-good network modules (ones that support link detection).
@@ -63,7 +66,7 @@ NEVER_RMMOD=no
 AUTO_BROADCAST=off
 
 IFGROUP[0]='lo dummy'
-IFGROUP[1]='eth plip usb dvb bnep'
+IFGROUP[1]='eth plip usb dvb bnep tuntap'
 IFGROUP[2]='vlan bond bri teql'
-IFGROUP[3]='iptun ipsectun'
+IFGROUP[3]='iptun ipsectun ovpn'
 IFGROUP[4]='ppp'

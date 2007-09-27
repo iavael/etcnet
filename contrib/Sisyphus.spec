@@ -1,16 +1,15 @@
 Name:		etcnet
-Version:	0.8.5
-Release:	alt0.2
+Version:	0.9.3
+Release:	alt3
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
 Group:		System/Base
-Packager:	Denis Ovsienko <pilot@altlinux.ru>
 URL:		http://etcnet.org/
-Source:		%name-%version.tar.gz
+Source:		%name-%version-%release.tar
 PreReq:		setup >= 0:2.1.9-ipl18mdk, service, startup >= 0:0.9.3-alt1
 Requires:	grep, sed, iproute2, ifrename >= 28-alt5.pre10, chkconfig
-Requires:	etcnet-defaults
+Requires:	etcnet-defaults = %version-%release
 BuildArch:	noarch
 Conflicts:	net-scripts
 Conflicts:	ethtool < 3-alt4, ifplugd < 0.28-alt2
@@ -21,34 +20,34 @@ Provides:	network-config-subsystem
 Inspired by the limitations of traditional network configuration subsystems,
 /etc/net provides builtin support for configuration profiles, interface name
 management, removable devices, full iproute2 command set, interface
-dependencies resolution and a QoS configuration framework.
+dependencies resolution, QoS and firewall configuration frameworks.
 /etc/net provides support for the following interface types: Ethernet, WiFi
 (WEP), IPv4/IPv6 tunnels, PSK IPSec tunnels, VLAN, PLIP, Ethernet bonding and
-bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, usbnet
-and PPP. Due to its modular structure, support for new interface types can be
-added without overall design changes.
+bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, TUN/TAP,
+OpenVPN TUN/TAP, usbnet and PPP. Due to its modular structure, support for new
+interface types can be added without overall design changes.
 
 %description -l ru_RU.KOI8-R
 /etc/net представляет новый подход к задачам конфигурации сети для Linux.
 Инициированный ограничениями традиционных подсистем конфигурации сети, /etc/net
 предоставляет встроенную поддержку профилей конфигурации, управления именами
 интерфейсов, сменных устройств, полного набора команд iproute2, разрешения
-интерфейсных зависимостей и структуры конфигурации QoS.
+интерфейсных зависимостей и структуры конфигурации QoS и firewall.
 /etc/net поддерживает следующие типы интерфейсов: Ethernet, WiFi (WEP), туннели
 IPv4/IPv6, туннели PSK IPSec, VLAN, PLIP, Ethernet bonding и bridging, traffic
-equalizer, Pent@NET, Pent@VALUE, SkyStar-2, usbnet и PPP. Благодаря модульной
-структуре поддержка новых типов интерфейсов может быть добавлена без изменения
-общего дизайна.
+equalizer, Pent@NET, Pent@VALUE, SkyStar-2, TUN/TAP, OpenVPN TUN/TAP, 
+usbnet и PPP. Благодаря модульной структуре поддержка новых типов интерфейсов 
+может быть добавлена без изменения общего дизайна.
 
 %package full
 Summary:	/etc/net plus everything it can work with
 Summary(ru_RU.KOI8-R): /etc/net и всё, с чем он может работать
 Group:		System/Configuration/Networking
 Requires:	%name = %version-%release, wireless-tools
-Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, ebtables
+Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables
 Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2, ipsecadm >= 0.9-alt8
-Requires:	hotplug, ncpfs, ppp, vlan-utils24, bridge-utils
-Requires:	pptp-client, wpa_supplicant, zcip, rp-pppoe-base >= 3.6-alt2
+Requires:	hotplug, ncpfs, ppp, vlan-utils24, bridge-utils, openvpn, tunctl
+Requires:	pptp-client, wpa_supplicant, avahi-autoipd, rp-pppoe-base >= 3.6-alt2
 
 %description full
 This virtual package requires /etc/net and all packages that may appear useful
@@ -64,9 +63,9 @@ in ALTLinux system.
 %package defaults-desktop
 Summary:	/etc/net defaults for a Linux desktop
 Group:		System/Configuration/Networking
-Provides:	%name-defaults
+Provides:	%name-defaults = %version-%release
 Conflicts:	%name-defaults-server
-Requires:	%name
+Requires:	%name = %version-%release
 
 %description defaults-desktop
 This package contains default options for a Linux desktop.
@@ -75,20 +74,18 @@ This package contains default options for a Linux desktop.
 %package defaults-server
 Summary:	/etc/net defaults for a Linux server
 Group:		System/Configuration/Networking
-Provides:	%name-defaults
+Provides:	%name-defaults = %version-%release
 Conflicts:	%name-defaults-desktop
-Requires:	%name
+Requires:	%name = %version-%release
 
 %description defaults-server
 This package contains default options for a Linux server.
 
 
 %prep
-%setup -q
+%setup
 # Don't package .htaccess (https://bugzilla.altlinux.org/show_bug.cgi?id=10101)
 find . -type f -a -name .htaccess -exec rm -f \{\} \;
-
-%build
 
 %install
 # Common part first, distribution-specific files later.
@@ -142,6 +139,8 @@ fi
 %_man8dir/*
 /sbin/ifup
 /sbin/ifdown
+/sbin/eqos
+/sbin/efw
 
 %files defaults-desktop
 %config %_sysconfdir/net/options.d/50-ALTLinux-desktop
@@ -152,6 +151,38 @@ fi
 %files full
 
 %changelog
+* Sat Sep  1 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.3-alt3
+- probe several times for /dev/net/tun after `tun' module load (#12659)
+
+* Fri Aug 31 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.3-alt2
+- fixed bug in avahi-autoipd usage made in previous release
+
+* Mon Aug 27 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.3-alt1
+- use avahi-autoipd instead of zcip for ipv4ll addresses
+- preliminary support for tunneling via openssh -w feature
+
+* Tue May 29 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.2-alt2
+- use wpa_supplicant/wpa_cli instead of ifplugd for wifi ifaces (#11647)
+
+* Sun Apr 29 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.2-alt1
+- Minor bugfix release
+
+* Thu Apr 12 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.1-alt0.1
+- Bugfix release
+- New symlinks 'efw' and 'eqos' in the /sbin
+
+* Wed Apr 11 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.9.0-alt0.1
+- Bumping to 0.9.0
+- tunctl dependency in the full package
+- Description update
+
+* Tue Apr 03 2007 Andrew Kornilov <hiddenman@altlinux.ru> 0.8.6-alt1
+- New major release
+- New dependencies in the full package
+
+* Sun Jan 28 2007 Denis Ovsienko <pilot@altlinux.ru> 0.8.5-alt2
+- fixing multi-package dependencies to use version and release
+
 * Sun Jan 28 2007 Denis Ovsienko <pilot@altlinux.ru> 0.8.5-alt1
 - bugfix release
 

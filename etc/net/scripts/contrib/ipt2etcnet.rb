@@ -13,9 +13,9 @@ require "etcnet-fw-syntax.rb"
 DEBUG = true
 HUMAN_READABLE = false
 
-#IPT_SAVE = "/sbin/iptables-save"
-IPT_SAVE = "/bin/cat iptables"
-FWOUTDIR = "ifaces/default/fw/iptables"
+IPT_SAVE = "/sbin/iptables-save"
+#IPT_SAVE = "/bin/cat iptables"
+FWOUTDIR = "/etc/net/ifaces/default/fw/iptables"
 
 NEWTABLE = /^\*([a-z]+)$/
 NEWCHAIN = /^:([A-Za-z0-9_-]+) ([A-Z-]+) \[(\d+):(\d+)\]$/

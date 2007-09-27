@@ -15,6 +15,17 @@ check_eth_link ()
 	return 0
 }
 
+# checks, if given iface is wireless one
+is_wireless ()
+{
+	# FIXME better way ?
+	if [ -d "/sys/class" ]; then
+		[ -d "/sys/class/net/$1/wireless" ]
+	else
+		grep -q "^[[:blank:]]*$1:" /proc/net/wireless
+	fi
+}
+
 # see ifaces/default/options-eth
 wait_for_macaddr()
 {
