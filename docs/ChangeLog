@@ -1,4 +1,7 @@
 0.9.4
+	change: updated Ethernet module list
+	change: expect 2.6 Linux kernel by default
+	bugfix: handle wpa_supplicant shutdown properly
 0.9.3 2007-08-27
 	change: use wpa_supplicant/wpa_cli for wifi ifaces in ifplugd-like manner
 	change: switch from zcip to avahi-autoipd
