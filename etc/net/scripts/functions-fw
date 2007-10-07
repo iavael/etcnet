@@ -135,7 +135,7 @@ iptables_create_sed_rules()
     IFS=":"
     while read SEARCH REPLACE; do
         [ $COUNTER -eq 20 ] && print_progress && COUNTER=0
-        IPTABLES_SED_RULES="${IPTABLES_SED_RULES}s/\(^\|[^-]\b\)$SEARCH\(\b[^-]\|$\)/\1$REPLACE\2/g;"
+        IPTABLES_SED_RULES="${IPTABLES_SED_RULES}s/\(^\|[^-._]\b\)$SEARCH\(\b[^-._]\|$\)/\1$REPLACE\2/g;"
         COUNTER=$(( COUNTER+1 ))
     done < <(echo "$REPLACES"|egrep "^[^#]"|sed -e 's,/,\\\\/,g')
     IFS="$OLDIFS"
