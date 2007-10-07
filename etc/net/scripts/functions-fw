@@ -149,11 +149,11 @@ iptables_expand_string()
     local RULE
     if is_yes "$IPTABLES_HUMAN_SYNTAX"; then
 	[ -z "$IPTABLES_SED_RULES" ] && print_error "Human syntax is enabled but no syntax file is loaded"
-	RULE=$(eval "printf '%s\n' $@"|sed  -e "$IPTABLES_SED_RULES;s/[[:space:]]\+/\ /g")
+	RULE=$(eval 'printf "%s\n" "$@"'|sed  -e "$IPTABLES_SED_RULES;s/[[:space:]]\+/\ /g")
     else
-	RULE=$(eval "printf '%s\n' $@")
+	RULE=$(eval 'printf "%s\n" "$@"')
     fi
-    printf '%s\n' "$RULE"|egrep -q "^[^#]" && printf '%s\n' "$RULE" || echo ""
+    printf "%s\n" "$RULE"|egrep -q "^[^#]" && printf "%s\n" "$RULE" || echo ""
 }
 
 iptables_preload()
