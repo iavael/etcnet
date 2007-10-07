@@ -54,11 +54,11 @@ IP6TABLES=/sbin/ip6tables
 EBTABLES=/sbin/ebtables
 
 # List of known-good network modules (ones that support link detection).
-GOOD_MODULE_LIST='eepro100 e100 8139too tulip 3c59x hostap via-rhine sk98lin'
+GOOD_MODULE_LIST='eepro100 e100 8139too tulip 3c59x hostap via-rhine'
 
-# Set this to yes to never remove any modules (kernel 2.6 has a bad idea if
-# we need a module or not).
-NEVER_RMMOD=no
+# Set this to no to always remove any modules and be compatible with 2.4
+# series kernels.
+NEVER_RMMOD=yes
 
 # Enable automatic broadcast address generation. ip doesn't set broadcast
 # address for an interface, unless explicitly told. This option will add

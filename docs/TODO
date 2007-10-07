@@ -10,3 +10,4 @@
 - sysctl doesn't work for PPP
 - move stop_dhcp_client to functions-ipv4
 + firewall: ebtables support
+- generalize ifup delay
