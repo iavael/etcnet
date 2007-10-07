@@ -144,7 +144,7 @@ length: -mlength --length
 limit-rate: -mlimit --limit
 rate: -mlimit --limit
 limit-burst: -mlimit --limit-burst
-burst: -mlimit --limit-burst
+burst: --limit-burst
 mac: -mmac --mac-source
 mac-source: -mmac --mac-source
 marked: -mmark --mark
