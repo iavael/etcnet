@@ -1,6 +1,7 @@
 0.9.4
 	change: updated Ethernet module list
 	change: expect 2.6 Linux kernel by default
+	change: OpenVPN support minor updates
 	bugfix: handle wpa_supplicant shutdown properly
 	bugfix: correct IPv4/IPv6 interface address regexps
 	bugfix: allow quotes, dots and underscores in the firewall rules

@@ -3,17 +3,14 @@
 pickup_defaults
 pickup_options
 
-PROF_POSTSTOP=`profiled_filename ${OVPNPOSTSTOP:-$DEFAULT_OVPNPOSTSTOP}`
-
-kill `cat /var/run/openvpn/$NAME.pid`
-
-[ -x "$MYIFACEDIR/$PROF_POSTSTOP" ] && "$MYIFACEDIR/$PROF_POSTSTOP"
+kill `cat $OVPNRUNDIR/$NAME.pid`
 
 try_rmmod tun
 
-is_yes "$RESTORE_DEFAULTROUTE" && [ -s /var/run/openvpn/$NAME.defaultroute ] && {
-	xargise_file /var/run/openvpn/$NAME.defaultroute "$IP ro ad"
-	rm -f /var/run/openvpn/$NAME.defaultroute
+is_yes "$RESTORE_DEFAULTROUTE" && [ -s $OVPNRUNDIR/$NAME.defaultroute ] && {
+	xargise_file $OVPNRUNDIR/$NAME.defaultroute "$IP ro ad"
+	rm -f $OVPNRUNDIR/$NAME.defaultroute
 }
 
+sleep 3
 exit 0

@@ -20,31 +20,36 @@ esac
 $MODPROBE tun
 
 is_yes "$RESTORE_DEFAULTROUTE" && { # Save default route(s)
-	[ -d /var/run/openvpn ] || mkdir /var/run/openvpn
-	$IP ro ls | grep ^default > /var/run/openvpn/$NAME.defaultroute
-	[ -s /var/run/openvpn/$NAME.defaultroute ] || rm -f /var/run/openvpn/$NAME.defaultroute
+	[ -d $OVPNRUNDIR ] || 
+	{
+	    print_error "OpenVPN rundir $OVPNRUNDIR does not exist"
+	    exit 1
+	}
+	$IP route ls | grep ^default > $OVPNRUNDIR/$NAME.defaultroute
+	[ -s $OVPNRUNDIR/$NAME.defaultroute ] || rm -f $OVPNRUNDIR/$NAME.defaultrout
 }
 
 PROF_CAFILE=`profiled_filename ${OVPNCAFILE:-$DEFAULT_OVPNCAFILE}`
 PROF_CRTFILE=`profiled_filename ${OVPNCRTFILE:-$DEFAULT_OVPNCRTFILE}`
 PROF_KEYFILE=`profiled_filename ${OVPNKEYFILE:-$DEFAULT_OVPNKEYFILE}`
 PROF_CONFFILE=`profiled_filename ${OVPNCONFFILE:-$DEFAULT_OVPNCONFFILE}`
-PROF_POSTSTART=`profiled_filename ${OVPNPOSTSTART:-$DEFAULT_OVPNPOSTSTART}`
+OVPN_USER=${OVPNUSER:-$DEFAULT_OVPNUSER}
+OVPN_GROUP=${OVPNGROUP:-$DEFAULT_OVPNGROUP}
 
 grep "tls" "$MYIFACEDIR/$PROF_CONFFILE" >/dev/null && 
-	TLS_ARGS="--ca $MYIFACEDIR/$PROF_CAFILE --cert $MYIFACEDIR/$PROF_CRTFILE --key $MYIFACEDIR/$PROF_KEYFILE" ||
-	TLS_ARGS="--secret $MYIFACEDIR/$PROF_KEYFILE"
+	KEY_ARGS="--ca $MYIFACEDIR/$PROF_CAFILE --cert $MYIFACEDIR/$PROF_CRTFILE --key $MYIFACEDIR/$PROF_KEYFILE" ||
+	KEY_ARGS="--secret $MYIFACEDIR/$PROF_KEYFILE"
 
-[ -d $OVPNCHROOTDIR/cache ] && cd $OVPNCHROOTDIR/cache
-sleep 3
 
-$OVPN	--daemon --dev $NAME --dev-type $TUNTYPE \
-	--ifconfig $TUNLOCAL $REMOTE $TLS_ARGS \
-	--remote $OVPN_SERVER --port $OVPN_PORT \
-	--config "$MYIFACEDIR/$PROF_CONFFILE" \
-	--writepid /var/run/openvpn/$NAME.pid \
-	--user openvpn --group openvpn \
-	--persist-tun --persist-key \
-	--chroot $OVPNCHROOTDIR
+[ -d $OVPNCHROOTDIR/cache ] ||
+{
+    print_error "OpenVPN cache dir $OVPNCHROOTDIR/cache does not exist"
+    exit 1
+}
 
-[ -x "$MYIFACEDIR/$PROF_POSTSTART" ] && "$MYIFACEDIR/$PROF_POSTSTART"
+$OVPN --dev $NAME --dev-type $TUNTYPE \
+       --config "$MYIFACEDIR/$PROF_CONFFILE" $KEY_ARGS \
+       --ifconfig $TUNLOCAL $REMOTE --remote $OVPN_SERVER --port $OVPN_PORT \
+       --user $OVPN_USER --group $OVPN_GROUP --persist-tun --persist-key --daemon \
+       --cd $OVPNCHROOTDIR/cache --chroot $OVPNCHROOTDIR \
+       --writepid $OVPNRUNDIR/$NAME.pid
