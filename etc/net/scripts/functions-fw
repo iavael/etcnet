@@ -145,7 +145,7 @@ iptables_create_sed_rules()
 
 iptables_expand_string()
 {
-    : ${1:?missing 1st arg to $FUNCNAME}
+    [ -z "$1" ] && echo && return
     local RULE
     if is_yes "$IPTABLES_HUMAN_SYNTAX"; then
 	[ -z "$IPTABLES_SED_RULES" ] && print_error "Human syntax is enabled but no syntax file is loaded"
@@ -153,7 +153,7 @@ iptables_expand_string()
     else
 	RULE=$(eval 'printf "%s\n" "$@"')
     fi
-    printf "%s\n" "$RULE"|egrep -q "^[^#]" && printf "%s\n" "$RULE" || echo ""
+    printf "%s\n" "$RULE"|egrep -q "^[^#]" && printf "%s\n" "$RULE" || echo
 }
 
 iptables_preload()
@@ -534,15 +534,15 @@ ip6tables_create_sed_rules()
 
 ip6tables_expand_string()
 {
-    : ${1:?missing 1st arg to $FUNCNAME}
+    [ -z "$1" ] && echo && return
     local RULE
     if is_yes "$IP6TABLES_HUMAN_SYNTAX"; then
 	[ -z "$IP6TABLES_SED_RULES" ] && print_error "Human syntax is enabled but no syntax file is loaded"
-	RULE=$(eval "printf '%s\n' $@"|sed  -e "$IP6TABLES_SED_RULES;s/[[:space:]]\+/\ /g")
+	RULE=$(eval 'printf "%s\n" "$@"'|sed  -e "$IP6TABLES_SED_RULES;s/[[:space:]]\+/\ /g")
     else
-	RULE=$(eval "printf '%s\n' $@")
+	RULE=$(eval 'printf "%s\n" "$@"')
     fi
-    printf '%s\n' "$RULE"|egrep -q "^[^#]" && printf '%s\n' "$RULE" || echo ""
+    printf "%s\n" "$RULE"|egrep -q "^[^#]" && printf "%s\n" "$RULE" || echo
 }
 
 ip6tables_preload()
@@ -891,10 +891,10 @@ ebtables_pop_rule()
 
 ebtables_expand_string()
 {
-    : ${1:?missing 1st arg to $FUNCNAME}
+    [ -z "$1" ] && echo && return
     local RULE
-    RULE=$(eval "printf '%s\n' $@")
-    printf '%s\n' "$RULE"|egrep -q "^[^#]" && printf '%s\n' "$RULE" || echo ""
+    RULE=$(eval 'printf "%s\n" "$@"')
+    printf "%s\n" "$RULE"|egrep -q "^[^#]" && printf "%s\n" "$RULE" || echo
 }
 
 # ebtables_load_rules_from_file <table> <chain>
