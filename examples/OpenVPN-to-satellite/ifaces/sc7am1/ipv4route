@@ -14,5 +14,6 @@
 87.103.135.6 dev ppp0
 87.103.135.7 dev ppp0
 87.103.135.8 dev ppp0
-${OVPN_SERVER} dev ppp0 # Satellite provider
+# Satellite provider:
+${OVPN_SERVER} dev ppp0
 replace default	via ${TUNREMOTE} dev ${NAME}

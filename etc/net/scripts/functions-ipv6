@@ -64,6 +64,6 @@ get_ipv6_addresses()
 {
     local NAME=${1:?missing 1st argument to $FUNCNAME}
     # FIXME should we parse braindamaged IPv6 by braindamaged regexp?
-    printf "$($IP -6 addr show dev $NAME 2>/dev/null|grep  -ose "\binet6\b.*\b"|cut -f2 -d" "|cut -f1 -d"/")"
+    printf "$($IP -6 addr show dev $NAME 2>/dev/null|grep -ose "\binet6[[:space:]]\+[0-9a-fA-F.:]\+"|cut -f2 -d" ")"
 }
 
