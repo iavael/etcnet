@@ -1,12 +1,12 @@
 Name:		etcnet
-Version:	0.9.3
-Release:	alt3
+Version:	0.9.4
+Release:	alt0.1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
 Group:		System/Base
 URL:		http://etcnet.org/
-Source:		%name-%version-%release.tar
+Source:		%name-%version.tar.gz
 PreReq:		setup >= 0:2.1.9-ipl18mdk, service, startup >= 0:0.9.3-alt1
 Requires:	grep, sed, iproute2, ifrename >= 28-alt5.pre10, chkconfig
 Requires:	etcnet-defaults = %version-%release
@@ -46,7 +46,7 @@ Group:		System/Configuration/Networking
 Requires:	%name = %version-%release, wireless-tools
 Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables
 Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2, ipsecadm >= 0.9-alt8
-Requires:	hotplug, ncpfs, ppp, vlan-utils24, bridge-utils, openvpn, tunctl
+Requires:	hotplug, ncpfs, ppp, vlan-utils, bridge-utils, openvpn, tunctl
 Requires:	pptp-client, wpa_supplicant, avahi-autoipd, rp-pppoe-base >= 3.6-alt2
 
 %description full
@@ -116,6 +116,11 @@ fi
 %triggerpostun -- net-scripts
 /sbin/chkconfig --add network
 
+# We used to ship some Ruby contrib scripts, but having Ruby installed
+# by dependency isn't an idea most normal users would like. So let
+# people adjust their environment manually for particular contribs to work.
+%add_findreq_skiplist /etc/net/scripts/contrib/*
+
 %files
 %dir %_sysconfdir/net
 %dir %_sysconfdir/net/scripts
@@ -151,6 +156,12 @@ fi
 %files full
 
 %changelog
+* Thu Oct 18 2007 Denis Ovsienko <pilot@altlinux.ru> 0.9.4-alt0.1
+- avoid ghost Ruby dependency
+- update vlan-utils dependency
+- introduce LINKDELAY feature and enable it by default
+- a bunch of minor bugfixes
+
 * Sat Sep  1 2007 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.3-alt3
 - probe several times for /dev/net/tun after `tun' module load (#12659)
 
