@@ -1,18 +1,33 @@
 #!/bin/bash
 
-# taken directly from net-scripts
-check_eth_link ()
+# suspends further action until Ethernet links comes up or
+# timeout expires. or both.
+check_eth_link()
 {
-	local NAME=${1:?missing 1st argument to $FUNCNAME}
-	local res
+	local TARGET="${1:?missing 1st arg to $FUNCNAME}"
+	local LMAX=${LINKDELAY:-0}
+	[ "$LMAX" -ge "0" -a "$LMAX" -le "300" ] || {
+		print_error "LINKDELAY exceeds 300 seconds"
+		return 2
+	}
 	[ -x "${IFPLUGSTATUS:=$DEFAULT_IFPLUGSTATUS}" ] || {
 		print_error "$IFPLUGSTATUS does not exist or is not executable. Try installing ifplugd RPM."
-		return 1
+		return 2
 	}
-	$IFPLUGSTATUS -q $NAME
-	res=$?
-	[ "$res" = 3 ] && return 1
-	return 0
+	local i=0 result
+	# now loop, checking the link once a second
+	while true; do
+		$IFPLUGSTATUS -q $TARGET
+		result=$?
+		# The first positive check result satisfies us.
+		[ $result = 2 ] && return 0
+		# Otherwise continue, but don't make user think we have hung up.
+		print_progress '?'
+		sleep 1
+		[ $((++i)) -lt $LMAX ] || break
+	done
+	# There was not luck on the way, give up.
+	return 1
 }
 
 # checks, if given iface is wireless one

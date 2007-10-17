@@ -119,6 +119,15 @@ status. Possible values are: yes/no/auto.
 'auto' is a special value. If your network card is known to report right
 link status, LINKDETECT feature will take effect.
 .TP 
+.B LINKDELAY
+Some Ethernet interface modules require significant time to negotiate link
+parameters upon loading. Once the initial negitiation is complete, they indicate
+further link state changes correctly. This option specifies maximum number of
+seconds allowed for a
+module to report link absence before giving up and deciding, that the link
+is really absent. If the module reports link before timeout expires, it will
+be seen without spending all the time waiting.
+.TP 
 .B MACADDR_WAITTIME
 Some network card modules create network device first, then perform
 some initialization and after some time fill in MAC address data.
