@@ -54,7 +54,7 @@ IP6TABLES=/sbin/ip6tables
 EBTABLES=/sbin/ebtables
 
 # List of known-good network modules (ones that support link detection).
-GOOD_MODULE_LIST='eepro100 e100 8139too tulip 3c59x hostap via-rhine'
+GOOD_MODULE_LIST='eepro100 e100 8139too tulip 3c59x hostap via-rhine sk98lin'
 
 # Set this to no to always remove any modules and be compatible with 2.4
 # series kernels.
@@ -68,5 +68,5 @@ AUTO_BROADCAST=off
 IFGROUP[0]='lo dummy'
 IFGROUP[1]='eth plip usb dvb bnep tuntap'
 IFGROUP[2]='vlan bond bri teql'
-IFGROUP[3]='iptun ipsectun ovpn'
+IFGROUP[3]='iptun ipsectun ovpn ossh'
 IFGROUP[4]='ppp'
