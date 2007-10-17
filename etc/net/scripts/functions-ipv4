@@ -58,6 +58,10 @@ dhcp_cmdline()
 	esac
 }
 
+# This function uses check_eth_link(), but DHCP used to work for Ethernet
+# mostly (if not only), so functions-eth should be already sourced in such
+# case. This may break one day.
+
 try_dhcp()
 {
 	[ -x "$DHCP_CLIENT" ] || {
