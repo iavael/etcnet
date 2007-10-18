@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.9.4
-Release:	alt0.1
+Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -156,7 +156,7 @@ fi
 %files full
 
 %changelog
-* Thu Oct 18 2007 Denis Ovsienko <pilot@altlinux.ru> 0.9.4-alt0.1
+* Thu Oct 19 2007 Denis Ovsienko <pilot@altlinux.ru> 0.9.4-alt1
 - avoid ghost Ruby dependency
 - update vlan-utils dependency
 - introduce LINKDELAY feature and enable it by default
