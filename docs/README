@@ -9,7 +9,8 @@ convenient; to make modern networking technologies available.
 /etc/net helps configuring the following network interfaces: wired and
 wireless Ethernet, IP tunnels, IPSec static tunnels, VLANs, PLIP, Ethernet
 bonding and bridges, traffic equalizers, dummy, DVB and usbnet interfaces,
-TUN/TAP and OpenVPN TUN/TAP, PPP, PPTP and PPPoE. /etc/net supports IPv4, IPv6 and IPX.
+TUN/TAP, OpenVPN TUN/TAP, OpenSSH TUN/TAP, PPP, PPTP and PPPoE.
+/etc/net supports IPv4, IPv6 and IPX.
 
 ===
 === INSTALLATION

@@ -31,8 +31,8 @@ dependencies resolution, QoS and firewall configuration frameworks.
 /etc/net provides support for the following interface types: Ethernet, WiFi
 (WEP), IPv4/IPv6 tunnels, PSK IPSec tunnels, VLAN, PLIP, Ethernet bonding and
 bridging, traffic equalizer, Pent@NET, Pent@VALUE, SkyStar-2, TUN/TAP,
-OpenVPN TUN/TAP, usbnet and PPP. Due to its modular structure, support for new
-interface types can be added without overall design changes.
+OpenVPN TUN/TAP, OpenSSH TUN/TAP, usbnet and PPP. Due to its modular structure,
+support for new interface types can be added without overall design changes.
 
 # This is yet to be researched on Fedora.
 #%package full

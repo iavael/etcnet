@@ -1,11 +1,11 @@
 0.9.4
-	change: updated Ethernet module list
 	change: expect 2.6 Linux kernel by default
 	change: OpenVPN support minor updates
 	bugfix: handle wpa_supplicant shutdown properly
 	bugfix: correct IPv4/IPv6 interface address regexps
 	bugfix: allow quotes, dots and underscores in the firewall rules
 	bugfix: prevent empty firewall rules parsing and error reporting
+	new feature: LINKDELAY (same as in RH initscripts)
 0.9.3 2007-08-27
 	change: use wpa_supplicant/wpa_cli for wifi ifaces in ifplugd-like manner
 	change: switch from zcip to avahi-autoipd
