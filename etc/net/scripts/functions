@@ -233,7 +233,7 @@ get_mapped_ifname()
 			print_error "$IFRENAME is unavailable, but $PROF_IFTAB exists"
 			exit 1
 		}
-		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>/dev/null | head -1 | cut -d' ' -f7 | sed 's/.$//'`
+		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>/dev/null | head -1 | cut -d' ' -f7 | sed 's/\.$//'`
 		[ $? = 0 -a -n "$NEW_NAME" ] && echo $NEW_NAME
 	fi
 }
