@@ -1,4 +1,5 @@
 0.9.5
+	bugfix: default path to iwpriv was lost (reported by Alexey Froloff)
 	bugfix: adjust regexp for both new and old ifrename output format
 0.9.4 2007-10-19
 	change: expect 2.6 Linux kernel by default
@@ -7,7 +8,6 @@
 	bugfix: correct IPv4/IPv6 interface address regexps
 	bugfix: allow quotes, dots and underscores in the firewall rules
 	bugfix: prevent empty firewall rules parsing and error reporting
-	bugfix: default path to iwpriv was lost (reported by Alexey Froloff)
 	new feature: LINKDELAY (same as in RH initscripts)
 0.9.3 2007-08-27
 	change: use wpa_supplicant/wpa_cli for wifi ifaces in ifplugd-like manner
