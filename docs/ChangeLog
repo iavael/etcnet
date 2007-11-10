@@ -1,5 +1,5 @@
 0.9.5
-	bugfix: adjust regexp for the new ifrename output format
+	bugfix: adjust regexp for both new and old ifrename output format
 0.9.4 2007-10-19
 	change: expect 2.6 Linux kernel by default
 	change: OpenVPN and OpenSSH support updates

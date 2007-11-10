@@ -233,7 +233,10 @@ get_mapped_ifname()
 			print_error "$IFRENAME is unavailable, but $PROF_IFTAB exists"
 			exit 1
 		}
-		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>/dev/null | head -1 | cut -d' ' -f7 | sed 's/\.$//'`
+		# At some point ifrename started to print only the new name of an
+		# interface into stdout instead of its usual "Dry-run : Would rename eth0 to devnet."
+		# Let's accept both formats, suppressing the stderr.
+		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>/dev/null | head -1 | sed 's/.*Would rename.* to //;s/\.$//'`
 		[ $? = 0 -a -n "$NEW_NAME" ] && echo $NEW_NAME
 	fi
 }
