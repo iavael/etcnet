@@ -234,9 +234,10 @@ get_mapped_ifname()
 			exit 1
 		}
 		# At some point ifrename started to print only the new name of an
-		# interface into stdout instead of its usual "Dry-run : Would rename eth0 to devnet."
+		# interface into stderr instead of its usual "Dry-run : Would rename eth0 to devnet."
+		# printed into stdout.
 		# Let's accept both formats, suppressing the stderr.
-		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>/dev/null | head -1 | sed 's/.*Would rename.* to //;s/\.$//'`
+		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>&1 | head -1 | sed 's/.*Would rename.* to //;s/\.$//'`
 		[ $? = 0 -a -n "$NEW_NAME" ] && echo $NEW_NAME
 	fi
 }
