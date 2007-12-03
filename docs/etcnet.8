@@ -25,7 +25,7 @@ ip rules startup table ('ip \-4 rule add' args)
 .IP /etc/net/vlantab
 VLAN mass\-configuration table. If you need to configure lots of simple VLAN interfaces, this is the right place. See VLANTAB SYNTAX for details.
 .IP /etc/net/iftab
-Interface mappings table, optional, but hardly advised to have. This file is used by ifrename. iftab file format is described in iftab manpage. Please note that we don't use /etc/iftab, but keep our own /etc/net/iftab. This difference allows to keep /etc/net\-specific filenames with profile and host suffixes under a single directory without creating additional mess in /etc. Additionally it prevents the system from accidental interface name change after ifrename invocation.
+Interface mappings table, optional, but strictly advised to have. This file is used by ifrename. iftab file format is described in iftab manpage. Please note that we don't use /etc/iftab, but keep our own /etc/net/iftab. This difference allows to keep /etc/net\-specific filenames with profile and host suffixes under a single directory without creating additional mess in /etc. Additionally it prevents the system from accidental interface name change after ifrename invocation.
 .IP /etc/net/hosttab
 This optional file can be used during MULTIHOST CONFIGURATION.
 .IP /etc/net/ifup\-pre
