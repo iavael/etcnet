@@ -1,5 +1,5 @@
 Name:		etcnet
-Version:	0.9.4
+Version:	0.9.5
 Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
@@ -156,6 +156,9 @@ fi
 %files full
 
 %changelog
+* Wed Dec 12 2007 Denis Ovsienko <pilot@altlinux.ru> 0.9.5-alt1
+- new version fixes two issues with iwpriv and ifrename
+
 * Thu Oct 19 2007 Denis Ovsienko <pilot@altlinux.ru> 0.9.4-alt1
 - avoid ghost Ruby dependency
 - update vlan-utils dependency

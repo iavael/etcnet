@@ -1,4 +1,4 @@
-0.9.5
+0.9.5 2007-12-12
 	bugfix: default path to iwpriv was lost (reported by Alexey Froloff)
 	bugfix: adjust regexp for both new and old ifrename output format
 0.9.4 2007-10-19
