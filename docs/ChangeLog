@@ -1,6 +1,9 @@
-0.9.4
+0.9.5 2007-12-12
+	bugfix: default path to iwpriv was lost (reported by Alexey Froloff)
+	bugfix: adjust regexp for both new and old ifrename output format
+0.9.4 2007-10-19
 	change: expect 2.6 Linux kernel by default
-	change: OpenVPN support minor updates
+	change: OpenVPN and OpenSSH support updates
 	bugfix: handle wpa_supplicant shutdown properly
 	bugfix: correct IPv4/IPv6 interface address regexps
 	bugfix: allow quotes, dots and underscores in the firewall rules
