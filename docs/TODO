@@ -12,3 +12,4 @@
 + firewall: ebtables support
 - generalize ifup delay
 - IPv6 forwarding?
+- dhcp-static should allow combining DHCP and static addresses
