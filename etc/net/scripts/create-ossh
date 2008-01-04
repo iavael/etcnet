@@ -33,16 +33,10 @@ case "$NAME" in
     exit 1
 esac
 
-if [ ! -c /dev/net/tun ]; then
-    $MODPROBE tun || {
-	print_error "tuntap kernel module not found"
-	exit 1
-    }
-    [ -c /dev/net/tun ] || {
+modprobe_tuntap || {
 	print_error "tuntap control node does not exist"
 	exit 1
-    }
-fi
+}
 
 $TUNCTL -t $NAME > /dev/null
 
@@ -63,4 +57,4 @@ if is_yes "$IFUP_REMOTE"; then
 fi
 
 $OSSH -i "$MYIFACEDIR/$IDENTITY" ${REMOTEPORT:+-p $REMOTEPORT} -f -M -o "controlpath /var/run/etcnet-ossh-$NAME" \
-    -o "tunnel ${TUNTAP_MODE}" -w ${TUNTAP_NR}:${REMOTE_NR:-any} ${REMOTE} /bin/true
+    -o "tunnel ${TUNTAP_MODE}" -w ${TUNTAP_NR}:${REMOTE_NR:-any} ${REMOTEUSER:+$REMOTEUSER@}${REMOTE} /bin/true
