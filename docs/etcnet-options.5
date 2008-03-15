@@ -336,7 +336,9 @@ pppd location, optional
 .TP 
 .B PPPOPTIONS
 Additional pppd args. Note that interface\-specific options file
-will override PPPOPTIONS from options\-ppp, not append.
+will override PPPOPTIONS from options\-ppp, not append. WARNING! NEVER
+set "persist maxfail 0" for an interface with ONBOOT=yes, otherwise
+your host risks hanging forever.
 .TP 
 .B CHAT
 chat location, optional
