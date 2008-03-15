@@ -1,6 +1,7 @@
 1.0.0
 	update: fixed selectprofile script
 	update: added status option to initscript
+	new feature: VLAN_REORDER_HDR flag
 0.9.5 2007-12-12
 	bugfix: default path to iwpriv was lost (reported by Alexey Froloff)
 	bugfix: adjust regexp for both new and old ifrename output format

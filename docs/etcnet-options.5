@@ -161,6 +161,11 @@ Possible values: 'localhost' (compute a valid hostname and send it to
 DHCP server with \-h option); 'AUTO' (Get a hostname from DHCP server
 with \-H option); 'NONE' (don't send anything); any other string (send the string as a hostname with
 \-h). 'AUTO' value works with dhcpcd client only.
+.SH "VLAN options"
+.TP 
+.B VLAN_REORDER_HDR
+This option allows changing the REORDER_HDR flag for each VLAN interface. The flag can be
+either 0 or 1 and its meaning is described in vconfig manpage.
 .SH "IP tunnels options"
 .TP 
 .B TUNTYPE
