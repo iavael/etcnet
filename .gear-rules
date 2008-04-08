@@ -1,2 +1,2 @@
 spec: contrib/Sisyphus.spec
-tar: . name=etcnet-@version@-@release@ base=etcnet-@version@
+tar.gz: .

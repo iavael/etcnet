@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.9.5
-Release:	alt1
+Release:	alt1.1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -156,6 +156,11 @@ fi
 %files full
 
 %changelog
+* Tue Apr  8 2008 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.5-alt1.1
+- stop dhcpcd during ifdown for BOOTPROTO=dhcp-ipv4ll too (#15274)
+- fixed ossh type iface create
+- added madwifi-specific wlan type
+
 * Wed Dec 12 2007 Denis Ovsienko <pilot@altlinux.ru> 0.9.5-alt1
 - new version fixes two issues with iwpriv and ifrename
 
