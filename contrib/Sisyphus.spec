@@ -1,5 +1,5 @@
 Name:		etcnet
-Version:	0.9.5
+Version:	0.9.6
 Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
@@ -156,6 +156,9 @@ fi
 %files full
 
 %changelog
+* Thu Apr 10 2008 Denis Ovsienko <pilot@altlinux.ru> 0.9.6-alt1
+- built new version with some updates and bugfixes
+
 * Wed Dec 12 2007 Denis Ovsienko <pilot@altlinux.ru> 0.9.5-alt1
 - new version fixes two issues with iwpriv and ifrename
 

@@ -50,6 +50,7 @@ install:
 	@install -d $(mandir)/man{5,8}
 	@install -m 644 docs/*.8 $(mandir)/man8
 	@install -m 644 docs/*.5 $(mandir)/man5
+	@ln -s ifup-ifplugd $(etcnetdir)/scripts/ifup-openvpn
 	@ln -s ifup-ifplugd $(etcnetdir)/scripts/ifup-wireless
 	@ln -s ifdown-ifplugd $(etcnetdir)/scripts/ifdown-wireless
 
