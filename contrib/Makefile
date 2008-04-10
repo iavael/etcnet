@@ -45,7 +45,7 @@ install:
 	@install -m 755 etc/net/scripts/contrib/* $(etcnetdir)/scripts/contrib
 	@install -m 644 etc/net/scripts/functions* $(etcnetdir)/scripts
 	@install -m 755 etc/net/scripts/{config-,create-,destroy-,ifdown,ifup,setup-,shutdown-}* $(etcnetdir)/scripts
-	@install -m 755 etc/net/scripts/{ifplugd.action,wpa_cli.action,network.init} $(etcnetdir)/scripts
+	@install -m 755 etc/net/scripts/{ifplugd.action,wpa_cli.action,openvpn.action,network.init} $(etcnetdir)/scripts
 	@install -m 644 etc/net/sysctl.conf $(etcnetdir)
 	@install -d $(mandir)/man{5,8}
 	@install -m 644 docs/*.8 $(mandir)/man8
