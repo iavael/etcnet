@@ -503,6 +503,18 @@ stop_ipv4ll_client()
     fi
 }
 
+modprobe_tuntap() {
+	local i
+
+	[ -c /dev/net/tun ] && return 0
+	$MODPROBE tun || return 1
+	for (( i=0; i < 5; i++ )); do
+		[ -c /dev/net/tun ] && break
+		usleep 100000
+	done
+	[ -c /dev/net/tun ]
+}
+
 eval_string()
 {
     : ${1:?missing 1st arg to $FUNCNAME}
@@ -539,7 +551,7 @@ declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netp
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
 declare -frx have_ifplugd pickup_defaults trim need_detection stop_dhcp_client
-declare -frx stop_ipv4ll_client modprobe_with_rename
+declare -frx stop_ipv4ll_client modprobe_with_rename modprobe_tuntap
 declare -frx eval_string kill_by_pidfile
 declare -rx DENOISE DEFAULT_BONDMODE IFACEDIR LOCALSCRIPTDIR VARLIBDIR
 declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS

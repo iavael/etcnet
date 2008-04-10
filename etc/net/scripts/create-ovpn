@@ -8,7 +8,10 @@ pickup_options
 	exit 1
 }
 
-$MODPROBE tun
+modprobe_tuntap || {
+	print_error "tuntap control node does not exist"
+	exit 1
+}
 
 is_yes "$RESTORE_DEFAULTROUTE" && { # Save default route(s)
 	[ -d $OVPNRUNDIR ] || 

@@ -1,0 +1,64 @@
+						-*- outline -*-
+*		OPENSSH tunneling [ossh]
+
+** requirements
+- openssh-clients > 4.3
+- tun/tap interface support
+- tunctl utility
+
+** which one
+etcnet utilizes openssh ability to link two tun/tap ifaces.
+[ossh] type describes master (initiating) tunnel side, and
+[tuntap] type describes slave tunnel side.
+
+** master iface configuration
+
+*** iface/options
+TYPE=ossh
+# IP address of remote host [MANDATORY]
+REMOTE=1.2.3.4
+# sshd listen port on remote, defaults to 22
+REMOTEPORT=222
+# connect as that user, defaults to root
+REMOTEUSER=ossh
+# remote iface name, defaults to any
+REMOTEIF=tun0
+# set tuntap interface up on remote, defaults to no,
+# assuming $REMOTEIF is always up.
+IFUP_REMOTE=yes
+# command to invoke on remote to setup $REMOTEIF,
+# if IFUP_REMOTE is 'yes'; defaults to /sbin/ifup
+REMOTEIFUP='ifconfig tun0 ....'
+
+*** iface/identity
+contains private ssh key, corresponding public key
+should be installed on remote
+
+*** iface/ipv4address etc
+as usual
+
+** limitations
+- local interface name MUST be in form tun[0-9]+ or tap[0-9]+
+- remote interface name should be of same type, tun or tap
+
+** samples, assuming both ends have etcnet installed:
+
+*** master side [ossh]
+--- %< --- tun0/options:
+TYPE=ossh
+REMOTE=195.112.124.102
+REMOTEIF=tun1
+--- %< ---
+
+--- %< --- tun0/ipv4address:
+172.16.4.3 peer 172.16.4.4/32
+--- %< ---
+
+*** slave side [tuntap]
+--- %< --- tun1/options:
+TYPE=tuntap
+--- %< ---
+
+--- %< --- tun1/ipv4address:
+172.16.4.4 peer 172.16.4.3/32
+--- %< ---
