@@ -1,17 +1,4 @@
 #!/bin/bash
 
 # If wpa_supplicant was running, give it 5 seconds for a clean shutdown.
-if [ -s "/var/run/wpa_supplicant-$NAME.pid" ]; then
-	kill `cat /var/run/wpa_supplicant-$NAME.pid`
-	for ((i=0; i<20; i++)) do
-		if [ -s "/var/run/wpa_supplicant-$NAME.pid" ]; then
-			usleep 250000
-		else
-			break
-		fi
-	done
-	if [ -s "/var/run/wpa_supplicant-$NAME.pid" ]; then
-		kill -9 `cat /var/run/wpa_supplicant-$NAME.pid`
-		rm -f -- "/var/run/wpa_supplicant-$NAME.pid"
-	fi
-fi
+kill_by_pidfile "/var/run/wpa_supplicant-$NAME.pid" 250000 20

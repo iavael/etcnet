@@ -1,8 +1,10 @@
-1.0.0
+0.9.6
 	update: fixed selectprofile script
 	update: added status option to initscript
+	update: complete overhaul of OpenVPN support
 	new feature: VLAN_REORDER_HDR flag
 	bugfix: DHCP client wasn't always stopped correctly
+	bugfix: another ifrename adjustment for removable interfaces
 0.9.5 2007-12-12
 	bugfix: default path to iwpriv was lost (reported by Alexey Froloff)
 	bugfix: adjust regexp for both new and old ifrename output format
