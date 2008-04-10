@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>
+    FreeSource :
+    Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin&nbsp;/&nbsp;etcnet&nbsp;/&nbsp;qos
+  </title>
+  
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1251" />
+  <link rel="stylesheet" type="text/css" href="http://freesource.info/wiki/themes/coffee/css/wakka.css" />
+  <link rel="shortcut icon" href="http://freesource.info/wiki/themes/coffee/icons/wacko.ico" type="image/x-icon" />
+  <link rel="alternate" type="application/rss+xml" title="RecentChanges in RSS" href="http://freesource.info/wiki/xml/recentchanges_freesource.xml" />
+  <link rel="alternate" type="application/rss+xml" title="History/revisions of AltLinux/Sisyphus/admin/etcnet/qos in RSS" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos/revisions.xml" />
+  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/default.js"></script>
+  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/protoedit.js"></script>
+  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/wikiedit2.js"></script>
+
+  
+</head>
+
+<body onload="all_init();">
+
+<form action="http://freesource.info/wiki/Login"  method="post" >
+
+<input type="hidden" name="action" value="login" />
+
+<div class="header">
+        <div class="user">
+
+  
+                <span class="nobr"><input type="hidden" name="goback" value="AltLinux/Sisyphus/admin/etcnet/qos" /><strong>Вход:&nbsp;</strong><input type="text" name="name" size="18" class="login" />&nbsp;Пароль:&nbsp;<input type="password" name="password" class="login" size="8" />&nbsp;<input type="submit" value="Ok" /></span>
+
+  
+
+        </div>
+        <div class="title">
+                FreeSource: <a name="altlinux" href="http://freesource.info/wiki/AltLinux?v=h0k&" class="" title="Alt&nbsp;Linux">AltLinux</a>/<a name="altlinux.sisyphus" href="http://freesource.info/wiki/AltLinux/Sisyphus?v=1la&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus">Sisyphus</a>/<a name="altlinux.sisyphus.admin" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin?v=tym&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin">admin</a>/<a name="altlinux.sisyphus.admin.etcnet" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet?v=s9v&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin&nbsp;/&nbsp;etcnet">etcnet</a>/qos
+            <a class="Search" title="" href="http://freesource.info/wiki/TextSearch?phrase=AltLinux%2FSisyphus%2Fadmin%2Fetcnet%2Fqos">...</a>
+        </div>
+
+</div>
+
+<div class="bookmarks">
+
+        <a href="http://freesource.info/wiki/FreeSource">Free&nbsp;Source</a>
+         |
+        <a name="katalog" href="http://freesource.info/wiki/Katalog?v=6ad&" class="" title="Каталог">Каталог</a> | <a name="izmenenija" href="http://freesource.info/wiki/Izmenenija?v=14fp&" class="" title="Изменения">Изменения</a> | <a name="novyekommentarii" href="http://freesource.info/wiki/NovyeKommentarii?v=6ad&" class="" title="Новые&nbsp;Комментарии">НовыеКомментарии</a> | <a name="pol_zovateli" href="http://freesource.info/wiki/Pol'zovateli?v=1csw&" class="" title="Пользователи">Пользователи</a> | <a name="registracija" href="http://freesource.info/wiki/Registracija?v=1bcu&" class="" title="Регистрация">Регистрация</a>
+         |
+        
+
+
+</div>
+
+</form>
+
+<div class="pageBefore"><img src="http://freesource.info/wiki/images/z.gif" width="1" height="1" border="0" alt="" style="display:block" align="top" /></div><div class="page">
+<a name="h5457-1"></a><h1>Настройка QoS&nbsp;в&nbsp;<a name="...etcnet" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet?v=s9v&" class="" title="AltLinux/Sisyphus/admin/etcnet">/etc/net</a> (редакция 3)</h1><a name="h5457-2"></a><h2>Общая теория</h2><a name="p17742-1"></a><p class="auto" id="p17742-1">
+QoS&nbsp;&mdash; quality of&nbsp;service (качество обслуживания) &mdash; общий термин, обозначающий технологии управления скоростными и&nbsp;временными характеристиками пропускаемого трафика. <br />
+Конфигурация выполняется для&nbsp;каждого интерфейса отдельно. Для&nbsp;этого создаётся древовидная структура, состоящая из&nbsp;дисциплин очередей и&nbsp;классов. Корень этой структуры &mdash; так&nbsp;называемая корневая дисциплина очереди, которая является обязательным атрибутом интерфейса. Увидеть её можно так:<br />
+<!--notypo--><textarea class="code" rows="5" readonly="readonly">$ /sbin/ip ad sh dev eth0
+3: eth0: &lt;BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc pfifo_fast qlen 1000
+    link/ether 4c:00:10:3b:3e:f0 brd ff:ff:ff:ff:ff:ff
+    inet 10.1.1.175/23 brd 10.1.1.255 scope global eth0</textarea><!--/notypo--><br />
+В&nbsp;данном случае корневая дисциплина очереди &mdash; pfifo_fast (она назначается по&nbsp;умолчанию). Иерархия очередей и&nbsp;классов определяет, как&nbsp;именно будут обрабатываться исходящие с&nbsp;интерфейса пакеты: номинальная скорость, параметры допустимых кратковременных всплесков, правила переупорядочивания пакетов внутри очередей, условия взаимного заимствования полосы пропускания между объектами на&nbsp;одном уровне иерархии и&nbsp;прочие параметры, зависящие от&nbsp;конкретной используемой структуры. &laquo;Перпендикулярно&raquo; этому дереву существует набор фильтров, которые описывают прохождение пакетов по&nbsp;структуре. Наиболее популярными являются дисциплины очередей CBQ&nbsp;(class based queueing) и&nbsp;HTB (hierarchical token bucket).<br />
+Дерево CBQ&nbsp;формируется по&nbsp;довольно простым принципам:</p><ul><li> пропускная способность корневой дисциплины очереди интерфейса равна физической пропускной способности интерфейса
+</li><li> классы могут иметь своим родителем только дисциплину очереди
+</li><li> решение о&nbsp;направлении пакета в&nbsp;класс принимается в&nbsp;дисциплине очереди с&nbsp;помощью фильтров
+</li><li> если вам&nbsp;необходимо разделить класс на&nbsp;подклассы, то&nbsp;создайте вложенную дисциплину очереди, а&nbsp;далее делите её</li></ul><a name="p17742-2"></a><p class="auto" id="p17742-2">
+Дерево HTB&nbsp;строится ещё проще:</p><ul><li> классы могут содержать другие классы напрямую, без&nbsp;промежуточных дисциплин очередей</li></ul>
+<a name="h5457-3"></a><h2>Описание реализации</h2><a name="p17742-3"></a><p class="auto" id="p17742-3">
+Общая идея реализации в&nbsp;/etc/net заключается в&nbsp;том, что&nbsp;иерархия объектов QoS&nbsp;представляется в&nbsp;виде дерева каталогов и&nbsp;файлов. Конфигурация начинается с&nbsp;каталога <tt>qos</tt>, располагающегося в&nbsp;каталоге конфигурации интерфейса. Далее в&nbsp;нём могут содержаться другие каталоги, которые представляют либо дисциплины очереди, либо классы. В&nbsp;каталогах дисциплин присутствуют файлы с&nbsp;названием <tt>qdisc</tt>, а&nbsp;в каталогах с&nbsp;классами &mdash; файлы <tt>class</tt>. Эти&nbsp;файлы содержат параметры дисциплин и&nbsp;классов. Фильтры располагаются в&nbsp;файлах с&nbsp;названием <tt>filter</tt>.</p><a name="h5457-4"></a><h2>Пример 1</h2><a name="p17742-4"></a><p class="auto" id="p17742-4">
+Рассмотрим пример конфигурации HTB, поставляемый с&nbsp;/etc/net: <a href="http://etcnet.org/examples/QoS-HTB-user-guide/1/qdisc" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />http://etcnet.org/examples/QoS-HTB-user-guide/1/qdisc</a><br />
+Так&nbsp;как дерево начинается с&nbsp;корневой дисциплины, то&nbsp;в каталоге <tt>qos</tt> будет содержаться только один каталог <tt>qos/1</tt>, а&nbsp;в нём будет содержаться файл <tt>qdisc</tt>:<br />
+<!--notypo--><textarea class="code" rows="3" readonly="readonly">[DIR] 1/                                       22-Aug-2005 14:13      -  
+[TXT] qdisc                                    18-Mar-2005 11:06     1k</textarea><!--/notypo--><br />
+Корневая дисциплина здесь имеет номер 1. Параметры корневой дисциплины простые: <tt>htb default 12</tt>. Корневая дисциплина кроме своих параметров содержит один класс в&nbsp;каталоге <tt>qos/1/1</tt>. Полным именем объекта будет 1:1. Левое число отсутствует в&nbsp;названии каталога, так&nbsp;как оно&nbsp;всегда равно идентификатору очереди. В&nbsp;файле <tt>qos/1/1/class</tt> содержатся параметры класса: <tt>htb rate 100kbps ceil 100kbps</tt>. Кроме этого, в&nbsp;каталогах <tt>qos/1/1/2</tt> и&nbsp;<tt>qos/1/1/12</tt> определено ещё два&nbsp;класса: 1:2 и&nbsp;1:12. В&nbsp;файле <tt>qos/1/1/extra</tt> содержатся параметры, общие для&nbsp;классов 1:2 и&nbsp;1:12: <tt>htb ceil 100kbps</tt>. Это&nbsp;необязательный файл, можно было бы&nbsp;поместить эти&nbsp;параметры в&nbsp;файлы <tt>qos/1/1/2/class</tt> и&nbsp;<tt>qos/1/1/12/class</tt>. Если у&nbsp;вас много классов на&nbsp;одном уровне, то&nbsp;файл <tt>extra</tt> поможет вынести общую часть &laquo;за скобки&raquo;.<br />
+Класс 1:12 пуст, а&nbsp;класс 1:2 содержит 1:10 и&nbsp;1:11. В&nbsp;файлах <tt>qos/1/1/2/10/filter</tt> и&nbsp;<tt>qos/1/1/2/11/filter</tt> содержатся описания фильтров по&nbsp;одному в&nbsp;каждой строке. Местоположение файла <tt>filter</tt> определяет, куда будут направлены пакеты, которые ему&nbsp;удовлетворяют. Для&nbsp;класса 1:10 будет использован один фильтр <tt>protocol ip&nbsp;prio 1 u32 match ip&nbsp;src 1.2.3.4 match ip&nbsp;dport 80 0xffff</tt>, что&nbsp;соответствует исходящему HTTP-трафику с&nbsp;адреса 1.2.3.4, а&nbsp;для класса 1:11 будет использован фильтр <tt>protocol ip&nbsp;prio 1 u32 match ip&nbsp;src 1.2.3.4</tt>, что&nbsp;соответствует всему исходящему трафику с&nbsp;адреса 1.2.3.4. Файлы <tt>class</tt> классов 1:10 и&nbsp;1:11 содержат соответственно <tt>rate 30kbps</tt> и&nbsp;<tt>rate 10kbps</tt>.</p><a name="h5457-5"></a><h2>Пример 2</h2><a name="p17742-5"></a><p class="auto" id="p17742-5">
+1. Я&nbsp;советую, поставив пакет etcnet, сначала спрятать куда-нибудь все&nbsp;каталоги интерфейсов из&nbsp;<tt>/etc/net/ifaces</tt> (   кроме <tt>lo</tt>, <tt>default</tt> и&nbsp;<tt>unknown</tt>) и&nbsp;запустить <tt>/etc/net/scripts/initconf</tt>. Его&nbsp;выдачу сохранить и&nbsp;на основании этой выдачи организовать файл <tt>/etc/net/iftab</tt>, который определит логические имена интерфейсов. Например, одну сетевую карту можно из&nbsp;eth0 переименовать в&nbsp;соответствии с&nbsp;её макадресом в&nbsp;wan, другую &ndash; в&nbsp;lan. Я&nbsp;для себя использовал вместо wan&nbsp;имя провайдера (comcast), а&nbsp;вместо lan&nbsp;&ndash; придуманное самим имя&nbsp;локального домена своей сети 192.168.10.0/24 (menlo). Ну&nbsp;и дальше буду их&nbsp;использовать, чтобы не&nbsp;ошибиться где-нибудь заменяя их&nbsp;на более нейтральные типа wan&nbsp;и&nbsp;lan. Далее создайте каталоги с&nbsp;именами определёнными в&nbsp;таблице <tt>/etc/net/iftab</tt>, внутри <tt>/etc/ifaces</tt>. Я&nbsp;создал <tt>/etc/net/ifaces/comcast</tt> и&nbsp;<tt>/etc/net/ifaces/comcast</tt>. И&nbsp;положил туда нужные мне&nbsp;файлы <tt>options</tt>. Для&nbsp;внешней сети <tt>comcast</tt> достаточно определить TYPE и&nbsp;BOOTPROTO, я&nbsp;добавил строчку MODULE как&nbsp;того рекомендовал initconf:<br />
+<!--notypo--><textarea class="code" rows="6" readonly="readonly"># cat &lt;&lt;EOF &gt;/etc/net/ifaces/comcast/options
+TYPE=eth
+BOOTPROTO=dhcp
+MODULE=tulip
+EOF</textarea><!--/notypo--><br />
+Для&nbsp;интерфейса локальной сети menlo адрес задан статически, так&nbsp;что там&nbsp;кроме файла options ещё нужен файл ipv4address:<br />
+<!--notypo--><textarea class="code" rows="7" readonly="readonly"># cat &lt;&lt;EOF &gt;/etc/net/ifaces/menlo/options
+TYPE=eth
+BOOTPROTO=static
+MODULE=natsemi
+EOF
+# echo &quot;192.168.10.1/24&quot; &gt;/etc/net/ifaces/menlo/ipv4address</textarea><!--/notypo--><br />
+2. Дальше настраиваете ip-forwarding и&nbsp;nat masquarading. За&nbsp;первый отвечает строчка<br />
+<!--notypo--><textarea class="code" rows="2" readonly="readonly">net.ipv4.ip_forward = 1</textarea><!--/notypo--><br />
+в&nbsp;файле <tt>/etc/net/sysctl.conf</tt>, в&nbsp;то время как&nbsp;другое делается добавлением строки<br />
+<tt>masquerade out-iface comcast</tt><br />
+в&nbsp;файл <tt>/etc/net/ifaces/default/fw/iptables/nat/POSTROUTING</tt>:<br />
+<!--notypo--><textarea class="code" rows="2" readonly="readonly">echo &quot;masquerade out-iface comcast&quot; &gt;&gt;/etc/net/ifaces/default/fw/iptables/nat/POSTROUTING</textarea><!--/notypo--><br />
+После этого ваш&nbsp;раутер после # service network restart уже&nbsp;должен начать выполнять свою функцию разделения доступа в&nbsp;интернет.</p><br /><a name="p17742-6"></a><p class="auto" id="p17742-6">
+3. Далее я&nbsp;настраивал распознавание и&nbsp;маркирование пакетов, которым надо было обеспечить гарантированную ширину пропускания канала. Для&nbsp;меня это&nbsp;были два&nbsp;телефонных адаптера, которые не&nbsp;искажают звук только если им&nbsp;предоставлены 10 килобит в&nbsp;секунду. Эти&nbsp;адаптеры стоят в&nbsp;локальной сети и&nbsp;dhcp сервер по&nbsp;их мак-адресам даёт им&nbsp;статические адреса. Эти&nbsp;адреса я&nbsp;и использовал в&nbsp;качестве критерия для&nbsp;маркировки. Маркировка обеспечивается следующим образом:<br />
+<!--notypo--><textarea class="code" rows="5" readonly="readonly">#cat &lt;&lt;EOF &gt;/etc/net/ifaces/default/fw/iptables/mangle/PREROUTING
+mark 21 if from 192.168.10.21 from-iface menlo
+mark 22 if from 192.168.10.5 from-iface menlo
+EOF</textarea><!--/notypo--><br />
+Мысль для&nbsp;себя на&nbsp;будущее: наверно можно было маркировать по&nbsp;мак-адресу, и&nbsp;тем самым избежать необходимости настраивать статические адреса выдаваемые dhcpd.</p><br /><a name="p17742-7"></a><p class="auto" id="p17742-7">
+4. Ну&nbsp;а теперь остаётся самое настроить qos&nbsp;htb для&nbsp;идущего наружу интерфейса comcast.<br />
+<!--notypo--><textarea class="code" rows="15" readonly="readonly"># # создаём дисциплину 1
+# mkdir -p /etc/net/ifaces/comcast/qos/1
+
+# # определяем что эта дисциплина - htb
+# # и её дефолтный класс для неклассифицированного траффика 77.
+# echo &quot;htb default 77&quot; &gt;/etc/net/ifaces/comcast/qos/1/qdisc
+
+# # создаём корневой класс 1 (1:1)
+# mkdir /etc/net/ifaces/comcast/qos/1/1
+
+# # определяем ширину пропускания интерфейса (upload)
+# echo &quot;htb rate 360kbit&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/class
+
+# # организуем фильтр, направляющий весь траффик в класс 1:1
+# echo &quot;proto ip prio 1 u32 match ip src 0.0.0.0/0&quot;  &gt;/etc/net/ifaces/comcast/qos/1/1/filter
+
+# # создаём класс для первого телефонного адаптера
+# mkdir /etc/net/ifaces/comcast/qos/1/1/21/
+
+# # определяем для него ширину пропускания 80 килобит/сек.
+# echo &quot;htb rate 80kbit&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/21/class
+
+# # задаём фильтр этого класса, отбирающий для него пакеты с маркой &quot;21&quot;
+# echo &quot;protocol ip prio 1 handle 21 fw&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/21/filter
+
+# # создаём класс для второго телефонного адаптера
+# mkdir /etc/net/ifaces/comcast/qos/1/1/22/
+
+# # определяем для него ширину пропускания 80 килобит/сек.
+# echo &quot;htb rate 80kbit&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/22/class
+
+# # задаём фильтр этого класса, отбирающий для него пакеты с маркой &quot;22&quot;
+# echo &quot;protocol ip prio 1 handle 22 fw&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/22/filter
+
+
+# # создаём класс для дефолтного траффика:
+# mkdir /etc/net/ifaces/comcast/qos/1/1/77/
+
+# # определяем для него ширину пропускания 200 (= 360 - (80 + 80)) килобит/сек.
+# # с возможностью заимствования неиспользуемого в данный момент траффика других классов
+# # вплоть до 360kbit, то есть полной ширины исходящего канала
+# echo &quot;htb rate 200kbit ceil 360kbit&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/77/class</textarea><!--/notypo--></p><br /><a name="p17742-8"></a><p class="auto" id="p17742-8">
+Теперь телефонам будет предоставляться 80 килобит в&nbsp;секунду как&nbsp;только они&nbsp;того потребуют, а&nbsp;если они&nbsp;недоиспользуют эти&nbsp;80kbit, всё оставшееся будет предоставляться другим соединениям.</p><br /><a name="p17742-9"></a><p class="auto" id="p17742-9">
+P.S Большое спасибо Денису Овсиенко за&nbsp;то, что&nbsp;объяснил, как&nbsp;правильно организовать иерархию фильтров, чтобы эта&nbsp;конструкция заработала.</p><a name="h5457-6"></a><h2>Утилиты</h2>
+<ul><li> С&nbsp;11/07/2006 в&nbsp;contrib находится скрипт eqos (по аналогии с&nbsp;efw), который предназначен для&nbsp;ручного управления <a name="qos" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos?v=ir4&" class="">Qo&nbsp;S</a> и&nbsp;умеет следующее:
+</li></ul><div class="indent"><!--notypo--><textarea class="code" rows="15" readonly="readonly">/etc/net QoS handler
+Usage: ./eqos [iface] &lt;action&gt; [action options]
+
+ iface    - real interface name ('eth0' by default) or 'all' for all interfaces
+ action   - 'start','stop','restart','show|list','stat|stats'
+
+ start    - start QoS for given interface
+ stop     - stop QoS for given interface
+ restart  - equivalent to 'stop' then 'start'
+ show     - list qdiscs, classes or filters on given interface
+ list     - same as 'show'
+ stat     - print statistics for qdiscs, classes or filters on given interface
+ stats    - same as 'stat'
+
+Options for actions 'show' or 'list' and 'stat' or 'stats':
+ - one of 'qdisc' (by default), 'class' or 'filter'
+ - component specific options (e.g. 'parent')</textarea><!--/notypo--></div>   <script language="JavaScript" type="text/javascript">
+   var dbclick = "page";
+  </script>
+ <br style="clear:both" />&nbsp;
+</div>
+    <div class="filesheader">
+    Файлов нет.
+    [<a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos?show_files=1#files">Показать файлы/форму</a>]
+
+    </div>
+    
+    <div class="commentsheader">
+    Много комментариев (6).
+    [<a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos?show_comments=1#comments">Показать комментарии/форму</a>]
+
+    </div>
+    <form action="http://freesource.info/wiki/TextSearch"  method="get" >
+
+<div class="footer">
+
+
+  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos/revisions" title="Нажмите, чтобы увидеть список изменений">2007-12-24 12:48:31</a> |
+
+
+  
+
+    
+
+      
+          Владелец: <a  href="http://freesource.info/wiki/DenisOvsienko?v=t79&" class="">Denis&nbsp;Ovsienko</a>
+      
+    
+    
+
+    
+
+    | <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos/settings" >Свойства</a> |
+
+
+  
+
+
+  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos/watch"><img src="http://freesource.info/wiki/themes/coffee/icons/visibl.gif" title="Наблюдать" alt="Наблюдать"  align="absmiddle" border="0" /></a> |
+
+  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos/print" target="_new"><img src="http://freesource.info/wiki/themes/coffee/icons/1print.gif" title="Версия для печати" alt="Версия для печати"  align="absmiddle" border="0" /></a> |
+  <div class="searchbar">
+    <span class="nobr">Поиск: 
+    <input type="text" name="phrase" size="15" style="border: none; border-bottom: 1px solid #CCCCAA; padding: 0px; margin: 0px;" /></span>
+  </div>
+</div>
+
+</form>
+
+
+<!-- SpyLOG f:1111 -->
+<script language="javascript" type="text/javascript"><!--
+Mu="u3154.88.spylog.com";Md=document;Mnv=navigator;Mp=1;
+Mn=(Mnv.appName.substring(0,2)=="Mi")?0:1;Mrn=Math.random();
+Mt=(new Date()).getTimezoneOffset();
+Mz="p="+Mp+"&rn="+Mrn+"&t="+Mt;
+My="";
+My+="<a href='http://"+Mu+"/cnt?cid=315488&f=3&p="+Mp+"&rn="+Mrn+"' target='_blank'>";
+My+="<img src='http://"+Mu+"/cnt?cid=315488&"+Mz+"&r1="+escape(Md.referrer)+"&r="+escape(parent.document.referrer)+"&pg="+escape(window.location.href)+"' border=0 width=88 height=31 alt='SpyLOG'>";
+My+="</a>";Md.write(My);//--></script><noscript>
+<a href="http://u3154.88.spylog.com/cnt?cid=315488&f=3&p=1" target="_blank">
+<img src="http://u3154.88.spylog.com/cnt?cid=315488&p=1" alt='SpyLOG' border='0' width=88 height=31 >
+</a></noscript>
+<!-- SpyLOG -->
+
+<a href="http://liga1199.ru">
+<iimg src="http://liga1199.ru/adv/468x60.1.gif">
+</a>
+
+
+<div class="copyright">
+  Powered by <a href="http://wackowiki.com/WackoWiki" target="_blank" title="" class="outerlink">WackoWiki R4.2</a>
+</div>
+
+
+  
+</body></html>

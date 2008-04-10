@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>
+    FreeSource :
+    Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin&nbsp;/&nbsp;etcnet&nbsp;/&nbsp;firewall
+  </title>
+  
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1251" />
+  <link rel="stylesheet" type="text/css" href="http://freesource.info/wiki/themes/coffee/css/wakka.css" />
+  <link rel="shortcut icon" href="http://freesource.info/wiki/themes/coffee/icons/wacko.ico" type="image/x-icon" />
+  <link rel="alternate" type="application/rss+xml" title="RecentChanges in RSS" href="http://freesource.info/wiki/xml/recentchanges_freesource.xml" />
+  <link rel="alternate" type="application/rss+xml" title="History/revisions of AltLinux/Sisyphus/admin/etcnet/firewall in RSS" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/firewall/revisions.xml" />
+  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/default.js"></script>
+  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/protoedit.js"></script>
+  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/wikiedit2.js"></script>
+
+  
+</head>
+
+<body onload="all_init();">
+
+<form action="http://freesource.info/wiki/Login"  method="post" >
+
+<input type="hidden" name="action" value="login" />
+
+<div class="header">
+        <div class="user">
+
+  
+                <span class="nobr"><input type="hidden" name="goback" value="AltLinux/Sisyphus/admin/etcnet/firewall" /><strong>Вход:&nbsp;</strong><input type="text" name="name" size="18" class="login" />&nbsp;Пароль:&nbsp;<input type="password" name="password" class="login" size="8" />&nbsp;<input type="submit" value="Ok" /></span>
+
+  
+
+        </div>
+        <div class="title">
+                FreeSource: <a name="altlinux" href="http://freesource.info/wiki/AltLinux?v=h0k&" class="" title="Alt&nbsp;Linux">AltLinux</a>/<a name="altlinux.sisyphus" href="http://freesource.info/wiki/AltLinux/Sisyphus?v=1la&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus">Sisyphus</a>/<a name="altlinux.sisyphus.admin" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin?v=tym&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin">admin</a>/<a name="altlinux.sisyphus.admin.etcnet" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet?v=s9v&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin&nbsp;/&nbsp;etcnet">etcnet</a>/firewall
+            <a class="Search" title="" href="http://freesource.info/wiki/TextSearch?phrase=AltLinux%2FSisyphus%2Fadmin%2Fetcnet%2Ffirewall">...</a>
+        </div>
+
+</div>
+
+<div class="bookmarks">
+
+        <a href="http://freesource.info/wiki/FreeSource">Free&nbsp;Source</a>
+         |
+        <a name="katalog" href="http://freesource.info/wiki/Katalog?v=6ad&" class="" title="Каталог">Каталог</a> | <a name="izmenenija" href="http://freesource.info/wiki/Izmenenija?v=14fp&" class="" title="Изменения">Изменения</a> | <a name="novyekommentarii" href="http://freesource.info/wiki/NovyeKommentarii?v=6ad&" class="" title="Новые&nbsp;Комментарии">НовыеКомментарии</a> | <a name="pol_zovateli" href="http://freesource.info/wiki/Pol'zovateli?v=1csw&" class="" title="Пользователи">Пользователи</a> | <a name="registracija" href="http://freesource.info/wiki/Registracija?v=1bcu&" class="" title="Регистрация">Регистрация</a>
+         |
+        
+
+
+</div>
+
+</form>
+
+<div class="pageBefore"><img src="http://freesource.info/wiki/images/z.gif" width="1" height="1" border="0" alt="" style="display:block" align="top" /></div><div class="page">
+<a name="h5456-1"></a><h1>Настройка сетевого экрана в&nbsp;<a name=".altlinux.sisyphus.admin.etcnet" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet?v=s9v&" class="" title="AltLinux/Sisyphus/admin/etcneAlt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;/admin&nbsp;/&nbsp;etcnet">/etc/net</a></h1><a name="p-1005-1"></a><p class="auto" id="p-1005-1">
+Начиная с&nbsp;версии 0.7.9 etcnet содержит поддержку управления сетевым экраном (firewall). В&nbsp;данный момент поддерживается iptables и&nbsp;ebtables. Реализация основана на&nbsp;группировке таблиц и&nbsp;цепочек в&nbsp;таблицах. Таблицы могут быть только системные, цепочки же, кроме системных, могут быть заданы пользователем. </p><a name="h5456-2"></a><h2>Системные таблицы и&nbsp;возможные системные цепочки в&nbsp;них</h2>
+<table class="usertable" border="1">
+<tr class="userrow"><td class="usercell">Таблица</td><td  class="usercell">Цепочки</td></tr>
+<tr class="userrow"><td class="usercell">filter</td><td  class="usercell">INPUT FORWARD OUTPUT</td></tr>
+<tr class="userrow"><td class="usercell">nat</td><td  class="usercell">PREROUTING OUTPUT POSTROUTING</td></tr>
+<tr class="userrow"><td class="usercell">mangle</td><td  class="usercell">PREROUTING INPUT FORWARD OUTPUT POSTROUTING</td></tr>
+<tr class="userrow"><td class="usercell">raw</td><td  class="usercell">PREROUTING OUTPUT</td></tr>
+</table>
+<br /><a name="p-1005-2"></a><p class="auto" id="p-1005-2">
+<em>(<img src="http://www.linuxnetmag.com/share/issue9/iptables3.jpg" alt="схема прохождения пакетов" title="схема прохождения пакетов" /></em></p><br /><a name="p-1005-3"></a><p class="auto" id="p-1005-3">
+(диаграмма красивая, но&nbsp;неправильная: куда делся nat&nbsp;output ? ;)</p><a name="h5456-3"></a><h2>Используемые файлы и&nbsp;каталоги</h2><a name="p-1005-4"></a><p class="auto" id="p-1005-4">
+<tt>/etc/net/ifaces/default/fw/options</tt> &mdash; файл с&nbsp;настройками сетевого экрана по-умолчанию:</p><ul><li> FW_TYPE &mdash; типа сетевого экрана. Здесь можно указать только iptables, другие типы пока не&nbsp;поддерживаются
+</li><li> IPTABLES_HUMAN_SYNTAX &mdash; включает или&nbsp;отключает использование поддержки &laquo;читабельного&raquo; синтаксиса правил для&nbsp;iptables (см. ниже). Значение: yes&nbsp;или no&nbsp;</li><li> IPTABLES_SYSTEM_CHAINS &mdash; список системных цепочек в&nbsp;таблицах. Все&nbsp;цепочки, не&nbsp;указанные здесь, будут автоматически создаваться и&nbsp;удаляться. Значение: названия цепочек (все названия чувствительны к&nbsp;регистру!), разделенные пробелом
+</li><li> IPTABLES_INPUT_POLICY &mdash; действие по-умолчанию для&nbsp;пакетов, попадающих в&nbsp;системную цепочку INPUT таблицы filter. Значение: одно из&nbsp;ACCEPT, DROP, QUEUE или&nbsp;RETURN
+</li><li> IPTABLES_FORWARD_POLICY &mdash; действие по-умолчанию для&nbsp;пакетов, попадающих в&nbsp;системную цепочку FORWARD таблицы filter. Значение: одно из&nbsp;ACCEPT, DROP, QUEUE или&nbsp;RETURN
+</li><li> IPTABLES_OUTPUT_POLICY &mdash; действие по-умолчанию для&nbsp;пакетов, попадающих в&nbsp;системную цепочку OUTPUT таблицы filter.  Значение: одно из&nbsp;ACCEPT, DROP, QUEUE или&nbsp;RETURN
+</li><li> IPTABLES_RULE_EMBEDDING &mdash; способ добавления нового правила в&nbsp;цепочку. Значение: APPEND или&nbsp;INSERT, что&nbsp;означает добавление в&nbsp;конец списка правил или&nbsp;в&nbsp;начало соответственно.</li></ul>
+<br /><a name="p-1005-5"></a><p class="auto" id="p-1005-5">
+<tt>/etc/net/ifaces/default/fw/iptables/filter</tt>, <tt>/etc/net/ifaces/default/fw/iptables/nat</tt>, <tt>/etc/net/ifaces/default/fw/iptables/mangle</tt> &mdash; каталоги, соответствующие таблицам iptables. В&nbsp;каталогах создаются файлы, соответствующие необходимым системным или&nbsp;пользовательским цепочкам, в&nbsp;которых уже&nbsp;и&nbsp;прописываются сами правила iptables. </p><br /><a name="p-1005-6"></a><p class="auto" id="p-1005-6">
+<tt>/etc/net/ifaces/default/fw/iptables/loadorder</tt>, <tt>/etc/net/ifaces/default/fw/tablename/loadorder</tt> &mdash; если такой существует и&nbsp;он не&nbsp;пустой, то&nbsp;обработка таблиц и/или цепочек в&nbsp;таблице происходит в&nbsp;том порядке, который указан в&nbsp;файле (по одному значению на&nbsp;строку). Все&nbsp;таблицы и&nbsp;цепочки, которые не&nbsp;указаны, обрабатываться не&nbsp;будут.<br />
+<tt>/etc/net/ifaces/default/fw/iptables/modules</tt> &mdash; список модулей ядра, которые необходимо загрузить перед запуском сетевого экрана. При&nbsp;остановке эти&nbsp;модули выгружаются<br />
+<tt>/etc/net/ifaces/default/fw/iptables/syntax</tt> &mdash; описание замен при&nbsp;использовании &laquo;читабельного&raquo; синтаксиса правил iptables</p><br />
+<a name="h5456-4"></a><h2>Алгоритм работы сетевого экрана</h2>
+<ol type="1"><li> При&nbsp;запуске службы network, виртуальный интерфейс default:
+<ol type="1"><li> Если опция CONFIG_FW (в файле <tt>/etc/net/ifaces/default/options</tt>) не&nbsp;установлена в&nbsp;yes, то&nbsp;ничего не&nbsp;делает и&nbsp;происходит выход из&nbsp;процедуры запуска сетевого экрана; иначе переходим к&nbsp;следующему пункту
+</li><li> Считывается файл настроек <tt>/etc/net/ifaces/default/fw/iptables/options</tt>
+</li><li> До&nbsp;настройки любого интерфейса и&nbsp;обработки значений sysctl устанавливаются действия по-умолчанию (policy) для&nbsp;системных цепочек таблицы filter
+</li><li> Считывается файл со&nbsp;списком модулей ядра <tt>/etc/net/ifaces/default/fw/iptables/modules</tt> и&nbsp;все указанные там&nbsp;модули (по одному на&nbsp;строку) загружаются; при&nbsp;отсутствии файла никакие модули не&nbsp;загружаются
+</li><li> Создаются все&nbsp;пользовательские цепочки во&nbsp;всех таблицах (пользовательскими считаются все&nbsp;цепочки, не&nbsp;указанные в&nbsp;переменной IPTABLES_SYSTEM_CHAINS)
+</li><li> Считывается файл <tt>/etc/net/ifaces/default/fw/iptables/loadorder</tt> и&nbsp;в указанном в&nbsp;нем порядке происходит обработка таблиц iptables; при&nbsp;отсутствии файла обработка происходит в&nbsp;соответствии с&nbsp;сортировкой названий таблиц по&nbsp;имени
+</li><li> Считывается файл <tt>/etc/net/ifaces/default/fw/iptables/tablename/loadorder</tt> в&nbsp;каждой обрабатываемой таблице и&nbsp;происходит обработки и&nbsp;загрузка правил для&nbsp;каждой цепочки в&nbsp;порядке, указанном в&nbsp;файле; при&nbsp;отсутствии файла обработка опять же&nbsp;происходит в&nbsp;соответствии с&nbsp;сортировкой по&nbsp;имени
+</li><li> Если опция IPTABLES_HUMAN_SYNTAX установлена в&nbsp;yes, то&nbsp;считывается и&nbsp;обрабатывается файл с&nbsp;&laquo;синтаксисом&raquo; <tt>/etc/net/ifaces/default/fw/iptables/syntax</tt>
+</li><li> Файл с&nbsp;правилами обрабатывает построчно (одно правило на&nbsp;строку); если указана опция IPTABLES_HUMAN_SYNTAX, то&nbsp;правило обрабатывается интерпретатором в&nbsp;соответствии с&nbsp;синтаксисом и&nbsp;превращается в&nbsp;реальные опции для&nbsp;команды iptables, после чего запускается iptables с&nbsp;этими параметрами; иначе правило без&nbsp;обработки передается iptables
+</li></ol></li><li> При&nbsp;&laquo;поднятии&raquo; любого интерфейса, кроме default:
+<ol type="1"><li> Выполняются все&nbsp;подпункты пунка 1, только все&nbsp;файлы и&nbsp;каталоги ищутся в&nbsp;каталоге текущего интерфейса
+</li></ol></li><li> При&nbsp;&laquo;опускании&raquo; любого интерфейса, кроме default:
+<ol type="1"><li> Все&nbsp;подпункты пункта 1 выполняются в&nbsp;обратном порядке, все&nbsp;правила удаляются из&nbsp;цепочек в&nbsp;обратном порядке, все&nbsp;модули ядра выгружаются в&nbsp;обратном порядке; все&nbsp;файлы и&nbsp;каталоги ищутся в&nbsp;каталоге текущего интерфейса
+</li></ol></li><li> При&nbsp;остановке службы network, виртуальный интерфейс default:
+<ol type="1"><li> Все&nbsp;подпункты пункта 1 выполняются в&nbsp;обратном порядке, все&nbsp;правила из&nbsp;всех цепочек удалются командой iptables -F, все&nbsp;модули выгружаются в&nbsp;обратном порядке, все&nbsp;пользовательские цепочки удаляются
+</li><li> Действия по-умолчанию (policy) для&nbsp;системных цепочек устанавливается в&nbsp;ACCEPT</li></ol></li></ol>
+<br />
+<a name="h5456-5"></a><h2>Примечания</h2>
+<ul><li> Правила для&nbsp;iptables можно писать с&nbsp;помощью синтаксиса, подобного синтаксису ipfw и&nbsp;других. Сделано это&nbsp;с&nbsp;помощью простой замены слов на&nbsp;опции iptables. Сами замены описаны в&nbsp;файле <tt>/etc/net/ifaces/default/fw/iptables/syntax</tt> (там также описано некоторое количество вспомогательных слов, так&nbsp;что правила можно писать практически на&nbsp;литературном английском :). Синтаксис правила можно совмещать (то есть использовать и&nbsp;заданный в&nbsp;etcnet синтаксис и&nbsp;реальные опции команды iptables)
+</li><li> Во&nbsp;всех правилах <em>нельзя</em> использовать названия цепочки и/или таблицы; они&nbsp;будут добавляться автоматически
+</li><li> В&nbsp;правилах можно использовать любые переменные окружения, выполнять любые команды shell (они должны быть указаны в&nbsp;одну строку). Переменная $NAME содержит имя&nbsp;текущего интерфейса. Переменные $IPV4ADDRESS и $IPV6ADDRESS содержат массив IPV4/IPV6 адресов текущего интерфейса (это обычные bash arrays, можно обращаться к&nbsp;ним по&nbsp;индексу: ${IPV4ADDRESS[2]} или&nbsp;просто $IPV4ADDRESS для&nbsp;первого значения). Для&nbsp;удобства можно использовать файлы options, в&nbsp;которых прописывать какие-либо переменные, к&nbsp;примеру, адреса gateway, ISP, сетей и&nbsp;т.д.
+</li><li> Во&nbsp;всех файлах можно использовать комментарии (строка должна начинаться с&nbsp;символа # )
+</li><li> Вам&nbsp;не&nbsp;нужно копировать все&nbsp;файлы настроек в&nbsp;каталог каждого интерфейса. Сначала будут считаны настройки виртуального интерфейса default, а&nbsp;уже потом у&nbsp;текущего интерфейса, соответственно, можно переопределять какие-то параметры для&nbsp;определенного интерфейса
+</li><li> Описания всех правил в&nbsp;настройках виртуального интерфейса default достаточно для&nbsp;поднятия простого сетевого экрана. При&nbsp;наличии же&nbsp;большого количества правил и&nbsp;интерфейсов есть смысл разделить логически все&nbsp;правила по&nbsp;каждому интерфейсу (опять же, не&nbsp;будет нагружаться процессор вхолостую, если интерфейс, к&nbsp;которому относится много правил, сейчас не&nbsp;&laquo;поднят&raquo;)
+</li><li> В&nbsp;начале каждого правила можно указать, что&nbsp;с&nbsp;этим правилом делать. Может быть одно из&nbsp;трёх значений:
+<ul><li> -A &mdash; добавление в&nbsp;конец списка правил (при включеном &laquo;читабельном&raquo; синтаксисе соответствует команде &#8220;append&#8221;)
+</li><li> -I [num] &mdash; добавление в&nbsp;начало списка правил; если указан необязательный параметр num, то&nbsp;правило будет вставлено в&nbsp;строку правил с&nbsp;таким номером (будьте внимательны, iptables считает несуществующий номер строки ошибкой и&nbsp;не добавляет правило); (при включеном &laquo;читабельном&raquo; синтаксисе соответствует команде &laquo;insert [num]")
+</li><li> -D &mdash; удаление правила из&nbsp;списка правил (соответственно, при&nbsp;&laquo;остановке&raquo; интерфейса правило наоборот будет добавлено); (при включеном &laquo;читабельном&raquo; синтаксисе соответствует команде &#8220;delete&#8221;) 
+</li></ul></li><li> Если никакое действие не&nbsp;указано, то&nbsp;правило добавляются в&nbsp;цепочку в&nbsp;соответствии со&nbsp;значением переменной IPTABLES_RULE_EMBEDDING
+</li><li> Если вы&nbsp;изменяете какое-то правило в&nbsp;конфигурационных файлах при&nbsp;уже загруженных правилах iptables, то&nbsp;для того, чтобы в&nbsp;памяти не&nbsp;остались старые правила, необходимо или&nbsp;выгрузить все&nbsp;правила для&nbsp;текущего интерфейса перед измененим файлов или&nbsp;</li></ul>
+<br />
+<a name="h5456-6"></a><h2>Примеры</h2><a name="p-1005-7"></a><p class="auto" id="p-1005-7">
+<tt>/etc/net/ifaces/eth0/fw/options</tt><br />
+<!--notypo--><textarea class="code" rows="9" readonly="readonly"># Our WAN IP address
+WAN_IP=5.6.7.8/24
+# First net
+NET1=1.2.3.0/24
+# Second net
+NET2=4.3.2.0/24
+# Friend net
+FRIEND_NET=5.6.7.0/24</textarea><!--/notypo--><br />
+<tt>/etc/net/ifaces/eth0/fw/iptables/filter/INPUT</tt><br />
+<!--notypo--><textarea class="code" rows="3" readonly="readonly">accept all from any to $IPV4ADDRESS
+jump-to COUNT-CHAIN if marked as 0x11</textarea><!--/notypo--><br />
+<tt>/etc/net/ifaces/eth0/fw/iptables/filter/FORWARD</tt><br />
+<!--notypo--><textarea class="code" rows="6" readonly="readonly">jump-to FRIEND-NET if from $FRIEND-NET
+append drop tcp from net $NET1 to net NET2
+delete drop udp from $NET1 to $NET2
+insert reject udp to $WAN_IP
+drop icmp to $(somescript.sh)</textarea><!--/notypo--><br />
+<tt>/etc/net/ifaces/eth0/fw/iptables/filter/FRIEND-NET</tt><br />
+<!--notypo--><textarea class="code" rows="2" readonly="readonly">policy reject</textarea><!--/notypo--><br />
+<tt>/etc/net/ifaces/eth0/fw/iptables/mangle/PREROUTING</tt><br />
+<!--notypo--><textarea class="code" rows="3" readonly="readonly">insert 15 mark tcp as 0x10 if from-iface $NAME and dport is 22
+mark tcp as 0x11 if from net $NET1 and from-iface $NAME</textarea><!--/notypo--><br />
+<tt>/etc/net/ifaces/eth0/fw/iptables/nat/POSTROUTING</tt><br />
+<!--notypo--><textarea class="code" rows="2" readonly="readonly">snat-to $WAN_IP if marked as 0x10</textarea><!--/notypo--></p><a name="h5456-7"></a><h2>Утилиты</h2>
+<ul><li> В&nbsp;contrib находятся следующие вспомогательные утилиты:
+<ul><li> Скрипт <strong>efw</strong>, который предназначен для&nbsp;ручного управления сетевым экраном и&nbsp;умеет следующее:
+</li></ul><div class="indent"><!--notypo--><textarea class="code" rows="15" readonly="readonly">Usage: ./efw [iface] [table] [chain] &lt;action&gt; [iptables rule or action options]
+
+ iface    - 'default' (by default), real interface name or 'all' for all interfaces
+ table    - 'mangle', 'filter' (by default), 'nat' or 'all' for all tables
+ chain    -  system or user defined chain name (case sensitive!) or 'all' for all chains
+ action   - 'start','stop','restart','load','unload','reload','flush','show|list','count|counters','rule','new|create','remove|delete','zero','policy','rename'
+
+ start    - process all tables and chains for given interface (even when chain or table is defined)
+ stop     - process all tables and chains for given interface (even when chain or table is defined)
+ restart  - equivalent to stop then start
+ load     - load rules for given interface, table and chain
+ unload   - unload rules for given interface, table and chain
+ reload   - equivalent to unload then load
+ flush    - flush rules for given interface, table and chain
+ show     - list rules for given interface, table and chain
+ list     - same as show
+ count    - show counters for given table and chains
+ counters - same as count
+ rule     - parse rule and pass it to iptables
+ new      - create new chain
+ create   - same as new
+ remove   - remove chain
+ delete   - same as remove
+ zero     - zero packet and byte counters in chain
+ policy   - set default policy for chain
+ rename   - rename chain
+
+Options for action 'show' or 'list':
+ -n or numeric - numeric output for IP addresses, ports and services
+ -v or verbose - verbose output of rules
+ -x or exact   - expand numbers instead of rounded numbers
+ --line-numbers or lines - display line number for each rule</textarea><!--/notypo--><br />
+На&nbsp;текущий момент он&nbsp;умеет частично угадывать интерфейс, таблицу и&nbsp;цепочку (если их&nbsp;не передали в&nbsp;комстроке) и&nbsp;все действия, кроме counters. Так&nbsp;же&nbsp;поддерживается &laquo;маска&raquo; all&nbsp;для интерфейсов, таблиц и&nbsp;цепочек.<ul><li> Примеры команд:
+<ul><li> Выгрузить (путем flush) все&nbsp;правила из&nbsp;всех цепочек всех таблиц, удалить цепочки, заданные пользователем, выгрузить все&nbsp;загруженные модули
+</li></ul><div class="indent"><!--notypo--><textarea class="code" rows="2" readonly="readonly">efw default stop</textarea><!--/notypo--><br />
+</div><ul><li> Выгрузить (путем удаления каждого правила в&nbsp;обратном порядке) все&nbsp;правила из&nbsp;цепочки FORWARD таблицы filter для&nbsp;интерфейса eth0
+</li></ul><div class="indent"><!--notypo--><textarea class="code" rows="2" readonly="readonly">efw eth0 unload</textarea><!--/notypo--><br />
+</div><ul><li> Загрузить все&nbsp;правила для&nbsp;всех цепочек во&nbsp;всех таблицах всех интерфейсов
+</li></ul><div class="indent"><!--notypo--><textarea class="code" rows="2" readonly="readonly">efw all all all load</textarea><!--/notypo--><br />
+</div><ul><li> Обработать правило и&nbsp;добавить его&nbsp;во&nbsp;все цепочки таблицы filter
+</li></ul><div class="indent"><!--notypo--><textarea class="code" rows="2" readonly="readonly">efw default filter all rule accept all from any</textarea><!--/notypo--><br />
+</div></li><li> Если вы&nbsp;изменяете какое-то правило в&nbsp;конфигурационных файлах при&nbsp;уже загруженных правилах iptables, то&nbsp;для того, чтобы в&nbsp;памяти не&nbsp;остались старые правила, необходимо или&nbsp;выгрузить все&nbsp;правила для&nbsp;текущего интерфейса (если вы&nbsp;настраиваете для&nbsp;конкретного интерфейса, а&nbsp;не default) перед изменением файлов или&nbsp;после изменения использовать команду efw&nbsp;default restart (она полностью удалит <u>все</u> правила; однако пользовательские цепочки других интерфейсов не&nbsp;будут затронуты) и&nbsp;далее загрузить заново правила для&nbsp;нужного или&nbsp;всех интерфейсов. Т.о. самой ходовой командой при&nbsp;изменении конфигурации файрволла является
+<div class="indent"><!--notypo--><textarea class="code" rows="2" readonly="readonly">efw default stop ; efw all start</textarea><!--/notypo--></div></li></ul></div></li></ul>
+<br />
+<ul><li><ul><li> <a href="http://fly.osdn.org.ua/~mike/works/misc/iptables2etcnet/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />Конвертор правил</a>, точнее, дампа <tt>iptables-save</tt> (альфа! и&nbsp;требует <tt>ruby</tt>)  в&nbsp;соответствующее расположение правил в&nbsp;etcnet</li></ul></li></ul>
+<a name="h5456-8"></a><h2>P.S.</h2><a name="p-1005-8"></a><p class="auto" id="p-1005-8">
+Весь этот текст относится к&nbsp;версии etcnet &gt;=0.8.5</p>   <script language="JavaScript" type="text/javascript">
+   var dbclick = "page";
+  </script>
+ <br style="clear:both" />&nbsp;
+</div>
+    <div class="filesheader">
+    Файлов нет.
+    [<a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/firewall?show_files=1#files">Показать файлы/форму</a>]
+
+    </div>
+    
+    <div class="commentsheader">
+    Комментариев нет.
+    [<a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/firewall?show_comments=1#comments">Показать комментарии/форму</a>]
+
+    </div>
+    <form action="http://freesource.info/wiki/TextSearch"  method="get" >
+
+<div class="footer">
+
+
+  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/firewall/revisions" title="Нажмите, чтобы увидеть список изменений">2008-01-06 22:25:08</a> |
+
+
+  
+
+    
+
+      
+          Владелец: <a  href="http://freesource.info/wiki/DenisOvsienko?v=t79&" class="">Denis&nbsp;Ovsienko</a>
+      
+    
+    
+
+    
+
+    | <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/firewall/settings" >Свойства</a> |
+
+
+  
+
+
+  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/firewall/watch"><img src="http://freesource.info/wiki/themes/coffee/icons/visibl.gif" title="Наблюдать" alt="Наблюдать"  align="absmiddle" border="0" /></a> |
+
+  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/firewall/print" target="_new"><img src="http://freesource.info/wiki/themes/coffee/icons/1print.gif" title="Версия для печати" alt="Версия для печати"  align="absmiddle" border="0" /></a> |
+  <div class="searchbar">
+    <span class="nobr">Поиск: 
+    <input type="text" name="phrase" size="15" style="border: none; border-bottom: 1px solid #CCCCAA; padding: 0px; margin: 0px;" /></span>
+  </div>
+</div>
+
+</form>
+
+
+<!-- SpyLOG f:1111 -->
+<script language="javascript" type="text/javascript"><!--
+Mu="u3154.88.spylog.com";Md=document;Mnv=navigator;Mp=1;
+Mn=(Mnv.appName.substring(0,2)=="Mi")?0:1;Mrn=Math.random();
+Mt=(new Date()).getTimezoneOffset();
+Mz="p="+Mp+"&rn="+Mrn+"&t="+Mt;
+My="";
+My+="<a href='http://"+Mu+"/cnt?cid=315488&f=3&p="+Mp+"&rn="+Mrn+"' target='_blank'>";
+My+="<img src='http://"+Mu+"/cnt?cid=315488&"+Mz+"&r1="+escape(Md.referrer)+"&r="+escape(parent.document.referrer)+"&pg="+escape(window.location.href)+"' border=0 width=88 height=31 alt='SpyLOG'>";
+My+="</a>";Md.write(My);//--></script><noscript>
+<a href="http://u3154.88.spylog.com/cnt?cid=315488&f=3&p=1" target="_blank">
+<img src="http://u3154.88.spylog.com/cnt?cid=315488&p=1" alt='SpyLOG' border='0' width=88 height=31 >
+</a></noscript>
+<!-- SpyLOG -->
+
+<a href="http://liga1199.ru">
+<iimg src="http://liga1199.ru/adv/468x60.1.gif">
+</a>
+
+
+<div class="copyright">
+  Powered by <a href="http://wackowiki.com/WackoWiki" target="_blank" title="" class="outerlink">WackoWiki R4.2</a>
+</div>
+
+
+  
+</body></html>

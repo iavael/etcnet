@@ -1,0 +1,557 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>
+    FreeSource :
+    Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin&nbsp;/&nbsp;etcnet
+  </title>
+  
+  <meta name="keywords" content="network configuration config net-scripts сеть конфигурация сети" />
+  <meta name="description" content="Сборник объяснений, советов и рецептов для тех, кто пользуется системой конфигурации сети /etc/net." />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1251" />
+  <link rel="stylesheet" type="text/css" href="http://freesource.info/wiki/themes/coffee/css/wakka.css" />
+  <link rel="shortcut icon" href="http://freesource.info/wiki/themes/coffee/icons/wacko.ico" type="image/x-icon" />
+  <link rel="alternate" type="application/rss+xml" title="RecentChanges in RSS" href="http://freesource.info/wiki/xml/recentchanges_freesource.xml" />
+  <link rel="alternate" type="application/rss+xml" title="History/revisions of AltLinux/Sisyphus/admin/etcnet in RSS" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/revisions.xml" />
+  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/default.js"></script>
+  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/protoedit.js"></script>
+  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/wikiedit2.js"></script>
+
+  
+</head>
+
+<body onload="all_init();">
+
+<form action="http://freesource.info/wiki/Login"  method="post" >
+
+<input type="hidden" name="action" value="login" />
+
+<div class="header">
+        <div class="user">
+
+  
+                <span class="nobr"><input type="hidden" name="goback" value="AltLinux/Sisyphus/admin/etcnet" /><strong>Вход:&nbsp;</strong><input type="text" name="name" size="18" class="login" />&nbsp;Пароль:&nbsp;<input type="password" name="password" class="login" size="8" />&nbsp;<input type="submit" value="Ok" /></span>
+
+  
+
+        </div>
+        <div class="title">
+                FreeSource: <a name="altlinux" href="http://freesource.info/wiki/AltLinux?v=h0k&" class="" title="Alt&nbsp;Linux">AltLinux</a>/<a name="altlinux.sisyphus" href="http://freesource.info/wiki/AltLinux/Sisyphus?v=1la&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus">Sisyphus</a>/<a name="altlinux.sisyphus.admin" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin?v=tym&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin">admin</a>/etcnet
+            <a class="Search" title="" href="http://freesource.info/wiki/TextSearch?phrase=AltLinux%2FSisyphus%2Fadmin%2Fetcnet">...</a>
+        </div>
+
+</div>
+
+<div class="bookmarks">
+
+        <a href="http://freesource.info/wiki/FreeSource">Free&nbsp;Source</a>
+         |
+        <a name="katalog" href="http://freesource.info/wiki/Katalog?v=6ad&" class="" title="Каталог">Каталог</a> | <a name="izmenenija" href="http://freesource.info/wiki/Izmenenija?v=14fp&" class="" title="Изменения">Изменения</a> | <a name="novyekommentarii" href="http://freesource.info/wiki/NovyeKommentarii?v=6ad&" class="" title="Новые&nbsp;Комментарии">НовыеКомментарии</a> | <a name="pol_zovateli" href="http://freesource.info/wiki/Pol'zovateli?v=1csw&" class="" title="Пользователи">Пользователи</a> | <a name="registracija" href="http://freesource.info/wiki/Registracija?v=1bcu&" class="" title="Регистрация">Регистрация</a>
+         |
+        
+
+
+</div>
+
+</form>
+
+<div class="pageBefore"><img src="http://freesource.info/wiki/images/z.gif" width="1" height="1" border="0" alt="" style="display:block" align="top" /></div><div class="page">
+<a name="h5184-1"></a><h1>Подсказки пользователю <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a></h1>
+<br />
+<ul><li> <a href="#quickstart" name="oquickstart">Быстрый старт</a>
+<ul><li> <a href="#docs" name="odocs">где брать информацию</a>
+</li><li> <a href="#onecard" name="oonecard">как быстро настроить одну карту Ethernet</a>
+</li><li> <a href="#ifplugd" name="oifplugd">как настроить ifplugd</a>
+</li><li> <a href="#ppp" name="oppp">как настроить интерфейс PPP</a>
+</li><li> <a href="#ppp-pptp-pppoe" name="oppp-pptp-pppoe">как настроить интерфейс PPtP или&nbsp;PPPoE</a>
+</li><li> <a href="#DNSandPPP" name="oDNSandPPP">DNS и&nbsp;PPP-соединения</a>
+</li><li> <a href="#restartreload" name="orestartreload">restart, reload и&nbsp;другие команды</a>
+</li><li> <a href="#bootproto" name="obootproto">протоколы конфигурации адресов</a></li></ul></li></ul>
+<br />
+<ul><li> <a href="#internals" name="ointernals">Почему всё так&nbsp;устроено</a>
+<ul><li> <a href="#generalinfo" name="ogeneralinfo">общие сведения</a>
+</li><li> <a href="#options.d" name="ooptions.d">как организованы опции по&nbsp;умолчанию</a>
+</li><li> как&nbsp;организованы опции интерфейсов
+</li><li> <a href="#iftab" name="oiftab">зачем нужен iftab</a>
+</li><li> <a href="#specifaces" name="ospecifaces">интерфейсы lo, default и&nbsp;unknown</a>
+</li><li> <a href="#broadcast" name="obroadcast">о загадочном broadcast</a>
+</li><li> <a href="#never_rmmod" name="onever_rmmod">о ядре 2.6 и&nbsp;пропадающих интерфейсах</a>
+</li><li> <a href="#removables" name="oremovables">о hotplug-интерфейсах и&nbsp;не только</a>
+</li><li> <a href="#eth0" name="oeth0">почему вредно использование eth0</a></li></ul></li></ul>
+<br />
+<ul><li> <a href="#advanced" name="oadvanced">Расширенные возможности</a>
+<ul><li> <a href="#multipleIPs" name="omultipleIPs">несколько IP-адресов или&nbsp;маршрутов на&nbsp;одном интерфейсе</a>
+</li><li> конфигурация нескольких хостов
+</li><li> <a href="#requires" name="orequires">зависимости между интерфейсами</a>
+</li><li> настройка VLAN
+</li><li> <a href="#postpre" name="opostpre">как использовать свои сценарии post и&nbsp;pre</a>
+</li><li> <a href="#iplink" name="oiplink">как управлять канальными параметрами интерфейсов</a>
+</li><li> <a href="#bridge" name="obridge">как настроить Ethernet-мост</a>
+</li><li> как&nbsp;настроить HA/LA с&nbsp;помощью link bonding
+</li><li> как&nbsp;настроить эквалайзер трафика
+</li><li> <a href="#iptun" name="oiptun">настройка и&nbsp;использование IP-туннелей</a>
+</li><li> <a href="#vpn" name="ovpn">что следует помнить при&nbsp;настройке VPN&nbsp;(и туннелей</a>)
+</li><li> <a href="#ipsectun" name="oipsectun">настройка и&nbsp;использование IPSec-туннелей</a>
+</li><li> <a href="#iprule" name="oiprule">сложная маршрутизация</a>
+</li><li> <a href="#wireless" name="owireless">о беспроводном Ethernet</a>
+</li><li> <a href="#sysctl" name="osysctl">как использовать автодополнение в&nbsp;sysctl.conf</a>
+</li><li> <a href="#profiles" name="oprofiles">профили конфигурации</a></li></ul></li></ul>
+<br />
+<ul><li> Раскроем тему (отдельные страницы)
+<ul><li> <a name="etcnet.qos" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos?v=ir4&" class="" title="AltLinux/Sisyphus/admin/etcnet&nbsp;/&nbsp;qos">настройка QoS</a>
+</li><li> <a name="etcnet.firewall" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/firewall?v=19x2&" class="" title="AltLinux/Sisyphus/admin/etcnet&nbsp;/&nbsp;firewall">настройка сетевого экрана (firewall</a>)</li></ul></li></ul>
+<br /><a name="p-1299-1"></a><p class="auto" id="p-1299-1">
+<!--notypo--><a name="quickstart" href="#quickstart" title=""></a>
+<!--/notypo--></p><a name="h5184-2"></a><h2>Быстрый старт</h2>
+<br /><a name="p-1299-2"></a><p class="auto" id="p-1299-2">
+<!--notypo--><a name="docs" href="#docs" title=""></a>
+<!--/notypo--></p><a name="h5184-3"></a><h3>Где брать информацию</h3><a name="p-1299-3"></a><p class="auto" id="p-1299-3">
+Обращаю внимание, что&nbsp;начиная с&nbsp;версии 0.8.0 документация <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> переместилась из&nbsp;комментариев, рассеянных по&nbsp;множеству файлов, в&nbsp;несколько man-страниц. Список всех файлов документации пакета можно получить командой<br />
+<!--notypo--><textarea class="code" rows="2" readonly="readonly">rpmquery -d etcnet</textarea><!--/notypo--></p><br /><a name="p-1299-4"></a><p class="auto" id="p-1299-4">
+<!--notypo--><a name="onecard" href="#onecard" title=""></a>
+<!--/notypo--></p><a name="h5184-4"></a><h3>Как быстро настроить одну карту Ethernet</h3><a name="p-1299-5"></a><p class="auto" id="p-1299-5">
+ 1. Создайте каталог <tt>/etc/net/ifaces/eth0</tt>. Это&nbsp;собственный каталог конфигурации данного интерфейса, в&nbsp;нём будут храниться файлы с&nbsp;настройками.<br />
+ 2. Определите, какой модуль необходим для&nbsp;вашей карты. Для&nbsp;этого можно использовать lspci, lspcidrake, pciscan. Затем <br />
+ 3. В&nbsp;каталоге конфигурации создайте файл <tt>options</tt>, в&nbsp;который впишите строку <!--notypo--><textarea class="code" rows="2" readonly="readonly">MODULE=&lt;имя модуля&gt;</textarea><!--/notypo--><br />
+Больше ничего пока не&nbsp;добавляйте.<br />
+ 4. Выясните, какой IP-адрес должен быть назначен вашему интерфейсу. Если интерфейс конфигурируется по&nbsp;DHCP, то&nbsp;поместите в&nbsp;файл <tt>/etc/net/ifaces/eth0/options</tt> строку <!--notypo--><textarea class="code" rows="2" readonly="readonly">BOOTPROTO=dhcp</textarea><!--/notypo--><br />
+и&nbsp;переходите к&nbsp;шагу 7. <br />
+<strong>Замечание:</strong> в&nbsp;ряде случаев может также понадобиться<br />
+<!--notypo--><textarea class="code" rows="2" readonly="readonly">DHCP_HOSTNAME=&lt;имя машины без домена&gt;</textarea><!--/notypo--><br />
+Эта&nbsp;опция описана в&nbsp;man-странице <tt>etcnet-options</tt>.<br />
+Также необходимо, чтобы была пустая строка в&nbsp;конце файла.</p><br /><a name="p-1299-6"></a><p class="auto" id="p-1299-6">
+ 5. У&nbsp;вашего интерфейса есть два&nbsp;взаимосвязанных атрибута: IP-адрес и&nbsp;сетевая маска. Текущие назначенные адреса можно просмотреть командой <tt>/sbin/ip address show</tt>. Скорее всего вы&nbsp;увидите, что&nbsp;интерфейс-петля lo&nbsp;уже сконфигурирован с&nbsp;адресом 127.0.0.1/8. Создайте файл <tt>/etc/net/ifaces/eth0/ipv4address</tt>, в&nbsp;который поместите IP-адрес с&nbsp;длиной маски, например<br />
+<!--notypo--><textarea class="code" rows="2" readonly="readonly">10.0.0.20/24</textarea><!--/notypo--><br />
+Наиболее популярны маски /24 и&nbsp;/30. Для&nbsp;справки приводится<sup><a href="#oftnd1" name="ftnd1">1</a></sup> таблица соответствия сетевых масок в&nbsp;различных нотациях.<br />
+ 6. Выясните адрес вашего шлюза (маршрут по&nbsp;умолчанию). Например, этот IP-адрес &mdash; 10.0.0.254. Создайте файл <tt>/etc/net/ifaces/eth0/ipv4route</tt>, в&nbsp;который поместите строку <!--notypo--><textarea class="code" rows="2" readonly="readonly">default via 10.0.0.254</textarea><!--/notypo--><br />
+ 7. Убедитесь, что&nbsp;всё выполнено правильно, выполнив команду <tt>service network restart</tt>. Ваш&nbsp;интерфейс должен быть успешно сконфигурирован. Если вы&nbsp;конфигурировали использование DHCP, но&nbsp;адрес интерфейсу не&nbsp;назначается, просмотрите <tt>/var/log/messages</tt>.</p><br /><a name="p-1299-7"></a><p class="auto" id="p-1299-7">
+<!--notypo--><a name="ifplugd" href="#ifplugd" title=""></a>
+<!--/notypo--></p><a name="h5184-5"></a><h3>Как настроить ifplugd</h3><a name="p-1299-8"></a><p class="auto" id="p-1299-8">
+С&nbsp;версии 0.7.10 <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> управляет ifplugd самостоятельно. Это&nbsp;было сделано для&nbsp;лучшей интеграции пакетов и&nbsp;для возможности мониторить несколько интерфейсов одновременно. Для&nbsp;корректного использования ifplugd необходимо выполнить <tt>chkconfig ifplugd off</tt> и&nbsp;назначить переменную USE_IFPLUGD в&nbsp;файлах options соответствующих интерфейсов. Комментарий по&nbsp;данной переменной дан&nbsp;в&nbsp;файле <tt>/etc/net/ifaces/default/options-eth</tt>.</p><br /><a name="p-1299-9"></a><p class="auto" id="p-1299-9">
+<!--notypo--><a name="ppp" href="#ppp" title=""></a>
+<!--/notypo--></p><a name="h5184-6"></a><h3>Как настроить интерфейс PPP&nbsp;</h3><a name="p-1299-10"></a><p class="auto" id="p-1299-10">
+Для&nbsp;настройки обычного модемного PPP-соединения вам&nbsp;нужно:<br />
+1. Создать каталог конфигурации, например, <tt>/etc/net/ifaces/ppp5</tt>. Сейчас вы&nbsp;не можете использовать что-либо кроме pppN или&nbsp;pppNN или&nbsp;pppNNN и&nbsp;т.п.<br />
+2. Прочесть <tt>/etc/net/ifaces/default/options-ppp</tt><br />
+3. Создать файлы конфигурации.<br />
+Скорее всего вам&nbsp;понядобятся pppconnect и&nbsp;pppdisconnect, чтобы pppd знал, как&nbsp;дозваниваться и&nbsp;соединяться. Это&nbsp;скрипты для&nbsp;программы chat(8). Кроме этого в&nbsp;файле pppoptions можно (а зачастую нужно) перечислить опции pppd(8), определяющие способ авторизации, скорость и&nbsp;название порта и&nbsp;т.п.<br />
+4. Заполнить <tt>/etc/ppp/chap-secrets</tt> или&nbsp;<tt>/etc/ppp/pap-secrets</tt>.</p><br /><a name="p-1299-11"></a><p class="auto" id="p-1299-11">
+<!--notypo--><a name="ppp-pptp-pppoe" href="#ppp-pptp-pppoe" title=""></a>
+<!--/notypo--></p><a name="h5184-7"></a><h3>Как настроить интерфейс PPtP или&nbsp;PPPoE</h3><a name="p-1299-12"></a><p class="auto" id="p-1299-12">
+Хотя PPtP-соединения могут быть настроены и&nbsp;как обычные PPP-соединения, в&nbsp;<a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> версии 0.7.10 для&nbsp;удобства пользователей была введена опция PPPTYPE. Она&nbsp;может принимать следующие значения:</p><ul><li> dialup: обычный PPP-интерфейс.
+</li><li> pppoe: интерфейс PPPoE. Для&nbsp;такого интерфейса необходимо в&nbsp;опции HOST указывать имя&nbsp;Ethernet-интерфейса, через который будет производиться работа PPPoE. Побочным положительным эффектом будет то, что&nbsp;этот интерфейс будет при&nbsp;необходимости автоматически подниматься (см. <a href="#requires" name="orequires">Зависимости между интерфейсами</a>).
+</li><li> pptp: интерфейс PPtP. Для&nbsp;такого интерфейса необходимо в&nbsp;опции PPTP_SERVER указывать имя&nbsp;хоста или&nbsp;IP-адрес PPtP-сервера, к&nbsp;которому будет производиться подключение. Обратите внимание, что&nbsp;хотя такие интерфейсы не&nbsp;имеют опции HOST, в&nbsp;большинстве случаев имеет смысл указать в&nbsp;опции REQUIRES интерфейс, через который будет достижим хост, указанный в&nbsp;PPTP_SERVER.</li></ul>
+<br /><a name="p-1299-13"></a><p class="auto" id="p-1299-13">
+См&nbsp;также <a href="#vpn" name="ovpn">Что следует помнить при&nbsp;настройке VPN&nbsp;(и туннелей</a>)<br />
+<!--notypo--><a name="DNSandPPP" href="#DNSandPPP" title=""></a>
+<!--/notypo--></p><a name="h5184-8"></a><h3>DNS и&nbsp;PPP-соединения</h3><a name="p-1299-14"></a><p class="auto" id="p-1299-14">
+<span class="cite">Внимание: здесь описывается проблема, которая на&nbsp;самом деле была создана, а&nbsp;не решена &mdash; бишь ради специфики <a href="https://bugzilla.altlinux.org/show_bug.cgi?id=13789" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />kppp</a> была создана чётная ошибка в&nbsp;<a href="https://bugzilla.altlinux.org/show_bug.cgi?id=13773" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />ppp-common</a>; последняя уже&nbsp;исправлена.</span></p><br /><a name="p-1299-15"></a><p class="auto" id="p-1299-15">
+//Довольно долгое время существовала проблема неправильной модификации /etc/resolv.conf при&nbsp;установке PPP-соединений: <a href="https://bugzilla.altlinux.org/show_bug.cgi?id=4249" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />https://bugzilla.altlinux.org/show_bug.cgi?id=4249</a><br />
+Сейчас она&nbsp;решена, но&nbsp;необходимо дать пояснения. Прежде всего убедитесь, что&nbsp;у&nbsp;вас в&nbsp;файле <tt>/etc/resolv.conf</tt> есть строка <!--notypo--><textarea class="code" rows="2" readonly="readonly"># ppp temp entry</textarea><!--/notypo--><br />
+Если этой строки нет, то&nbsp;в файле не&nbsp;будут модифицироваться строки nameserver, если только какая-нибудь программа типа kppp это&nbsp;не&nbsp;сделает специально. Если такая строка есть, то&nbsp;<tt>/etc/resolv.conf</tt> будет модифицироваться в&nbsp;зависимости от&nbsp;значения булевской переменной RESOLV_MODS, которую необходимо задавать в&nbsp;файле <tt>/etc/sysconfig/network</tt>.//</p><br /><a name="p-1299-16"></a><p class="auto" id="p-1299-16">
+<span class="cite">Внимание</span>: при&nbsp;ppp-common &gt;= 0.4-alt1 строки <tt># ppp&nbsp;temp entry</tt> в&nbsp;<tt>/etc/resolv.conf</tt> при&nbsp;отсутствии PPP-соединения, поднятого какой-либо &laquo;звонилкой&raquo;, запущенной от&nbsp;рута &mdash; быть <strong>не должно</strong>!  Если есть &mdash; уберите, чтобы <tt>/etc/ppp/ip-up</tt> занимался обновлением записей про&nbsp;DNS в&nbsp;этом файле.</p><br /><a name="p-1299-17"></a><p class="auto" id="p-1299-17">
+<!--notypo--><a name="restartreload" href="#restartreload" title=""></a>
+<!--/notypo--></p><a name="h5184-9"></a><h3>restart, reload и&nbsp;другие команды</h3><a name="p-1299-18"></a><p class="auto" id="p-1299-18">
+У&nbsp;сервиса network имеется ряд&nbsp;команд:</p><ul><li> start: запустить все&nbsp;стационарные интерфейсы. hotplug-интерфейсы будут сконфигурированы при&nbsp;поступлении соответствующего вызова от&nbsp;hotplug.
+</li><li> startwith &lt;имя профиля&gt;: start с&nbsp;указанным именем профиля, а&nbsp;не определённым автоматически.
+</li><li> stop: остановить все&nbsp;стационарные интерфейсы. hotplug-интерфейсы будут расконфигурированы при&nbsp;поступлении соответствующего вызова от&nbsp;hotplug.
+</li><li> stopwith &lt;имя профиля&gt;: stop с&nbsp;указанным именем профиля, а&nbsp;не определённым автоматически.
+</li><li> restart: эквивалентно stop с&nbsp;последующим start, как&nbsp;и&nbsp;в большинстве других сервисов.
+</li><li> restartwith &lt;имя профиля&gt;: рестарт в&nbsp;контексте указанного профиля, эквивалентно stopwith &lt;имя профиля&gt; и&nbsp;startwith &lt;имя профиля&gt;.
+</li><li> switchto &lt;имя профиля&gt;: переключение в&nbsp;указанный профиль, эквивалентно stop и&nbsp;startwith &lt;имя профиля&gt;.
+</li><li> reload: семантически обозначает &laquo;актуализировать текущую конфигурацию&raquo;. Для&nbsp;всех сконфигурированных в&nbsp;настоящий момент интерфейсов будет выполнена реконфигурация при&nbsp;наличии конфигурации.
+</li><li> check: автоматическая проверка конфигурационной базы.</li></ul>
+<br /><a name="p-1299-19"></a><p class="auto" id="p-1299-19">
+<!--notypo--><a name="bootproto" href="#bootproto" title=""></a>
+<!--/notypo--></p><a name="h5184-10"></a><h3>Протоколы конфигурации адресов</h3><a name="p-1299-20"></a><p class="auto" id="p-1299-20">
+С&nbsp;помощью опции BOOTPROTO вы&nbsp;можете управлять тем, как&nbsp;у&nbsp;интерфейса будут появляься адреса и&nbsp;маршруты (это относится только к&nbsp;протоколу IPv4, так&nbsp;как IPv6 и&nbsp;IPX приобретают адреса только статически).</p><ul><li> static &mdash; адреса и&nbsp;маршруты будут взяты из&nbsp;<tt>ipv4address</tt> и&nbsp;<tt>ipv4route</tt>.
+</li><li> dhcp &mdash; интерфейс будет сконфигурирован по&nbsp;DHCP.
+</li><li> ipv4ll &mdash; интерфейс будет сконфигурирован с&nbsp;помощью IPv4LL (link-local), ранее известному как&nbsp;ZCIP (zeroconf IP). Это&nbsp;значит, что&nbsp;из&nbsp;сети 169.254.0.0/16 будет подобран ещё не&nbsp;использованный адрес и&nbsp;назначен на&nbsp;интерфейс.</li></ul><a name="p-1299-21"></a><p class="auto" id="p-1299-21">
+Существует несколько комбинированных способов:</p><ul><li> dhcp-static &mdash; если конфигурация по&nbsp;DHCP не&nbsp;удалась, конфигурировать методом static.
+</li><li> dhcp-ipv4ll &mdash; если конфигурация по&nbsp;DHCP не&nbsp;удалась, конфигурировать методом ipv4ll.
+</li><li> dhcp-ipv4ll-static &mdash; если конфигурация по&nbsp;DHCP не&nbsp;удалась, конфигурировать методом ipv4ll. Если и&nbsp;это не&nbsp;удалось, конфигурировать методом static.</li></ul>
+<br /><a name="p-1299-22"></a><p class="auto" id="p-1299-22">
+<!--notypo--><a name="internals" href="#internals" title=""></a>
+<!--/notypo--></p><a name="h5184-11"></a><h2>Почему всё так&nbsp;устроено</h2><a name="p-1299-23"></a><p class="auto" id="p-1299-23">
+<!--notypo--><a name="generalinfo" href="#generalinfo" title=""></a>
+<!--/notypo--></p><a name="h5184-12"></a><h3>Общие сведения</h3><a name="p-1299-24"></a><p class="auto" id="p-1299-24">
+<a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> &mdash; немного больше, чем&nbsp;кажется на&nbsp;первый взгляд. Несмотря на&nbsp;это, <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> остаётся системой конфигурации сети в&nbsp;Linux, то&nbsp;есть должна позволить вам&nbsp;сконфигурировать вашу сеть без&nbsp;трюков и&nbsp;особого напряжения. Если вы&nbsp;всё же&nbsp;читаете эту&nbsp;страницу, то&nbsp;у вас, вероятно, возникли трудности с&nbsp;её использованием.</p><br /><a name="p-1299-25"></a><p class="auto" id="p-1299-25">
+Для&nbsp;начала я&nbsp;дам ряд&nbsp;утверждений, от&nbsp;которых можно оттолкнуться:</p><ol type="1"><li> У&nbsp;проекта есть сайт, на&nbsp;котором можно найти примеры конфигурации и&nbsp;тексты, претендующие на&nbsp;звание документации: <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />http://etcnet.org/</a>
+</li><li> <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> интегрирован в&nbsp;ALTLinux Sisyphus в&nbsp;виде пакетов:
+<ul><li> etcnet (базовые сценарии)
+</li><li> etcnet-full (виртуальный пакет с&nbsp;зависимостями на&nbsp;все пакеты, которые могут использоваться сценариями <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a>, с&nbsp;указанием их&nbsp;точных версий)
+</li><li> etcnetconf (<strong>прототип</strong> конфигуратора)
+</li><li> etcnet-defaults-desktop (умолчания для&nbsp;рабочей станции)
+</li><li> etcnet-defaults-server (умолчания для&nbsp;сервера)
+</li></ul></li><li> Пакеты etcnet и&nbsp;net-scripts &mdash; две&nbsp;конфликтующие реализации такой сущности, как&nbsp;&laquo;подсистема конфигурации сети&raquo; (network-config-subsystem).
+</li><li> При&nbsp;установке etcnet вместо net-scripts или&nbsp;наоборот сервис network оказывается выключенным. Это&nbsp;означает, что&nbsp;при загрузке системы сеть не&nbsp;будет сконфигурирована, проверить это&nbsp;можно командой <tt>chkconfig --list network</tt>. Для&nbsp;быстрого исправления проблемы можно дать команду <tt>chkconfig network reset</tt>.
+</li><li> etcnet <strong>НЕ</strong> импортирует автоматически настройки net-scripts. Если вы&nbsp;только что&nbsp;установили etcnet и&nbsp;ваши сетевые интерфейсы всё ещё остаются сконфигурированными (несмотря на&nbsp;уже отсутствующий пакет net-scripts), то&nbsp;вы можете запустить сценарий <tt>/etc/net/scripts/initconf</tt>. Он&nbsp;попытается проанализировать текущее состояние интерфейсов и&nbsp;выведет вам&nbsp;результат. Никаких файлов при&nbsp;этом записано не&nbsp;будет. Если вам&nbsp;понравится вывод initconf, запустите его&nbsp;с&nbsp;параметром write и&nbsp;он проделает то&nbsp;же самое, но&nbsp;уже с&nbsp;сохранением конфигурации.
+</li><li> Для&nbsp;корректной работы системы в&nbsp;целом необходимо, чтобы содержимое файла <tt>/etc/sysconfig/network</tt> было корректным.
+</li><li> Переменные sysctl в&nbsp;ALTLinux конфигурируются в&nbsp;следующих местах: <tt>/etc/sysctl.conf</tt> (глобальные системные), <tt>/etc/sysconfig/network-scripts/sysctl.conf</tt> (общие сетевые в&nbsp;net-scripts), <tt>/etc/net/sysctl.conf</tt> (общие сетевые в&nbsp;<a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a>), <tt>/etc/net/ifaces/*/sysctl.conf*</tt> (частные для&nbsp;конкретных интерфейсов или&nbsp;их&nbsp;типов в&nbsp;<a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a>).</li></ol>
+<br /><a name="p-1299-26"></a><p class="auto" id="p-1299-26">
+<!--notypo--><a name="options.d" href="#options.d" title=""></a>
+<!--/notypo--></p><a name="h5184-13"></a><h3>Как организованы опции по&nbsp;умолчанию</h3><a name="p-1299-27"></a><p class="auto" id="p-1299-27">
+Методология <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> предусматривает несколько шагов наследования опций, первый из&nbsp;которых &mdash; загрузка опций по&nbsp;умолчанию. Раньше это&nbsp;происходило из&nbsp;одного файла <tt>/etc/net/options</tt>, сейчас же&nbsp;в нашем распоряжении есть каталог <tt>/etc/net/options.d</tt>, из&nbsp;которого будут последовательно прочитаны все&nbsp;файлы.</p><br /><a name="p-1299-28"></a><p class="auto" id="p-1299-28">
+Смысл этого нагромождения следующий: оригинальный архив etcnet содержит только файл <tt>/etc/net/options.d/00-default</tt>.</p><br /><a name="p-1299-29"></a><p class="auto" id="p-1299-29">
+Упаковщик etcnet в&nbsp;какой-либо дистрибутив вместо того, чтобы прикладывать патч, просто добавляет файл с&nbsp;бОльшим номером, который переопределяет нужные опции.</p><br /><a name="p-1299-30"></a><p class="auto" id="p-1299-30">
+Администратору системы может не&nbsp;понравиться дистрибутивный набор, в&nbsp;этом случае он&nbsp;создаст файл с&nbsp;ещё более высоким номером и&nbsp;определит умолчания для&nbsp;своей системы. В&nbsp;результате такого подхода:</p><ol type="1"><li> Уменьшается количество патчей (хотя их&nbsp;свойство отваливаться бывает полезным).
+</li><li> Не&nbsp;изменяются файлы с&nbsp;опциями, принадлежащие пакету. Это&nbsp;делает обновление пакета намного более корректным.
+</li><li> Сразу видно, на&nbsp;каком этапе какие опции переопределяются.</li></ol>
+<br /><a name="p-1299-31"></a><p class="auto" id="p-1299-31">
+<!--notypo--><a name="iftab" href="#iftab" title=""></a>
+<!--/notypo--></p><a name="h5184-14"></a><h3>Зачем нужен iftab</h3><a name="p-1299-32"></a><p class="auto" id="p-1299-32">
+Имена сетевых интерфейсов по&nbsp;умолчанию, как&nbsp;правило, содержат их&nbsp;тип (eth, ppp, wifi, ipsec) и&nbsp;индекс: 0 для&nbsp;первого созданного интерфейса, 1 для&nbsp;второго и&nbsp;т.д. При&nbsp;этом соответствие автоматически назначенных имён физическим устройствам может не&nbsp;сохраняться.</p><br /><a name="p-1299-33"></a><p class="auto" id="p-1299-33">
+Эта&nbsp;особенность неудобна, когда машина с&nbsp;Linux имеет более одного интерфейса каждого типа. Типичными примерами являются маршрутизаторы и&nbsp;ноутбуки. В&nbsp;маршрутизаторах, как&nbsp;правило, используются однотипные сетевые карты и&nbsp;при их&nbsp;замене или&nbsp;изменении порядка на&nbsp;PCI-шине соответствие оказывается нарушенным. В&nbsp;ноутбуках используются ethernet и&nbsp;wifi-устройства с&nbsp;горячим подключением, при&nbsp;этом слотов и&nbsp;карт может быть более чем&nbsp;1. В&nbsp;этом случае пользователь скорее всего пожелает закрепить за&nbsp;каждой сменной картой её конфигурацию.</p><br /><a name="p-1299-34"></a><p class="auto" id="p-1299-34">
+<a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> при&nbsp;конфигурации интерфейса использует то&nbsp;имя, под&nbsp;которым он&nbsp;сконфигурирован, а&nbsp;именно имя&nbsp;каталога, в&nbsp;котором хранятся файлы конфигурации интерфейса. За&nbsp;редким исключением интерфейсам можно назначать произвольные имена. Для&nbsp;того, чтобы автоматически назначенное имя&nbsp;было изменено на&nbsp;требуемое, необходимо поддерживать в&nbsp;актуальном состоянии файл <tt>/etc/net/iftab</tt>. man-страница по&nbsp;формату этого файла входит в&nbsp;пакет <tt>ifrename</tt> (man 5 iftab). Позволю себе заметить, что&nbsp;формат businfo зависит от&nbsp;версии ядра, у&nbsp;2.6 он&nbsp;длиннее. Мне&nbsp;кажется, у&nbsp;<tt>ethtool -i</tt> businfo более корректна, чем&nbsp;у&nbsp;<tt>lspci</tt>.</p><br /><a name="p-1299-35"></a><p class="auto" id="p-1299-35">
+См.&nbsp;тж.  это&nbsp;письмо про&nbsp;<a href="http://lists.altlinux.org/pipermail/devel/2007-October/065097.html" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />отличия etcnet и&nbsp;сервиса ifrename</a>:</p><div class="code"><pre>И сразу позволю себе прокомментировать другие письма этого треда:
+
+1. &quot;etcnet уже&nbsp;научился менять местами eth0 и&nbsp;eth1?&quot;
+
+Освоение этого фокуса обладает сомнительной пользой. Я&nbsp;по-прежнему
+рекомендую рассматривать eth0 как&nbsp;временное имя&nbsp;с&nbsp;малым сроком жизни,
+а&nbsp;для повышения комфорта пользователей Ethernet-интерфейсы предлагаю
+называть eth00, eth01, eth02 etc.
+
+2. &quot;Существование (номинальное) net-scripts вынуждает поддерживать
+ряд&nbsp;сервисов, которые иначе могли бы&nbsp;быть упразднены&quot;
+
+Эти&nbsp;сервисы можно обезвредить контролем CONFMETHOD
+из&nbsp;/etc/sysconfig/network. При&nbsp;этом зависимости на&nbsp;пакет etcnet 
+не&nbsp;возникнет, только на&nbsp;network-config-subsystem. Примеры таких
+пакетов должны быть в&nbsp;Sisyphus.
+
+3. &quot;после приведения в&nbsp;порядок /etc/udev/rules.d/19-udev-ifrename.rules
+нужности в&nbsp;/etc/net/iftab я&nbsp;не заметил&quot;
+
+Важнейшее принципиальное отличие /etc/net/iftab от&nbsp;/etc/iftab ---
+нахождение /etc/net/iftab в&nbsp;специальном пространстве имён. Для&nbsp;него
+действуют механизмы определения профиля и&nbsp;хоста конфигурации. Это,
+например, позволит _желающим_ составить конфигурацию так, что&nbsp;срочный
+ремонт маршрутизатора сведётся к&nbsp;переносу диска (или массива) 
+из&nbsp;сгоревшего шасси в&nbsp;запасное. Возможны и&nbsp;другие примеры, которые
+станут невозможными при&nbsp;помещении iftab в&nbsp;/etc и&nbsp;его лобовой
+интерпретации.
+
+Конечно, пользователю единственного ноутбука с&nbsp;одним-двумя сетевыми
+интерфейсами такая практика --- полный overkill, но&nbsp;его никто и&nbsp;не
+заставляет видеть всю&nbsp;подводную часть. В&nbsp;этом и&nbsp;гибкость.</pre></div><br /><a name="p-1299-36"></a><p class="auto" id="p-1299-36">
+<!--notypo--><a name="specifaces" href="#specifaces" title=""></a>
+<!--/notypo--></p><a name="h5184-15"></a><h3>Интерфейсы lo, default и&nbsp;unknown</h3><a name="p-1299-37"></a><p class="auto" id="p-1299-37">
+Сразу после установки в&nbsp;каталоге <tt>/etc/net/ifaces</tt> (в котором хранятся конфигурации интерфейсов) можно обнаружить три&nbsp;каталога: lo, default и&nbsp;unknown.</p><br /><a name="p-1299-38"></a><p class="auto" id="p-1299-38">
+Интерфейс lo&nbsp;&mdash; стандартная петля, которая должна быть во&nbsp;всякой Linux-системе, поэтому конфигурация для&nbsp;него включена по&nbsp;умолчанию. В&nbsp;остальном он&nbsp;ничем не&nbsp;отличается от&nbsp;любого другого интерфейса и&nbsp;конфигурируется точно так&nbsp;же&nbsp;файлами options и&nbsp;ipv4address.</p><br /><a name="p-1299-39"></a><p class="auto" id="p-1299-39">
+Интерфейс default &mdash; вовсе не&nbsp;интерфейс. Это&nbsp;специальный каталог, файлы в&nbsp;котором обрабатываются следующим образом:</p><ul><li> resolv.conf &mdash; если присутствует, то&nbsp;копируется в&nbsp;<tt>/etc/resolv.conf</tt>.
+</li><li> options &mdash; файл опций, читается после опций по&nbsp;умолчанию. Этот файл содержит комментарии.
+</li><li> options-&lt;вид интерфейса&gt; &mdash; этот файл содержит опции, специфичные для&nbsp;данного вида интерфейсов. Какие-то из&nbsp;них необязательны и&nbsp;позволяют использовать особенности данного вида интерфейсов, например, LINKDETECT в&nbsp;options-eth; другие обязательны, например, HOST в&nbsp;options-bri. Эти&nbsp;файлы содержат комментарии. Обратите внимание, что&nbsp;эти файлы лучше не&nbsp;редактировать. Если вам&nbsp;нужно задать опцию для&nbsp;интерфейса, то&nbsp;как правило это&nbsp;можно сделать в&nbsp;файле options в&nbsp;конфигурационном каталоге данного интерфейса. Это&nbsp;облегчит процесс обновления пакета etcnet.
+</li><li> sysctl.conf-&lt;вид интерфейса&gt; &mdash; файл с&nbsp;переменными sysctl, которые необходимо изменить. Сейчас единственный такой файл &mdash; sysctl.conf-dvb, который отключает return path filter, что&nbsp;всегда нужно в&nbsp;случае асимметричной маршрутизации.
+</li><li> iplink-&lt;вид интерфейса&gt; &mdash; файл с&nbsp;командами iplink, специфичными для&nbsp;данного вида.
+</li><li> selectprofile &mdash; если этот файл исполняемый, то&nbsp;он будет вызван из&nbsp;сценариев ifup/ifdown, setup/shutdown для&nbsp;того, чтобы вернуть на&nbsp;стандартном выводе имя&nbsp;профиля, которое необходимо использовать. Это&nbsp;позволяет автоматически переключать профили в&nbsp;зависимости от&nbsp;каких-либо условий. В&nbsp;поставку включен комментированный пример сценария: <tt>/etc/net/ifaces/default/selectprofile</tt>.
+</li><li> fw&nbsp;&mdash; каталог с&nbsp;настройками сетевого экрана по&nbsp;умолчанию.</li></ul>
+<br /><a name="p-1299-40"></a><p class="auto" id="p-1299-40">
+Интерфейс unknown &mdash; специальная конфигурация, которая будет использована в&nbsp;том случае, когда <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> просят сконфигурировать hotplug-интерфейс, для&nbsp;которого не&nbsp;существует каталога конфигурации. Это&nbsp;будет работать только в&nbsp;том случае, если включена опция ALLOW_UNKNOWN.</p><br /><a name="p-1299-41"></a><p class="auto" id="p-1299-41">
+<!--notypo--><a name="broadcast" href="#broadcast" title=""></a>
+<!--/notypo--></p><a name="h5184-16"></a><h3>О загадочном broadcast</h3><a name="p-1299-42"></a><p class="auto" id="p-1299-42">
+Периодически возникает вопрос: почему после старта <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> при&nbsp;запуске ifconfig можно видеть Bcast:0.0.0.0, хотя при&nbsp;использовании net-scripts это&nbsp;поле было правильным? Дело в&nbsp;том, что&nbsp;net-scripts оперируют адресом, маской, адресом сети и&nbsp;широковещательным адресом, пытаясь определить неизвестные компоненты из&nbsp;известных, а&nbsp;<tt>config-ipv4</tt> просто передаёт утилите ip&nbsp;содержимое файла ipv4address, не&nbsp;заботясь о&nbsp;его содержимом. Хорошо ли&nbsp;это или&nbsp;плохо? Я&nbsp;думаю, что&nbsp;скорее хорошо. </p><br /><a name="p-1299-43"></a><p class="auto" id="p-1299-43">
+Во-первых, если iproute2 изменит свой синтаксис, то&nbsp;с большой вероятностью править придётся только конфигурационные файлы. <br />
+Во-вторых, я&nbsp;пока не&nbsp;встречал проблем с&nbsp;&laquo;отсутствующим&raquo; broadcast address. Он&nbsp;есть в&nbsp;таблице маршрутизации local. В-третьих, вы&nbsp;всегда можете назначить адрес broadcast в&nbsp;файле ipv4address. Проще всего это&nbsp;сделать с&nbsp;помощью выражения <tt>broadcast +</tt><sup><a href="#oftnd2" name="ftnd2">2</a></sup>.<br />
+Обновление: в&nbsp;версии 0.8.0 появилась опция <tt>AUTO_BROADCAST</tt> для&nbsp;автоматического дополнения каждой строки <tt>ipv4address</tt>.</p><br /><a name="p-1299-44"></a><p class="auto" id="p-1299-44">
+<!--notypo--><a name="never_rmmod" href="#never_rmmod" title=""></a>
+<!--/notypo--></p><a name="h5184-17"></a><h3>О ядре 2.6 и&nbsp;пропадающих интерфейсах</h3><a name="p-1299-45"></a><p class="auto" id="p-1299-45">
+Иногда жалуются, что&nbsp;если два&nbsp;интерфейса используют один и&nbsp;тот же&nbsp;модуль ядра и&nbsp;у них&nbsp;определена опция MODULE (то есть скрипты <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> сами загружают и&nbsp;выгружают модули), то&nbsp;при опускании одного интерфейса пропадает и&nbsp;второй. Почти наверняка используется ядро 2.6, особенностью которого являются странные значения счётчика ссылок (третий столбец вывода lsmod). Когда он&nbsp;оказывается равен нулю (довольно часто), скрипты могут попытаться выгрузить модуль интерфейса, для&nbsp;которого запущен ifdown. И&nbsp;у них&nbsp;получится, несмотря на&nbsp;то, что&nbsp;другой интерфейс, использующий этот же&nbsp;модуль, находится в&nbsp;состоянии UP.</p><br /><a name="p-1299-46"></a><p class="auto" id="p-1299-46">
+Чтобы заблокировать выгрузку модулей, можно использовать булевскую переменную NEVER_RMMOD. Возможно, позже это&nbsp;будет происходить автоматически для&nbsp;таких странных ядер.</p><br /><a name="p-1299-47"></a><p class="auto" id="p-1299-47">
+<!--notypo--><a name="removables" href="#removables" title=""></a>
+<!--/notypo--></p><a name="h5184-18"></a><h3>О hotplug-интерфейсах и&nbsp;не только</h3><a name="p-1299-48"></a><p class="auto" id="p-1299-48">
+Часто задают вопросы об&nbsp;опции USE_HOTPLUG, причём задают в&nbsp;контексте уже&nbsp;установленной кем-то USE_HOTPLUG=yes. Я&nbsp;попробую объяснить, зачем нужна эта&nbsp;опция и&nbsp;как её правильно использовать. Есть несколько сценариев конфигурации сети.</p><br /><a name="p-1299-49"></a><p class="auto" id="p-1299-49">
+Первый и&nbsp;самый простой &mdash; выполнение <tt>service network start</tt> при&nbsp;старте системы или&nbsp;вручную. При&nbsp;этом требуется только сформировать погруппные (потиповые) списки интерфейсов, подлежащих обработке, и&nbsp;последовательно выполнить требуемые действия. Модули ядра при&nbsp;этом загружаются сценариями <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a>, при&nbsp;этом имена модулей берутся из&nbsp;опции MODULE (кстати, в&nbsp;этой опции можно перечислить несколько имён и&nbsp;они будут последовательно загружены, только не&nbsp;забудьте взять список в&nbsp;кавычки). Это&nbsp;мой любимый метод конфигурации, он&nbsp;лучше всего подходит для&nbsp;маршрутизаторов. Преимущество его&nbsp;в&nbsp;том, что&nbsp;вся необходимая информация сконцентрирована в&nbsp;одном месте &mdash; каталоге <tt>/etc/net</tt>. Если опция MODULE не&nbsp;определена, то&nbsp;будет предпринята попытка загрузки по&nbsp;имени интерфейса в&nbsp;надежде на&nbsp;правильно заполненный <tt>/etc/modules.conf</tt>.</p><br /><a name="p-1299-50"></a><p class="auto" id="p-1299-50">
+Второй сценарий &mdash; реакция на&nbsp;событие ifplugd. Раньше существовала путаница, так&nbsp;как требовалась синхронная настройка сервиса ifplugd, но&nbsp;сейчас логика работы более определена, так&nbsp;как <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> взяла управление ifplugd на&nbsp;себя. В&nbsp;части загрузки модуля этот сценарий не&nbsp;отличается от&nbsp;первого.</p><br /><a name="p-1299-51"></a><p class="auto" id="p-1299-51">
+Третий сценарий &mdash; реакция на&nbsp;появление или&nbsp;исчезновение сменного устройства. Для&nbsp;обработки таких событий предназначены сценарии <tt>/etc/net/scripts/{ifup,ifdown}-removable</tt>, которые вызываются из&nbsp;сценариев пакетов hotplug и&nbsp;pcmcia-cs. Сложность заключается в&nbsp;том, что&nbsp;для сменных PCMCIA-карт вызовы могут дублироваться: для&nbsp;одного и&nbsp;того же&nbsp;события первый раз&nbsp;ifup-removable будет вызван из&nbsp;hotplug, второй &mdash; из&nbsp;pcmcia-cs. Но&nbsp;это не&nbsp;всё. hotplug также реагирует на&nbsp;загрузку модулей ядра для&nbsp;обычных карт PCI&nbsp;и&nbsp;более того, включает сценарии, которые пытаются загружать модули самостоятельно. В&nbsp;этом контексте <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> получает слишком много вызовов от&nbsp;hotplug и&nbsp;по умолчанию их&nbsp;игнорирует (USE_HOTPLUG=no). </p><br /><a name="p-1299-52"></a><p class="auto" id="p-1299-52">
+Предположим, вам&nbsp;необходимо настроить действительно сменную карту. После заполнения <tt>/etc/net/iftab</tt> в&nbsp;файле options необходимо будет задать USE_HOTPLUG=yes. После этого при&nbsp;получении события от&nbsp;hotplug <a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> будет работать в&nbsp;том контексте, что&nbsp;модуль в&nbsp;загрузке и&nbsp;выгрузке не&nbsp;нуждается. Кроме того, <strong>такой интерфейс будет пропущен при&nbsp;обычном старте сети</strong>. Почему? Потому, что&nbsp;если он&nbsp;сменный, то&nbsp;единственный достоверный способ узнать, что&nbsp;он&nbsp;присутствует &mdash; получить вызов от&nbsp;hotplug. Из&nbsp;факта выполнения <tt>service network start</tt> совсем не&nbsp;следует, что&nbsp;какой-то один или&nbsp;несколько из&nbsp;сконфигурированных hotplug-интерфейсов сейчас в&nbsp;наличии и&nbsp;требует конфигурации. Если вы&nbsp;хотите вручную расконфигурировать hotplug-интерфейс до&nbsp;его извлечения, дайте команду ifdown. Для&nbsp;повторной конфигурации вставьте его&nbsp;ещё раз.</p><br /><a name="p-1299-53"></a><p class="auto" id="p-1299-53">
+Также существует опция USE_PCMCIA. Если события для&nbsp;вашей карты генерирует pcmcia-cs, то&nbsp;вам нужно её включить. Если события генерируются только hotplug, то&nbsp;используйте опцию USE_HOTPLUG.</p><br /><a name="p-1299-54"></a><p class="auto" id="p-1299-54">
+<!--notypo--><a name="eth0" href="#eth0" title=""></a>
+<!--/notypo--></p><a name="h5184-19"></a><h3>Почему вредно использование eth0</h3><a name="p-1299-55"></a><p class="auto" id="p-1299-55">
+<a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> активно использует ifrename, который в&nbsp;свою очередь использует файл <tt>/etc/net/iftab</tt>. Часто встречается практика помещать в&nbsp;него правила, назначающие интерфейсам имена eth0 и&nbsp;eth1. Однако существует ряд&nbsp;обстоятельств, лишающих эти&nbsp;действия смысла:</p><ul><li> При&nbsp;загрузке модулей имена интерфейсов принимают вид&nbsp;eth0, eth1, eth2... Какие именно, в&nbsp;общем случае контролировать нельзя.
+</li><li> Имя&nbsp;eth0 обладает наибольшей вероятностью оказаться занятым.
+</li><li> ifrename не&nbsp;может переименовать интерфейс, если целевое имя&nbsp;уже занято. Единственный способ это&nbsp;сделать &mdash; использовать <tt>ifrename -t</tt>, чего лучше избежать.</li></ul><a name="p-1299-56"></a><p class="auto" id="p-1299-56">
+С&nbsp;учётом этого становится ясно, что&nbsp;если <tt>/etc/net/iftab</tt> содержит тот&nbsp;же&nbsp;набор имён интерфейсов, что&nbsp;уже имеется после загрузки модулей, то&nbsp;единственный случай, когда ifrename сможет без&nbsp;ошибок обработать такой файл &mdash; изначальное соответствие, не&nbsp;требующее переименования. Поэтому ifrename выдаёт предупреждение при&nbsp;попытке переименовать интерфейс в&nbsp;eth0.<br />
+Единственный способ разорвать порочный круг &mdash; в&nbsp;конце концов отказаться от&nbsp;имён ethX.</p><br /><a name="p-1299-57"></a><p class="auto" id="p-1299-57">
+<!--notypo--><a name="advanced" href="#advanced" title=""></a>
+<!--/notypo--></p><a name="h5184-20"></a><h2>Расширенные возможности</h2><a name="p-1299-58"></a><p class="auto" id="p-1299-58">
+<!--notypo--><a name="multipleIPs" href="#multipleIPs" title=""></a>
+<!--/notypo--></p><a name="h5184-21"></a><h3>Несколько IP-адресов или&nbsp;маршрутов на&nbsp;одном интерфейсе</h3><a name="p-1299-59"></a><p class="auto" id="p-1299-59">
+Вы&nbsp;можете помещать произвольное количество IP-адресов в&nbsp;файл ipv4address по&nbsp;одному адресу на&nbsp;каждой строке. То&nbsp;же самое относится к&nbsp;статическим маршрутам и&nbsp;файлу ipv4route.</p><br /><a name="p-1299-60"></a><p class="auto" id="p-1299-60">
+Обратите внимание, что&nbsp;<a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> не&nbsp;анализирует содержимое этих файлов, а&nbsp;формирует на&nbsp;основе каждой строки командную строку для&nbsp;утилиты ip. Это&nbsp;означает, что&nbsp;вы&nbsp;можете помещать в&nbsp;этих файлах произвольные поддерживаемые ip&nbsp;опции и&nbsp;они будут обработаны. Например, в&nbsp;файле ipv4route можно поместить строку <!--notypo--><textarea class="code" rows="2" readonly="readonly">10.0.1.0/24 via 10.0.0.253 metric 50 weight 5 table 100</textarea><!--/notypo--></p><br /><a name="p-1299-61"></a><p class="auto" id="p-1299-61">
+<!--notypo--><a name="requires" href="#requires" title=""></a>
+<!--/notypo--></p><a name="h5184-22"></a><h3>Зависимости между интерфейсами</h3><a name="p-1299-62"></a><p class="auto" id="p-1299-62">
+У&nbsp;интерфейсов vlan, bond, bri&nbsp;и&nbsp;teql, входящих в&nbsp;группу зависимых физических, должна быть определена опция HOST со&nbsp;списком интерфейсов, необходимых для&nbsp;инициализации текущего интерфейса. Если хост-интерфейс не&nbsp;сконфигурирован при&nbsp;поднятии зависимого интерфейса, то&nbsp;это будет исправлено.</p><br /><a name="p-1299-63"></a><p class="auto" id="p-1299-63">
+Кроме обязательной для&nbsp;определённых интерфейсов опции HOST может быть задана необязательная для&nbsp;всех остальных интерфейсов опция REQUIRES. Интерфейсы, перечисленные в&nbsp;этой опции, будут считаться зависимостями текущего интерфейса. По&nbsp;умолчанию попытка сконфигурировать интерфейс А, который зависит от&nbsp;Б и&nbsp;В, приведёт сначала к&nbsp;конфигурации Б&nbsp;и В. Аналогично, при&nbsp;расконфигурации Б&nbsp;или В&nbsp;сначала будет расконфигурирован А.</p><br /><a name="p-1299-64"></a><p class="auto" id="p-1299-64">
+Зависимость одного интерфейса от&nbsp;другого не&nbsp;всегда формальна. Например, в&nbsp;сценарии ifup-pre одного интерфейса может использоваться команда, которая потребует разрешения DNS-имени, которое может быть разрешено только с&nbsp;помощью resolv.conf, инсталлируемого другим интерфейсом. Или&nbsp;это может быть PPPoE/PPtP-интерфейс, требующий Ethernet-интерфейс для&nbsp;работы. </p><br /><a name="p-1299-65"></a><p class="auto" id="p-1299-65">
+Для&nbsp;того, чтобы избежать неожиданных сбоев в&nbsp;таких случаях, правильно задавайте опцию REQUIRES.</p><br /><a name="p-1299-66"></a><p class="auto" id="p-1299-66">
+<!--notypo--><a name="postpre" href="#postpre" title=""></a>
+<!--/notypo--></p><a name="h5184-23"></a><h3>Как использовать свои сценарии post и&nbsp;pre</h3><a name="p-1299-67"></a><p class="auto" id="p-1299-67">
+Вы&nbsp;можете поместить в&nbsp;каталог конфигурации интерфейса файлы, которые будут выполнены в&nbsp;определённые моменты. Для&nbsp;этого они&nbsp;должны быть исполняемыми и&nbsp;называться следующим образом:</p><ul><li> <tt>ifup-pre</tt> &mdash; для&nbsp;выполнения перед конфигурированием интерфейса.
+</li><li> <tt>ifup-post</tt> &mdash; для&nbsp;выполнения после конфигурирования интерфейса. Например, можно запустить почтовую систему.
+</li><li> <tt>ifdown-pre</tt> &mdash; для&nbsp;выполнения перед расконфигурированием интерфейса. Например, можно остановить почтовую систему.
+</li><li> <tt>ifdown-post</tt> &mdash; для&nbsp;выполнения после расконфигурирования интерфейса.</li></ul><a name="p-1299-68"></a><p class="auto" id="p-1299-68">
+Также в&nbsp;версии до&nbsp;0.8.0 вы&nbsp;можете использовать следующие сценарии (они должны быть исполняемыми):</p><ul><li> <tt>/etc/net/scripts/ifup-pre-local</tt>
+</li><li> <tt>/etc/net/scripts/ifup-post-local</tt>
+</li><li> <tt>/etc/net/scripts/ifdown-pre-local</tt>
+</li><li> <tt>/etc/net/scripts/ifdown-post-local</tt></li></ul><a name="p-1299-69"></a><p class="auto" id="p-1299-69">
+Они&nbsp;будут вызваны для&nbsp;*каждого* интерфейса. Начиная с&nbsp;версии 0.8.0 эти&nbsp;сценарии называются так:</p><ul><li> <tt>/etc/net/ifup-pre</tt>
+</li><li> <tt>/etc/net/ifup-post</tt>
+</li><li> <tt>/etc/net/ifdown-pre</tt>
+</li><li> <tt>/etc/net/ifdown-post</tt></li></ul><a name="p-1299-70"></a><p class="auto" id="p-1299-70">
+Семантика сохранена.</p><br /><a name="p-1299-71"></a><p class="auto" id="p-1299-71">
+<!--notypo--><a name="iplink" href="#iplink" title=""></a>
+<!--/notypo--></p><a name="h5184-24"></a><h3>Как управлять канальными параметрами интерфейсов</h3><a name="p-1299-72"></a><p class="auto" id="p-1299-72">
+Если вы&nbsp;поместите в&nbsp;конфигурационный каталог интерфейса файл iplink, в&nbsp;котором в&nbsp;каждой строке будут записаны команды режима link утилиты ip, то&nbsp;они будут выполнены при&nbsp;конфигурации интерфейса. Например, если вы&nbsp;желаете, чтобы интерфейс net1 имел MAC-адрес aa:bb:cc:dd:ee:ff и&nbsp;MTU 200 байт, то&nbsp;в файл <tt>/etc/net/ifaces/net1/iplink</tt> нужно поместить следующее:<br />
+<!--notypo--><textarea class="code" rows="3" readonly="readonly">address aa:bb:cc:dd:ee:ff
+mtu 200</textarea><!--/notypo--><br />
+Обратите внимание, что&nbsp;в&nbsp;этом случае в&nbsp;<tt>/etc/net/iftab</tt> вам&nbsp;необходимо будет использовать селектор businfo или&nbsp;driver вместо mac.</p><br /><a name="p-1299-73"></a><p class="auto" id="p-1299-73">
+<!--notypo--><a name="bridge" href="#bridge" title=""></a>
+<!--/notypo--></p><a name="h5184-25"></a><h3>Как настроить Ethernet-мост</h3><a name="p-1299-74"></a><p class="auto" id="p-1299-74">
+С&nbsp;пакетом etcnet поставляются примеры конфигурации. Один из&nbsp;них показывает, как&nbsp;из&nbsp;двух ethernet-интерфейсов port0 и&nbsp;port1 можно собрать мост bridge: <a href="http://etcnet.org/examples/Ethernet-bridge-GRE/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />http://etcnet.org/examples/Ethernet-bridge-GRE/</a></p><br /><a name="p-1299-75"></a><p class="auto" id="p-1299-75">
+<!--notypo--><a name="iptun" href="#iptun" title=""></a>
+<!--/notypo--></p><a name="h5184-26"></a><h3>Настройка и&nbsp;использование IP-туннелей</h3><a name="p-1299-76"></a><p class="auto" id="p-1299-76">
+IP-туннели &mdash; средство, позволяющее при&nbsp;умелом использовании улучшить IP-сети. Поддерживаются IP-туннели трёх видов: IPIP, GRE&nbsp;и&nbsp;SIT. Прежде всего необходимо определиться, какой вид&nbsp;туннеля вам&nbsp;необходим. Туннели IPIP &mdash; самые простые. Обратите внимание, что&nbsp;IPIP-туннели не&nbsp;могут передавать multicast-пакеты, соответственно, OSPF на&nbsp;таких интерфейсах работать не&nbsp;будет.</p><br /><a name="p-1299-77"></a><p class="auto" id="p-1299-77">
+Туннели GRE&nbsp;(general incapsulation) обычно используются в&nbsp;маршрутизаторах Cisco. По&nbsp;туннелям этого типа могут передаваться broadcast и&nbsp;multicast пакеты, кроме того, эти&nbsp;туннели поддерживают контрольные суммы и&nbsp;контроль упорядоченности пакетов. Также GRE-туннели обладают опциональным атрибутом key&nbsp;в&nbsp;виде произвольного 4-байтового числа, который позволяет конфигурировать несколько GRE&nbsp;туннелей между одной парой IP-адресов несущей сети (в отличие от&nbsp;IPIP-туннелей, с&nbsp;которыми это&nbsp;невозможно).</p><br /><a name="p-1299-78"></a><p class="auto" id="p-1299-78">
+Туннели SIT&nbsp;предназначены для&nbsp;транспортировки пакетов IPv6 через сети IPv4.</p><br /><a name="p-1299-79"></a><p class="auto" id="p-1299-79">
+Тип&nbsp;туннеля определяется опцией TUNTYPE (ipip, gre, sit). По&nbsp;умолчанию TUNTYPE=ipip. Кроме типа туннеля для&nbsp;конфигурации всегда требуется адрес удалённого хоста и&nbsp;почти всегда &mdash; локальный адрес. Эти&nbsp;адреса определяются опциями TUNREMOTE и&nbsp;TUNLOCAL соответственно. В&nbsp;некоторых случаях локальный адрес можно не&nbsp;указывать. В&nbsp;этом случае опция TUNLOCAL всё равно обязательна, но&nbsp;принимает значение any. Не&nbsp;забудьте назначить туннельному интерфейсу адреса и&nbsp;маршруты в&nbsp;соответствущих файлах.</p><br /><a name="p-1299-80"></a><p class="auto" id="p-1299-80">
+Пример: для&nbsp;конфигурации GRE-туннеля между 10.0.1.2 и&nbsp;10.0.2.3 с&nbsp;двумя ключами для&nbsp;исходящих и&nbsp;входящих пакетов, проверкой очерёдности пакетов, TTL&nbsp;8 и&nbsp;вычислением контрольных сумм. Туннель должен использовать только интерфейс gw1. Файл <tt>/etc/net/ifaces/mytunnel/options</tt> будет следующим:<br />
+<!--notypo--><textarea class="code" rows="8" readonly="readonly">TYPE=iptun
+TUNTYPE=gre
+TUNLOCAL=10.0.1.2
+TUNREMOTE=10.0.2.3
+TUNTTL=8
+HOST=gw1
+TUNOPTIONS='seq ikey 2020 okey 2030 csum'</textarea><!--/notypo--></p><br /><a name="p-1299-81"></a><p class="auto" id="p-1299-81">
+<!--notypo--><a name="vpn" href="#vpn" title=""></a>
+<!--/notypo--></p><a name="h5184-27"></a><h3>Что следует помнить при&nbsp;настройке VPN&nbsp;(и туннелей)</h3><a name="p-1299-82"></a><p class="auto" id="p-1299-82">
+Довольно часто  при&nbsp;настройке VPN-подключения (под которыми тут&nbsp;я&nbsp;буду подразумевать все&nbsp;туннельные подключения, т.е. подключения поверх IP) забывают, что&nbsp;при использовании опции pppd '<tt>defaultroute</tt>' маршрут по-умолчанию после подключения будет изменен. При&nbsp;этом, если VPN-сервер находится в&nbsp;другой, нежели клиент, сети, то&nbsp;после подключения (и изменения маршрута по-умолчанию) VPN-сервер становится недоступным, следовательно, недоступными становятся все&nbsp;внешние адреса, и&nbsp;подключение, как&nbsp;правило, рвется по&nbsp;тайм-ауту.</p><br /><a name="p-1299-83"></a><p class="auto" id="p-1299-83">
+Выходом, как&nbsp;обычно (и рекомендовано) служит указание <em>отдельного</em> маршрута на&nbsp;VPN-сервер (или его&nbsp;сеть). Для&nbsp;этого необходимо прописать (в примере для&nbsp;маршрута через eth0) в&nbsp;<tt>/etc/net/ifaces/eth0/ipv4route</tt> строку вида<br />
+<!--notypo--><textarea class="code" rows="2" readonly="readonly">10.0.1.0/24 via 10.0.0.1</textarea><!--/notypo--><br />
+Тут&nbsp;подразумевается, что&nbsp;VPN-сервер находится в&nbsp;сети 10.0.1.0/24 (например, имеет адрес 10.0.1.1), клиент &ndash; в&nbsp;сети 10.0.0.0/24 (например, 10.0.0.10), а&nbsp;маршрутизатор имеет адрес 10.0.0.1.</p><br /><a name="p-1299-84"></a><p class="auto" id="p-1299-84">
+Теперь, при&nbsp;использовании опции '<tt>defaulroute</tt>' для&nbsp;pppd (которая указывает, что&nbsp;нужно изменить на&nbsp;вновь созданное подключение маршрут по-умолчанию), даже после замены маршрута по-умолчанию новым сеть 10.0.1.0, в&nbsp;которой в&nbsp;нашем примере и&nbsp;находится VPN-сервер, остается доступной.</p><br /><a name="p-1299-85"></a><p class="auto" id="p-1299-85">
+Как&nbsp;более точечный вариант (применяется в&nbsp;alterator-net-pptp 0.5.x) можно использовать скрипты <tt>ifup-pre</tt> и&nbsp;<tt>ifdown-post</tt> в&nbsp;каталоге конфигурируемого PPP-интерфейса; пример:<br />
+<!--notypo--><textarea class="code" rows="4" readonly="readonly">#!/bin/sh
+# sample /etc/net/ifaces/ppp0/ifup-pre; replace variables yourself
+ip route add $VPN_SERVER via $DEF_GW</textarea><!--/notypo--><br />
+<!--notypo--><textarea class="code" rows="4" readonly="readonly">#!/bin/sh
+# sample /etc/net/ifaces/ppp0/ifdown-post; replace variables yourself
+ip route del $VPN_SERVER via $DEF_GW</textarea><!--/notypo--><br />
+Не&nbsp;забудьте подставить нужные IP-адреса (не сеть, где&nbsp;VPN-сервер, а&nbsp;его /32) и&nbsp;сделать <tt>chmod +x ifup-pre ifdown-post</tt></p><br /><a name="p-1299-86"></a><p class="auto" id="p-1299-86">
+<!--notypo--><a name="ipsectun" href="#ipsectun" title=""></a>
+<!--/notypo--></p><a name="h5184-28"></a><h3>Настройка и&nbsp;использование IPSec-туннелей</h3><a name="p-1299-87"></a><p class="auto" id="p-1299-87">
+В&nbsp;ALTLinux поддерживаются статические IPSec-туннели, которые реализутся модулем ядра ipsec_tunnel, который в&nbsp;свою очередь использует CryptoAPI ядер серии 2.4. Для&nbsp;этих интерфейсов кроме TUNLOCAL и&nbsp;TUNREMOTE обязательно требуется ещё такой параметр как&nbsp;TUNSPI. Это&nbsp;уникальный номер туннеля, он&nbsp;должен быть более 0x2000 и&nbsp;одинаковым на&nbsp;обоих хостах. Эти&nbsp;туннели требуют, чтобы для&nbsp;них были определены параметры либо шифрования, либо подписи, либо того и&nbsp;другого вместе. Опции CIPHER и&nbsp;DIGEST определяют соответственно алгоритмы и&nbsp;режимы шифрования и&nbsp;подписи, а&nbsp;опции CIPHERFILE и&nbsp;DIGESTFILE &mdash; имена файлов в&nbsp;конфигурационном каталоге интерфейса, которые содержат ключи шифрования и&nbsp;подписи. Для&nbsp;форсирования интерфейса, через который будут посылаться туннелированные пакеты, можно использовать опцию HOST.</p><br /><a name="p-1299-88"></a><p class="auto" id="p-1299-88">
+<!--notypo--><a name="iprule" href="#iprule" title=""></a>
+<!--/notypo--></p><a name="h5184-29"></a><h3>Сложная маршрутизация</h3><a name="p-1299-89"></a><p class="auto" id="p-1299-89">
+Под&nbsp;сложной маршрутизацией понимается наличие нескольких таблиц маршрутизации. Для&nbsp;их&nbsp;использования нужно будет сконфигурировать правила ядра. Если мы&nbsp;посмотрим на&nbsp;правила по&nbsp;умолчанию, то&nbsp;мы увидим следующее:<br />
+<!--notypo--><textarea class="code" rows="5" readonly="readonly">$ /sbin/ip ru
+0:      from all lookup local 
+32766:  from all lookup main 
+32767:  from all lookup default</textarea><!--/notypo--><br />
+Первый шаг&nbsp;&mdash; заполнение таблиц. В&nbsp;конфигурационном каталоге интерфейса в&nbsp;файле ipv4route добавьте маршрутные записи, не&nbsp;забыв указать <tt>table XX</tt>. Учтите, что&nbsp;если вы&nbsp;не начинаете строку с&nbsp;режима ip&nbsp;route (add, del, replace, append, change), то&nbsp;по умолчанию будет использован режим DEFAULT_IPV4ROUTE_CMD (append).</p><br /><a name="p-1299-90"></a><p class="auto" id="p-1299-90">
+Второй шаг&nbsp;&mdash; определение правил в&nbsp;файле ipv4rule. Опять же, не&nbsp;обошлось без&nbsp;некоторой автоматики. Если строка не&nbsp;начинается с&nbsp;операции del&nbsp;или add, то&nbsp;нужный режим будет подставлен автоматически. Это&nbsp;подходит для&nbsp;тех случаев, когда вам&nbsp;при поднятии интерфейса необходимо добавить правила, а&nbsp;при опускании &mdash; удалить. Возможность указывать del&nbsp;или add&nbsp;реализована для&nbsp;обратных случаев: если при&nbsp;поднятии интерфейса вам&nbsp;необходимо удалить правила, а&nbsp;при опускании &mdash; добавить. В&nbsp;этом случае add&nbsp;и&nbsp;del будут в&nbsp;нужный момент автоматически заменены на&nbsp;del и&nbsp;add.</p><br /><a name="p-1299-91"></a><p class="auto" id="p-1299-91">
+Пример такой конфигурации входит в&nbsp;<a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> 0.7.12: <a href="http://etcnet.org/examples/routing-LARTC-1/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />http://etcnet.org/examples/routing-LARTC-1/</a></p><br /><a name="p-1299-92"></a><p class="auto" id="p-1299-92">
+<!--notypo--><a name="wireless" href="#wireless" title=""></a>
+<!--/notypo--></p><a name="h5184-30"></a><h3>О беспроводном Ethernet</h3><a name="p-1299-93"></a><p class="auto" id="p-1299-93">
+Большинство беспроводных интерфейсов сейчас представлено системе как&nbsp;интерфейсы Ethernet. Соответственно ваш&nbsp;беспроводный интерфейс будет иметь <a href="https://bugzilla.altlinux.org/show_bug.cgi?id=6283" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />TYPE=eth</a>. Чтобы он&nbsp;нормально работал, нужно кроме загрузки модуля с&nbsp;параметрами воспользоваться утилитами iwconfig из&nbsp;пакета wireless-tools или&nbsp;wpa_supplicant из&nbsp;такого же&nbsp;пакета. Вместо того, чтобы запускать их&nbsp;вручную, можно просто поместить в&nbsp;конфигурационный каталог интерфейса файл iwconfig с&nbsp;командами iwconfig или&nbsp;файл wpa_supplicant.conf с&nbsp;конфигурацией wpa_supplicant. Они&nbsp;будут использованы автоматически.</p><br /><a name="p-1299-94"></a><p class="auto" id="p-1299-94">
+Пример <a href="http://hpl.hp.com/personal/Jean_Tourrilhes/Linux/Wireless.html" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />конфигурации</a> (совместно с&nbsp;<tt><a href="http://ndiswrapper.sourceforge.net/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />ndiswrapper</a></tt>):<br />
+<tt>/etc/net/ifaces/wlan0/options</tt><br />
+<!--notypo--><textarea class="code" rows="7" readonly="readonly">TYPE=eth
+MODULE=ndiswrapper
+NEVER_RMMOD=yes
+BOOTPROTO=dhcp
+USE_HOTPLUG=no
+ONBOOT=no</textarea><!--/notypo--><br />
+<tt>/etc/net/ifaces/wlan0/iwconfig</tt><br />
+<!--notypo--><textarea class="code" rows="3" readonly="readonly">essid default
+#key bababababa</textarea><!--/notypo--></p><br /><a name="p-1299-95"></a><p class="auto" id="p-1299-95">
+Еще&nbsp;один пример (от thresh@) использования etcnet для&nbsp;настройки беспроводной сети (в данный момент это&nbsp;не&nbsp;WPA2, но&nbsp;работало и&nbsp;на нем):<br />
+<tt>/etc/net/ifaces/eth0/options</tt><br />
+<!--notypo--><textarea class="code" rows="6" readonly="readonly">TYPE=eth
+USE_HOTPLUG=NO
+BOOTPROTO=static
+module=ipw2200
+WPA_DRIVER=wext</textarea><!--/notypo--></p><br /><a name="p-1299-96"></a><p class="auto" id="p-1299-96">
+<tt>/etc/net/ifaces/eth0/iwconfig</tt><br />
+<!--notypo--><textarea class="code" rows="6" readonly="readonly">essid homenet
+mode 1
+ap 00:11:D8:22:AD:0D
+channel 3
+rate 11M</textarea><!--/notypo--></p><br /><a name="p-1299-97"></a><p class="auto" id="p-1299-97">
+<tt>/etc/net/ifaces/eth0/wpa_supplicant.conf</tt><br />
+<!--notypo--><textarea class="code" rows="15" readonly="readonly">ctrl_interface=/var/run/wpa_supplicant
+ctrl_interface_group=0
+eapol_version=1
+ap_scan=1
+fast_reauth=1
+
+network={
+        ssid=&quot;homenet&quot;
+        bssid=00:11:D8:22:AD:0D
+        proto=WPA
+        key_mgmt=WPA-PSK
+        pairwise=CCMP TKIP
+        group=TKIP
+        psk=&quot;this is my mega secret password string to wpa supplicant&quot;
+        priority=2
+}</textarea><!--/notypo--></p><br /><a name="p-1299-98"></a><p class="auto" id="p-1299-98">
+<!--notypo--><a name="sysctl" href="#sysctl" title=""></a>
+<!--/notypo--></p><a name="h5184-31"></a><h3>Как использовать автодополнение в&nbsp;sysctl.conf</h3><a name="p-1299-99"></a><p class="auto" id="p-1299-99">
+В&nbsp;конфигурационном каталоге интерфейса может находиться файл sysctl.conf, в&nbsp;котором можно перечислить переменные sysctl (8). Но&nbsp;переменные могут быть как&nbsp;общесистемными, так&nbsp;и&nbsp;относящимися к&nbsp;интерфейсу &mdash; описание переменных можно почитать в&nbsp;<a href="http://gazette.linux.ru.net/rus/articles/index-ipsysctl-tutorial.html" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />http://gazette.linux.ru.net/rus/articles/index-ipsysctl-tutorial.html</a>. Естественно, писать в&nbsp;sysctl.conf что-то вроде <tt>net.ipv4.conf.eth0.log_martians = 1</tt> неудобно. К&nbsp;тому же&nbsp;при переименовании интерфейса вы&nbsp;можете забыть отредактировать файл sysctl.conf.</p><br /><a name="p-1299-100"></a><p class="auto" id="p-1299-100">
+Решается это&nbsp;следующим способом: просто запишите в&nbsp;файл имя&nbsp;переменной и&nbsp;значение, а&nbsp;<a href="http://etcnet.org/" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />/etc/net</a> сама решит, как&nbsp;к&nbsp;этой переменной добраться, и&nbsp;вызовет sysctl с&nbsp;полным именем. Например:<br />
+<!--notypo--><textarea class="code" rows="3" readonly="readonly">log_martians=1
+rp_filter=1</textarea><!--/notypo--></p><br /><a name="p-1299-101"></a><p class="auto" id="p-1299-101">
+<!--notypo--><a name="profiles" href="#profiles" title=""></a>
+<!--/notypo--></p><a name="h5184-32"></a><h3>Профили конфигурации</h3><a name="h5184-33"></a><h4>Определение профилей</h4><a name="p-1299-102"></a><p class="auto" id="p-1299-102">
+Профиль &mdash; именованный вариант конфигурации, в&nbsp;той или&nbsp;иной степени изменяющий базовую конфигурацию системы. Профили могут быть применены, например, для&nbsp;конфигурации ноутбука в&nbsp;разных сетевых окружениях, или&nbsp;при подготовке новой или&nbsp;тестовой конфигурации с&nbsp;возможностью быстрого возврата к&nbsp;старой. Практически профили реализуются следующим образом: для&nbsp;какого-либо из&nbsp;файлов, составляющих общесистемную конфигурацию или&nbsp;конфигурацию интерфейса, создаётся альтернативный вариант, который отличается добавлением в&nbsp;конце названия файла знака # и&nbsp;имени профиля.</p><br /><a name="p-1299-103"></a><p class="auto" id="p-1299-103">
+Например, единственное отличие между профилями заключается в&nbsp;том, какой модуль ядра будет загружен для&nbsp;интерфейса eth0. В&nbsp;этом случае файл <tt>/etc/net/ifaces/eth0/options</tt> необходимо скопировать в&nbsp;<tt>/etc/net/ifaces/eth0/options#profile1</tt> и&nbsp;изменить значение переменной MODULE в&nbsp;одном из&nbsp;них. Далее при&nbsp;использовании конфигурации по&nbsp;умолчанию будет использован файл options, а&nbsp;при использовании профиля profile1 &mdash; файл options#profile1. Если при&nbsp;этом для&nbsp;назначения интерфейсу имени используется файл <tt>/etc/net/iftab</tt>, то&nbsp;скорее всего необходимо будет создать соответствующий файл <tt>/etc/net/iftab#profile1</tt>, так&nbsp;как другой модуль ядра указывает на&nbsp;другой физический интерфейс и&nbsp;исходный файл iftab работать не&nbsp;будет.</p><br /><a name="p-1299-104"></a><p class="auto" id="p-1299-104">
+Профили могут использоваться также и&nbsp;для отключения каких-то параметров конфигурации. Например, если используется файл ipv4route для&nbsp;установки маршрутов для&nbsp;интерфейса, то&nbsp;можно создать файл нулевого размера ipv4route#profile2, чтобы при&nbsp;использовании профиля profile2 никаких маршрутов не&nbsp;конфигурировалось.</p><a name="h5184-34"></a><h4>Выбор профиля при&nbsp;загрузке</h4><a name="p-1299-105"></a><p class="auto" id="p-1299-105">
+Если при&nbsp;загрузке системы ядру был&nbsp;передан параметр netprofile, то&nbsp;его значение будет использовано как&nbsp;имя профиля по&nbsp;умолчанию. Это&nbsp;может быть использовано для&nbsp;создания собственных пунктов меню загрузчиков LILO и&nbsp;GRUB с&nbsp;заранее определённым профилем сетевой конфигурации. Заданный таким образом профиль может быть далее переопределён другими методами. Следует понимать разницу между различными конфигурациями и&nbsp;различными результатами применения одной конфигурации. Например, если в&nbsp;двух разных сетях используется DHCP, то&nbsp;смысла в&nbsp;разных профилях конфигурации нет.</p><br /><a name="p-1299-106"></a><p class="auto" id="p-1299-106">
+Для&nbsp;загрузчика LILO секции <tt>/etc/lilo.conf</tt> могут выглядеть следующим образом:<br />
+<!--notypo--><textarea class="code" rows="9" readonly="readonly">image=/boot/vmlinuz-up
+  label=linux-up home
+  append=&quot; netprofile=home&quot;
+  [...]
+image=/boot/vmlinuz-up
+  label=linux-up office
+  append=&quot; netprofile=office&quot;
+  [...]</textarea><!--/notypo--><br />
+Для&nbsp;приведённого примера необходимо будет создать варианты для&nbsp;файлов, отличающихся в&nbsp;профилях home и&nbsp;office, и&nbsp;можно будет выбирать при&nbsp;загрузке, какой из&nbsp;профилей необходимо использовать. Использование этого метода удобно, если смена сетевого окружения происходит синхронно с&nbsp;загрузкой системы.</p><a name="h5184-35"></a><h4>Выбор профиля по&nbsp;умолчанию</h4><a name="p-1299-107"></a><p class="auto" id="p-1299-107">
+Если вы&nbsp;хотите, чтобы какой-то профиль конфигурации использовался по&nbsp;умолчанию, запишите его&nbsp;название в&nbsp;файл <tt>/etc/net/profile</tt>. Этот метод имеет приоритет над&nbsp;параметром ядра netprofile. Использование такого способа выбора профиля целесообразно, когда переключение между конфигурациями происходит реже, чем&nbsp;перезагрузка системы.</p><a name="h5184-36"></a><h4>Смена профиля во&nbsp;время работы</h4><a name="p-1299-108"></a><p class="auto" id="p-1299-108">
+Если вы&nbsp;хотите переконфигурировать сеть без&nbsp;перезагрузки или&nbsp;редактирования файла <tt>/etc/net/profile</tt>, то&nbsp;используйте параметры сервиса network, описанные в&nbsp;разделе <a href="#restartreload" name="orestartreload">restart, reload и&nbsp;другие команды</a>. Этот метод имеет приоритет над&nbsp;профилем по&nbsp;умолчанию и&nbsp;профилем, выбранным при&nbsp;загрузке. Целесообразно его&nbsp;использовать, если смена сетевого окружения происходит чаще, чем&nbsp;перезагрузка системы.</p><a name="h5184-37"></a><h4>Определение профиля во&nbsp;время конфигурации интерфейса</h4><a name="p-1299-109"></a><p class="auto" id="p-1299-109">
+Если в&nbsp;каталоге конфигурации интерфейса существует исполняемый файл ненулевого размера с&nbsp;именем selectprofile, то&nbsp;этот файл будет выполнен и&nbsp;первое слово первой строки его&nbsp;стандартного вывода использовано как&nbsp;имя профиля, которое должно быть использовано для&nbsp;конфигурации данного интерфейса. Этот метод имеет приоритет над&nbsp;всеми остальными методами. Исходной задачей, требующей такого решения, являлось конфигурирование беспроводного интерфейса в&nbsp;зависимости от&nbsp;доступных точек доступа.</p><br /><a name="p-1299-110"></a><p class="auto" id="p-1299-110">
+Следует учитывать, что&nbsp;число вызовов файла selectprofile может меняться в&nbsp;зависимости от&nbsp;контекста и&nbsp;время его&nbsp;выполнения может быть различным, поэтому при&nbsp;написании такого файла следует учитывать, что&nbsp;первым параметром будет являться имя&nbsp;текущего сценария. В&nbsp;настоящее время это&nbsp;могут быть ifup*, ifdown*, setup* и&nbsp;shutdown*. Для&nbsp;приведённого выше примера имеет смысл реагировать только на&nbsp;вызовы из&nbsp;ifup или&nbsp;ifup-common.</p><br /><a name="p-1299-111"></a><p class="auto" id="p-1299-111">
+<sup><a href="#ftnd1" name="oftnd1">1</a></sup></p><table class="usertable" border="1">
+<tr class="userrow"><td class="usercell">маска в&nbsp;битах</td><td  class="usercell">маска точечно-десятичная</td></tr>
+<tr class="userrow"><td class="usercell">/32</td><td  class="usercell">255.255.255.255</td></tr>
+<tr class="userrow"><td class="usercell">/31</td><td  class="usercell">255.255.255.254</td></tr>
+<tr class="userrow"><td class="usercell">/30</td><td  class="usercell">255.255.255.252</td></tr>
+<tr class="userrow"><td class="usercell">/29</td><td  class="usercell">255.255.255.248</td></tr>
+<tr class="userrow"><td class="usercell">/28</td><td  class="usercell">255.255.255.240</td></tr>
+<tr class="userrow"><td class="usercell">/27</td><td  class="usercell">255.255.255.224</td></tr>
+<tr class="userrow"><td class="usercell">/26</td><td  class="usercell">255.255.255.192</td></tr>
+<tr class="userrow"><td class="usercell">/25</td><td  class="usercell">255.255.255.128</td></tr>
+<tr class="userrow"><td class="usercell">/24</td><td  class="usercell">255.255.255.0</td></tr>
+<tr class="userrow"><td class="usercell">/23</td><td  class="usercell">255.255.254.0</td></tr>
+<tr class="userrow"><td class="usercell">/22</td><td  class="usercell">255.255.252.0</td></tr>
+<tr class="userrow"><td class="usercell">/21</td><td  class="usercell">255.255.248.0</td></tr>
+<tr class="userrow"><td class="usercell">/20</td><td  class="usercell">255.255.240.0</td></tr>
+<tr class="userrow"><td class="usercell">/19</td><td  class="usercell">255.255.224.0</td></tr>
+<tr class="userrow"><td class="usercell">/18</td><td  class="usercell">255.255.192.0</td></tr>
+<tr class="userrow"><td class="usercell">/17</td><td  class="usercell">255.255.128.0</td></tr>
+<tr class="userrow"><td class="usercell">/16</td><td  class="usercell">255.255.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/15</td><td  class="usercell">255.254.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/14</td><td  class="usercell">255.252.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/13</td><td  class="usercell">255.248.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/12</td><td  class="usercell">255.240.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/11</td><td  class="usercell">255.224.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/10</td><td  class="usercell">255.192.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/9</td><td  class="usercell">255.128.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/8</td><td  class="usercell">255.0.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/7</td><td  class="usercell">254.0.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/6</td><td  class="usercell">252.0.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/5</td><td  class="usercell">248.0.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/4</td><td  class="usercell">240.0.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/3</td><td  class="usercell">224.0.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/2</td><td  class="usercell">192.0.0.0</td></tr>
+<tr class="userrow"><td class="usercell">/1</td><td  class="usercell">128.0.0.0</td></tr>
+</table>
+<br /><a name="p-1299-112"></a><p class="auto" id="p-1299-112">
+<sup><a href="#ftnd2" name="oftnd2">2</a></sup><br />
+Выдержка из&nbsp;файла ip-cref.ps, который входит в&nbsp;документацию пакета iproute2:<br />
+ * broadcast ADDRESS</p><br /><a name="p-1299-113"></a><p class="auto" id="p-1299-113">
+the&nbsp;broadcast address on&nbsp;the interface.<br />
+It&nbsp;is possible to&nbsp;use the&nbsp;special symbols '+' and&nbsp;'-' instead of&nbsp;the broadcast address. In&nbsp;this case, the&nbsp;broadcast address is&nbsp;derived by&nbsp;setting/resetting the&nbsp;host bits of&nbsp;the interface prefix.<br />
+NB. Unlike ifconfig, the&nbsp;ip&nbsp;utility does not&nbsp;set any&nbsp;broadcast address unless explicitly requested.</p><br /><a name="p-1299-114"></a><p class="auto" id="p-1299-114">
+<!--notypo--><fieldset><legend>Страницы, ссылающиеся на данную:</legend>
+<a name=".altlinux" href="http://freesource.info/wiki/AltLinux?v=h0k#altlinux/sisyphus/admin/etcnet&" class="" title="Alt&nbsp;Linux">AltLinux</a><br />
+<a name=".altlinux.concepts.why" href="http://freesource.info/wiki/AltLinux/Concepts/Why?v=wbr#altlinux/sisyphus/admin/etcnet&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Concepts&nbsp;/&nbsp;Why">AltLinux/Concepts/Why</a><br />
+<a name=".altlinux.sisyphus.admin.etcnet.firewall" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/firewall?v=19x2#altlinux/sisyphus/admin/etcnet&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin&nbsp;/&nbsp;etcnet&nbsp;/&nbsp;firewall">AltLinux/Sisyphus/admin/etcnet/firewall</a><br />
+<a name=".altlinux.sisyphus.admin.etcnet.qos" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos?v=ir4#altlinux/sisyphus/admin/etcnet&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin&nbsp;/&nbsp;etcnet&nbsp;/&nbsp;qos">AltLinux/Sisyphus/admin/etcnet/qos</a><br />
+<a name=".altlinux.sisyphus.changes.branch30" href="http://freesource.info/wiki/AltLinux/Sisyphus/changes/Branch30?v=1dbd#altlinux/sisyphus/admin/etcnet&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;changes&nbsp;/&nbsp;Branch&nbsp;30">AltLinux/Sisyphus/changes/Branch30</a><br />
+<a name=".altlinux.dokumentacija.nastrojjkavpn" href="http://freesource.info/wiki/AltLinux/Dokumentacija/NastrojjkaVPN?v=8pk#altlinux/sisyphus/admin/etcnet&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Документация&nbsp;/&nbsp;Настройка&nbsp;VPN">AltLinux/Документация/НастройкаVPN</a><br />
+<a name=".cyrilmargorin" href="http://freesource.info/wiki/CyrilMargorin?v=h60#altlinux/sisyphus/admin/etcnet&" class="" title="Cyril&nbsp;Margorin">CyrilMargorin</a><br />
+<a name=".sysadmin" href="http://freesource.info/wiki/Sysadmin?v=rgq#altlinux/sisyphus/admin/etcnet&" class="" title="Sysadmin">Sysadmin</a><br />
+</fieldset>
+<!--/notypo--></p>   <script language="JavaScript" type="text/javascript">
+   var dbclick = "page";
+  </script>
+ <br style="clear:both" />&nbsp;
+</div>
+    <div class="filesheader">
+    Файлов нет.
+    [<a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet?show_files=1#files">Показать файлы/форму</a>]
+
+    </div>
+    
+    <div class="commentsheader">
+    Много комментариев (10).
+    [<a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet?show_comments=1#comments">Показать комментарии/форму</a>]
+
+    </div>
+    <form action="http://freesource.info/wiki/TextSearch"  method="get" >
+
+<div class="footer">
+
+
+  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/revisions" title="Нажмите, чтобы увидеть список изменений">2008-01-16 05:03:39</a> |
+
+
+  
+
+    
+
+      
+          Владелец: <a  href="http://freesource.info/wiki/DenisOvsienko?v=t79&" class="">Denis&nbsp;Ovsienko</a>
+      
+    
+    
+
+    
+
+    | <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/settings" >Свойства</a> |
+
+
+  
+
+
+  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/watch"><img src="http://freesource.info/wiki/themes/coffee/icons/visibl.gif" title="Наблюдать" alt="Наблюдать"  align="absmiddle" border="0" /></a> |
+
+  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/print" target="_new"><img src="http://freesource.info/wiki/themes/coffee/icons/1print.gif" title="Версия для печати" alt="Версия для печати"  align="absmiddle" border="0" /></a> |
+  <div class="searchbar">
+    <span class="nobr">Поиск: 
+    <input type="text" name="phrase" size="15" style="border: none; border-bottom: 1px solid #CCCCAA; padding: 0px; margin: 0px;" /></span>
+  </div>
+</div>
+
+</form>
+
+
+<!-- SpyLOG f:1111 -->
+<script language="javascript" type="text/javascript"><!--
+Mu="u3154.88.spylog.com";Md=document;Mnv=navigator;Mp=1;
+Mn=(Mnv.appName.substring(0,2)=="Mi")?0:1;Mrn=Math.random();
+Mt=(new Date()).getTimezoneOffset();
+Mz="p="+Mp+"&rn="+Mrn+"&t="+Mt;
+My="";
+My+="<a href='http://"+Mu+"/cnt?cid=315488&f=3&p="+Mp+"&rn="+Mrn+"' target='_blank'>";
+My+="<img src='http://"+Mu+"/cnt?cid=315488&"+Mz+"&r1="+escape(Md.referrer)+"&r="+escape(parent.document.referrer)+"&pg="+escape(window.location.href)+"' border=0 width=88 height=31 alt='SpyLOG'>";
+My+="</a>";Md.write(My);//--></script><noscript>
+<a href="http://u3154.88.spylog.com/cnt?cid=315488&f=3&p=1" target="_blank">
+<img src="http://u3154.88.spylog.com/cnt?cid=315488&p=1" alt='SpyLOG' border='0' width=88 height=31 >
+</a></noscript>
+<!-- SpyLOG -->
+
+<a href="http://liga1199.ru">
+<iimg src="http://liga1199.ru/adv/468x60.1.gif">
+</a>
+
+
+<div class="copyright">
+  Powered by <a href="http://wackowiki.com/WackoWiki" target="_blank" title="" class="outerlink">WackoWiki R4.2</a>
+</div>
+
+
+  
+</body></html>
