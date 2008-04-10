@@ -14,10 +14,10 @@ usage()
 export NAME=$1
 
 # forget everything we have inherited from ifplugd/wpa_cli
+unset SEEN_IFACES
 export SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 pickup_defaults
-. $SCRIPTDIR/functions-eth
 init_nethost
 if [ -d $IFACEDIR/$NAME@$NETHOST ]; then
 	MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST
@@ -40,12 +40,17 @@ export SEEN_IFACES
 
 case "${0##*/}" in
     ifup-ifplugd)
-    IN_WPA_CLI=no IN_IFPLUGD=yes $SCRIPTDIR/ifup-common $NAME
+    IN_WPA_CLI=no IN_IFPLUGD=yes IN_OVPN=no $SCRIPTDIR/ifup-common $NAME
     ;;
     ifup-wireless)
-    USE_IFPLUGD=no IN_IFPLUGD=no IN_WPA_CLI=yes $SCRIPTDIR/ifup-common $NAME
+    USE_IFPLUGD=no IN_IFPLUGD=no IN_WPA_CLI=yes IN_OVPN=no $SCRIPTDIR/ifup-common $NAME
+    ;;
+    ifup-openvpn)
+    USE_IFPLUGD=no IN_IFPLUGD=no IN_WPA_CLI=no IN_OVPN=yes $SCRIPTDIR/ifup-common $NAME
     ;;
     *)
     $SCRIPTDIR/ifup-common $NAME
     ;;
 esac
+
+exit 0

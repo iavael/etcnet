@@ -6,3 +6,6 @@ ONBOOT=no
 PPPTYPE=dialup
 # pppd assigns addresses itself, so we don't intrude by default.
 DONT_FLUSH=on
+
+#WARNING! NEVER set "persist maxfail 0" for an interface with ONBOOT=yes,
+#otherwise your host risks hanging forever.

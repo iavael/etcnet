@@ -52,6 +52,7 @@ DEFAULT_OVPNCONFFILE=ovpnoptions
 DEFAULT_OVPNCAFILE=ovpnca
 DEFAULT_OVPNCRTFILE=ovpncrt
 DEFAULT_OVPNKEYFILE=ovpnkey
+DEFAULT_OVPNTLSAUTHFILE=ovpntlsauth
 DEFAULT_OVPNUSER=openvpn
 DEFAULT_OVPNGROUP=openvpn
 OVPNCHROOTDIR=/var/lib/openvpn
@@ -238,7 +239,8 @@ get_mapped_ifname()
 		# interface into stderr instead of its usual "Dry-run : Would rename eth0 to devnet."
 		# printed into stdout.
 		# Let's accept both formats, suppressing the stderr.
-		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>&1 | head -1 | sed 's/.*Would rename.* to //;s/\.$//'`
+		NEW_NAME=`$IFRENAME -c $PROF_IFTAB -i $OLDNAME -D 2>&1 | head -1 | \
+			grep -v '^Error: ' | sed 's/.*Would rename.* to //;s/\.$//'`
 		[ $? = 0 -a -n "$NEW_NAME" ] && echo $NEW_NAME
 	fi
 }
@@ -503,14 +505,13 @@ stop_ipv4ll_client()
 }
 
 modprobe_tuntap() {
-	local i=5
+	local i
 
 	[ -c /dev/net/tun ] && return 0
 	$MODPROBE tun || return 1
-	while [ $i -gt 0 ] ; do
+	for (( i=0; i < 5; i++ )); do
 		[ -c /dev/net/tun ] && break
-		i=$(($i - 1))
-		usleep 30000
+		usleep 100000
 	done
 	[ -c /dev/net/tun ]
 }
@@ -521,14 +522,38 @@ eval_string()
     eval "printf '%s\n' \"$@\""
 }
 
+# FIXME: some programs don't remove the pidfile upon exit, this makes
+# the function to roll the longest cycle. ps -A | grep '^ *$PID ' should
+# be used to detect program exit in such case.
+kill_by_pidfile()
+{
+	local PIDFILE=${1:?missing 1st arg to $FUNCNAME}
+	local USECONDS=${2:?missing 2nd arg to $FUNCNAME}
+	local TRIES=${3:?missing 3rd arg to $FUNCNAME}
+	if [ -s "$PIDFILE" ]; then
+		kill `cat $PIDFILE` 2>/dev/null
+		for ((i=0; i<$TRIES; i++)) do
+			if [ -s "$PIDFILE" ]; then
+				usleep $USECONDS
+			else
+				break
+			fi
+		done
+		if [ -s "$PIDFILE" ]; then
+			kill -9 `cat $PIDFILE` 2>/dev/null
+			rm -f -- "$PIDFILE"
+		fi
+	fi
+}
+
 declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type
 declare -frx pickup_options print_error print_message print_progress print_nack
 declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netprofile
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
 declare -frx have_ifplugd pickup_defaults trim need_detection stop_dhcp_client
-declare -frx stop_ipv4ll_client modprobe_tuntap modprobe_with_rename
-declare -frx eval_string
+declare -frx stop_ipv4ll_client modprobe_with_rename modprobe_tuntap
+declare -frx eval_string kill_by_pidfile
 declare -rx DENOISE DEFAULT_BONDMODE IFACEDIR LOCALSCRIPTDIR VARLIBDIR
 declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS
 declare -rx DEFAULT_IFPLUGD DEFAULT_IWCONFIG DEFAULT_WLANCONFIG DEFAULT_WPA_SUPPLICANT DEFAULT_WPA_CLI DEFAULT_PLIPCONFIG
@@ -541,4 +566,4 @@ declare -rx DEFAULT_SZAP DEFAULT_SZAP_ARGS DEFAULT_DVBNET DEFAULT_PAND
 declare -rx DEFAULT_OSSH DEFAULT_OSSHIDENTITY
 declare -rx DEFAULT_OVPN DEFAULT_OVPNCONFFILE DEFAULT_OVPNKEYFILE DEFAULT_OVPNCAFILE
 declare -rx DEFAULT_OVPNCRTFILE DEFAULT_OVPNUSER DEFAULT_OVPNGROUP OVPNCHROOTDIR OVPNRUNDIR
-
+declare -rx DEFAULT_OVPNTLSAUTHFILE

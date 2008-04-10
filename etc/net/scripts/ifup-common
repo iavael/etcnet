@@ -16,6 +16,11 @@ NAME=$1
 pickup_defaults
 pickup_options
 
+# Bail out to let OpenVPN call the helper script upon completion.
+if [ "$TYPE" = "ovpn" ] && ! is_yes "$IN_OVPN"; then
+	exit 0
+fi
+
 #----------------+------+------+------+
 # USE_IFPLUGD:   | yes  | no   | auto |
 #----------------+------+------+------+

@@ -626,6 +626,10 @@ case "$1" in
 		init_netprofile
 		check
 		;;
+	status)
+		print_message "Currently active devices:"
+		print_message `$IP -o link show | awk -F ": " '/[<,]UP[,>]/ { print $2 }'`
+		;;
 	*)
 		usage
 esac

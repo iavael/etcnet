@@ -28,6 +28,7 @@ create_vlan_iface()
 	else
 		$IP link set $REALNAME name $NAME
 	fi
+	[ -n "$VLAN_REORDER_HDR" ] && $VCONFIG set_flag $NAME 1 $VLAN_REORDER_HDR >/dev/null
 	[ -n "$ADDRESS" ] && $IP address add $ADDRESS dev $NAME
 	return 0
 }
