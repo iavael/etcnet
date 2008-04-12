@@ -57,7 +57,7 @@ iptables_push_rule()
     shift
     : ${@:?missing args to $FUNCNAME}
     case $1 in
-	"-A"|"-I"|"-D")
+	"-A"|"-I"|"-D"|"-P")
 			eval "$IPTABLES -t $TABLE $@" || print_error "$IPTABLES -t $TABLE $@"
 			;;
 	*)
@@ -181,7 +181,7 @@ iptables_load_rules_from_file()
 		{
 		    read FIRST SECOND REST < <(echo $RULE)
     		    case $FIRST in
-		        "-A"|"-D"|"-I")
+		        "-A"|"-D"|"-I"|"-P")
     	    			    iptables_push_rule $TABLE $FIRST $CHAIN $SECOND $REST
 				    ;;
 			*)
@@ -213,7 +213,7 @@ iptables_flush_rules_from_file()
 		    {
 		        read  FIRST SECOND REST < <(echo $RULE)
 		        case $FIRST in
-		            "-A"|"-D"|"-I")
+		            "-A"|"-D"|"-I"|"-P")
 					iptables_pop_rule $TABLE $FIRST $CHAIN $SECOND $REST
 					;;
 			    *)
