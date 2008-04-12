@@ -1,3 +1,6 @@
+0.9.7
+	new feature: firewall policy (-P) support 
+	bugfix: firewall now ignores rpm and backup files
 0.9.6 2008-04-10
 	update: fixed selectprofile script
 	update: added status option to initscript
