@@ -1,3 +1,6 @@
+# The lines below would look more naturally in the ipv4route
+# file of ppp0 interface.
+
 80.81.208.66		via 195.46.116.228	dev ppp0
 195.46.96.1			via 195.46.116.228	dev ppp0
 195.46.96.107		via 195.46.116.228	dev ppp0
@@ -6,5 +9,4 @@
 195.46.105.220		via 195.46.116.228	dev ppp0
 195.46.105.228		via 195.46.116.228	dev ppp0
 195.208.8.25		via 195.46.116.228	dev ppp0
-10.250.83.1								dev ${NAME}
-replace default	via ${TUNREMOTE} src ${TUNLOCAL} dev ${NAME}
+replace default	via 10.250.83.1 src 10.250.83.116
