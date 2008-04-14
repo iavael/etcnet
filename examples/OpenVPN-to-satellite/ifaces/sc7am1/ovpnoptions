@@ -6,3 +6,5 @@ redirect-gateway
 ping-restart 30
 persist-local-ip
 persist-remote-ip
+dev-type tun
+remote 82.211.136.2 32873
