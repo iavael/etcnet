@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.9.6
-Release:	alt2.1
+Release:	alt2.2
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -156,6 +156,9 @@ fi
 %files full
 
 %changelog
+* Sun Apr 27 2008 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.6-alt2.2
+- fixed ifplugd-ifdown breakage (#15481)
+
 * Fri Apr 11 2008 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.6-alt2.1
 - rediffed against upstream 0.9.6 release
 
