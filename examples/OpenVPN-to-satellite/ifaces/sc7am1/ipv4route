@@ -1,3 +1,6 @@
+# These records perhaps are more natural in the ppp0's route
+# list file.
+
 87.103.134.1 dev ppp0
 87.103.134.2 dev ppp0
 87.103.134.3 dev ppp0
@@ -14,6 +17,7 @@
 87.103.135.6 dev ppp0
 87.103.135.7 dev ppp0
 87.103.135.8 dev ppp0
+
 # Satellite provider:
-${OVPN_SERVER} dev ppp0
-replace default	via ${TUNREMOTE} dev ${NAME}
+82.211.136.2 dev ppp0
+replace default	via 192.168.66.254

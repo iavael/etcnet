@@ -1,0 +1,5 @@
+/dev/ttyACM0
+receive-all
+user mobile
+password internet
+defaultroute

@@ -57,7 +57,7 @@ iptables_push_rule()
     shift
     : ${@:?missing args to $FUNCNAME}
     case $1 in
-	"-A"|"-I"|"-D")
+	"-A"|"-I"|"-D"|"-P")
 			eval "$IPTABLES -t $TABLE $@" || print_error "$IPTABLES -t $TABLE $@"
 			;;
 	*)
@@ -181,7 +181,7 @@ iptables_load_rules_from_file()
 		{
 		    read FIRST SECOND REST < <(echo $RULE)
     		    case $FIRST in
-		        "-A"|"-D"|"-I")
+		        "-A"|"-D"|"-I"|"-P")
     	    			    iptables_push_rule $TABLE $FIRST $CHAIN $SECOND $REST
 				    ;;
 			*)
@@ -213,7 +213,7 @@ iptables_flush_rules_from_file()
 		    {
 		        read  FIRST SECOND REST < <(echo $RULE)
 		        case $FIRST in
-		            "-A"|"-D"|"-I")
+		            "-A"|"-D"|"-I"|"-P")
 					iptables_pop_rule $TABLE $FIRST $CHAIN $SECOND $REST
 					;;
 			    *)
@@ -273,7 +273,8 @@ iptables_start()
 	[ ! -d "$TABLE" ] && continue
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
-	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+	    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+	    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
@@ -293,6 +294,8 @@ iptables_start()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    iptables_load_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -307,6 +310,8 @@ iptables_start()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    iptables_load_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -335,6 +340,8 @@ iptables_stop()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    iptables_flush_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -349,6 +356,8 @@ iptables_stop()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    iptables_flush_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -359,7 +368,8 @@ iptables_stop()
 	[ ! -d "$TABLE" ] && continue
 	    for CHAIN in "$TABLE"/*; do
 		CHAIN=$(basename "$CHAIN")
-		[ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+		[ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		"$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IPTABLES_SYSTEM_CHAINS") || 
 		    {
 			print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
@@ -446,7 +456,7 @@ ip6tables_push_rule()
     shift
     : ${@:?missing args to $FUNCNAME}
     case $1 in
-	"-A"|"-I"|"-D")
+	"-A"|"-I"|"-D"|"-P")
 			eval "$IP6TABLES -t $TABLE $@" || print_error "$IP6TABLES -t $TABLE $@"
 			;;
 	*)
@@ -570,7 +580,7 @@ ip6tables_load_rules_from_file()
 		{
 		    read FIRST SECOND REST < <(echo $RULE)
     		    case $FIRST in
-		        "-A"|"-D"|"-I")
+		        "-A"|"-D"|"-I"|"-P")
     	    			    ip6tables_push_rule $TABLE $FIRST $CHAIN $SECOND $REST
 				    ;;
 			*)
@@ -602,7 +612,7 @@ ip6tables_flush_rules_from_file()
 		    {
 		        read  FIRST SECOND REST < <(echo $RULE)
 		        case $FIRST in
-		            "-A"|"-D"|"-I")
+		            "-A"|"-D"|"-I"|"-P")
 					ip6tables_pop_rule $TABLE $FIRST $CHAIN $SECOND $REST
 					;;
 			    *)
@@ -662,7 +672,8 @@ ip6tables_start()
 	[ ! -d "$TABLE" ] && continue
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
-	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+	    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+	    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IP6TABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
@@ -682,6 +693,8 @@ ip6tables_start()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    ip6tables_load_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -696,6 +709,8 @@ ip6tables_start()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    ip6tables_load_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -724,6 +739,8 @@ ip6tables_stop()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    ip6tables_flush_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -738,6 +755,8 @@ ip6tables_stop()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    ip6tables_flush_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -748,7 +767,8 @@ ip6tables_stop()
 	[ ! -d "$TABLE" ] && continue
 	    for CHAIN in "$TABLE"/*; do
 		CHAIN=$(basename "$CHAIN")
-		[ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+		[ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		"$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$IP6TABLES_SYSTEM_CHAINS") || 
 		    {
 			print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"
@@ -835,7 +855,7 @@ ebtables_push_rule()
     shift
     : ${@:?missing args to $FUNCNAME}
     case $1 in
-	"-A"|"-I"|"-D")
+	"-A"|"-I"|"-D"|"-P")
 			eval "$EBTABLES -t $TABLE $@" || print_error "$EBTABLES -t $TABLE $@"
 			;;
         *)
@@ -913,7 +933,7 @@ ebtables_load_rules_from_file()
 	        {
 		    read FIRST SECOND REST < <(echo $RULE)
 		    case $FIRST in
-		        "-A"|"-D"|"-I")
+		        "-A"|"-D"|"-I"|"-P")
 				    ebtables_push_rule $TABLE $FIRST $CHAIN $SECOND $REST
 				    ;;
 			*)
@@ -945,7 +965,7 @@ ebtables_flush_rules_from_file()
 		    {
 			read  FIRST SECOND REST < <(echo $RULE)
 			case $FIRST in
-			    "-A"|"-D"|"-I")
+			    "-A"|"-D"|"-I"|"-P")
 					ebtables_pop_rule $TABLE $FIRST $CHAIN $SECOND $REST
 					;;
 			    *)
@@ -1005,7 +1025,8 @@ ebtables_start()
 	[ ! -d "$TABLE" ] && continue
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
-	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+	    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+	    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tCreating the \"$CHAIN\" chain in the \"$TABLE\" table"
@@ -1025,6 +1046,8 @@ ebtables_start()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    ebtables_load_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -1039,6 +1062,8 @@ ebtables_start()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    ebtables_load_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -1067,6 +1092,8 @@ ebtables_stop()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    ebtables_flush_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -1081,6 +1108,8 @@ ebtables_stop()
 	    else
 		for CHAIN in "$TABLE"/*; do
 		    CHAIN=$(basename "$CHAIN")
+		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 		    ebtables_flush_rules_from_file "$TABLE" "$CHAIN"
 		done
 	    fi
@@ -1091,7 +1120,8 @@ ebtables_stop()
 	[ ! -d "$TABLE" ] && continue
 	for CHAIN in "$TABLE"/*; do
 	    CHAIN=$(basename "$CHAIN")
-	    [ "$TABLE/$CHAIN" = "$TABLE/loadorder" ] || [ ! -f "$TABLE/$CHAIN" ] && continue
+	    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
+	    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
 	    egrep -q "([^-]\b|^)$CHAIN(\b[^-]|$)" < <(echo "$EBTABLES_SYSTEM_CHAINS") || 
 		{
 		    print_message -e "\tDeleting the \"$CHAIN\" chain from the \"$TABLE\" table"

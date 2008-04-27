@@ -191,7 +191,8 @@ iptables_local_rules_from_file()
 	[ -d "$CTABLE" ] || continue
 	for CCHAIN in "$CTABLE"/$CHAIN; do
 	    CCHAIN=$(basename $CCHAIN)
-	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ]  && continue
+	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
+	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
 	    [ "$1" = "unload" ] && iptables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" ||
 		{
 		    [ -s "$CTABLE/$CCHAIN" ] && iptables_load_rules_from_file "$CTABLE" "$CCHAIN"
@@ -214,7 +215,8 @@ iptables_local_rule()
 	[ -d "$CTABLE" ] || continue
 	for CCHAIN in "$CTABLE"/$CHAIN; do
 	    CCHAIN=$(basename $CCHAIN)
-	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] && continue
+	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
+	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
 	    read FIRST SECOND REST < <(echo $RULE)
 	    case $FIRST in
 		"-A"|"-D"|"-I")
@@ -307,7 +309,8 @@ ip6tables_local_rules_from_file()
 	[ -d "$CTABLE" ] || continue
 	for CCHAIN in "$CTABLE"/$CHAIN; do
 	    CCHAIN=$(basename $CCHAIN)
-	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ]  && continue
+	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
+	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
 	    [ "$1" = "unload" ] && ip6tables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" ||
 		{
 		    [ -s "$CTABLE/$CCHAIN" ] && ip6tables_load_rules_from_file "$CTABLE" "$CCHAIN"
@@ -330,7 +333,8 @@ ip6tables_local_rule()
 	[ -d "$CTABLE" ] || continue
 	for CCHAIN in "$CTABLE"/$CHAIN; do
 	    CCHAIN=$(basename $CCHAIN)
-	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] && continue
+	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
+	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
 	    read FIRST SECOND REST < <(echo $RULE)
 	    case $FIRST in
 		"-A"|"-D"|"-I")
@@ -423,7 +427,8 @@ ebtables_local_rules_from_file()
 	[ -d "$CTABLE" ] || continue
 	for CCHAIN in "$CTABLE"/$CHAIN; do
 	    CCHAIN=$(basename $CCHAIN)
-	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] || [ ! -f "$CTABLE/$CCHAIN" ]  && continue
+	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
+	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
 	    [ "$1" = "unload" ] && ebtables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" ||
 		{
 		    [ -s "$CTABLE/$CCHAIN" ] && ebtables_load_rules_from_file "$CTABLE" "$CCHAIN"
@@ -446,7 +451,8 @@ ebtables_local_rule()
 	[ -d "$CTABLE" ] || continue
         for CCHAIN in "$CTABLE"/$CHAIN; do
 	CCHAIN=$(basename $CCHAIN)
-	    [ "$CTABLE/$CCHAIN" = "$CTABLE/loadorder" ] && continue
+	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
+	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
 	    read FIRST SECOND REST < <(echo $RULE)
 	    case $FIRST in
 		"-A"|"-D"|"-I")

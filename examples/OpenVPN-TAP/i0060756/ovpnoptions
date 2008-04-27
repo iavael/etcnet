@@ -7,3 +7,5 @@ ns-cert-type server
 ping-restart 30
 persist-local-ip
 persist-remote-ip
+dev-type tap
+remote 80.81.208.66 55492
