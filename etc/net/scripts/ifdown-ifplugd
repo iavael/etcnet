@@ -14,6 +14,8 @@ usage()
 [ -z "$1" ] && usage
 NAME=$1
 
+# forget everything we have inherited from ifplugd/wpa_cli
+unset SEEN_IFACES
 export SCRIPTDIR=/etc/net/scripts
 . $SCRIPTDIR/functions
 pickup_defaults

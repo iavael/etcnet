@@ -1,6 +1,7 @@
 0.9.7
 	new feature: firewall policy (-P) support 
 	bugfix: firewall now ignores rpm and backup files
+	bugfix: previous release introduced a regression in ifplugd support
 	change: firewall "human syntax" is disabled by default
 	update: updated examples
 0.9.6 2008-04-10
