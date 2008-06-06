@@ -2,4 +2,4 @@ AddDescription "PPtP example" ppp0
 AddDescription "Beeline GSM GPRS via Samsung SGH-C100 over IrDA SIR for Linux" ppp2
 AddDescription "PPPoE interface example" ppp3
 AddDescription "Megafon GSM GPRS via Samsung SGH-C100 over IrDA SIR for Linux" ppp4
-AddDescription "SlyLink CDMA via CNU-510 over USB" ppp5
+AddDescription "SkyLink CDMA via CNU-510 over USB" ppp5
