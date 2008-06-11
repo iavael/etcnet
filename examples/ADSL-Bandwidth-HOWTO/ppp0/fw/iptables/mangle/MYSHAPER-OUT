@@ -1,0 +1,43 @@
+mark as 21 if tcp and length is 0:64
+return if tcp and length is 0:64
+#mark as 21 if tcp and tcp-flags ALL ACK and state is ESTABLISHED and length is 40:100
+#return if tcp and tcp-flags ALL ACK and state is ESTABLISHED and length is 40:100
+mark as 21 if udp
+return if udp
+mark as 20 if icmp
+return if icmp
+mark as 26 if tcp and sport is 20
+return if tcp and sport is 20
+mark as 26 if tcp and dport is 20
+return if tcp and dport is 20
+mark as 22 if tcp and dport is ssh
+return if tcp and dport is ssh
+mark as 22 if tcp and sport is ssh
+return if tcp and sport is ssh
+mark as 22 if tcp and dport is telnet
+return if tcp and dport is telnet
+mark as 22 if tcp and sport is telnet
+return if tcp and sport is telnet
+mark as 26 if tcp and sport is 25
+return if tcp and sport is 25
+mark as 26 if tcp and dport is 25
+return if tcp and dport is 25
+mark as 23 if tcp and sport is 0:1024
+return if tcp and sport is 0:1024
+mark as 23 if tcp and dport is 0:1024
+return if tcp and dport is 0:1024
+mark as 23 if tcp and dport is 5190
+return if tcp and dport is 5190
+mark as 23 if tcp and sport is 5190
+return if tcp and sport is 5190
+mark as 23 if tcp and dport is 5222
+return if tcp and dport is 5222
+mark as 23 if tcp and sport is 5222
+return if tcp and sport is 5222
+mark as 23 if tcp and dport is 5223
+return if tcp and dport is 5223
+mark as 23 if tcp and sport is 5223
+return if tcp and sport is 5223
+mark as 26 if marked as 0
+return if marked as 26
+mark as 26
