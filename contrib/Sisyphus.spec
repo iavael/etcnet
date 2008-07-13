@@ -1,6 +1,6 @@
 Name:		etcnet
-Version:	0.9.6
-Release:	alt2
+Version:	0.9.7
+Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
@@ -156,6 +156,9 @@ fi
 %files full
 
 %changelog
+* Mon Jul 14 2008 Denis Ovsienko <pilot@altlinux.ru> 0.9.7-alt1
+- another maintenance release
+
 * Thu Apr 10 2008 Denis Ovsienko <pilot@altlinux.ru> 0.9.6-alt2
 - built new version with some updates and bugfixes
 
