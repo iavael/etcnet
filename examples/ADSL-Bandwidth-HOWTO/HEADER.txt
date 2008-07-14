@@ -1,0 +1,3 @@
+Initial ADSL-Bandwidth-HOWTO implementation (based on the
+http://tldp.org/HOWTO/ADSL-Bandwidth-Management-HOWTO/)
+

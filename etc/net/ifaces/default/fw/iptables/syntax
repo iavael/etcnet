@@ -249,6 +249,7 @@ if:
 net: 
 host: 
 is: 
+are: 
 when: 
 but: 
 proto: --protocol

@@ -1,0 +1,7 @@
+prio 0 protocol ip handle 20 fw
+prio 0 protocol ip handle 21 fw
+prio 0 protocol ip handle 22 fw
+prio 0 protocol ip handle 23 fw
+prio 0 protocol ip handle 24 fw
+prio 0 protocol ip handle 25 fw
+prio 0 protocol ip handle 26 fw

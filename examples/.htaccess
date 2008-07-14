@@ -11,3 +11,5 @@ AddDescription "iptables example by hiddenman" firewall-hiddenman
 AddDescription "Complex example (without QoS) by hiddenman" Complex-without-QoS
 AddDescription "LARTC multiple links example port" routing-LARTC-1
 AddDescription "dummy interfaces configuration" dummy
+AddDescription "Initial ADSL-Bandwidth-HOWTO implementation" ADSL-Bandwidth-HOWTO
+
