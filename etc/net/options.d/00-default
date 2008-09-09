@@ -54,7 +54,7 @@ IP6TABLES=/sbin/ip6tables
 EBTABLES=/sbin/ebtables
 
 # List of known-good network modules (ones that support link detection).
-GOOD_MODULE_LIST='eepro100 e100 8139too tulip 3c59x hostap via-rhine sk98lin r8169'
+GOOD_MODULE_LIST='eepro100 e100 8139too tulip 3c59x hostap via-rhine sk98lin r8169 e1000e'
 
 # Set this to no to always remove any modules and be compatible with 2.4
 # series kernels.
