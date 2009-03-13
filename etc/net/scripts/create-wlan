@@ -10,4 +10,4 @@ pickup_options
 
 : ${HOST:?HOST is missing for $NAME}
 
-$WLANCONFIG $NAME create nounit wlandev "$HOST" wlanmode "${MODE:=sta}" > /dev/null
+$WLANCONFIG $NAME create nounit wlandev "$HOST" wlanmode "${WLANMODE:=sta}" > /dev/null

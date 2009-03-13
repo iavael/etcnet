@@ -9,7 +9,7 @@ and one or more enslaved link/ether (also called VAPs) layers.
 This approach can be selected by TYPE set to `wlan' for enslaved
 link/ether iface(s), other options in this mode could be:
 HOST=<link/ieee802.11 iface name, i.e wifi0>
-MODE=<adhoc|ap|monitor|sta|wds> 
+WLANMODE=<adhoc|ap|monitor|sta|wds> 
 
 See also wlanconfig(8) for more detailed discussion.
 
@@ -29,7 +29,7 @@ TYPE=eth
 # cat /etc/net/ifaces/wlan/options
 TYPE=wlan
 HOST=wifi0
-MODE=ap
+WLANMODE=ap
 #
 
 ** bridge iface, including wlan one:
