@@ -96,7 +96,7 @@ wpa_supplicant configuration file. This file is only required for WiFi WPA.
 List of brctl commands. This file is only used by bridges and is not required.
 .IP ethtool
 List of ethtool commands. This file is only useful for Ethernet interfaces and is not required.
-.IP ipx_interface
+.IP ipxinterface
 List of 'ipx_interface add' arguments. This file is required for IPX interfaces.
 .IP sysctl.conf
 List of sysctl options, which will be processed after interface is up. Lookup SMART SYSCTL SUPPORT. This file is optional.
@@ -214,9 +214,9 @@ different network card.
 
 To switch between configurations without editing /etc/net/profile one can use:
 .TP 
-# service etcnet startwith office
+# service network startwith office
 .TP 
-# service etcnet restartwith home
+# service network restartwith home
 .LP 
 If 'selectprofile' executable script exists in iface directory, it will be run with a
 single argument, which defines current stage of (de)configuration sequence. If you
