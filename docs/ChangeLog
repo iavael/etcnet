@@ -2,6 +2,7 @@
 	update: list e1000e as "good"
 	update: manpage fixes
 	bugfix: handle OpenVPN interfaces with no server-assigned IP address (by Anton Farygin)
+	new feature: kernel module options support in the firewall
 0.9.7 2008-07-13
 	new feature: shell variables support in the QoS files
 	new feature: firewall policy (-P) support 

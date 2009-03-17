@@ -239,6 +239,7 @@ iptables_start()
     local MODULE
     local TABLE
     local CHAIN
+    local ARGS
     [ "$NAME" = "default" ] &&  print_message "Starting iptables for $NAME" ||  print_message -e "\nStarting iptables for $NAME"
     # Set defaut policy
     if [ "$NAME" = "default" ]; then
@@ -263,9 +264,9 @@ iptables_start()
     cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
-	while read MODULE; do
+	while read MODULE ARGS; do
 	    print_message -e "\tLoading module $MODULE"
-	    $MODPROBE "$MODULE" || print_error "Can't load module $MODULE"
+	    $MODPROBE "$MODULE" $ARGS || print_error "Can't load module $MODULE"
 	done < <(egrep "^[^#]" modules)
     fi
     # Create user chains
@@ -379,7 +380,7 @@ iptables_stop()
     done
     # Unload modules
     if [ -f "modules" ] && [ -s "modules" ]; then
-	while read MODULE; do
+	while read MODULE ARGS; do
 	    print_message -e "\tUnloading module $MODULE"
 	    $MODPROBE -r "$MODULE" || print_error "Can't unload module $MODULE"
 	done < <(tac modules|egrep "^[^#]")
@@ -638,6 +639,7 @@ ip6tables_start()
     local MODULE
     local TABLE
     local CHAIN
+    local ARGS
     [ "$NAME" = "default" ] &&  print_message "Starting ip6tables for $NAME" ||  print_message -e "\nStarting ip6tables for $NAME"
     # Set defaut policy
     if [ "$NAME" = "default" ]; then
@@ -662,9 +664,9 @@ ip6tables_start()
     cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
-	while read MODULE; do
+	while read MODULE ARGS; do
 	    print_message -e "\tLoading module $MODULE"
-	    $MODPROBE "$MODULE" || print_error "Can't load module $MODULE"
+	    $MODPROBE "$MODULE" $ARGS || print_error "Can't load module $MODULE"
 	done < <(egrep "^[^#]" modules)
     fi
     # Create user chains
@@ -725,6 +727,7 @@ ip6tables_stop()
     local MODULE
     local TABLE
     local CHAIN
+    local ARGS
     [ "$NAME" = "default" ] && print_message "Stopping ip6tables for $NAME" || print_message -e  "\nStopping ip6tables for $NAME"
     cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # FIXME  Double code
@@ -778,7 +781,7 @@ ip6tables_stop()
     done
     # Unload modules
     if [ -f "modules" ] && [ -s "modules" ]; then
-	while read MODULE; do
+	while read MODULE ARGS; do
 	    print_message -e "\tUnloading module $MODULE"
 	    $MODPROBE -r "$MODULE" || print_error "Can't unload module $MODULE"
 	done < <(tac modules|egrep "^[^#]")
@@ -991,6 +994,7 @@ ebtables_start()
     local MODULE
     local TABLE
     local CHAIN
+    local ARGS
     [ "$NAME" = "default" ] &&  print_message "Starting ebtables for $NAME" ||  print_message -e "\nStarting ebtables for $NAME"
     # Set defaut policy (filter table)
     if [ "$NAME" = "default" ]; then
@@ -1015,9 +1019,9 @@ ebtables_start()
     cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
-	while read MODULE; do
+	while read MODULE ARGS ; do
 	    print_message -e "\tLoading module $MODULE"
-	    $MODPROBE "$MODULE" || print_error "Can't load module $MODULE"
+	    $MODPROBE "$MODULE" $ARGS || print_error "Can't load module $MODULE"
 	done < <(egrep "^[^#]" modules)
     fi
     # Create user chains
@@ -1131,7 +1135,7 @@ ebtables_stop()
     done
     # Unload modules
     if [ -f "modules" ] && [ -s "modules" ]; then
-	while read MODULE; do
+	while read MODULE ARGS; do
 	    print_message -e "\tUnloading module $MODULE"
 	    $MODPROBE -r "$MODULE" || print_error "Can't unload module $MODULE"
 	done < <(tac modules|egrep "^[^#]")
