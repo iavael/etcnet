@@ -3,57 +3,59 @@
 process_ipv6rules()
 {
 	local OP=${1:?missing 1st arg to $FUNCNAME}
-	local REVERSE
+	local REVERSE SRCFILE
 	[ "$OP" = "del" ] && REVERSE="|tac"
-	SRCFILE=`profiled_filename $MYIFACEDIR/ipv6rule`
-	[ -s "$SRCFILE" ] && eval "$DENOISE \"$SRCFILE\" $REVERSE" | \
-	while read FIRST REST; do
-		case "$FIRST" in
-			add)
-				[ $OP = "del" ] && FIRST=del
-			;;
-			del)
-				# should we restore deleted rules on iface shutdown?
-				 [ $OP = "del" ] && FIRST=add
-			;;
-			*)
-				FIRST="$OP $FIRST"
-			;;
-		esac
-		$IP -6 rule $(eval_string $FIRST $REST)
-		print_progress
-	done
+	if profiled_filename SRCFILE "$MYIFACEDIR/ipv6rule"; then
+		eval "$DENOISE \"$SRCFILE\" $REVERSE" |
+		while read FIRST REST; do
+			case "$FIRST" in
+				add)
+					[ $OP = "del" ] && FIRST=del
+				;;
+				del)
+					# should we restore deleted rules on iface shutdown?
+					 [ $OP = "del" ] && FIRST=add
+				;;
+				*)
+					FIRST="$OP $FIRST"
+				;;
+			esac
+			$IP -6 rule $(eval_string $FIRST $REST)
+			print_progress
+		done
+	fi
 }
 
 config_ipv6_routes_rules()
 {
 	# setup routes
 	local OP=${1:?missing 1st arg to $FUNCNAME}
-	local SRCFILE=`profiled_filename $MYIFACEDIR/ipv6route`
-	local SUFFIX
+	local SUFFIX SRCFILE
 	IPV4ADDRESS=($(get_ipv6_addresses $NAME))
 	[ "$OP" = "del" ] && REVERSE="|tac"
-	[ -s "$SRCFILE" ] && eval "$DENOISE \"$SRCFILE\" $REVERSE" | \
-	while read FIRST REST; do
-		# If 'dev' is not specified, add current dev.
-		SUFFIX=''
-		echo "$FIRST $REST" | egrep -q '[[:space:]]dev[[:space:]]' || SUFFIX="dev $NAME"
-		# If operation is not specified, use 'append'.
-		case "$FIRST" in
-			add|change|append|replace)
-				[ $OP = "del" ] && FIRST=del
-			;;
-			del)
-				# should we restore deleted rules on iface shutdown?
-				[ $OP = "del" ] && FIRST=add
-			;;
-			*)
-				[ "$OP" = "add" ] && FIRST="append $FIRST" || FIRST="$OP $FIRST"
-			;;
-		esac
-		$IP -6 route $(eval_string $FIRST $REST $SUFFIX)
-		print_progress
-	done
+	if profiled_filename SRCFILE "$MYIFACEDIR/ipv6route"; then
+		eval "$DENOISE \"$SRCFILE\" $REVERSE" |
+		while read FIRST REST; do
+			# If 'dev' is not specified, add current dev.
+			SUFFIX=''
+			echo "$FIRST $REST" | egrep -q '[[:space:]]dev[[:space:]]' || SUFFIX="dev $NAME"
+			# If operation is not specified, use 'append'.
+			case "$FIRST" in
+				add|change|append|replace)
+					[ $OP = "del" ] && FIRST=del
+				;;
+				del)
+					# should we restore deleted rules on iface shutdown?
+					[ $OP = "del" ] && FIRST=add
+				;;
+				*)
+					[ "$OP" = "add" ] && FIRST="append $FIRST" || FIRST="$OP $FIRST"
+				;;
+			esac
+			$IP -6 route $(eval_string $FIRST $REST $SUFFIX)
+			print_progress
+		done
+	fi
 
 	# Setup rules only after routes are Ok, so that route tables are
 	# already populated when rule starts routing traffic to them.

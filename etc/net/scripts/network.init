@@ -61,12 +61,16 @@ group2name()
 
 start_vlantab()
 {
-	local PROFILED_VLANTAB=`profiled_filename $VLANTAB`
-	print_message -n "Processing $PROFILED_VLANTAB: "
-	[ -s $PROFILED_VLANTAB ] || {
+	local PROFILED_VLANTAB
+
+	if ! profiled_filename PROFILED_VLANTAB "$VLANTAB"; then
+		print_message -n "Processing $VLANTAB: "
 		print_message empty.
 		return
-	}
+	else
+		print_message -n "Processing $PROFILED_VLANTAB: "
+	fi
+
 	local LCNT=`$DENOISE -c $PROFILED_VLANTAB`
 	if [ "$LCNT" != "0" ]; then
 		[ -x "${VCONFIG:=$DEFAULT_VCONFIG}" ] || {
@@ -103,12 +107,16 @@ start_vlantab()
 
 stop_vlantab()
 {
-	local PROFILED_VLANTAB=`profiled_filename $VLANTAB`
-	print_message -n "Processing $PROFILED_VLANTAB: "
-	[ -s $PROFILED_VLANTAB ] || {
+	local PROFILED_VLANTAB
+
+	if ! profiled_filename PROFILED_VLANTAB "$VLANTAB"; then
+		print_message -n "Processing $VLANTAB: "
 		print_message empty.
 		return 0
-	}
+	else
+		print_message -n "Processing $PROFILED_VLANTAB: "
+	fi
+
 	local HOST_IFACE CHILD_VID CHILD_NAME
 	SourceIfNotEmpty $SCRIPTDIR/functions-vlan
 	$DENOISE $PROFILED_VLANTAB | while read HOST_IFACE CHILD_VID CHILD_NAME; do
@@ -171,10 +179,12 @@ stop_group()
 start()
 {
 	ExecIfExecutable $LOCALSCRIPTDIR/netup-pre $*
-	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
+	local defopts fwopts
+	! profiled_filename defopts "/etc/net/ifaces/default/options" || . "$defopts"
 	is_yes "$CONFIG_FW" && \
 	    {
-		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
+		! profiled_filename fwopts /etc/net/ifaces/default/fw/options ||
+			. "$fwopts"
 		export CONFIG_FW
 		for CFW_TYPE in $FW_TYPE; do
 		    case "$CFW_TYPE" in
@@ -193,7 +203,10 @@ start()
 		done
 		$SCRIPTDIR/config-fw default start
 	    }
-	$SYSCTL -q -p `profiled_filename /etc/net/sysctl.conf`
+	local sysctl_conf
+	! profiled_filename sysctl_conf /etc/net/sysctl.conf ||
+		$SYSCTL -q -p "$sysctl_conf"
+
 	declare -a START_GROUP
 	# 1. fill in the groups
 	local IFACECOUNT=0
@@ -233,10 +246,12 @@ start()
 stop()
 {
 	ExecIfExecutable $LOCALSCRIPTDIR/netdown-pre $*
-	SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/options`
+	local defopts fwopts
+	! profiled_filename defopts /etc/net/ifaces/default/options || . "$defopts"
 	is_yes "$CONFIG_FW" && \
 	    {
-		SourceIfNotEmpty `profiled_filename /etc/net/ifaces/default/fw/options`
+		! profiled_filename fwopts /etc/net/ifaces/default/fw/options ||
+			. "$fwopts"
 		export CONFIG_FW
 		for CFW_TYPE in $FW_TYPE; do
 		    case "$CFW_TYPE" in
@@ -292,7 +307,11 @@ reload()
 	declare -a STOP_GROUP START_GROUP
 	local IFACECOUNT=0
 	export MYIFACEDIR NAME
-	$SYSCTL -q -p `profiled_filename /etc/net/sysctl.conf`
+
+	local sysctl_conf
+	! profiled_filename sysctl_conf /etc/net/sysctl.conf ||
+		$SYSCTL -q -p "$sysctl_conf"
+
 	print_message -n "Computing interface groups: "
 	for MYIFACEDIR in $IFACEDIR/*; do
 		BNAME=`basename $MYIFACEDIR`

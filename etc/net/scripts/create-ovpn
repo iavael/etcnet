@@ -24,29 +24,33 @@ is_yes "$RESTORE_DEFAULTROUTE" && { # Save default route(s)
 		rm -f $OVPNRUNDIR/openvpn-iface-$NAME.defaultroute
 }
 
-PROF_CAFILE=`profiled_filename $MYIFACEDIR/${OVPNCAFILE:-$DEFAULT_OVPNCAFILE}`
-PROF_CRTFILE=`profiled_filename $MYIFACEDIR/${OVPNCRTFILE:-$DEFAULT_OVPNCRTFILE}`
-PROF_KEYFILE=`profiled_filename $MYIFACEDIR/${OVPNKEYFILE:-$DEFAULT_OVPNKEYFILE}`
-PROF_CONFFILE=`profiled_filename $MYIFACEDIR/${OVPNCONFFILE:-$DEFAULT_OVPNCONFFILE}`
-PROF_TLSAUTHFILE=`profiled_filename $MYIFACEDIR/${OVPNTLSAUTHFILE:-$DEFAULT_OVPNTLSAUTHFILE}`
 OVPN_USER=${OVPNUSER:-$DEFAULT_OVPNUSER}
 OVPN_GROUP=${OVPNGROUP:-$DEFAULT_OVPNGROUP}
+KEY_ARGS=
 
-# FIXME: this won't work in every case
-if egrep '^(tls-client|tls-server|client)$' "$PROF_CONFFILE" >/dev/null; then
-	[ -s "$PROF_CAFILE" ] && KEY_ARGS="--ca $PROF_CAFILE"
-	[ -s "$PROF_CRTFILE" ] && KEY_ARGS="$KEY_ARGS --cert $PROF_CRTFILE"
-	[ -s "$PROF_KEYFILE" ] && KEY_ARGS="$KEY_ARGS --key $PROF_KEYFILE"
-	[ -s "$PROF_TLSAUTHFILE" ] && KEY_ARGS="$KEY_ARGS --tls-auth $PROF_TLSAUTHFILE"
-else
-	[ -s "$PROF_KEYFILE" ] && KEY_ARGS="$KEY_ARGS --secret $PROF_KEYFILE"
+if profiled_filename PROF_CONFFILE "$MYIFACEDIR/${OVPNCONFFILE:-$DEFAULT_OVPNCONFFILE}"; then
+	if egrep '^[[:space:]]*(tls-client|tls-server|client)[[:space:]]*' "$PROF_CONFFILE"; then
+		! profiled_filename PROF_CAFILE "$MYIFACEDIR/${OVPNCAFILE:-$DEFAULT_OVPNCAFILE}" ||
+			KEY_ARGS="--ca $PROF_CAFILE"
+
+		! profiled_filename PROF_CRTFILE "$MYIFACEDIR/${OVPNCRTFILE:-$DEFAULT_OVPNCRTFILE}" ||
+			KEY_ARGS="$KEY_ARGS --cert $PROF_CRTFILE"
+
+		! profiled_filename PROF_TLSAUTHFILE "$MYIFACEDIR/${OVPNTLSAUTHFILE:-$DEFAULT_OVPNTLSAUTHFILE}" ||
+			KEY_ARGS="$KEY_ARGS --tls-auth $PROF_TLSAUTHFILE"
+
+		! profiled_filename PROF_KEYFILE "$MYIFACEDIR/${OVPNKEYFILE:-$DEFAULT_OVPNKEYFILE}" ||
+			KEY_ARGS="$KEY_ARGS --key $PROF_KEYFILE"
+	else
+		! profiled_filename PROF_KEYFILE "$MYIFACEDIR/${OVPNKEYFILE:-$DEFAULT_OVPNKEYFILE}" ||
+			KEY_ARGS="$KEY_ARGS --secret $PROF_KEYFILE"
+	fi
 fi
 
-[ -d $OVPNCHROOTDIR/cache ] ||
-{
+if [ ! -d $OVPNCHROOTDIR/cache ]; then
 	print_error "OpenVPN cache dir $OVPNCHROOTDIR/cache does not exist"
 	exit 1
-}
+fi
 
 $OVPN --dev $NAME --daemon \
 	${PROF_CONFFILE:+ --config $PROF_CONFFILE} $KEY_ARGS $TLSAUTH_ARGS \

@@ -13,9 +13,9 @@ for host in $HOST; do
 	$BRCTL addif $NAME $host
 done
 
-PROF_BRCTL=`profiled_filename $MYIFACEDIR/brctl`
-[ -s "$PROF_BRCTL" ] && {
-	$DENOISE $PROF_BRCTL | trim | \
-	sed "s/ AUTO / $NAME /" | \
-	xargs --max-lines=1 $BRCTL
-} && print_progress
+if profiled_filename PROF_BRCTL "$MYIFACEDIR/brctl"; then
+	$DENOISE $PROF_BRCTL |
+		trim |
+		sed "s/ AUTO / $NAME /" |
+		xargs --max-lines=1 $BRCTL
+fi && print_progress

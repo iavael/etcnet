@@ -35,7 +35,7 @@ fi
     exit 1
 }
 
-SourceIfNotEmpty "$(profiled_filename /etc/net/ifaces/default/options)"
+! profiled_filename opts /etc/net/ifaces/default/options || . "$opts"
 
 is_yes "$CONFIG_FW" ||
 {
@@ -43,11 +43,11 @@ is_yes "$CONFIG_FW" ||
     exit 1
 }
 
-SourceIfNotEmpty "$(profiled_filename /etc/net/ifaces/default/fw/options)"
+! profiled_filename fwdefopts /etc/net/ifaces/default/fw/options || . "$fwdefopts"
 
 [ "$NAME" = "default" -o "$NAME" = "unknown" ] || pickup_options
 
-SourceIfNotEmpty "$(profiled_filename $MYIFACEDIR/fw/options)"
+! profiled_filename fwopts "$MYIFACEDIR/fw/options" || . "$fwopts"
 
 for CFW_TYPE in $FW_TYPE; do
     case "$CFW_TYPE" in
@@ -59,13 +59,14 @@ for CFW_TYPE in $FW_TYPE; do
 			    print_error "$IPTABLES not found. Please, install iptables package"
 			    continue
 			}
-		    [ -d "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)" ] || continue
+		    profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" ||
+			    continue
 		    # Load own interface syntax if exists
 		    [ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" && 
 			{
-			    [ -f "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)/syntax" ] && [ -s "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)/syntax" ] && 
+			    [ -s "$cfwdir/syntax" ] &&
 				{
-				    IPTABLES_SYNTAX_DIR=$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)
+				    IPTABLES_SYNTAX_DIR="$cfwdir"
 				    unset IPTABLES_SYNTAX IPTABLES_SED_RULES
 				}
 			}
@@ -102,13 +103,14 @@ for CFW_TYPE in $FW_TYPE; do
 			    print_error "$IP6TABLES not found. Please, install iptables-ipv6 package"
 			    continue
 			}
-		    [ -d "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)" ] || continue
+		    profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" ||
+			    continue
 		    # Load own interface syntax if exists
 		    [ "$NAME" != "default" ] && is_yes "$IP6TABLES_HUMAN_SYNTAX" && 
 			{
-			    [ -f "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)/syntax" ] && [ -s "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)/syntax" ] && 
+			    [ -s "$cfwdir/syntax" ] &&
 				{
-				    IP6TABLES_SYNTAX_DIR=$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)
+				    IP6TABLES_SYNTAX_DIR="$cfwdir"
 				    unset IP6TABLES_SYNTAX IP6TABLES_SED_RULES
 				}
 			}
@@ -138,7 +140,8 @@ for CFW_TYPE in $FW_TYPE; do
 		    esac
 		    ;;
 	"ebtables")
-		    [ -d "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)" ] || continue
+		    profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" ||
+			    continue
 		    [ -x "$EBTABLES" ] || 
 			{
 			    print_error "$EBTABLES not found. Please, install ebtables package"

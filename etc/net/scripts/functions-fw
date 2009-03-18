@@ -261,7 +261,10 @@ iptables_start()
 	    }
 	TABLE=
     fi
-    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+    local cfwdir
+    profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" &&
+	    cd "$cfwdir" ||
+	    return 0
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE ARGS; do
@@ -328,7 +331,10 @@ iptables_stop()
     local TABLE
     local CHAIN
     [ "$NAME" = "default" ] && print_message "Stopping iptables for $NAME" || print_message -e  "\nStopping iptables for $NAME"
-    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+    local cfwdir
+    profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" &&
+	    cd "$cfwdir" ||
+	    return 0
     # FIXME  Double code
     # Flush rules
     if [ -f "loadorder" ] && [ -s "loadorder" ]; then
@@ -661,7 +667,10 @@ ip6tables_start()
 	    }
 	TABLE=
     fi
-    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+    local cfwdir
+    profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" &&
+	    cd "$cfwdir" ||
+	    return 0
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE ARGS; do
@@ -729,7 +738,10 @@ ip6tables_stop()
     local CHAIN
     local ARGS
     [ "$NAME" = "default" ] && print_message "Stopping ip6tables for $NAME" || print_message -e  "\nStopping ip6tables for $NAME"
-    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+    local cfwdir
+    profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" &&
+	    cd "$cfwdir" ||
+	    return 0
     # FIXME  Double code
     # Flush rules
     if [ -f "loadorder" ] && [ -s "loadorder" ]; then
@@ -1016,7 +1028,10 @@ ebtables_start()
 	    }
 	TABLE=
     fi
-    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+    local cfwdir
+    profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" &&
+	    cd "$cfwdir" ||
+	    return 0
     # Load modules
     if [ -f "modules" ] && [ -s "modules" ]; then
 	while read MODULE ARGS ; do
@@ -1083,7 +1098,10 @@ ebtables_stop()
     local TABLE
     local CHAIN
     [ "$NAME" = "default" ] && print_message "Stopping ebtables for $NAME" || print_message -e  "\nStopping ebtables for $NAME"
-    cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+    local cfwdir
+    profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" &&
+	    cd "$cfwdir" ||
+	    return 0
     # FIXME  Double code
     # Flush rules
     if [ -f "loadorder" ] && [ -s "loadorder" ]; then

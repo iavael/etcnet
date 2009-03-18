@@ -233,8 +233,7 @@ is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos $NAME start "${IPV4ADDRESS[*]}" "
 
 
 # handle resolver config
-MYRESOLVCONF=`profiled_filename $MYIFACEDIR/resolv.conf`
-if [ -s $MYRESOLVCONF ]; then
+if profiled_filename MYRESOLVCONF "$MYIFACEDIR/resolv.conf"; then
 	rm -f /etc/resolv.conf
 	cp $MYRESOLVCONF /etc/resolv.conf
 	[ -x "$RESOLV_POSTIN_CMD" ] && $RESOLV_POSTIN_CMD $RESOLV_POSTIN_ARGS
@@ -242,12 +241,20 @@ if [ -s $MYRESOLVCONF ]; then
 fi
 
 # handle sysctl file
-GLOBAL_SYSCTL=`profiled_filename $IFACEDIR/sysctl.conf`
-TYPESPEC_SYSCTL=`profiled_filename $IFACEDIR/default/sysctl.conf-$TYPE`
-MY_SYSCTL=`profiled_filename $MYIFACEDIR/sysctl.conf`
-[ -s $GLOBAL_SYSCTL ] && process_sysctl_conf $GLOBAL_SYSCTL && print_progress
-[ -s $TYPESPEC_SYSCTL ] && process_sysctl_conf $TYPESPEC_SYSCTL $NAME && print_progress
-[ -s $MY_SYSCTL ] && process_sysctl_conf $MY_SYSCTL $NAME && print_progress
+if profiled_filename GLOBAL_SYSCTL "$IFACEDIR/sysctl.conf"; then
+	process_sysctl_conf $GLOBAL_SYSCTL &&
+	print_progress
+fi
+
+if profiled_filename TYPESPEC_SYSCTL "$IFACEDIR/default/sysctl.conf-$TYPE"; then
+	process_sysctl_conf $TYPESPEC_SYSCTL $NAME &&
+	print_progress
+fi
+
+if profiled_filename MY_SYSCTL "$MYIFACEDIR/sysctl.conf"; then
+	process_sysctl_conf $MY_SYSCTL $NAME &&
+	print_progress
+fi
 
 # type-specific additional optional configuration
 ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && print_progress

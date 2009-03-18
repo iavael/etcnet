@@ -1,6 +1,7 @@
 0.9.8
 	update: list e1000e as "good"
 	update: manpage fixes
+	update: improve performance with a patch from Alexey Gladkov
 	bugfix: handle OpenVPN interfaces with no server-assigned IP address (by Anton Farygin)
 	new feature: kernel module options support in the firewall
 0.9.7 2008-07-13

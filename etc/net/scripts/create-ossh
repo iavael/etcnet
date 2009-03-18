@@ -40,7 +40,8 @@ modprobe_tuntap || {
 
 $TUNCTL -t $NAME > /dev/null
 
-IDENTITY=`profiled_filename ${OSSHIDENTITY:-$DEFAULT_OSSHIDENTITY}`
+profiled_filename IDENTITY "${OSSHIDENTITY:-$DEFAULT_OSSHIDENTITY}" ||
+	IDENTITY="${OSSHIDENTITY:-$DEFAULT_OSSHIDENTITY}"
 
 [ -f "$MYIFACEDIR/$IDENTITY" ] || {
     print_error "identity file '$MYIFACEDIR/$IDENTITY' does not exist"
