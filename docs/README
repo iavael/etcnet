@@ -1,4 +1,4 @@
-/etc/net version 0.9.7
+/etc/net version 0.9.8
 
 ===
 === INTRODUCTION
@@ -59,7 +59,7 @@ Russian tips collection is located at http://wiki.sisyphus.ru/admin/etcnet
 ===
 === COPYRIGHT AND LICENSE
 ===
-Copyright (c) 2004-2008
+Copyright (c) 2004-2009
 Denis Ovsienko <pilot/=@=/etcnet.org>
 Andrew Kornilov <hiddenman/=@=/altlinux.org>
 
