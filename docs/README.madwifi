@@ -1,0 +1,61 @@
+						-*- outline -*-
+*		MADWIFI/wlanconfig & etcnet
+
+Starting from 0.9.6, etcnet contains another approach
+for handling atheros/madwifi cards, allowing more precise
+control over various operational modes, including master one,
+achieved by separate iface declarations for link/ieee802.11
+and one or more enslaved link/ether (also called VAPs) layers.
+This approach can be selected by TYPE set to `wlan' for enslaved
+link/ether iface(s), other options in this mode could be:
+HOST=<link/ieee802.11 iface name, i.e wifi0>
+WLANMODE=<adhoc|ap|monitor|sta|wds> 
+
+See also wlanconfig(8) for more detailed discussion.
+
+Setup for bridged AP mode, ready for use with hostapd, follows:
+
+** disallow autocreate link/ether (mandatory)
+# grep ath_pci /etc/modprobe.d/options
+options ath_pci autocreate=none
+#
+
+** link/ieee802.11 iface (optional)
+# cat /etc/net/ifaces/wifi0/options
+TYPE=eth
+#
+
+** link/ether (VAP) iface(s):
+# cat /etc/net/ifaces/wlan/options
+TYPE=wlan
+HOST=wifi0
+WLANMODE=ap
+#
+
+** bridge iface, including wlan one:
+# cat /etc/net/ifaces/br0/options 
+TYPE=bri
+HOST='wan lan wlan'
+#
+
+** sample hostapd configuration
+# grep -v '^\(#\|ssid\|wpa_pass\|$\)' /etc/hostapd/hostapd.conf
+interface=wlan
+bridge=br0
+driver=madwifi
+logger_syslog=-1
+logger_syslog_level=2
+logger_stdout=-1
+logger_stdout_level=2
+debug=0
+dump_file=/root/tmp/hostapd.dump
+ctrl_interface=/var/run/hostapd
+ctrl_interface_group=0
+macaddr_acl=1
+auth_algs=3
+eapol_version=1
+eapol_key_index_workaround=0
+eap_server=0
+wpa=3
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP CCMP
