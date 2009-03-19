@@ -232,14 +232,6 @@ is_yes "$CONFIG_FW"   && $SCRIPTDIR/config-fw $NAME start "${IPV4ADDRESS[*]}" "$
 is_yes "$CONFIG_QOS"  && $SCRIPTDIR/config-qos $NAME start "${IPV4ADDRESS[*]}" "${IPV6ADDRESS[*]}"
 
 
-# handle resolver config
-if profiled_filename MYRESOLVCONF "$MYIFACEDIR/resolv.conf"; then
-	rm -f /etc/resolv.conf
-	cp $MYRESOLVCONF /etc/resolv.conf
-	[ -x "$RESOLV_POSTIN_CMD" ] && $RESOLV_POSTIN_CMD $RESOLV_POSTIN_ARGS
-	print_progress
-fi
-
 # handle sysctl file
 if profiled_filename GLOBAL_SYSCTL "$IFACEDIR/sysctl.conf"; then
 	process_sysctl_conf $GLOBAL_SYSCTL &&
@@ -261,6 +253,17 @@ ExecIfExecutable $SCRIPTDIR/setup-$TYPE $NAME && print_progress
 
 # ifup-post
 iface_is_up $NAME && {
+	# handle resolver config
+	if profiled_filename MYRESOLVCONF "$MYIFACEDIR/resolv.conf"; then
+		if [ -x "${RESOLVCONFTOOL:=$DEFAULT_RESOLVCONFTOOL}" ]; then
+			$RESOLVCONFTOOL -a $NAME < $MYRESOLVCONF
+		else
+			rm -f /etc/resolv.conf
+			cp $MYRESOLVCONF /etc/resolv.conf
+			[ -x "$RESOLV_POSTIN_CMD" ] && $RESOLV_POSTIN_CMD $RESOLV_POSTIN_ARGS
+		fi
+		print_progress
+	fi
 	ExecIfExecutable $LOCALSCRIPTDIR/ifup-post-local $NAME && print_progress
 	ExecIfExecutable $MYIFACEDIR/ifup-post $NAME && print_progress
 }
