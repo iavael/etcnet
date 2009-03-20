@@ -1,4 +1,4 @@
-0.9.8
+0.9.8 2009-03-20
 	update: list e1000e as "good"
 	update: manpage fixes
 	update: improve performance with a patch from Alexey Gladkov
