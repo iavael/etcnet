@@ -27,6 +27,7 @@ DEFAULT_IFENSLAVE=/sbin/ifenslave
 DEFAULT_TUNCTL=/usr/sbin/tunctl
 DEFAULT_BRCTL=/usr/sbin/brctl
 DEFAULT_ETHTOOL=/usr/sbin/ethtool
+DEFAULT_RESOLVCONFTOOL=/sbin/resolvconf
 DEFAULT_PPPD=/usr/sbin/pppd
 DEFAULT_CHAT=/usr/sbin/chat
 DEFAULT_PPPOPTIONSFILE=pppoptions
@@ -123,6 +124,15 @@ name2type()
 	supported_type $CAND && echo $CAND
 }
 
+source_optfile()
+{
+	local prof_of
+	profiled_filename prof_of "$1" &&
+		[ -n "${prof_of##*.rpm*}" -a -n "${prof_of##*\~}" ] ||
+		continue
+	. "$prof_of"
+}
+
 # Read options hierarchy. Should work for unknown interfaces too.
 pickup_options()
 {
@@ -131,9 +141,7 @@ pickup_options()
 	# A workaround here.
 	local of prof_of
 	for of in $MYIFACEDIR/options $MYIFACEDIR/options.d/*; do
-		prof_of=`profiled_filename $of`
-		[ -f "$prof_of" -a "${prof_of%.rpm*}" = "$prof_of" -a "${prof_of%\~}" = "$prof_of" ] || continue
-		SourceIfNotEmpty $prof_of
+		source_optfile "$of"
 	done
 	is_yes "$DISABLED" && return
 	[ -z "$TYPE" ] && TYPE=`name2type $NAME`
@@ -147,23 +155,17 @@ pickup_options()
 
 	# source default options
 	for of in $IFACEDIR/default/options $IFACEDIR/default/options.d/*; do
-		prof_of=`profiled_filename $of`
-		[ -f "$prof_of" -a "${prof_of%.rpm*}" = "$prof_of" -a "${prof_of%\~}" = "$prof_of" ] || continue
-		SourceIfNotEmpty $prof_of
+		source_optfile "$of"
 	done
 
 	# then source default options for our iface type
 	for of in $IFACEDIR/default/options-$TYPE $IFACEDIR/default/options-$TYPE.d/*; do
-		prof_of=`profiled_filename $of`
-		[ -f "$prof_of" -a "${prof_of%.rpm*}" = "$prof_of" -a "${prof_of%\~}" = "$prof_of" ] || continue
-		SourceIfNotEmpty $prof_of
+		source_optfile "$of"
 	done
 
 	# and finally source iface options
 	for of in $MYIFACEDIR/options $MYIFACEDIR/options.d/*; do
-		prof_of=`profiled_filename $of`
-		[ -f "$prof_of" -a "${prof_of%.rpm*}" = "$prof_of" -a "${prof_of%\~}" = "$prof_of" ] || continue
-		SourceIfNotEmpty $prof_of
+		source_optfile "$of"
 	done
 
 	# Load type-specific functions
@@ -228,9 +230,8 @@ try_rmmod()
 get_mapped_ifname()
 {
 	local OLDNAME=${1:?missing 1st argument to $FUNCNAME}
-	local PROF_IFTAB=`profiled_filename $IFTAB`
-	local NEW_NAME
-	if [ -s "$PROF_IFTAB" ]; then
+	local NEW_NAME PROF_IFTAB
+	if profiled_filename PROF_IFTAB "$IFTAB"; then
 		[ -x $IFRENAME ] || {
 			print_error "$IFRENAME is unavailable, but $PROF_IFTAB exists"
 			exit 1
@@ -246,26 +247,45 @@ get_mapped_ifname()
 }
 
 # This function works for directories as well.
+profiled_filename_is()
+{
+	if [ "$#" -lt 3 ]; then
+		print_error "$FUNCNAME: More arguments required"
+		exit 1
+	fi
+	local __profiled_filename_is_op="$1"
+	local __profiled_filename_is_name="$2"
+	local __profiled_filename_is_base="$3"
+	set -- "${NETPROFILE:+#$NETPROFILE}${NETHOST:+@$NETHOST}" \
+	       "${NETHOST:+@$NETHOST}" \
+	       "${NETPROFILE:+#$NETPROFILE}" \
+	       ""
+        while [ "$#" -gt 0 ]; do
+		if  [ "$__profiled_filename_is_op" "$__profiled_filename_is_base$__profiled_filename_is_e" ]; then
+			eval "$__profiled_filename_is_name=\"\$__profiled_filename_is_base\$__profiled_filename_is_e\""
+			return 0
+		fi
+		shift
+	done
+	return 1
+}
+
+profiled_filename_exist()
+{
+	profiled_filename_is -e "$1" "$2" ||
+		return 1
+}
+
+profiled_filename_dir()
+{
+	profiled_filename_is -d "$1" "$2" ||
+		return 1
+}
+
 profiled_filename()
 {
-	local CAND BASE=${1:?missing 1st arg to $FUNCNAME}
-	CAND=$BASE${NETPROFILE:+#$NETPROFILE}${NETHOST:+@$NETHOST}
-	if [ -e $CAND ]; then
-		echo $CAND
-		return 0
-	fi
-	CAND=$BASE${NETHOST:+@$NETHOST}
-	if [ -e $CAND ]; then
-		echo $CAND
-		return 0
-	fi
-	CAND=$BASE${NETPROFILE:+#$NETPROFILE}
-	if [ -e $CAND ]; then
-		echo $CAND
-		return 0
-	fi
-	echo $BASE
-	return 0
+	profiled_filename_is -s "$1" "$2" ||
+		return 1
 }
 
 # This function updates part of current config file namespace, consisting of
@@ -411,8 +431,8 @@ xargise_file()
 {
 	local BASEFILE="${1:?missing 1st arg to $FUNCNAME}"
 	local PROCESSOR="${2:?missing 2nd arg to $FUNCNAME}"
-	local REALFILE=`profiled_filename $BASEFILE`
-	if [ -s $REALFILE ]; then
+	local REALFILE
+	if profiled_filename REALFILE "$BASEFILE"; then
 		$DENOISE $REALFILE | trim | xargs --max-lines=1 $PROCESSOR && print_progress
 	fi
 	return 0
@@ -546,9 +566,10 @@ kill_by_pidfile()
 	fi
 }
 
-declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable supported_type name2type
+declare -frx is_yes is_no SourceIfNotEmpty ExecIfExecutable source_optfile supported_type name2type
 declare -frx pickup_options print_error print_message print_progress print_nack
-declare -frx iface_is_up try_rmmod get_mapped_ifname profiled_filename init_netprofile
+declare -frx iface_is_up try_rmmod get_mapped_ifname init_netprofile
+declare -frx profiled_filename profiled_filename_dir profiled_filename_exist profiled_filename_is
 declare -frx init_nethost foreach_child ifdown_children ifup_children ifup_parents
 declare -frx ifdown_parents iface_exists seen_iface add_seen_iface xargise_file
 declare -frx have_ifplugd pickup_defaults trim need_detection stop_dhcp_client
@@ -559,7 +580,7 @@ declare -rx VLANTAB HOSTTAB IFTAB PROFILE_FILE PROC_CMDLINE DEFAULT_IFPLUGSTATUS
 declare -rx DEFAULT_IFPLUGD DEFAULT_IWCONFIG DEFAULT_WLANCONFIG DEFAULT_WPA_SUPPLICANT DEFAULT_WPA_CLI DEFAULT_PLIPCONFIG
 declare -rx DEFAULT_IWPRIV DEFAULT_VCONFIG DEFAULT_PENTANETT DEFAULT_PENTAVALT DEFAULT_PENTANET_CONF
 declare -rx DEFAULT_PENTAVAL_CONF DEFAULT_IPSECADM DEFAULT_IFENSLAVE DEFAULT_BRCTL
-declare -rx DEFAULT_ETHTOOL DEFAULT_PPPD DEFAULT_CHAT DEFAULT_PPPOPTIONSFILE
+declare -rx DEFAULT_ETHTOOL DEFAULT_RESOLVCONFTOOL DEFAULT_PPPD DEFAULT_CHAT DEFAULT_PPPOPTIONSFILE
 declare -rx DEFAULT_PPPINITCHAT DEFAULT_PPPCONNECTCHAT DEFAULT_PPPDISCONNECTCHAT
 declare -rx DEFAULT_CHATOPTIONS DEFAULT_PPPOE DEFAULT_PPPOEOPTIONS DEFAULT_PPTP
 declare -rx DEFAULT_SZAP DEFAULT_SZAP_ARGS DEFAULT_DVBNET DEFAULT_PAND

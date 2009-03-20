@@ -1,11 +1,12 @@
 Name:		etcnet
-Version:	0.9.7
+Version:	0.9.8
 Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
 License:	GPL-2
 Group:		System/Base
 URL:		http://etcnet.org/
+Packager:	Denis Ovsienko <pilot@altlinux.ru>
 Source:		%name-%version.tar.gz
 PreReq:		setup >= 0:2.1.9-ipl18mdk, service, startup >= 0:0.9.3-alt1
 Requires:	grep, sed, iproute2, ifrename >= 28-alt5.pre10, chkconfig
@@ -45,7 +46,7 @@ Summary(ru_RU.KOI8-R): /etc/net и всё, с чем он может работать
 Group:		System/Configuration/Networking
 Requires:	%name = %version-%release, wireless-tools
 Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables
-Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2, ipsecadm >= 0.9-alt8
+Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2
 Requires:	hotplug, ncpfs, ppp, vlan-utils, bridge-utils, openvpn, tunctl
 Requires:	pptp-client, wpa_supplicant, avahi-autoipd, rp-pppoe-base >= 3.6-alt2
 
@@ -156,6 +157,12 @@ fi
 %files full
 
 %changelog
+* Fri Mar 20 2009 Denis Ovsienko <pilot@altlinux.ru> 0.9.8-alt1
+- building a new version, mostly with bugfixes
+
+* Wed Jul 30 2008 Denis Ovsienko <pilot@altlinux.ru> 0.9.7-alt2
+- applying a patch to work around bug #15588
+
 * Mon Jul 14 2008 Denis Ovsienko <pilot@altlinux.ru> 0.9.7-alt1
 - another maintenance release
 

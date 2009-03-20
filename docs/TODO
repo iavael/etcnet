@@ -1,4 +1,3 @@
-+ bluetooth support
 - xsupplicant support
 - Elektra support
 - patch: bridge-utils arg order
@@ -9,7 +8,6 @@
 - CARP support: UCARP_ADDRESS UCARP_OPTIONS
 - sysctl doesn't work for PPP
 - move stop_dhcp_client to functions-ipv4
-+ firewall: ebtables support
 - generalize ifup delay
 - IPv6 forwarding?
 - dhcp-static should allow combining DHCP and static addresses

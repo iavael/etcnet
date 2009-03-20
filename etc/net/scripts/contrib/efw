@@ -555,7 +555,7 @@ pickup_defaults
 
 [ -z "$NETPROFILE" ] && init_netprofile
 
-SourceIfNotEmpty "$(profiled_filename /etc/net/ifaces/default/options)"
+! profiled_filename opts /etc/net/ifaces/default/options || . "$opts"
 
 is_yes "$CONFIG_FW" ||
 {
@@ -563,7 +563,7 @@ is_yes "$CONFIG_FW" ||
     exit 1
 }
 
-SourceIfNotEmpty "$(profiled_filename /etc/net/ifaces/default/fw/options)"
+! profiled_filename fwopts /etc/net/ifaces/default/fw/options || . "$fwopts"
 
 # FIXME variable TABLES must be reworked 
 case "$1" in
@@ -628,7 +628,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 	{
 	    [ -d $IFACEDIR/$NAME@$NETHOST ] && MYIFACEDIR=$IFACEDIR/$NAME@$NETHOST || MYIFACEDIR=$IFACEDIR/$NAME
 	}
-    SourceIfNotEmpty "$(profiled_filename $MYIFACEDIR/fw/options)"
+    ! profiled_filename fwopts "$MYIFACEDIR/fw/options" || . "$fwopts"
     is_yes "$CONFIG_IPV4" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv4 && export IPV4ADDRESS=( $(get_ipv4_addresses $NAME) )
     is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
     for CFW_TYPE in $FW_TYPE; do
@@ -637,7 +637,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			is_yes "$PROCESS_IPTABLES" || continue
 			# FIXME Does iptables support only IPv4?
 			is_yes "$CONFIG_IPV4" || continue
-		 	[ -d "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)" ] ||
+			profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" ||
 			    {
 				 print_message "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
 				 print_message
@@ -654,9 +654,9 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			# Load own interface syntax if exists
 			[ "$NAME" != "default" ] && is_yes "$IPTABLES_HUMAN_SYNTAX" &&
 			    {
-				[ -f "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)/syntax" ] && [ -s "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)/syntax" ] &&
+				[ -s "$cfwdir/syntax" ] &&
 				    {
-					export IPTABLES_SYNTAX_DIR=$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)
+					export IPTABLES_SYNTAX_DIR="$cfwdir"
 					unset IPTABLES_SYNTAX IPTABLES_SED_RULES
 				    }
 			    }
@@ -677,23 +677,23 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					;;
 			    load)
 					iptables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					iptables_local_rules_from_file $TABLE $CHAIN
 					;;
 			    unload)
 					iptables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					iptables_local_rules_from_file $TABLE $CHAIN unload
 					;;
 			    reload)
 					iptables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					iptables_local_rules_from_file $TABLE $CHAIN unload
 					iptables_local_rules_from_file $TABLE $CHAIN
 					;;
 			    flush)
 					iptables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					iptables_local_rules_from_file $TABLE $CHAIN unload flush
 					;;
 			    show|list)
@@ -737,7 +737,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						;;
 					esac
 					iptables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					iptables_local_rule $TABLE $CHAIN $@
 					;;
 			    new|create)
@@ -767,7 +767,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						;;
 					esac
 					iptables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					iptables_local_rule $TABLE $CHAIN -P $@
 					;;
 			    rename)
@@ -799,7 +799,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			is_yes "$PROCESS_IP6TABLES" || continue
 			# FIXME Does ip6tables support only IPv6?
 			is_yes "$CONFIG_IPV6" || continue
-		 	[ -d "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)" ] ||
+			profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" ||
 			    {
 				 print_message "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
 				 print_message
@@ -816,9 +816,9 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			# Load own interface syntax if exists
 			[ "$NAME" != "default" ] && is_yes "$IP6TABLES_HUMAN_SYNTAX" &&
 			    {
-				[ -f "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)/syntax" ] && [ -s "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)/syntax" ] &&
+				[ -s "$cfwdir/syntax" ] &&
 				    {
-					export IP6TABLES_SYNTAX_DIR=$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)
+					export IP6TABLES_SYNTAX_DIR="$cfwdir"
 					unset IP6TABLES_SYNTAX IP6TABLES_SED_RULES
 				    }
 			    }
@@ -839,23 +839,23 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					;;
 			    load)
 					ip6tables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ip6tables_local_rules_from_file $TABLE $CHAIN
 					;;
 			    unload)
 					ip6tables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ip6tables_local_rules_from_file $TABLE $CHAIN unload
 					;;
 			    reload)
 					ip6tables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ip6tables_local_rules_from_file $TABLE $CHAIN unload
 					ip6tables_local_rules_from_file $TABLE $CHAIN
 					;;
 			    flush)
 					ip6tables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ip6tables_local_rules_from_file $TABLE $CHAIN unload flush
 					;;
 			    show|list)
@@ -899,7 +899,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						;;
 					esac
 					ip6tables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ip6tables_local_rule $TABLE $CHAIN $@
 					;;
 			    new|create)
@@ -929,7 +929,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						;;
 					esac
 					ip6tables_preload
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ip6tables_local_rule $TABLE $CHAIN -P $@
 					;;
 			    rename)
@@ -959,7 +959,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			;;
 	    "ebtables")
 			is_yes "$PROCESS_EBTABLES" || continue
-		 	[ -d "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)" ] ||
+			profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" ||
 			    {
 				 print_message "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
 				 print_message
@@ -985,20 +985,20 @@ for IFACE in "$IFACEDIR"/$NAME; do
 					ebtables_start "$NAME"
 					;;
 			    load)
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ebtables_local_rules_from_file $TABLE $CHAIN
 					;;
 			    unload)
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ebtables_local_rules_from_file $TABLE $CHAIN unload
 					;;
 			    reload)
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ebtables_local_rules_from_file $TABLE $CHAIN unload
 					ebtables_local_rules_from_file $TABLE $CHAIN
 					;;
 			    flush)
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ebtables_local_rules_from_file $TABLE $CHAIN unload flush
 					;;
 			    show|list)
@@ -1041,7 +1041,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						shift 4
 						;;
 					esac
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ebtables_local_rule $TABLE $CHAIN $@
 					;;
 			    new|create)
@@ -1070,7 +1070,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 						shift 4
 						;;
 					esac
-					cd "$(profiled_filename $MYIFACEDIR/fw/$CFW_TYPE)"
+					cd "$cfwdir"
 					ebtables_local_rule $TABLE $CHAIN -P $@
 					;;
 			    rename)
