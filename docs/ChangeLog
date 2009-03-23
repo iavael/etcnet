@@ -1,3 +1,5 @@
+0.9.9
+	bugfix: profiles handling was broken in previous release
 0.9.8 2009-03-20
 	update: list e1000e as "good"
 	update: manpage fixes

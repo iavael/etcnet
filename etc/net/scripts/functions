@@ -261,8 +261,8 @@ profiled_filename_is()
 	       "${NETPROFILE:+#$NETPROFILE}" \
 	       ""
         while [ "$#" -gt 0 ]; do
-		if  [ "$__profiled_filename_is_op" "$__profiled_filename_is_base$__profiled_filename_is_e" ]; then
-			eval "$__profiled_filename_is_name=\"\$__profiled_filename_is_base\$__profiled_filename_is_e\""
+		if  [ "$__profiled_filename_is_op" "$__profiled_filename_is_base$1" ]; then
+			eval "$__profiled_filename_is_name=\"\$__profiled_filename_is_base\$1\""
 			return 0
 		fi
 		shift
