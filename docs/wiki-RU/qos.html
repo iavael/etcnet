@@ -1,249 +1,374 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru" dir="ltr">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Style-Type" content="text/css" />
+		<meta name="generator" content="MediaWiki 1.14.0" />
+		<meta name="keywords" content="Etcnet QoS,Etcnet/qos,Etcnet,Etcnet Firewall" />
+		<link rel="stylesheet" type="text/css" href="/extensions/SearchSuggest/SearchSuggest.css" />
+		<link rel="alternate" type="application/x-wiki" title="РџСЂР°РІРёС‚СЊ" href="http://www.altlinux.org/index.php?title=Etcnet_QoS&amp;action=edit" />
+		<link rel="edit" title="РџСЂР°РІРёС‚СЊ" href="http://www.altlinux.org/index.php?title=Etcnet_QoS&amp;action=edit" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.php" title="ALT Linux Wiki (ru)" />
+		<link rel="copyright" href="/ALT_Linux_Wiki:Copyright" />
+		<link rel="alternate" type="application/rss+xml" title="ALT Linux Wiki вЂ” RSS-Р»РµРЅС‚Р°" href="http://www.altlinux.org/index.php?title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:RecentChanges&amp;feed=rss" />
+		<link rel="alternate" type="application/atom+xml" title="ALT Linux WikiВ вЂ” Atom-Р»РµРЅС‚Р°" href="http://www.altlinux.org/index.php?title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:RecentChanges&amp;feed=atom" />
+		<title>Etcnet QoS вЂ” ALT Linux Wiki</title>
+		<link rel="stylesheet" href="/skins/common/shared.css?195" type="text/css" media="screen" />
+		<link rel="stylesheet" href="/skins/common/commonPrint.css?195" type="text/css" media="print" />
+		<link rel="stylesheet" href="/skins/monobook/main.css?195" type="text/css" media="screen" />
+		<!--[if lt IE 5.5000]><link rel="stylesheet" href="/skins/monobook/IE50Fixes.css?195" type="text/css" media="screen" /><![endif]-->
+		<!--[if IE 5.5000]><link rel="stylesheet" href="/skins/monobook/IE55Fixes.css?195" type="text/css" media="screen" /><![endif]-->
+		<!--[if IE 6]><link rel="stylesheet" href="/skins/monobook/IE60Fixes.css?195" type="text/css" media="screen" /><![endif]-->
+		<!--[if IE 7]><link rel="stylesheet" href="/skins/monobook/IE70Fixes.css?195" type="text/css" media="screen" /><![endif]-->
+		<link rel="stylesheet" href="/index.php?title=MediaWiki:Common.css&amp;usemsgcache=yes&amp;ctype=text%2Fcss&amp;smaxage=18000&amp;action=raw&amp;maxage=18000" type="text/css" />
+		<link rel="stylesheet" href="/index.php?title=MediaWiki:Print.css&amp;usemsgcache=yes&amp;ctype=text%2Fcss&amp;smaxage=18000&amp;action=raw&amp;maxage=18000" type="text/css" media="print" />
+		<link rel="stylesheet" href="/index.php?title=MediaWiki:Monobook.css&amp;usemsgcache=yes&amp;ctype=text%2Fcss&amp;smaxage=18000&amp;action=raw&amp;maxage=18000" type="text/css" />
+		<link rel="stylesheet" href="/index.php?title=-&amp;action=raw&amp;maxage=18000&amp;gen=css" type="text/css" />
+		<!--[if lt IE 7]><script type="text/javascript" src="/skins/common/IEFixes.js?195"></script>
+		<meta http-equiv="imagetoolbar" content="no" /><![endif]-->
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title>
-    FreeSource :
-    Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin&nbsp;/&nbsp;etcnet&nbsp;/&nbsp;qos
-  </title>
-  
-  <meta name="keywords" content="" />
-  <meta name="description" content="" />
-  <meta http-equiv="content-type" content="text/html; charset=windows-1251" />
-  <link rel="stylesheet" type="text/css" href="http://freesource.info/wiki/themes/coffee/css/wakka.css" />
-  <link rel="shortcut icon" href="http://freesource.info/wiki/themes/coffee/icons/wacko.ico" type="image/x-icon" />
-  <link rel="alternate" type="application/rss+xml" title="RecentChanges in RSS" href="http://freesource.info/wiki/xml/recentchanges_freesource.xml" />
-  <link rel="alternate" type="application/rss+xml" title="History/revisions of AltLinux/Sisyphus/admin/etcnet/qos in RSS" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos/revisions.xml" />
-  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/default.js"></script>
-  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/protoedit.js"></script>
-  <script language="JavaScript" type="text/javascript" src="http://freesource.info/wiki/js/wikiedit2.js"></script>
+		<script type= "text/javascript">/*<![CDATA[*/
+		var skin = "monobook";
+		var stylepath = "/skins";
+		var wgArticlePath = "/$1";
+		var wgScriptPath = "";
+		var wgScript = "/index.php";
+		var wgVariantArticlePath = false;
+		var wgActionPaths = {};
+		var wgServer = "http://www.altlinux.org";
+		var wgCanonicalNamespace = "";
+		var wgCanonicalSpecialPageName = false;
+		var wgNamespaceNumber = 0;
+		var wgPageName = "Etcnet_QoS";
+		var wgTitle = "Etcnet QoS";
+		var wgAction = "view";
+		var wgArticleId = "421";
+		var wgIsArticle = true;
+		var wgUserName = null;
+		var wgUserGroups = null;
+		var wgUserLanguage = "ru";
+		var wgContentLanguage = "ru";
+		var wgBreakFrames = false;
+		var wgCurRevisionId = "8884";
+		var wgVersion = "1.14.0";
+		var wgEnableAPI = true;
+		var wgEnableWriteAPI = true;
+		var wgSeparatorTransformTable = [",	.", "В 	,"];
+		var wgDigitTransformTable = ["", ""];
+		var wgRestrictionEdit = [];
+		var wgRestrictionMove = [];
+		/*]]>*/</script>
 
-  
-</head>
+		<script type="text/javascript" src="/skins/common/wikibits.js?195"><!-- wikibits js --></script>
+		<!-- Head Scripts -->
+		<script type="text/javascript" src="/extensions/SearchSuggest/SearchSuggest.js"></script>
+		<script type="text/javascript">hookEvent("load", ss_ajax_onload);</script>
+		<script type="text/javascript" src="/skins/common/ajax.js?195"></script>
+		<script type="text/javascript" src="/index.php?title=-&amp;action=raw&amp;gen=js&amp;useskin=monobook"><!-- site js --></script>
+	</head>
+<body class="mediawiki ltr ns-0 ns-subject page-Etcnet_QoS skin-monobook">
+	<div id="globalWrapper">
+		<div id="column-content">
+	<div id="content">
+		<a name="top" id="top"></a>
+				<h1 id="firstHeading" class="firstHeading">Etcnet QoS</h1>
+		<div id="bodyContent">
+			<h3 id="siteSub">РњР°С‚РµСЂРёР°Р» РёР· ALT Linux Wiki</h3>
+			<div id="contentSub">(РџРµСЂРµРЅР°РїСЂР°РІР»РµРЅРѕ СЃ <a href="/index.php?title=Etcnet/qos&amp;redirect=no" title="Etcnet/qos">Etcnet/qos</a>)</div>
+									<div id="jump-to-nav">РџРµСЂРµР№С‚Рё Рє: <a href="#column-one">РЅР°РІРёРіР°С†РёСЏ</a>, <a href="#searchInput">РїРѕРёСЃРє</a></div>			<!-- start content -->
+			<table style="border:1px solid #AAA; background:#F9F9F9; width:200px; margin: 0 0 1em 1em; padding:.2em; text-align:center; float: right;" class="noprint">
 
-<body onload="all_init();">
-
-<form action="http://freesource.info/wiki/Login"  method="post" >
-
-<input type="hidden" name="action" value="login" />
-
-<div class="header">
-        <div class="user">
-
-  
-                <span class="nobr"><input type="hidden" name="goback" value="AltLinux/Sisyphus/admin/etcnet/qos" /><strong>Вход:&nbsp;</strong><input type="text" name="name" size="18" class="login" />&nbsp;Пароль:&nbsp;<input type="password" name="password" class="login" size="8" />&nbsp;<input type="submit" value="Ok" /></span>
-
-  
-
-        </div>
-        <div class="title">
-                FreeSource: <a name="altlinux" href="http://freesource.info/wiki/AltLinux?v=h0k&" class="" title="Alt&nbsp;Linux">AltLinux</a>/<a name="altlinux.sisyphus" href="http://freesource.info/wiki/AltLinux/Sisyphus?v=1la&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus">Sisyphus</a>/<a name="altlinux.sisyphus.admin" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin?v=tym&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin">admin</a>/<a name="altlinux.sisyphus.admin.etcnet" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet?v=s9v&" class="" title="Alt&nbsp;Linux&nbsp;/&nbsp;Sisyphus&nbsp;/&nbsp;admin&nbsp;/&nbsp;etcnet">etcnet</a>/qos
-            <a class="Search" title="" href="http://freesource.info/wiki/TextSearch?phrase=AltLinux%2FSisyphus%2Fadmin%2Fetcnet%2Fqos">...</a>
-        </div>
-
-</div>
-
-<div class="bookmarks">
-
-        <a href="http://freesource.info/wiki/FreeSource">Free&nbsp;Source</a>
-         |
-        <a name="katalog" href="http://freesource.info/wiki/Katalog?v=6ad&" class="" title="Каталог">Каталог</a> | <a name="izmenenija" href="http://freesource.info/wiki/Izmenenija?v=14fp&" class="" title="Изменения">Изменения</a> | <a name="novyekommentarii" href="http://freesource.info/wiki/NovyeKommentarii?v=6ad&" class="" title="Новые&nbsp;Комментарии">НовыеКомментарии</a> | <a name="pol_zovateli" href="http://freesource.info/wiki/Pol'zovateli?v=1csw&" class="" title="Пользователи">Пользователи</a> | <a name="registracija" href="http://freesource.info/wiki/Registracija?v=1bcu&" class="" title="Регистрация">Регистрация</a>
-         |
-        
-
-
-</div>
-
-</form>
-
-<div class="pageBefore"><img src="http://freesource.info/wiki/images/z.gif" width="1" height="1" border="0" alt="" style="display:block" align="top" /></div><div class="page">
-<a name="h5457-1"></a><h1>Настройка QoS&nbsp;в&nbsp;<a name="...etcnet" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet?v=s9v&" class="" title="AltLinux/Sisyphus/admin/etcnet">/etc/net</a> (редакция 3)</h1><a name="h5457-2"></a><h2>Общая теория</h2><a name="p17742-1"></a><p class="auto" id="p17742-1">
-QoS&nbsp;&mdash; quality of&nbsp;service (качество обслуживания) &mdash; общий термин, обозначающий технологии управления скоростными и&nbsp;временными характеристиками пропускаемого трафика. <br />
-Конфигурация выполняется для&nbsp;каждого интерфейса отдельно. Для&nbsp;этого создаётся древовидная структура, состоящая из&nbsp;дисциплин очередей и&nbsp;классов. Корень этой структуры &mdash; так&nbsp;называемая корневая дисциплина очереди, которая является обязательным атрибутом интерфейса. Увидеть её можно так:<br />
-<!--notypo--><textarea class="code" rows="5" readonly="readonly">$ /sbin/ip ad sh dev eth0
+<tr>
+<td><a href="/%D0%A4%D0%B0%D0%B9%D0%BB:42px-Wikitext-ru.svg.png" class="image" title="Image:42px-Wikitext-ru.svg.pngвЂЋ"><img alt="Image:42px-Wikitext-ru.svg.pngвЂЋ" src="/images/0/05/42px-Wikitext-ru.svg.png" width="42" height="14" border="0" /></a>
+</td></tr>
+<tr>
+<td> <b>Р­С‚Сѓ СЃС‚Р°С‚СЊСЋ СЃР»РµРґСѓРµС‚ <a href="http://ru.wikipedia.org/wiki/Р’РёРєРёРїРµРґРёСЏ:Р’РёРєРёС„РёРєР°С†РёСЏ" class="external text" title="http://ru.wikipedia.org/wiki/Р’РёРєРёРїРµРґРёСЏ:Р’РёРєРёС„РёРєР°С†РёСЏ" rel="nofollow">РІРёРєРёС„РёС†РёСЂРѕРІР°С‚СЊ</a></b>.<br />
+</td></tr></table>
+<p><br />
+</p>
+<table id="toc" class="toc" summary="РЎРѕРґРµСЂР¶Р°РЅРёРµ"><tr><td><div id="toctitle"><h2>РЎРѕРґРµСЂР¶Р°РЅРёРµ</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#.D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_QoS_.D0.B2_.2Fetc.2Fnet_.28.D1.80.D0.B5.D0.B4.D0.B0.D0.BA.D1.86.D0.B8.D1.8F_3.29"><span class="tocnumber">1</span> <span class="toctext">РќР°СЃС‚СЂРѕР№РєР° QoS РІ /etc/net (СЂРµРґР°РєС†РёСЏ 3)</span></a>
+<ul>
+<li class="toclevel-2"><a href="#.D0.9E.D0.B1.D1.89.D0.B0.D1.8F_.D1.82.D0.B5.D0.BE.D1.80.D0.B8.D1.8F"><span class="tocnumber">1.1</span> <span class="toctext">РћР±С‰Р°СЏ С‚РµРѕСЂРёСЏ</span></a></li>
+<li class="toclevel-2"><a href="#.D0.9E.D0.BF.D0.B8.D1.81.D0.B0.D0.BD.D0.B8.D0.B5_.D1.80.D0.B5.D0.B0.D0.BB.D0.B8.D0.B7.D0.B0.D1.86.D0.B8.D0.B8"><span class="tocnumber">1.2</span> <span class="toctext">РћРїРёСЃР°РЅРёРµ СЂРµР°Р»РёР·Р°С†РёРё</span></a></li>
+<li class="toclevel-2"><a href="#.D0.9F.D1.80.D0.B8.D0.BC.D0.B5.D1.80_1"><span class="tocnumber">1.3</span> <span class="toctext">РџСЂРёРјРµСЂ 1</span></a></li>
+<li class="toclevel-2"><a href="#.D0.9F.D1.80.D0.B8.D0.BC.D0.B5.D1.80_2"><span class="tocnumber">1.4</span> <span class="toctext">РџСЂРёРјРµСЂ 2</span></a></li>
+<li class="toclevel-2"><a href="#.D0.A3.D1.82.D0.B8.D0.BB.D0.B8.D1.82.D1.8B"><span class="tocnumber">1.5</span> <span class="toctext">РЈС‚РёР»РёС‚С‹</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table><script type="text/javascript"> if (window.showTocToggle) { var tocShowText = "РїРѕРєР°Р·Р°С‚СЊ"; var tocHideText = "СѓР±СЂР°С‚СЊ"; showTocToggle(); } </script>
+<a name=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_QoS_.D0.B2_.2Fetc.2Fnet_.28.D1.80.D0.B5.D0.B4.D0.B0.D0.BA.D1.86.D0.B8.D1.8F_3.29" id=".D0.9D.D0.B0.D1.81.D1.82.D1.80.D0.BE.D0.B9.D0.BA.D0.B0_QoS_.D0.B2_.2Fetc.2Fnet_.28.D1.80.D0.B5.D0.B4.D0.B0.D0.BA.D1.86.D0.B8.D1.8F_3.29"></a><h2><span class="editsection">[<a href="/index.php?title=Etcnet_QoS&amp;action=edit&amp;section=1" title="РџСЂР°РІРёС‚СЊ СЃРµРєС†РёСЋ: РќР°СЃС‚СЂРѕР№РєР° QoS РІ /etc/net (СЂРµРґР°РєС†РёСЏ 3)">РїСЂР°РІРёС‚СЊ</a>]</span> <span class="mw-headline"> РќР°СЃС‚СЂРѕР№РєР° QoS РІ <a href="/Etcnet" title="Etcnet">/etc/net</a> (СЂРµРґР°РєС†РёСЏ 3) </span></h2>
+<a name=".D0.9E.D0.B1.D1.89.D0.B0.D1.8F_.D1.82.D0.B5.D0.BE.D1.80.D0.B8.D1.8F" id=".D0.9E.D0.B1.D1.89.D0.B0.D1.8F_.D1.82.D0.B5.D0.BE.D1.80.D0.B8.D1.8F"></a><h3><span class="editsection">[<a href="/index.php?title=Etcnet_QoS&amp;action=edit&amp;section=2" title="РџСЂР°РІРёС‚СЊ СЃРµРєС†РёСЋ: РћР±С‰Р°СЏ С‚РµРѕСЂРёСЏ">РїСЂР°РІРёС‚СЊ</a>]</span> <span class="mw-headline"> РћР±С‰Р°СЏ С‚РµРѕСЂРёСЏ </span></h3>
+<p>QoSВ вЂ” quality of service (РєР°С‡РµСЃС‚РІРѕ РѕР±СЃР»СѓР¶РёРІР°РЅРёСЏ)В вЂ” РѕР±С‰РёР№ С‚РµСЂРјРёРЅ, РѕР±РѕР·РЅР°С‡Р°СЋС‰РёР№ С‚РµС…РЅРѕР»РѕРіРёРё СѓРїСЂР°РІР»РµРЅРёСЏ СЃРєРѕСЂРѕСЃС‚РЅС‹РјРё Рё РІСЂРµРјРµРЅРЅС‹РјРё С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРєР°РјРё РїСЂРѕРїСѓСЃРєР°РµРјРѕРіРѕ С‚СЂР°С„РёРєР°.
+РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ РІС‹РїРѕР»РЅСЏРµС‚СЃСЏ РґР»СЏ РєР°Р¶РґРѕРіРѕ РёРЅС‚РµСЂС„РµР№СЃР° РѕС‚РґРµР»СЊРЅРѕ. Р”Р»СЏ СЌС‚РѕРіРѕ СЃРѕР·РґР°С‘С‚СЃСЏ РґСЂРµРІРѕРІРёРґРЅР°СЏ СЃС‚СЂСѓРєС‚СѓСЂР°, СЃРѕСЃС‚РѕСЏС‰Р°СЏ РёР· РґРёСЃС†РёРїР»РёРЅ РѕС‡РµСЂРµРґРµР№ Рё РєР»Р°СЃСЃРѕРІ. РљРѕСЂРµРЅСЊ СЌС‚РѕР№ СЃС‚СЂСѓРєС‚СѓСЂС‹В вЂ” С‚Р°Рє РЅР°Р·С‹РІР°РµРјР°СЏ РєРѕСЂРЅРµРІР°СЏ РґРёСЃС†РёРїР»РёРЅР° РѕС‡РµСЂРµРґРё, РєРѕС‚РѕСЂР°СЏ СЏРІР»СЏРµС‚СЃСЏ РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Рј Р°С‚СЂРёР±СѓС‚РѕРј РёРЅС‚РµСЂС„РµР№СЃР°. РЈРІРёРґРµС‚СЊ РµС‘ РјРѕР¶РЅРѕ С‚Р°Рє:
+</p>
+<pre>$ /sbin/ip ad sh dev eth0
 3: eth0: &lt;BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc pfifo_fast qlen 1000
     link/ether 4c:00:10:3b:3e:f0 brd ff:ff:ff:ff:ff:ff
-    inet 10.1.1.175/23 brd 10.1.1.255 scope global eth0</textarea><!--/notypo--><br />
-В&nbsp;данном случае корневая дисциплина очереди &mdash; pfifo_fast (она назначается по&nbsp;умолчанию). Иерархия очередей и&nbsp;классов определяет, как&nbsp;именно будут обрабатываться исходящие с&nbsp;интерфейса пакеты: номинальная скорость, параметры допустимых кратковременных всплесков, правила переупорядочивания пакетов внутри очередей, условия взаимного заимствования полосы пропускания между объектами на&nbsp;одном уровне иерархии и&nbsp;прочие параметры, зависящие от&nbsp;конкретной используемой структуры. &laquo;Перпендикулярно&raquo; этому дереву существует набор фильтров, которые описывают прохождение пакетов по&nbsp;структуре. Наиболее популярными являются дисциплины очередей CBQ&nbsp;(class based queueing) и&nbsp;HTB (hierarchical token bucket).<br />
-Дерево CBQ&nbsp;формируется по&nbsp;довольно простым принципам:</p><ul><li> пропускная способность корневой дисциплины очереди интерфейса равна физической пропускной способности интерфейса
-</li><li> классы могут иметь своим родителем только дисциплину очереди
-</li><li> решение о&nbsp;направлении пакета в&nbsp;класс принимается в&nbsp;дисциплине очереди с&nbsp;помощью фильтров
-</li><li> если вам&nbsp;необходимо разделить класс на&nbsp;подклассы, то&nbsp;создайте вложенную дисциплину очереди, а&nbsp;далее делите её</li></ul><a name="p17742-2"></a><p class="auto" id="p17742-2">
-Дерево HTB&nbsp;строится ещё проще:</p><ul><li> классы могут содержать другие классы напрямую, без&nbsp;промежуточных дисциплин очередей</li></ul>
-<a name="h5457-3"></a><h2>Описание реализации</h2><a name="p17742-3"></a><p class="auto" id="p17742-3">
-Общая идея реализации в&nbsp;/etc/net заключается в&nbsp;том, что&nbsp;иерархия объектов QoS&nbsp;представляется в&nbsp;виде дерева каталогов и&nbsp;файлов. Конфигурация начинается с&nbsp;каталога <tt>qos</tt>, располагающегося в&nbsp;каталоге конфигурации интерфейса. Далее в&nbsp;нём могут содержаться другие каталоги, которые представляют либо дисциплины очереди, либо классы. В&nbsp;каталогах дисциплин присутствуют файлы с&nbsp;названием <tt>qdisc</tt>, а&nbsp;в каталогах с&nbsp;классами &mdash; файлы <tt>class</tt>. Эти&nbsp;файлы содержат параметры дисциплин и&nbsp;классов. Фильтры располагаются в&nbsp;файлах с&nbsp;названием <tt>filter</tt>.</p><a name="h5457-4"></a><h2>Пример 1</h2><a name="p17742-4"></a><p class="auto" id="p17742-4">
-Рассмотрим пример конфигурации HTB, поставляемый с&nbsp;/etc/net: <a href="http://etcnet.org/examples/QoS-HTB-user-guide/1/qdisc" target="_blank" title="Внешняя ссылка (откроется в новом окне)" class="outerlink"><img src="http://freesource.info/wiki/themes/coffee/icons/web.gif" alt="" border="0" />http://etcnet.org/examples/QoS-HTB-user-guide/1/qdisc</a><br />
-Так&nbsp;как дерево начинается с&nbsp;корневой дисциплины, то&nbsp;в каталоге <tt>qos</tt> будет содержаться только один каталог <tt>qos/1</tt>, а&nbsp;в нём будет содержаться файл <tt>qdisc</tt>:<br />
-<!--notypo--><textarea class="code" rows="3" readonly="readonly">[DIR] 1/                                       22-Aug-2005 14:13      -  
-[TXT] qdisc                                    18-Mar-2005 11:06     1k</textarea><!--/notypo--><br />
-Корневая дисциплина здесь имеет номер 1. Параметры корневой дисциплины простые: <tt>htb default 12</tt>. Корневая дисциплина кроме своих параметров содержит один класс в&nbsp;каталоге <tt>qos/1/1</tt>. Полным именем объекта будет 1:1. Левое число отсутствует в&nbsp;названии каталога, так&nbsp;как оно&nbsp;всегда равно идентификатору очереди. В&nbsp;файле <tt>qos/1/1/class</tt> содержатся параметры класса: <tt>htb rate 100kbps ceil 100kbps</tt>. Кроме этого, в&nbsp;каталогах <tt>qos/1/1/2</tt> и&nbsp;<tt>qos/1/1/12</tt> определено ещё два&nbsp;класса: 1:2 и&nbsp;1:12. В&nbsp;файле <tt>qos/1/1/extra</tt> содержатся параметры, общие для&nbsp;классов 1:2 и&nbsp;1:12: <tt>htb ceil 100kbps</tt>. Это&nbsp;необязательный файл, можно было бы&nbsp;поместить эти&nbsp;параметры в&nbsp;файлы <tt>qos/1/1/2/class</tt> и&nbsp;<tt>qos/1/1/12/class</tt>. Если у&nbsp;вас много классов на&nbsp;одном уровне, то&nbsp;файл <tt>extra</tt> поможет вынести общую часть &laquo;за скобки&raquo;.<br />
-Класс 1:12 пуст, а&nbsp;класс 1:2 содержит 1:10 и&nbsp;1:11. В&nbsp;файлах <tt>qos/1/1/2/10/filter</tt> и&nbsp;<tt>qos/1/1/2/11/filter</tt> содержатся описания фильтров по&nbsp;одному в&nbsp;каждой строке. Местоположение файла <tt>filter</tt> определяет, куда будут направлены пакеты, которые ему&nbsp;удовлетворяют. Для&nbsp;класса 1:10 будет использован один фильтр <tt>protocol ip&nbsp;prio 1 u32 match ip&nbsp;src 1.2.3.4 match ip&nbsp;dport 80 0xffff</tt>, что&nbsp;соответствует исходящему HTTP-трафику с&nbsp;адреса 1.2.3.4, а&nbsp;для класса 1:11 будет использован фильтр <tt>protocol ip&nbsp;prio 1 u32 match ip&nbsp;src 1.2.3.4</tt>, что&nbsp;соответствует всему исходящему трафику с&nbsp;адреса 1.2.3.4. Файлы <tt>class</tt> классов 1:10 и&nbsp;1:11 содержат соответственно <tt>rate 30kbps</tt> и&nbsp;<tt>rate 10kbps</tt>.</p><a name="h5457-5"></a><h2>Пример 2</h2><a name="p17742-5"></a><p class="auto" id="p17742-5">
-1. Я&nbsp;советую, поставив пакет etcnet, сначала спрятать куда-нибудь все&nbsp;каталоги интерфейсов из&nbsp;<tt>/etc/net/ifaces</tt> (   кроме <tt>lo</tt>, <tt>default</tt> и&nbsp;<tt>unknown</tt>) и&nbsp;запустить <tt>/etc/net/scripts/initconf</tt>. Его&nbsp;выдачу сохранить и&nbsp;на основании этой выдачи организовать файл <tt>/etc/net/iftab</tt>, который определит логические имена интерфейсов. Например, одну сетевую карту можно из&nbsp;eth0 переименовать в&nbsp;соответствии с&nbsp;её макадресом в&nbsp;wan, другую &ndash; в&nbsp;lan. Я&nbsp;для себя использовал вместо wan&nbsp;имя провайдера (comcast), а&nbsp;вместо lan&nbsp;&ndash; придуманное самим имя&nbsp;локального домена своей сети 192.168.10.0/24 (menlo). Ну&nbsp;и дальше буду их&nbsp;использовать, чтобы не&nbsp;ошибиться где-нибудь заменяя их&nbsp;на более нейтральные типа wan&nbsp;и&nbsp;lan. Далее создайте каталоги с&nbsp;именами определёнными в&nbsp;таблице <tt>/etc/net/iftab</tt>, внутри <tt>/etc/ifaces</tt>. Я&nbsp;создал <tt>/etc/net/ifaces/comcast</tt> и&nbsp;<tt>/etc/net/ifaces/comcast</tt>. И&nbsp;положил туда нужные мне&nbsp;файлы <tt>options</tt>. Для&nbsp;внешней сети <tt>comcast</tt> достаточно определить TYPE и&nbsp;BOOTPROTO, я&nbsp;добавил строчку MODULE как&nbsp;того рекомендовал initconf:<br />
-<!--notypo--><textarea class="code" rows="6" readonly="readonly"># cat &lt;&lt;EOF &gt;/etc/net/ifaces/comcast/options
+    inet 10.1.1.175/23 brd 10.1.1.255 scope global eth0</pre>
+<p>Р’ РґР°РЅРЅРѕРј СЃР»СѓС‡Р°Рµ РєРѕСЂРЅРµРІР°СЏ РґРёСЃС†РёРїР»РёРЅР° РѕС‡РµСЂРµРґРёВ вЂ” pfifo_fast (РѕРЅР° РЅР°Р·РЅР°С‡Р°РµС‚СЃСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ). РРµСЂР°СЂС…РёСЏ РѕС‡РµСЂРµРґРµР№ Рё РєР»Р°СЃСЃРѕРІ РѕРїСЂРµРґРµР»СЏРµС‚, РєР°Рє РёРјРµРЅРЅРѕ Р±СѓРґСѓС‚ РѕР±СЂР°Р±Р°С‚С‹РІР°С‚СЊСЃСЏ РёСЃС…РѕРґСЏС‰РёРµ СЃ РёРЅС‚РµСЂС„РµР№СЃР° РїР°РєРµС‚С‹: РЅРѕРјРёРЅР°Р»СЊРЅР°СЏ СЃРєРѕСЂРѕСЃС‚СЊ, РїР°СЂР°РјРµС‚СЂС‹ РґРѕРїСѓСЃС‚РёРјС‹С… РєСЂР°С‚РєРѕРІСЂРµРјРµРЅРЅС‹С… РІСЃРїР»РµСЃРєРѕРІ, РїСЂР°РІРёР»Р° РїРµСЂРµСѓРїРѕСЂСЏРґРѕС‡РёРІР°РЅРёСЏ РїР°РєРµС‚РѕРІ РІРЅСѓС‚СЂРё РѕС‡РµСЂРµРґРµР№, СѓСЃР»РѕРІРёСЏ РІР·Р°РёРјРЅРѕРіРѕ Р·Р°РёРјСЃС‚РІРѕРІР°РЅРёСЏ РїРѕР»РѕСЃС‹ РїСЂРѕРїСѓСЃРєР°РЅРёСЏ РјРµР¶РґСѓ РѕР±СЉРµРєС‚Р°РјРё РЅР° РѕРґРЅРѕРј СѓСЂРѕРІРЅРµ РёРµСЂР°СЂС…РёРё Рё РїСЂРѕС‡РёРµ РїР°СЂР°РјРµС‚СЂС‹, Р·Р°РІРёСЃСЏС‰РёРµ РѕС‚ РєРѕРЅРєСЂРµС‚РЅРѕР№ РёСЃРїРѕР»СЊР·СѓРµРјРѕР№ СЃС‚СЂСѓРєС‚СѓСЂС‹. В«РџРµСЂРїРµРЅРґРёРєСѓР»СЏСЂРЅРѕВ» СЌС‚РѕРјСѓ РґРµСЂРµРІСѓ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РЅР°Р±РѕСЂ С„РёР»СЊС‚СЂРѕРІ, РєРѕС‚РѕСЂС‹Рµ РѕРїРёСЃС‹РІР°СЋС‚ РїСЂРѕС…РѕР¶РґРµРЅРёРµ РїР°РєРµС‚РѕРІ РїРѕ СЃС‚СЂСѓРєС‚СѓСЂРµ. РќР°РёР±РѕР»РµРµ РїРѕРїСѓР»СЏСЂРЅС‹РјРё СЏРІР»СЏСЋС‚СЃСЏ РґРёСЃС†РёРїР»РёРЅС‹ РѕС‡РµСЂРµРґРµР№ CBQ (class based queueing) Рё HTB (hierarchical token bucket).
+Р”РµСЂРµРІРѕ CBQ С„РѕСЂРјРёСЂСѓРµС‚СЃСЏ РїРѕ РґРѕРІРѕР»СЊРЅРѕ РїСЂРѕСЃС‚С‹Рј РїСЂРёРЅС†РёРїР°Рј:
+</p>
+<ul><li> РїСЂРѕРїСѓСЃРєРЅР°СЏ СЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ РєРѕСЂРЅРµРІРѕР№ РґРёСЃС†РёРїР»РёРЅС‹ РѕС‡РµСЂРµРґРё РёРЅС‚РµСЂС„РµР№СЃР° СЂР°РІРЅР° С„РёР·РёС‡РµСЃРєРѕР№ РїСЂРѕРїСѓСЃРєРЅРѕР№ СЃРїРѕСЃРѕР±РЅРѕСЃС‚Рё РёРЅС‚РµСЂС„РµР№СЃР°
+</li><li> РєР»Р°СЃСЃС‹ РјРѕРіСѓС‚ РёРјРµС‚СЊ СЃРІРѕРёРј СЂРѕРґРёС‚РµР»РµРј С‚РѕР»СЊРєРѕ РґРёСЃС†РёРїР»РёРЅСѓ РѕС‡РµСЂРµРґРё
+</li><li> СЂРµС€РµРЅРёРµ Рѕ РЅР°РїСЂР°РІР»РµРЅРёРё РїР°РєРµС‚Р° РІ РєР»Р°СЃСЃ РїСЂРёРЅРёРјР°РµС‚СЃСЏ РІ РґРёСЃС†РёРїР»РёРЅРµ РѕС‡РµСЂРµРґРё СЃ РїРѕРјРѕС‰СЊСЋ С„РёР»СЊС‚СЂРѕРІ
+</li><li> РµСЃР»Рё РІР°Рј РЅРµРѕР±С…РѕРґРёРјРѕ СЂР°Р·РґРµР»РёС‚СЊ РєР»Р°СЃСЃ РЅР° РїРѕРґРєР»Р°СЃСЃС‹, С‚Рѕ СЃРѕР·РґР°Р№С‚Рµ РІР»РѕР¶РµРЅРЅСѓСЋ РґРёСЃС†РёРїР»РёРЅСѓ РѕС‡РµСЂРµРґРё, Р° РґР°Р»РµРµ РґРµР»РёС‚Рµ РµС‘
+</li></ul>
+<p>Р”РµСЂРµРІРѕ HTB СЃС‚СЂРѕРёС‚СЃСЏ РµС‰С‘ РїСЂРѕС‰Рµ:
+</p>
+<ul><li> РєР»Р°СЃСЃС‹ РјРѕРіСѓС‚ СЃРѕРґРµСЂР¶Р°С‚СЊ РґСЂСѓРіРёРµ РєР»Р°СЃСЃС‹ РЅР°РїСЂСЏРјСѓСЋ, Р±РµР· РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹С… РґРёСЃС†РёРїР»РёРЅ РѕС‡РµСЂРµРґРµР№
+</li></ul>
+<a name=".D0.9E.D0.BF.D0.B8.D1.81.D0.B0.D0.BD.D0.B8.D0.B5_.D1.80.D0.B5.D0.B0.D0.BB.D0.B8.D0.B7.D0.B0.D1.86.D0.B8.D0.B8" id=".D0.9E.D0.BF.D0.B8.D1.81.D0.B0.D0.BD.D0.B8.D0.B5_.D1.80.D0.B5.D0.B0.D0.BB.D0.B8.D0.B7.D0.B0.D1.86.D0.B8.D0.B8"></a><h3><span class="editsection">[<a href="/index.php?title=Etcnet_QoS&amp;action=edit&amp;section=3" title="РџСЂР°РІРёС‚СЊ СЃРµРєС†РёСЋ: РћРїРёСЃР°РЅРёРµ СЂРµР°Р»РёР·Р°С†РёРё">РїСЂР°РІРёС‚СЊ</a>]</span> <span class="mw-headline"> РћРїРёСЃР°РЅРёРµ СЂРµР°Р»РёР·Р°С†РёРё </span></h3>
+<p>РћР±С‰Р°СЏ РёРґРµСЏ СЂРµР°Р»РёР·Р°С†РёРё РІ /etc/net Р·Р°РєР»СЋС‡Р°РµС‚СЃСЏ РІ С‚РѕРј, С‡С‚Рѕ РёРµСЂР°СЂС…РёСЏ РѕР±СЉРµРєС‚РѕРІ QoS РїСЂРµРґСЃС‚Р°РІР»СЏРµС‚СЃСЏ РІ РІРёРґРµ РґРµСЂРµРІР° РєР°С‚Р°Р»РѕРіРѕРІ Рё С„Р°Р№Р»РѕРІ. РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃ РєР°С‚Р°Р»РѕРіР° <tt>qos</tt>, СЂР°СЃРїРѕР»Р°РіР°СЋС‰РµРіРѕСЃСЏ РІ РєР°С‚Р°Р»РѕРіРµ РєРѕРЅС„РёРіСѓСЂР°С†РёРё РёРЅС‚РµСЂС„РµР№СЃР°. Р”Р°Р»РµРµ РІ РЅС‘Рј РјРѕРіСѓС‚ СЃРѕРґРµСЂР¶Р°С‚СЊСЃСЏ РґСЂСѓРіРёРµ РєР°С‚Р°Р»РѕРіРё, РєРѕС‚РѕСЂС‹Рµ РїСЂРµРґСЃС‚Р°РІР»СЏСЋС‚ Р»РёР±Рѕ РґРёСЃС†РёРїР»РёРЅС‹ РѕС‡РµСЂРµРґРё, Р»РёР±Рѕ РєР»Р°СЃСЃС‹. Р’ РєР°С‚Р°Р»РѕРіР°С… РґРёСЃС†РёРїР»РёРЅ РїСЂРёСЃСѓС‚СЃС‚РІСѓСЋС‚ С„Р°Р№Р»С‹ СЃ РЅР°Р·РІР°РЅРёРµРј <tt>qdisc</tt>, Р° РІ РєР°С‚Р°Р»РѕРіР°С… СЃ РєР»Р°СЃСЃР°РјРёВ вЂ” С„Р°Р№Р»С‹ <tt>class</tt>. Р­С‚Рё С„Р°Р№Р»С‹ СЃРѕРґРµСЂР¶Р°С‚ РїР°СЂР°РјРµС‚СЂС‹ РґРёСЃС†РёРїР»РёРЅ Рё РєР»Р°СЃСЃРѕРІ. Р¤РёР»СЊС‚СЂС‹ СЂР°СЃРїРѕР»Р°РіР°СЋС‚СЃСЏ РІ С„Р°Р№Р»Р°С… СЃ РЅР°Р·РІР°РЅРёРµРј <tt>filter</tt>.
+</p>
+<a name=".D0.9F.D1.80.D0.B8.D0.BC.D0.B5.D1.80_1" id=".D0.9F.D1.80.D0.B8.D0.BC.D0.B5.D1.80_1"></a><h3><span class="editsection">[<a href="/index.php?title=Etcnet_QoS&amp;action=edit&amp;section=4" title="РџСЂР°РІРёС‚СЊ СЃРµРєС†РёСЋ: РџСЂРёРјРµСЂ 1">РїСЂР°РІРёС‚СЊ</a>]</span> <span class="mw-headline"> РџСЂРёРјРµСЂ 1 </span></h3>
+<p>Р Р°СЃСЃРјРѕС‚СЂРёРј РїСЂРёРјРµСЂ РєРѕРЅС„РёРіСѓСЂР°С†РёРё HTB, РїРѕСЃС‚Р°РІР»СЏРµРјС‹Р№ СЃ /etc/net: <a href="http://etcnet.org/examples/QoS-HTB-user-guide/1/qdisc" class="external free" title="http://etcnet.org/examples/QoS-HTB-user-guide/1/qdisc" rel="nofollow">http://etcnet.org/examples/QoS-HTB-user-guide/1/qdisc</a>
+РўР°Рє РєР°Рє РґРµСЂРµРІРѕ РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃ РєРѕСЂРЅРµРІРѕР№ РґРёСЃС†РёРїР»РёРЅС‹, С‚Рѕ РІ РєР°С‚Р°Р»РѕРіРµ <tt>qos</tt> Р±СѓРґРµС‚ СЃРѕРґРµСЂР¶Р°С‚СЊСЃСЏ С‚РѕР»СЊРєРѕ РѕРґРёРЅ РєР°С‚Р°Р»РѕРі <tt>qos/1</tt>, Р° РІ РЅС‘Рј Р±СѓРґРµС‚ СЃРѕРґРµСЂР¶Р°С‚СЊСЃСЏ С„Р°Р№Р» <tt>qdisc</tt>:
+</p>
+<pre>[DIR] 1/                                       22-Aug-2005 14:13      -  
+[TXT] qdisc                                    18-Mar-2005 11:06     1k</pre>
+<p>РљРѕСЂРЅРµРІР°СЏ РґРёСЃС†РёРїР»РёРЅР° Р·РґРµСЃСЊ РёРјРµРµС‚ РЅРѕРјРµСЂ 1. РџР°СЂР°РјРµС‚СЂС‹ РєРѕСЂРЅРµРІРѕР№ РґРёСЃС†РёРїР»РёРЅС‹ РїСЂРѕСЃС‚С‹Рµ: <tt>htb default 12</tt>. РљРѕСЂРЅРµРІР°СЏ РґРёСЃС†РёРїР»РёРЅР° РєСЂРѕРјРµ СЃРІРѕРёС… РїР°СЂР°РјРµС‚СЂРѕРІ СЃРѕРґРµСЂР¶РёС‚ РѕРґРёРЅ РєР»Р°СЃСЃ РІ РєР°С‚Р°Р»РѕРіРµ <tt>qos/1/1</tt>. РџРѕР»РЅС‹Рј РёРјРµРЅРµРј РѕР±СЉРµРєС‚Р° Р±СѓРґРµС‚ 1:1. Р›РµРІРѕРµ С‡РёСЃР»Рѕ РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚ РІ РЅР°Р·РІР°РЅРёРё РєР°С‚Р°Р»РѕРіР°, С‚Р°Рє РєР°Рє РѕРЅРѕ РІСЃРµРіРґР° СЂР°РІРЅРѕ РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂСѓ РѕС‡РµСЂРµРґРё. Р’ С„Р°Р№Р»Рµ <tt>qos/1/1/class</tt> СЃРѕРґРµСЂР¶Р°С‚СЃСЏ РїР°СЂР°РјРµС‚СЂС‹ РєР»Р°СЃСЃР°: <tt>htb rate 100kbps ceil 100kbps</tt>. РљСЂРѕРјРµ СЌС‚РѕРіРѕ, РІ РєР°С‚Р°Р»РѕРіР°С… <tt>qos/1/1/2</tt> Рё <tt>qos/1/1/12</tt> РѕРїСЂРµРґРµР»РµРЅРѕ РµС‰С‘ РґРІР° РєР»Р°СЃСЃР°: 1:2 Рё 1:12. Р’ С„Р°Р№Р»Рµ <tt>qos/1/1/extra</tt> СЃРѕРґРµСЂР¶Р°С‚СЃСЏ РїР°СЂР°РјРµС‚СЂС‹, РѕР±С‰РёРµ РґР»СЏ РєР»Р°СЃСЃРѕРІ 1:2 Рё 1:12: <tt>htb ceil 100kbps</tt>. Р­С‚Рѕ РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅС‹Р№ С„Р°Р№Р», РјРѕР¶РЅРѕ Р±С‹Р»Рѕ Р±С‹ РїРѕРјРµСЃС‚РёС‚СЊ СЌС‚Рё РїР°СЂР°РјРµС‚СЂС‹ РІ С„Р°Р№Р»С‹ <tt>qos/1/1/2/class</tt> Рё <tt>qos/1/1/12/class</tt>. Р•СЃР»Рё Сѓ РІР°СЃ РјРЅРѕРіРѕ РєР»Р°СЃСЃРѕРІ РЅР° РѕРґРЅРѕРј СѓСЂРѕРІРЅРµ, С‚Рѕ С„Р°Р№Р» <tt>extra</tt> РїРѕРјРѕР¶РµС‚ РІС‹РЅРµСЃС‚Рё РѕР±С‰СѓСЋ С‡Р°СЃС‚СЊ В«Р·Р° СЃРєРѕР±РєРёВ».
+РљР»Р°СЃСЃ 1:12 РїСѓСЃС‚, Р° РєР»Р°СЃСЃ 1:2 СЃРѕРґРµСЂР¶РёС‚ 1:10 Рё 1:11. Р’ С„Р°Р№Р»Р°С… <tt>qos/1/1/2/10/filter</tt> Рё <tt>qos/1/1/2/11/filter</tt> СЃРѕРґРµСЂР¶Р°С‚СЃСЏ РѕРїРёСЃР°РЅРёСЏ С„РёР»СЊС‚СЂРѕРІ РїРѕ РѕРґРЅРѕРјСѓ РІ РєР°Р¶РґРѕР№ СЃС‚СЂРѕРєРµ. РњРµСЃС‚РѕРїРѕР»РѕР¶РµРЅРёРµ С„Р°Р№Р»Р° <tt>filter</tt> РѕРїСЂРµРґРµР»СЏРµС‚, РєСѓРґР° Р±СѓРґСѓС‚ РЅР°РїСЂР°РІР»РµРЅС‹ РїР°РєРµС‚С‹, РєРѕС‚РѕСЂС‹Рµ РµРјСѓ СѓРґРѕРІР»РµС‚РІРѕСЂСЏСЋС‚. Р”Р»СЏ РєР»Р°СЃСЃР° 1:10 Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°РЅ РѕРґРёРЅ С„РёР»СЊС‚СЂ <tt>protocol ip prio 1 u32 match ip src 1.2.3.4 match ip dport 80 0xffff</tt>, С‡С‚Рѕ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РёСЃС…РѕРґСЏС‰РµРјСѓ HTTP-С‚СЂР°С„РёРєСѓ СЃ Р°РґСЂРµСЃР° 1.2.3.4, Р° РґР»СЏ РєР»Р°СЃСЃР° 1:11 Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°РЅ С„РёР»СЊС‚СЂ <tt>protocol ip prio 1 u32 match ip src 1.2.3.4</tt>, С‡С‚Рѕ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ РІСЃРµРјСѓ РёСЃС…РѕРґСЏС‰РµРјСѓ С‚СЂР°С„РёРєСѓ СЃ Р°РґСЂРµСЃР° 1.2.3.4. Р¤Р°Р№Р»С‹ <tt>class</tt> РєР»Р°СЃСЃРѕРІ 1:10 Рё 1:11 СЃРѕРґРµСЂР¶Р°С‚ СЃРѕРѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕ <tt>rate 30kbps</tt> Рё <tt>rate 10kbps</tt>.
+</p>
+<a name=".D0.9F.D1.80.D0.B8.D0.BC.D0.B5.D1.80_2" id=".D0.9F.D1.80.D0.B8.D0.BC.D0.B5.D1.80_2"></a><h3><span class="editsection">[<a href="/index.php?title=Etcnet_QoS&amp;action=edit&amp;section=5" title="РџСЂР°РІРёС‚СЊ СЃРµРєС†РёСЋ: РџСЂРёРјРµСЂ 2">РїСЂР°РІРёС‚СЊ</a>]</span> <span class="mw-headline"> РџСЂРёРјРµСЂ 2 </span></h3>
+<p>1. РЇ СЃРѕРІРµС‚СѓСЋ, РїРѕСЃС‚Р°РІРёРІ РїР°РєРµС‚ etcnet, СЃРЅР°С‡Р°Р»Р° СЃРїСЂСЏС‚Р°С‚СЊ РєСѓРґР°-РЅРёР±СѓРґСЊ РІСЃРµ РєР°С‚Р°Р»РѕРіРё РёРЅС‚РµСЂС„РµР№СЃРѕРІ РёР· <tt>/etc/net/ifaces</tt> (РєСЂРѕРјРµ <tt>lo</tt>, <tt>default</tt> Рё <tt>unknown</tt>) Рё Р·Р°РїСѓСЃС‚РёС‚СЊ <tt>/etc/net/scripts/initconf</tt>. Р•РіРѕ РІС‹РґР°С‡Сѓ СЃРѕС…СЂР°РЅРёС‚СЊ Рё РЅР° РѕСЃРЅРѕРІР°РЅРёРё СЌС‚РѕР№ РІС‹РґР°С‡Рё РѕСЂРіР°РЅРёР·РѕРІР°С‚СЊ С„Р°Р№Р» <tt>/etc/net/iftab</tt>, РєРѕС‚РѕСЂС‹Р№ РѕРїСЂРµРґРµР»РёС‚ Р»РѕРіРёС‡РµСЃРєРёРµ РёРјРµРЅР° РёРЅС‚РµСЂС„РµР№СЃРѕРІ. РќР°РїСЂРёРјРµСЂ, РѕРґРЅСѓ СЃРµС‚РµРІСѓСЋ РєР°СЂС‚Сѓ РјРѕР¶РЅРѕ РёР· eth0 РїРµСЂРµРёРјРµРЅРѕРІР°С‚СЊ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ РµС‘ РјР°РєР°РґСЂРµСЃРѕРј РІ wan, РґСЂСѓРіСѓСЋВ вЂ” РІ lan. РЇ РґР»СЏ СЃРµР±СЏ РёСЃРїРѕР»СЊР·РѕРІР°Р» РІРјРµСЃС‚Рѕ wan РёРјСЏ РїСЂРѕРІР°Р№РґРµСЂР° (comcast), Р° РІРјРµСЃС‚Рѕ lanВ вЂ” РїСЂРёРґСѓРјР°РЅРЅРѕРµ СЃР°РјРёРј РёРјСЏ Р»РѕРєР°Р»СЊРЅРѕРіРѕ РґРѕРјРµРЅР° СЃРІРѕРµР№ СЃРµС‚Рё 192.168.10.0/24 (menlo). РќСѓ Рё РґР°Р»СЊС€Рµ Р±СѓРґСѓ РёС… РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ, С‡С‚РѕР±С‹ РЅРµ РѕС€РёР±РёС‚СЊСЃСЏ РіРґРµ-РЅРёР±СѓРґСЊ Р·Р°РјРµРЅСЏСЏ РёС… РЅР° Р±РѕР»РµРµ РЅРµР№С‚СЂР°Р»СЊРЅС‹Рµ С‚РёРїР° wan Рё lan. Р”Р°Р»РµРµ СЃРѕР·РґР°Р№С‚Рµ РєР°С‚Р°Р»РѕРіРё СЃ РёРјРµРЅР°РјРё РѕРїСЂРµРґРµР»С‘РЅРЅС‹РјРё РІ С‚Р°Р±Р»РёС†Рµ <tt>/etc/net/iftab</tt>, РІРЅСѓС‚СЂРё <tt>/etc/ifaces</tt>. РЇ СЃРѕР·РґР°Р» <tt>/etc/net/ifaces/comcast</tt> Рё <tt>/etc/net/ifaces/menlo</tt>. Р РїРѕР»РѕР¶РёР» С‚СѓРґР° РЅСѓР¶РЅС‹Рµ РјРЅРµ С„Р°Р№Р»С‹ <tt>options</tt>. Р”Р»СЏ РІРЅРµС€РЅРµР№ СЃРµС‚Рё <tt>comcast</tt> РґРѕСЃС‚Р°С‚РѕС‡РЅРѕ РѕРїСЂРµРґРµР»РёС‚СЊ TYPE Рё BOOTPROTO, СЏ РґРѕР±Р°РІРёР» СЃС‚СЂРѕС‡РєСѓ MODULE РєР°Рє С‚РѕРіРѕ СЂРµРєРѕРјРµРЅРґРѕРІР°Р» initconf:
+</p>
+<pre># cat &lt;&lt;EOF &gt;/etc/net/ifaces/comcast/options
 TYPE=eth
 BOOTPROTO=dhcp
 MODULE=tulip
-EOF</textarea><!--/notypo--><br />
-Для&nbsp;интерфейса локальной сети menlo адрес задан статически, так&nbsp;что там&nbsp;кроме файла options ещё нужен файл ipv4address:<br />
-<!--notypo--><textarea class="code" rows="7" readonly="readonly"># cat &lt;&lt;EOF &gt;/etc/net/ifaces/menlo/options
+EOF</pre>
+<p>Р”Р»СЏ РёРЅС‚РµСЂС„РµР№СЃР° Р»РѕРєР°Р»СЊРЅРѕР№ СЃРµС‚Рё menlo Р°РґСЂРµСЃ Р·Р°РґР°РЅ СЃС‚Р°С‚РёС‡РµСЃРєРё, С‚Р°Рє С‡С‚Рѕ С‚Р°Рј РєСЂРѕРјРµ С„Р°Р№Р»Р° options РµС‰С‘ РЅСѓР¶РµРЅ С„Р°Р№Р» ipv4address:
+</p>
+<pre># cat &lt;&lt;EOF &gt;/etc/net/ifaces/menlo/options
 TYPE=eth
 BOOTPROTO=static
 MODULE=natsemi
 EOF
-# echo &quot;192.168.10.1/24&quot; &gt;/etc/net/ifaces/menlo/ipv4address</textarea><!--/notypo--><br />
-2. Дальше настраиваете ip-forwarding и&nbsp;nat masquarading. За&nbsp;первый отвечает строчка<br />
-<!--notypo--><textarea class="code" rows="2" readonly="readonly">net.ipv4.ip_forward = 1</textarea><!--/notypo--><br />
-в&nbsp;файле <tt>/etc/net/sysctl.conf</tt>, в&nbsp;то время как&nbsp;другое делается добавлением строки<br />
-<tt>masquerade out-iface comcast</tt><br />
-в&nbsp;файл <tt>/etc/net/ifaces/default/fw/iptables/nat/POSTROUTING</tt>:<br />
-<!--notypo--><textarea class="code" rows="2" readonly="readonly">echo &quot;masquerade out-iface comcast&quot; &gt;&gt;/etc/net/ifaces/default/fw/iptables/nat/POSTROUTING</textarea><!--/notypo--><br />
-После этого ваш&nbsp;раутер после # service network restart уже&nbsp;должен начать выполнять свою функцию разделения доступа в&nbsp;интернет.</p><br /><a name="p17742-6"></a><p class="auto" id="p17742-6">
-3. Далее я&nbsp;настраивал распознавание и&nbsp;маркирование пакетов, которым надо было обеспечить гарантированную ширину пропускания канала. Для&nbsp;меня это&nbsp;были два&nbsp;телефонных адаптера, которые не&nbsp;искажают звук только если им&nbsp;предоставлены 10 килобит в&nbsp;секунду. Эти&nbsp;адаптеры стоят в&nbsp;локальной сети и&nbsp;dhcp сервер по&nbsp;их мак-адресам даёт им&nbsp;статические адреса. Эти&nbsp;адреса я&nbsp;и использовал в&nbsp;качестве критерия для&nbsp;маркировки. Маркировка обеспечивается следующим образом:<br />
-<!--notypo--><textarea class="code" rows="5" readonly="readonly">#cat &lt;&lt;EOF &gt;/etc/net/ifaces/default/fw/iptables/mangle/PREROUTING
+# echo &quot;192.168.10.1/24&quot; &gt;/etc/net/ifaces/menlo/ipv4address</pre>
+<p>2. Р”Р°Р»СЊС€Рµ РЅР°СЃС‚СЂР°РёРІР°РµС‚Рµ ip-forwarding Рё nat masquarading. Р—Р° РїРµСЂРІС‹Р№ РѕС‚РІРµС‡Р°РµС‚ СЃС‚СЂРѕС‡РєР°
+</p>
+<pre>net.ipv4.ip_forward = 1</pre>
+<p>РІ С„Р°Р№Р»Рµ <tt>/etc/net/sysctl.conf</tt>, РІ С‚Рѕ РІСЂРµРјСЏ РєР°Рє РґСЂСѓРіРѕРµ РґРµР»Р°РµС‚СЃСЏ РґРѕР±Р°РІР»РµРЅРёРµРј СЃС‚СЂРѕРєРё
+<tt>masquerade out-iface comcast</tt>
+РІ С„Р°Р№Р» <tt>/etc/net/ifaces/default/fw/iptables/nat/POSTROUTING</tt>:
+</p>
+<pre>echo &quot;masquerade out-iface comcast&quot; &gt;&gt;/etc/net/ifaces/default/fw/iptables/nat/POSTROUTING</pre>
+<p>РџРѕСЃР»Рµ СЌС‚РѕРіРѕ РІР°С€ СЂР°СѓС‚РµСЂ РїРѕСЃР»Рµ # service network restart СѓР¶Рµ РґРѕР»Р¶РµРЅ РЅР°С‡Р°С‚СЊ РІС‹РїРѕР»РЅСЏС‚СЊ СЃРІРѕСЋ С„СѓРЅРєС†РёСЋ СЂР°Р·РґРµР»РµРЅРёСЏ РґРѕСЃС‚СѓРїР° РІ РёРЅС‚РµСЂРЅРµС‚.
+</p><p>3. Р”Р°Р»РµРµ СЏ РЅР°СЃС‚СЂР°РёРІР°Р» СЂР°СЃРїРѕР·РЅР°РІР°РЅРёРµ Рё РјР°СЂРєРёСЂРѕРІР°РЅРёРµ РїР°РєРµС‚РѕРІ, РєРѕС‚РѕСЂС‹Рј РЅР°РґРѕ Р±С‹Р»Рѕ РѕР±РµСЃРїРµС‡РёС‚СЊ РіР°СЂР°РЅС‚РёСЂРѕРІР°РЅРЅСѓСЋ С€РёСЂРёРЅСѓ РїСЂРѕРїСѓСЃРєР°РЅРёСЏ РєР°РЅР°Р»Р°. Р”Р»СЏ РјРµРЅСЏ СЌС‚Рѕ Р±С‹Р»Рё РґРІР° С‚РµР»РµС„РѕРЅРЅС‹С… Р°РґР°РїС‚РµСЂР°, РєРѕС‚РѕСЂС‹Рµ РЅРµ РёСЃРєР°Р¶Р°СЋС‚ Р·РІСѓРє С‚РѕР»СЊРєРѕ РµСЃР»Рё РёРј РїСЂРµРґРѕСЃС‚Р°РІР»РµРЅС‹ 10 РєРёР»РѕР±РёС‚ РІ СЃРµРєСѓРЅРґСѓ. Р­С‚Рё Р°РґР°РїС‚РµСЂС‹ СЃС‚РѕСЏС‚ РІ Р»РѕРєР°Р»СЊРЅРѕР№ СЃРµС‚Рё Рё dhcp СЃРµСЂРІРµСЂ РїРѕ РёС… РјР°Рє-Р°РґСЂРµСЃР°Рј РґР°С‘С‚ РёРј СЃС‚Р°С‚РёС‡РµСЃРєРёРµ Р°РґСЂРµСЃР°. Р­С‚Рё Р°РґСЂРµСЃР° СЏ Рё РёСЃРїРѕР»СЊР·РѕРІР°Р» РІ РєР°С‡РµСЃС‚РІРµ РєСЂРёС‚РµСЂРёСЏ РґР»СЏ РјР°СЂРєРёСЂРѕРІРєРё. РњР°СЂРєРёСЂРѕРІРєР° РѕР±РµСЃРїРµС‡РёРІР°РµС‚СЃСЏ СЃР»РµРґСѓСЋС‰РёРј РѕР±СЂР°Р·РѕРј:
+</p>
+<pre>#cat &lt;&lt;EOF &gt;/etc/net/ifaces/default/fw/iptables/mangle/PREROUTING
 mark 21 if from 192.168.10.21 from-iface menlo
 mark 22 if from 192.168.10.5 from-iface menlo
-EOF</textarea><!--/notypo--><br />
-Мысль для&nbsp;себя на&nbsp;будущее: наверно можно было маркировать по&nbsp;мак-адресу, и&nbsp;тем самым избежать необходимости настраивать статические адреса выдаваемые dhcpd.</p><br /><a name="p17742-7"></a><p class="auto" id="p17742-7">
-4. Ну&nbsp;а теперь остаётся самое настроить qos&nbsp;htb для&nbsp;идущего наружу интерфейса comcast.<br />
-<!--notypo--><textarea class="code" rows="15" readonly="readonly"># # создаём дисциплину 1
+EOF</pre>
+<p>РњС‹СЃР»СЊ РґР»СЏ СЃРµР±СЏ РЅР° Р±СѓРґСѓС‰РµРµ: РЅР°РІРµСЂРЅРѕ РјРѕР¶РЅРѕ Р±С‹Р»Рѕ РјР°СЂРєРёСЂРѕРІР°С‚СЊ РїРѕ РјР°Рє-Р°РґСЂРµСЃСѓ, Рё С‚РµРј СЃР°РјС‹Рј РёР·Р±РµР¶Р°С‚СЊ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РЅР°СЃС‚СЂР°РёРІР°С‚СЊ СЃС‚Р°С‚РёС‡РµСЃРєРёРµ Р°РґСЂРµСЃР° РІС‹РґР°РІР°РµРјС‹Рµ dhcpd.
+</p><p>4. РќСѓ Р° С‚РµРїРµСЂСЊ РѕСЃС‚Р°С‘С‚СЃСЏ СЃР°РјРѕРµ РЅР°СЃС‚СЂРѕРёС‚СЊ qos htb РґР»СЏ РёРґСѓС‰РµРіРѕ РЅР°СЂСѓР¶Сѓ РёРЅС‚РµСЂС„РµР№СЃР° comcast.
+</p>
+<pre># # СЃРѕР·РґР°С‘Рј РґРёСЃС†РёРїР»РёРЅСѓ 1
 # mkdir -p /etc/net/ifaces/comcast/qos/1
 
-# # определяем что эта дисциплина - htb
-# # и её дефолтный класс для неклассифицированного траффика 77.
+# # РѕРїСЂРµРґРµР»СЏРµРј С‡С‚Рѕ СЌС‚Р° РґРёСЃС†РёРїР»РёРЅР° - htb
+# # Рё РµС‘ РґРµС„РѕР»С‚РЅС‹Р№ РєР»Р°СЃСЃ РґР»СЏ РЅРµРєР»Р°СЃСЃРёС„РёС†РёСЂРѕРІР°РЅРЅРѕРіРѕ С‚СЂР°С„С„РёРєР° 77.
 # echo &quot;htb default 77&quot; &gt;/etc/net/ifaces/comcast/qos/1/qdisc
 
-# # создаём корневой класс 1 (1:1)
+# # СЃРѕР·РґР°С‘Рј РєРѕСЂРЅРµРІРѕР№ РєР»Р°СЃСЃ 1 (1:1)
 # mkdir /etc/net/ifaces/comcast/qos/1/1
 
-# # определяем ширину пропускания интерфейса (upload)
+# # РѕРїСЂРµРґРµР»СЏРµРј С€РёСЂРёРЅСѓ РїСЂРѕРїСѓСЃРєР°РЅРёСЏ РёРЅС‚РµСЂС„РµР№СЃР° (upload)
 # echo &quot;htb rate 360kbit&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/class
 
-# # организуем фильтр, направляющий весь траффик в класс 1:1
+# # РѕСЂРіР°РЅРёР·СѓРµРј С„РёР»СЊС‚СЂ, РЅР°РїСЂР°РІР»СЏСЋС‰РёР№ РІРµСЃСЊ С‚СЂР°С„С„РёРє РІ РєР»Р°СЃСЃ 1:1
+# #&nbsp;!!!Р­С‚РѕРіРѕ С„РёР»СЊС‚СЂР° РЅРµС‚ РІ РїСЂРёРјРµСЂР°С… РїР°РєРµС‚Р° etcnet   &nbsp;!!!
+# #&nbsp;!!!(РїРѕ РєСЂР°Р№РЅРµР№ РјРµСЂРµ РґР»СЏ РІРµСЂСЃРёРё etcnet-0.9.3-alt3)!!!
+# #&nbsp;!!!РќРѕ РѕРЅ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ РЅСѓР¶РµРЅ, Р±РµР· РЅРµРіРѕ С‚СЂР°С„РёРє   &nbsp;!!!
+# #&nbsp;!!! РЅРµ РїСЂРѕС…РѕРґРёС‚ РїРѕ РІР»РѕР¶РµРЅРЅС‹Рј РєР»Р°СЃСЃР°Рј            &nbsp;!!!
 # echo &quot;proto ip prio 1 u32 match ip src 0.0.0.0/0&quot;  &gt;/etc/net/ifaces/comcast/qos/1/1/filter
 
-# # создаём класс для первого телефонного адаптера
+# # СЃРѕР·РґР°С‘Рј РєР»Р°СЃСЃ РґР»СЏ РїРµСЂРІРѕРіРѕ С‚РµР»РµС„РѕРЅРЅРѕРіРѕ Р°РґР°РїС‚РµСЂР°
 # mkdir /etc/net/ifaces/comcast/qos/1/1/21/
 
-# # определяем для него ширину пропускания 80 килобит/сек.
+# # РѕРїСЂРµРґРµР»СЏРµРј РґР»СЏ РЅРµРіРѕ С€РёСЂРёРЅСѓ РїСЂРѕРїСѓСЃРєР°РЅРёСЏ 80 РєРёР»РѕР±РёС‚/СЃРµРє.
 # echo &quot;htb rate 80kbit&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/21/class
 
-# # задаём фильтр этого класса, отбирающий для него пакеты с маркой &quot;21&quot;
+# # Р·Р°РґР°С‘Рј С„РёР»СЊС‚СЂ СЌС‚РѕРіРѕ РєР»Р°СЃСЃР°, РѕС‚Р±РёСЂР°СЋС‰РёР№ РґР»СЏ РЅРµРіРѕ РїР°РєРµС‚С‹ СЃ РјР°СЂРєРѕР№ &quot;21&quot;
 # echo &quot;protocol ip prio 1 handle 21 fw&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/21/filter
 
-# # создаём класс для второго телефонного адаптера
+# # СЃРѕР·РґР°С‘Рј РєР»Р°СЃСЃ РґР»СЏ РІС‚РѕСЂРѕРіРѕ С‚РµР»РµС„РѕРЅРЅРѕРіРѕ Р°РґР°РїС‚РµСЂР°
 # mkdir /etc/net/ifaces/comcast/qos/1/1/22/
 
-# # определяем для него ширину пропускания 80 килобит/сек.
+# # РѕРїСЂРµРґРµР»СЏРµРј РґР»СЏ РЅРµРіРѕ С€РёСЂРёРЅСѓ РїСЂРѕРїСѓСЃРєР°РЅРёСЏ 80 РєРёР»РѕР±РёС‚/СЃРµРє.
 # echo &quot;htb rate 80kbit&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/22/class
 
-# # задаём фильтр этого класса, отбирающий для него пакеты с маркой &quot;22&quot;
+# # Р·Р°РґР°С‘Рј С„РёР»СЊС‚СЂ СЌС‚РѕРіРѕ РєР»Р°СЃСЃР°, РѕС‚Р±РёСЂР°СЋС‰РёР№ РґР»СЏ РЅРµРіРѕ РїР°РєРµС‚С‹ СЃ РјР°СЂРєРѕР№ &quot;22&quot;
 # echo &quot;protocol ip prio 1 handle 22 fw&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/22/filter
 
 
-# # создаём класс для дефолтного траффика:
+# # СЃРѕР·РґР°С‘Рј РєР»Р°СЃСЃ РґР»СЏ РґРµС„РѕР»С‚РЅРѕРіРѕ С‚СЂР°С„С„РёРєР°:
 # mkdir /etc/net/ifaces/comcast/qos/1/1/77/
 
-# # определяем для него ширину пропускания 200 (= 360 - (80 + 80)) килобит/сек.
-# # с возможностью заимствования неиспользуемого в данный момент траффика других классов
-# # вплоть до 360kbit, то есть полной ширины исходящего канала
-# echo &quot;htb rate 200kbit ceil 360kbit&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/77/class</textarea><!--/notypo--></p><br /><a name="p17742-8"></a><p class="auto" id="p17742-8">
-Теперь телефонам будет предоставляться 80 килобит в&nbsp;секунду как&nbsp;только они&nbsp;того потребуют, а&nbsp;если они&nbsp;недоиспользуют эти&nbsp;80kbit, всё оставшееся будет предоставляться другим соединениям.</p><br /><a name="p17742-9"></a><p class="auto" id="p17742-9">
-P.S Большое спасибо Денису Овсиенко за&nbsp;то, что&nbsp;объяснил, как&nbsp;правильно организовать иерархию фильтров, чтобы эта&nbsp;конструкция заработала.</p><a name="h5457-6"></a><h2>Утилиты</h2>
-<ul><li> С&nbsp;11/07/2006 в&nbsp;contrib находится скрипт eqos (по аналогии с&nbsp;efw), который предназначен для&nbsp;ручного управления <a name="qos" href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos?v=ir4&" class="">Qo&nbsp;S</a> и&nbsp;умеет следующее:
-</li></ul><div class="indent"><!--notypo--><textarea class="code" rows="15" readonly="readonly">/etc/net QoS handler
-Usage: ./eqos [iface] &lt;action&gt; [action options]
-
- iface    - real interface name ('eth0' by default) or 'all' for all interfaces
- action   - 'start','stop','restart','show|list','stat|stats'
-
- start    - start QoS for given interface
- stop     - stop QoS for given interface
- restart  - equivalent to 'stop' then 'start'
- show     - list qdiscs, classes or filters on given interface
- list     - same as 'show'
- stat     - print statistics for qdiscs, classes or filters on given interface
- stats    - same as 'stat'
-
-Options for actions 'show' or 'list' and 'stat' or 'stats':
- - one of 'qdisc' (by default), 'class' or 'filter'
- - component specific options (e.g. 'parent')</textarea><!--/notypo--></div>   <script language="JavaScript" type="text/javascript">
-   var dbclick = "page";
-  </script>
- <br style="clear:both" />&nbsp;
+# # РѕРїСЂРµРґРµР»СЏРµРј РґР»СЏ РЅРµРіРѕ С€РёСЂРёРЅСѓ РїСЂРѕРїСѓСЃРєР°РЅРёСЏ 200 (= 360 - (80 + 80)) РєРёР»РѕР±РёС‚/СЃРµРє.
+# # СЃ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊСЋ Р·Р°РёРјСЃС‚РІРѕРІР°РЅРёСЏ РЅРµРёСЃРїРѕР»СЊР·СѓРµРјРѕРіРѕ РІ РґР°РЅРЅС‹Р№ РјРѕРјРµРЅС‚ С‚СЂР°С„С„РёРєР° РґСЂСѓРіРёС… РєР»Р°СЃСЃРѕРІ
+# # РІРїР»РѕС‚СЊ РґРѕ 360kbit, С‚Рѕ РµСЃС‚СЊ РїРѕР»РЅРѕР№ С€РёСЂРёРЅС‹ РёСЃС…РѕРґСЏС‰РµРіРѕ РєР°РЅР°Р»Р°
+# echo &quot;htb rate 200kbit ceil 360kbit&quot; &gt;/etc/net/ifaces/comcast/qos/1/1/77/class</pre>
+<p>РўРµРїРµСЂСЊ С‚РµР»РµС„РѕРЅР°Рј Р±СѓРґРµС‚ РїСЂРµРґРѕСЃС‚Р°РІР»СЏС‚СЊСЃСЏ 80 РєРёР»РѕР±РёС‚ РІ СЃРµРєСѓРЅРґСѓ РєР°Рє С‚РѕР»СЊРєРѕ РѕРЅРё С‚РѕРіРѕ РїРѕС‚СЂРµР±СѓСЋС‚, Р° РµСЃР»Рё РѕРЅРё РЅРµРґРѕРёСЃРїРѕР»СЊР·СѓСЋС‚ СЌС‚Рё 80kbit, РІСЃС‘ РѕСЃС‚Р°РІС€РµРµСЃСЏ Р±СѓРґРµС‚ РїСЂРµРґРѕСЃС‚Р°РІР»СЏС‚СЊСЃСЏ РґСЂСѓРіРёРј СЃРѕРµРґРёРЅРµРЅРёСЏРј.
+</p><p>P.S Р‘РѕР»СЊС€РѕРµ СЃРїР°СЃРёР±Рѕ Р”РµРЅРёСЃСѓ РћРІСЃРёРµРЅРєРѕ Р·Р° С‚Рѕ, С‡С‚Рѕ РѕР±СЉСЏСЃРЅРёР», РєР°Рє РїСЂР°РІРёР»СЊРЅРѕ РѕСЂРіР°РЅРёР·РѕРІР°С‚СЊ РёРµСЂР°СЂС…РёСЋ С„РёР»СЊС‚СЂРѕРІ, С‡С‚РѕР±С‹ СЌС‚Р° РєРѕРЅСЃС‚СЂСѓРєС†РёСЏ Р·Р°СЂР°Р±РѕС‚Р°Р»Р°.
+</p>
+<a name=".D0.A3.D1.82.D0.B8.D0.BB.D0.B8.D1.82.D1.8B" id=".D0.A3.D1.82.D0.B8.D0.BB.D0.B8.D1.82.D1.8B"></a><h3><span class="editsection">[<a href="/index.php?title=Etcnet_QoS&amp;action=edit&amp;section=6" title="РџСЂР°РІРёС‚СЊ СЃРµРєС†РёСЋ: РЈС‚РёР»РёС‚С‹">РїСЂР°РІРёС‚СЊ</a>]</span> <span class="mw-headline"> РЈС‚РёР»РёС‚С‹ </span></h3>
+<ul><li> РЎ 11/07/2006 РІ contrib РЅР°С…РѕРґРёС‚СЃСЏ СЃРєСЂРёРїС‚ eqos (РїРѕ Р°РЅР°Р»РѕРіРёРё СЃ efw), РєРѕС‚РѕСЂС‹Р№ РїСЂРµРґРЅР°Р·РЅР°С‡РµРЅ РґР»СЏ СЂСѓС‡РЅРѕРіРѕ СѓРїСЂР°РІР»РµРЅРёСЏ <a href="/Etcnet/qos" title="Etcnet/qos" class="mw-redirect">qos</a> Рё СѓРјРµРµС‚ СЃР»РµРґСѓСЋС‰РµРµ:
+</li></ul>
+<dl><dd> <pre>/etc/net QoS handler
+</dd></dl>
+<p>Usage: ./eqos [iface] &lt;action&gt; [action options]
+</p>
+<pre>iface    - real interface name ('eth0' by default) or 'all' for all interfaces
+action   - 'start','stop','restart','show|list','stat|stats'
+</pre>
+<pre>start    - start QoS for given interface
+stop     - stop QoS for given interface
+restart  - equivalent to 'stop' then 'start'
+show     - list qdiscs, classes or filters on given interface
+list     - same as 'show'
+stat     - print statistics for qdiscs, classes or filters on given interface
+stats    - same as 'stat'
+</pre>
+<p>Options for actions 'show' or 'list' and 'stat' or 'stats':
+</p>
+<pre>- one of 'qdisc' (by default), 'class' or 'filter'
+</pre>
+ - component specific options (e.g. 'parent')</pre>
+<p><br />
+</p>
+<div class="NavFrame noprint" style="clear:both; margin-top:0em;">
+<div class="NavHead" style="background: #ccf;font-weight:normal"><span style="font-weight:bold">etcnet</span>
 </div>
-    <div class="filesheader">
-    Файлов нет.
-    [<a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos?show_files=1#files">Показать файлы/форму</a>]
-
-    </div>
-    
-    <div class="commentsheader">
-    Много комментариев (6).
-    [<a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos?show_comments=1#comments">Показать комментарии/форму</a>]
-
-    </div>
-    <form action="http://freesource.info/wiki/TextSearch"  method="get" >
-
-<div class="footer">
-
-
-  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos/revisions" title="Нажмите, чтобы увидеть список изменений">2007-12-24 12:48:31</a> |
-
-
-  
-
-    
-
-      
-          Владелец: <a  href="http://freesource.info/wiki/DenisOvsienko?v=t79&" class="">Denis&nbsp;Ovsienko</a>
-      
-    
-    
-
-    
-
-    | <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos/settings" >Свойства</a> |
-
-
-  
-
-
-  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos/watch"><img src="http://freesource.info/wiki/themes/coffee/icons/visibl.gif" title="Наблюдать" alt="Наблюдать"  align="absmiddle" border="0" /></a> |
-
-  <a href="http://freesource.info/wiki/AltLinux/Sisyphus/admin/etcnet/qos/print" target="_new"><img src="http://freesource.info/wiki/themes/coffee/icons/1print.gif" title="Версия для печати" alt="Версия для печати"  align="absmiddle" border="0" /></a> |
-  <div class="searchbar">
-    <span class="nobr">Поиск: 
-    <input type="text" name="phrase" size="15" style="border: none; border-bottom: 1px solid #CCCCAA; padding: 0px; margin: 0px;" /></span>
-  </div>
+<div class="NavContent" style="font-size:95%;">
+<p><span><a href="/Etcnet" title="Etcnet">Etcnet</a></span>&nbsp;&bull;&#32;<span><a href="/Etcnet_Firewall" title="Etcnet Firewall">Etcnet Firewall</a></span>&nbsp;&bull;&#32;<span><strong class="selflink">Etcnet QoS</strong></span>
+</p>
+</div>
+<div class="NavEnd">&nbsp;</div>
 </div>
 
-</form>
-
-
-<!-- SpyLOG f:1111 -->
-<script language="javascript" type="text/javascript"><!--
-Mu="u3154.88.spylog.com";Md=document;Mnv=navigator;Mp=1;
-Mn=(Mnv.appName.substring(0,2)=="Mi")?0:1;Mrn=Math.random();
-Mt=(new Date()).getTimezoneOffset();
-Mz="p="+Mp+"&rn="+Mrn+"&t="+Mt;
-My="";
-My+="<a href='http://"+Mu+"/cnt?cid=315488&f=3&p="+Mp+"&rn="+Mrn+"' target='_blank'>";
-My+="<img src='http://"+Mu+"/cnt?cid=315488&"+Mz+"&r1="+escape(Md.referrer)+"&r="+escape(parent.document.referrer)+"&pg="+escape(window.location.href)+"' border=0 width=88 height=31 alt='SpyLOG'>";
-My+="</a>";Md.write(My);//--></script><noscript>
-<a href="http://u3154.88.spylog.com/cnt?cid=315488&f=3&p=1" target="_blank">
-<img src="http://u3154.88.spylog.com/cnt?cid=315488&p=1" alt='SpyLOG' border='0' width=88 height=31 >
-</a></noscript>
-<!-- SpyLOG -->
-
-<a href="http://liga1199.ru">
-<iimg src="http://liga1199.ru/adv/468x60.1.gif">
-</a>
-
-
-<div class="copyright">
-  Powered by <a href="http://wackowiki.com/WackoWiki" target="_blank" title="" class="outerlink">WackoWiki R4.2</a>
+<!-- 
+NewPP limit report
+Preprocessor node count: 129/1000000
+Post-expand include size: 1499/2097152 bytes
+Template argument size: 174/2097152 bytes
+Expensive parser function count: 0/100
+-->
+<div class="printfooter">
+&nbsp;</div>
+			<div id='catlinks' class='catlinks'><div id="mw-normal-catlinks"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:Categories" title="РЎР»СѓР¶РµР±РЅР°СЏ:Categories">РљР°С‚РµРіРѕСЂРёРё</a>:&#32;<span dir='ltr'><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:Admin" title="РљР°С‚РµРіРѕСЂРёСЏ:Admin">Admin</a></span> | <span dir='ltr'><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%A1%D1%82%D0%B0%D1%82%D1%8C%D0%B8_%D0%BA_%D0%B2%D0%B8%D0%BA%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%B8" title="РљР°С‚РµРіРѕСЂРёСЏ:РЎС‚Р°С‚СЊРё Рє РІРёРєРёС„РёРєР°С†РёРё">РЎС‚Р°С‚СЊРё Рє РІРёРєРёС„РёРєР°С†РёРё</a></span> | <span dir='ltr'><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:Etcnet" title="РљР°С‚РµРіРѕСЂРёСЏ:Etcnet">Etcnet</a></span></div></div>			<!-- end content -->
+						<div class="visualClear"></div>
+		</div>
+	</div>
+		</div>
+		<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>РџСЂРѕСЃРјРѕС‚СЂС‹</h5>
+		<div class="pBody">
+			<ul>
+	
+				 <li id="ca-nstab-main" class="selected"><a href="/Etcnet_QoS" title="РЎРѕРґРµСЂР¶Р°РЅРёРµ СЃС‚Р°С‚СЊРё [c]" accesskey="c">РЎС‚Р°С‚СЊСЏ</a></li>
+				 <li id="ca-talk" class="new"><a href="/index.php?title=%D0%9E%D0%B1%D1%81%D1%83%D0%B6%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5:Etcnet_QoS&amp;action=edit&amp;redlink=1" title="РћР±СЃСѓР¶РґРµРЅРёРµ СЃРѕРґРµСЂР¶Р°РЅРёСЏ СЃС‚СЂР°РЅРёС†С‹ [t]" accesskey="t">РћР±СЃСѓР¶РґРµРЅРёРµ</a></li>
+				 <li id="ca-edit"><a href="/index.php?title=Etcnet_QoS&amp;action=edit" title="Р­С‚Сѓ СЃС‚СЂР°РЅРёС†Сѓ РјРѕР¶РЅРѕ РёР·РјРµРЅСЏС‚СЊ. РСЃРїРѕР»СЊР·СѓР№С‚Рµ, РїРѕР¶Р°Р»СѓР№СЃС‚Р°, РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅС‹Р№ РїСЂРѕСЃРјРѕС‚СЂ РїРµСЂРµРґ СЃРѕС…СЂР°РЅРµРЅРёРµРј [e]" accesskey="e">РџСЂР°РІРёС‚СЊ</a></li>
+				 <li id="ca-history"><a href="/index.php?title=Etcnet_QoS&amp;action=history" title="Р–СѓСЂРЅР°Р» РёР·РјРµРЅРµРЅРёР№ СЃС‚СЂР°РЅРёС†С‹ [h]" accesskey="h">РСЃС‚РѕСЂРёСЏ</a></li>			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Р›РёС‡РЅС‹Рµ РёРЅСЃС‚СЂСѓРјРµРЅС‚С‹</h5>
+		<div class="pBody">
+			<ul>
+				<li id="pt-login"><a href="/index.php?title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:UserLogin&amp;returnto=Etcnet_QoS" title="Р—РґРµСЃСЊ РјРѕР¶РЅРѕ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊСЃСЏ РІ СЃРёСЃС‚РµРјРµ, РЅРѕ СЌС‚Рѕ РЅРµРѕР±СЏР·Р°С‚РµР»СЊРЅРѕ. [o]" accesskey="o">Р’РѕР№С‚Рё / Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊСЃСЏ</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/images/3/30/Alt_linux_team_small.png);" href="/%D0%93%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0" title="РџРµСЂРµР№С‚Рё РЅР° Р·Р°РіР»Р°РІРЅСѓСЋ СЃС‚СЂР°РЅРёС†Сѓ [z]" accesskey="z"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class='generated-sidebar portlet' id='p-navigation'>
+		<h5>РќР°РІРёРіР°С†РёСЏ</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-.D0.93.D0.BB.D0.B0.D0.B2.D0.BD.D0.B0.D1.8F-.D1.81.D1.82.D1.80.D0.B0.D0.BD.D0.B8.D1.86.D0.B0"><a href="/%D0%93%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0">Р“Р»Р°РІРЅР°СЏ СЃС‚СЂР°РЅРёС†Р°</a></li>
+				<li id="n-.D0.92.D1.81.D0.B5-.D1.81.D1.82.D1.80.D0.B0.D0.BD.D0.B8.D1.86.D1.8B"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:AllPages">Р’СЃРµ СЃС‚СЂР°РЅРёС†С‹</a></li>
+				<li id="n-.D0.9A.D0.B0.D1.82.D0.B5.D0.B3.D0.BE.D1.80.D0.B8.D0.B8"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:Categories">РљР°С‚РµРіРѕСЂРёРё</a></li>
+				<li id="n-recentchanges"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:RecentChanges" title="РЎРїРёСЃРѕРє РїРѕСЃР»РµРґРЅРёС… РёР·РјРµРЅРµРЅРёР№ [r]" accesskey="r">РЎРІРµР¶РёРµ РїСЂР°РІРєРё</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class='generated-sidebar portlet' id='p-.D0.A0.D0.B0.D0.B7.D0.B4.D0.B5.D0.BB.D1.8B_wiki'>
+		<h5>Р Р°Р·РґРµР»С‹ wiki</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-.D0.9A.D0.BD.D0.B8.D0.B3.D0.B8"><a href="/Books:Main_page">РљРЅРёРіРё</a></li>
+				<li id="n-.D0.A0.D1.83.D0.BA.D0.BE.D0.B2.D0.BE.D0.B4.D1.81.D1.82.D0.B2.D0.B0"><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%A0%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%B0">Р СѓРєРѕРІРѕРґСЃС‚РІР°</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class='generated-sidebar portlet' id='p-.D0.9E_wiki'>
+		<h5>Рћ wiki</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-.D0.9F.D1.80.D0.B0.D0.B2.D0.B8.D0.BB.D0.B0"><a href="/ALT_Linux_Wiki:%D0%9E%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5">РџСЂР°РІРёР»Р°</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class='generated-sidebar portlet' id='p-.D1.80.D0.B5.D0.B4.D0.B0.D0.BA.D1.82.D0.B8.D1.80.D0.BE.D0.B2.D0.B0.D0.BD.D0.B8.D0.B5'>
+		<h5>СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-.D0.A1.D0.BF.D0.B8.D1.81.D0.BE.D0.BA-.D0.BA.D0.B0.D1.80.D1.82.D0.B8.D0.BD.D0.BE.D0.BA"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:ListFiles">РЎРїРёСЃРѕРє РєР°СЂС‚РёРЅРѕРє</a></li>
+				<li id="n-.D0.A1.D0.BF.D0.B8.D1.81.D0.BE.D0.BA-.D1.88.D0.B0.D0.B1.D0.BB.D0.BE.D0.BD.D0.BE.D0.B2"><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%A8%D0%B0%D0%B1%D0%BB%D0%BE%D0%BD%D1%8B">РЎРїРёСЃРѕРє С€Р°Р±Р»РѕРЅРѕРІ</a></li>
+				<li id="n-.D0.9F.D0.B5.D1.81.D0.BE.D1.87.D0.BD.D0.B8.D1.86.D0.B0"><a href="/ALT_Linux_Wiki:%D0%9F%D0%B5%D1%81%D0%BE%D1%87%D0%BD%D0%B8%D1%86%D0%B0">РџРµСЃРѕС‡РЅРёС†Р°</a></li>
+				<li id="n-.D0.A0.D0.B0.D0.B1.D0.BE.D1.82.D0.B0-.D0.BD.D0.B0.D0.B4-wiki"><a href="/ALT_Linux_Wiki:Main_Page">Р Р°Р±РѕС‚Р° РЅР°Рґ wiki</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class='generated-sidebar portlet' id='p-.D0.BF.D0.BE.D0.BC.D0.BE.D1.89.D1.8C'>
+		<h5>РїРѕРјРѕС‰СЊ</h5>
+		<div class='pBody'>
+			<ul>
+				<li id="n-help"><a href="/ALT_Linux_Wiki:%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0" title="РЎРїСЂР°РІРѕС‡РЅРёРє РїРѕ РїСЂРѕРµРєС‚Сѓ В«ALT Linux WikiВ»">РЎРїСЂР°РІРєР°</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">РџРѕРёСЃРє</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:Search" id="searchform"><div>
+				<input id="searchInput" name="search" type="text" title="РСЃРєР°С‚СЊ СЌС‚Рѕ СЃР»РѕРІРѕ [f]" accesskey="f" value="" />
+				<input type='submit' name="go" class="searchButton" id="searchGoButton"	value="РџРµСЂРµР№С‚Рё" title="РџРµСЂРµР№С‚Рё Рє СЃС‚СЂР°РЅРёС†Рµ, РёРјРµСЋС‰РµР№ РІ С‚РѕС‡РЅРѕСЃС‚Рё С‚Р°РєРѕРµ РЅР°Р·РІР°РЅРёРµ" />&nbsp;
+				<input type='submit' name="fulltext" class="searchButton" id="mw-searchButton" value="РќР°Р№С‚Рё" title="РќР°Р№С‚Рё СЃС‚СЂР°РЅРёС†С‹, СЃРѕРґРµСЂР¶Р°С‰РёРµ СѓРєР°Р·Р°РЅРЅС‹Р№ С‚РµРєСЃС‚" />
+			</div></form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>РРЅСЃС‚СЂСѓРјРµРЅС‚С‹</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:WhatLinksHere/Etcnet_QoS" title="РЎРїРёСЃРѕРє РІСЃРµС… СЃС‚СЂР°РЅРёС†, РєРѕС‚РѕСЂС‹Рµ СЃСЃС‹Р»Р°СЋС‚СЃСЏ РЅР° СЌС‚Сѓ СЃС‚СЂР°РЅРёС†Сѓ [j]" accesskey="j">РЎСЃС‹Р»РєРё СЃСЋРґР°</a></li>
+				<li id="t-recentchangeslinked"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:RecentChangesLinked/Etcnet_QoS" title="РџРѕСЃР»РµРґРЅРёРµ РёР·РјРµРЅРµРЅРёСЏ РІ СЃС‚СЂР°РЅРёС†Р°С…, РЅР° РєРѕС‚РѕСЂС‹Рµ СЃСЃС‹Р»Р°РµС‚СЃСЏ СЌС‚Р° СЃС‚СЂР°РЅРёС†Р° [k]" accesskey="k">РЎРІСЏР·Р°РЅРЅС‹Рµ РїСЂР°РІРєРё</a></li>
+<li id="t-specialpages"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:SpecialPages" title="РЎРїРёСЃРѕРє СЃР»СѓР¶РµР±РЅС‹С… СЃС‚СЂР°РЅРёС† [q]" accesskey="q">РЎРїРµС†СЃС‚СЂР°РЅРёС†С‹</a></li>
+				<li id="t-print"><a href="/index.php?title=Etcnet_QoS&amp;printable=yes" title="Р’РµСЂСЃРёСЏ РґР»СЏ РїРµС‡Р°С‚Рё СЌС‚РѕР№ СЃС‚СЂР°РЅРёС†С‹ [p]" accesskey="p">Р’РµСЂСЃРёСЏ РґР»СЏ РїРµС‡Р°С‚Рё</a></li>				<li id="t-permalink"><a href="/index.php?title=Etcnet_QoS&amp;oldid=8884" title="РџРѕСЃС‚РѕСЏРЅРЅР°СЏ СЃСЃС‹Р»РєР° РЅР° СЌС‚Сѓ РІРµСЂСЃРёСЋ СЃС‚СЂР°РЅРёС†С‹">РџРѕСЃС‚РѕСЏРЅРЅР°СЏ СЃСЃС‹Р»РєР°</a></li>			</ul>
+		</div>
+	</div>
+		</div><!-- end of the left (by default at least) column -->
+			<div class="visualClear"></div>
+			<div id="footer">
+				<div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="/skins/common/images/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" /></a></div>
+			<ul id="f-list">
+					<li id="lastmod"> &nbsp;</li>
+					<li id="copyright">РЎРѕРґРµСЂР¶РёРјРѕРµ РґРѕСЃС‚СѓРїРЅРѕ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ <a href="/ALT_Linux_Wiki:Copyright" title="ALT Linux Wiki:Copyright">CC-BY-SA-3.0</a>.</li>
+					<li id="privacy"><a href="/ALT_Linux_Wiki:%D0%9F%D0%BE%D0%BB%D0%B8%D1%82%D0%B8%D0%BA%D0%B0_%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B4%D0%B5%D0%BD%D1%86%D0%B8%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8" title="ALT Linux Wiki:РџРѕР»РёС‚РёРєР° РєРѕРЅС„РёРґРµРЅС†РёР°Р»СЊРЅРѕСЃС‚Рё">РџРѕР»РёС‚РёРєР° РєРѕРЅС„РёРґРµРЅС†РёР°Р»СЊРЅРѕСЃС‚Рё</a></li>
+					<li id="about"><a href="/ALT_Linux_Wiki:%D0%9E%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5" title="ALT Linux Wiki:РћРїРёСЃР°РЅРёРµ">РћРїРёСЃР°РЅРёРµ ALT Linux Wiki</a></li>
+					<li id="disclaimer"><a href="/ALT_Linux_Wiki:%D0%9E%D1%82%D0%BA%D0%B0%D0%B7_%D0%BE%D1%82_%D0%BE%D1%82%D0%B2%D0%B5%D1%82%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8" title="ALT Linux Wiki:РћС‚РєР°Р· РѕС‚ РѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕСЃС‚Рё">РћС‚РєР°Р· РѕС‚ РѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕСЃС‚Рё</a></li>
+			</ul>
+		</div>
 </div>
 
-
-  
-</body></html>
+		<script type="text/javascript">if (window.runOnloadHook) runOnloadHook();</script>
+<!-- Served in 0.543 secs. --></body></html>
