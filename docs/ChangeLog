@@ -1,6 +1,7 @@
 0.9.9
 	bugfix: profiles handling was broken in previous release
 	bugfix: profiling fix for ossh tunnels by Alexey Gladkov
+	bugfix: rearrange bridge processing code to resolve DHCP and STP issues
 0.9.8 2009-03-20
 	update: list e1000e as "good"
 	update: manpage fixes
