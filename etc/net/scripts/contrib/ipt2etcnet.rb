@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # a script to convert _currently_ active iptables rules as dumped by
 # iptables-save into /etc/net "human readable" format as documented
-# in http://wiki.sisyphus.ru/admin/etcnet/firewall#h468-6 [ru]
+# in http://www.altlinux.org/Etcnet/firewall [ru]
 # [still requires additional fixes, on etcnet syntax side too]
 # Copyleft 2006 by Michael Shigorin <mike@osdn.org.ua>
 

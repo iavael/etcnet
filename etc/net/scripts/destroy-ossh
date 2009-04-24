@@ -23,14 +23,13 @@ pickup_options
 }
 
 if is_yes "$IFUP_REMOTE"; then
-    profiled_filename IDENTITY "${OSSHIDENTITY:-$DEFAULT_OSSHIDENTITY}" ||
-	    IDENTITY="${OSSHIDENTITY:-$DEFAULT_OSSHIDENTITY}"
-    if [ -f "$MYIFACEDIR/$IDENTITY" ]; then
-	$OSSH -i "$MYIFACEDIR/$IDENTITY" ${REMOTEPORT:+-p $REMOTEPORT} \
+    OSSHIDENTITY="$MYIFACEDIR/${OSSHIDENTITY:-$DEFAULT_OSSHIDENTITY}"
+    if profiled_filename IDENTITY "$OSSHIDENTITY"; then
+	$OSSH -i "$IDENTITY" ${REMOTEPORT:+-p $REMOTEPORT} \
 	    ${REMOTEUSER:+$REMOTEUSER@}${REMOTE} ${REMOTEIFDOWN:-/sbin/ifdown $REMOTEIF}
 	[ $? -eq 0 ] || print_error "failed to bring remote iface $REMOTEIF down"
     else
-	print_error "identity file '$MYIFACEDIR/$IDENTITY' does not exist"
+	print_error "identity file '$OSSHIDENTITY' does not exist"
     fi
 fi
 

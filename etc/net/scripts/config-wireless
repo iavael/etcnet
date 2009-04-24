@@ -30,11 +30,15 @@ fi
 
 # configure WPA
 if profiled_filename prof_conf "$MYIFACEDIR/wpa_supplicant.conf"; then
-	if [ -x "${WPA_SUPPLICANT:=$DEFAULT_WPA_SUPPLICANT}" -a -x "${WPA_CLI:=$DEFAULT_WPA_CLI}" ]; then
-		$WPA_SUPPLICANT -i$NAME${WPA_DRIVER:+ -D$WPA_DRIVER} \
-			-B -P/var/run/wpa_supplicant-$NAME.pid -c $prof_conf && \
+	[ -x "${WPA_SUPPLICANT:=$DEFAULT_WPA_SUPPLICANT}" ] || {
+		print_error "$WPA_SUPPLICANT does not exist or is not executable. Try installing wpa_supplicant RPM."
+		exit 1
+	}
+	[ -x "${WPA_CLI:=$DEFAULT_WPA_CLI}" ] || {
+		print_error "$WPA_CLI does not exist or is not executable. Try installing wpa_supplicant RPM."
+		exit 1
+	}
+	$WPA_SUPPLICANT -i$NAME${WPA_DRIVER:+ -D$WPA_DRIVER} \
+		-B -P/var/run/wpa_supplicant-$NAME.pid -c $prof_conf && \
 		$WPA_CLI -i$NAME -B -P/var/run/wpa_cli-$NAME.pid -a $SCRIPTDIR/wpa_cli.action
-	else
-			exit 2		# continue without wpa_cli
-	fi
 fi

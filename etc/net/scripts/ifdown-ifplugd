@@ -46,7 +46,7 @@ fi
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh del dev $NAME"
 
 case "$BOOTPROTO" in
-	dhcp|dhcp-static|dhcp-ipv4ll-static)
+	dhcp|dhcp[\ -,]static|dhcp[\ -,]ipv4ll[\ -,]static)
 		stop_dhcp_client
 	;;
 	*)

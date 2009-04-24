@@ -1,5 +1,5 @@
 Name:		etcnet
-Version:	0.9.8
+Version:	0.9.9
 Release:	alt1
 Summary:	/etc/net network configuration system
 Summary(ru_RU.KOI8-R): система конфигурации сети /etc/net
@@ -157,6 +157,23 @@ fi
 %files full
 
 %changelog
+* Thu Apr 23 2009 Denis Ovsienko <pilot@altlinux.ru> 0.9.9-alt1
+- maintenance release:
+ + profiles handling was broken in previous release
+ + profiling fix for ossh tunnels by Alexey Gladkov
+ + rearrange bridge processing code to resolve DHCP and STP issues
+ + justified return code handling for wireless
+
+* Sat Mar 28 2009 Alexey Gladkov <legion@altlinux.ru> 0.9.8-alt3
+- bugfix release.
+- create-ossh: Add profile support.
+- config-wireless: Fix regression.
+
+* Sun Mar 22 2009 Alexey Gladkov <legion@altlinux.ru> 0.9.8-alt2
+- NMU release.
+- scripts/functions: profiled_filename_is(): Use the proper
+  variable to check variants.
+
 * Fri Mar 20 2009 Denis Ovsienko <pilot@altlinux.ru> 0.9.8-alt1
 - building a new version, mostly with bugfixes
 

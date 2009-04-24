@@ -40,16 +40,15 @@ modprobe_tuntap || {
 
 $TUNCTL -t $NAME > /dev/null
 
-profiled_filename IDENTITY "${OSSHIDENTITY:-$DEFAULT_OSSHIDENTITY}" ||
-	IDENTITY="${OSSHIDENTITY:-$DEFAULT_OSSHIDENTITY}"
+OSSHIDENTITY="$MYIFACEDIR/${OSSHIDENTITY:-$DEFAULT_OSSHIDENTITY}"
 
-[ -f "$MYIFACEDIR/$IDENTITY" ] || {
-    print_error "identity file '$MYIFACEDIR/$IDENTITY' does not exist"
+if ! profiled_filename IDENTITY "$OSSHIDENTITY"; then
+    print_error "identity file '$OSSHIDENTITY' does not exist"
     exit 1
-}
+fi
 
 if is_yes "$IFUP_REMOTE"; then
-    $OSSH -i "$MYIFACEDIR/$IDENTITY" ${REMOTEPORT:+-p $REMOTEPORT} \
+    $OSSH -i "$IDENTITY" ${REMOTEPORT:+-p $REMOTEPORT} \
 	${REMOTEUSER:+$REMOTEUSER@}${REMOTE} ${REMOTEIFUP:-/sbin/ifup $REMOTEIF}
     [ $? -eq 0 ] || {
 	print_error "failed to bring remote iface $REMOTEIF up"
@@ -57,5 +56,5 @@ if is_yes "$IFUP_REMOTE"; then
     }
 fi
 
-$OSSH -i "$MYIFACEDIR/$IDENTITY" ${REMOTEPORT:+-p $REMOTEPORT} -f -M -o "controlpath /var/run/etcnet-ossh-$NAME" \
+$OSSH -i "$IDENTITY" ${REMOTEPORT:+-p $REMOTEPORT} -f -M -o "controlpath /var/run/etcnet-ossh-$NAME" \
     -o "tunnel ${TUNTAP_MODE}" -w ${TUNTAP_NR}:${REMOTE_NR:-any} ${REMOTEUSER:+$REMOTEUSER@}${REMOTE} /bin/true

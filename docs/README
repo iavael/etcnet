@@ -1,4 +1,4 @@
-/etc/net version 0.9.8
+/etc/net version 0.9.9
 
 ===
 === INTRODUCTION
@@ -53,7 +53,7 @@ You may need to run 'chkconfig network reset' (this is a known bug).
 For details about /etc/net design and configuration please see etcnet and
 etcnet-options manpages, project's web-site (http://etcnet.org/) and
 configuration examples, included in the distribution tarball.
-Russian tips collection is located at http://wiki.sisyphus.ru/admin/etcnet
+Russian tips collection is located at http://www.altlinux.org/Etcnet
 
 
 ===

@@ -1,3 +1,10 @@
+0.9.10
+	bugfix: make actual BOOTPROTO separators match those in manpage (reported by Ivan Zakharyaschev)
+0.9.9 2009-04-23
+	bugfix: profiles handling was broken in previous release
+	bugfix: profiling fix for ossh tunnels by Alexey Gladkov
+	bugfix: rearrange bridge processing code to resolve DHCP and STP issues
+	bugfix: justified return code handling for wireless
 0.9.8 2009-03-20
 	update: list e1000e as "good"
 	update: manpage fixes

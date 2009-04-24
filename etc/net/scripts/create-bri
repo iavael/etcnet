@@ -9,3 +9,18 @@ pickup_options
 }
 
 $BRCTL addbr $NAME
+
+# Give brctl a chance to set necessary parameters on a bridge before adding ports into it,
+# so we don't suddenly plug unconfigured bridge into network. The only thing we can't
+# set this way are port priority and cost (which shouldn't be critical in most cases).
+if profiled_filename PROF_BRCTL "$MYIFACEDIR/brctl"; then
+	$DENOISE $PROF_BRCTL |
+		trim |
+		sed "s/ AUTO / $NAME /" |
+		xargs --max-lines=1 $BRCTL
+fi && print_progress
+
+for host in $HOST; do
+	$BRCTL addif $NAME $host && print_progress
+done
+
