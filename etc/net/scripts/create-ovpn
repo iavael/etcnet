@@ -29,7 +29,7 @@ OVPN_GROUP=${OVPNGROUP:-$DEFAULT_OVPNGROUP}
 KEY_ARGS=
 
 if profiled_filename PROF_CONFFILE "$MYIFACEDIR/${OVPNCONFFILE:-$DEFAULT_OVPNCONFFILE}"; then
-	if egrep '^[[:space:]]*(tls-client|tls-server|client)[[:space:]]*' "$PROF_CONFFILE"; then
+	if egrep '^[[:space:]]*(tls-client|tls-server|client)[[:space:]]*' "$PROF_CONFFILE" >/dev/null; then
 		! profiled_filename PROF_CAFILE "$MYIFACEDIR/${OVPNCAFILE:-$DEFAULT_OVPNCAFILE}" ||
 			KEY_ARGS="--ca $PROF_CAFILE"
 
