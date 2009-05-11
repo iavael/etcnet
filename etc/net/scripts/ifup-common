@@ -205,14 +205,22 @@ if ! is_yes $IN_WPA_CLI; then	# non-wifi or first pass for wifi
     fi
 fi
 
-# handle wireless extensions, if any
+# Handle wireless extensions, if any. config-wireless script return code
+# has to be treated in a special way, because in certain configurations
+# it implies ifplugd-like execution pattern, but in others it does not.
+# So we map actual return code to "go or no" deciscion according to the
+# list below:
+# 0: no error, no delayed helper in background, go on
+# 1: generic error
+# 10: no error, complete the rest via script executed by supplicant
+# 11: failed to run supplicant
 if is_yes "$CONFIG_WIRELESS" && is_wireless $NAME; then
 	if ! is_yes $IN_WPA_CLI; then
 		$SCRIPTDIR/config-wireless $NAME
 		rc=$?
-		[ $rc -eq 0 ] || exit $rc
+		[ $rc -eq 0 -o $rc -eq 10 ] || exit $rc
 		print_progress
-		exit 0 # wpa_cli hooks will complete the rest
+		[ $rc -eq 10 ] && exit 0 # wpa_cli hooks will complete the rest
 	fi
 fi
 
