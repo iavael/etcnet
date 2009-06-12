@@ -1,7 +1,9 @@
-0.9.10
+0.9.10 2009-06-12
 	bugfix: make actual BOOTPROTO separators match those in manpage (reported by Ivan Zakharyaschev)
-	bugfix: finally align return codes in WPA handling
+	bugfix: finally justify return codes in WPA handling
 	bugfix: now "human syntax" is certainly disabled
+	bugfix: suppress unnecessary message for OpenVPN interfaces
+	update: include README for OpenVPN
 0.9.9 2009-04-23
 	bugfix: profiles handling was broken in previous release
 	bugfix: profiling fix for ossh tunnels by Alexey Gladkov
