@@ -157,7 +157,9 @@ config_ipv4_routes_rules()
 		while read FIRST REST; do
 			# If 'dev' is not specified, add current dev.
 			SUFFIX=''
-			echo "$FIRST $REST" | egrep -q '[[:space:]]dev[[:space:]]' || SUFFIX="dev $NAME"
+			if ! echo "$FIRST $REST" | egrep -q '(^|[[:space:]])(throw|unreachable|prohibit|blackhole)[[:space:]]'; then
+				echo "$FIRST $REST" | egrep -q '[[:space:]]dev[[:space:]]' || SUFFIX="dev $NAME"
+			fi
 			# If operation is not specified, use 'append'.
 			case "$FIRST" in
 				add|change|append|replace)
