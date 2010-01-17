@@ -2,8 +2,6 @@
 
 # This script is a hook for hotplug or pcmcia-cs.
 
-/sbin/ip ad > /tmp/ipad
-
 usage()
 {
 	echo "Usage: $0 <interface>" >&2
