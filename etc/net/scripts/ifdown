@@ -59,7 +59,7 @@ xargise_file $MYIFACEDIR/ipneigh "$IP neigh del dev $NAME"
 
 # Look if there is DHCP agent hanging around.
 case "$BOOTPROTO" in
-	dhcp|dhcp[\ -,]static|dhcp[\ -,]ipv4ll|dhcp[\ -,]ipv4ll[\ -,]static)
+	dhcp|dhcp[-,\ ]static|dhcp[-,\ ]ipv4ll|dhcp[-,\ ]ipv4ll[-,\ ]static)
 		stop_dhcp_client
 	;;
 	*)
@@ -68,7 +68,7 @@ esac
 
 # Kill ipv4ll agent, if any.
 case "$BOOTPROTO" in
-	ipv4ll|dhcp[\ -,]ipv4ll|dhcp[\ -,]ipv4ll[\ -,]static)
+	ipv4ll|dhcp[-,\ ]ipv4ll|dhcp[-,\ ]ipv4ll[-,\ ]static)
 		stop_ipv4ll_client
 	;;
 	*)
