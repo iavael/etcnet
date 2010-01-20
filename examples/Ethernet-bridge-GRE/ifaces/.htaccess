@@ -1,4 +1,0 @@
-AddDescription "an STP bridge, consisting of port0 and port1" bridge
-AddDescription "plain ethernet interface" ether
-AddDescription "GRE tunnel with default route" iptunnel
-AddDescription "bridge port" port0 port1

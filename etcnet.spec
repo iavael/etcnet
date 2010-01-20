@@ -70,8 +70,6 @@ This package contains default options for a Linux server.
 
 %prep
 %setup
-# Don't package .htaccess (https://bugzilla.altlinux.org/show_bug.cgi?id=10101)
-find . -type f -a -name .htaccess -exec rm -f \{\} \;
 
 %install
 # Common part first, distribution-specific files later.
