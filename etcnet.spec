@@ -1,11 +1,10 @@
 Name:		etcnet
 Version:	0.9.10
-Release:	alt1
+Release:	alt2
 
 Summary:	/etc/net network configuration system
 License:	GPL-2
 Group:		System/Base
-Url:		http://etcnet.org/
 
 Source:		%name-%version.tar
 
@@ -33,7 +32,6 @@ support for new interface types can be added without overall design changes.
 
 %package full
 Summary:	/etc/net plus everything it can work with
-Summary(ru_RU.KOI8-R): /etc/net и всё, с чем он может работать
 Group:		System/Configuration/Networking
 Requires:	%name = %version-%release, wireless-tools
 Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables
@@ -66,7 +64,6 @@ Requires:	%name = %version-%release
 
 %description defaults-server
 This package contains default options for a Linux server.
-
 
 %prep
 %setup
@@ -140,6 +137,12 @@ fi
 %files full
 
 %changelog
+* Wed Jan 20 2010 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.10-alt2
+- fixed: compound BOOTPROTO variable matching (#21759)
+- fixed: per-iface sysctl variable completion (#21917)
+- fixed: special type route handling (#21975)
+- fixed: race with dhcpcd restart (#19582)
+
 * Fri Jun 12 2009 Denis Ovsienko <pilot@altlinux.ru> 0.9.10-alt1
 - bugfix release (closes: #20267)
 
