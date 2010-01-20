@@ -7,7 +7,7 @@ FW_TYPE="iptables"
 ## IPTABLES options
 
 # Enable "human" iptables syntax
-IPTABLES_HUMAN_SYNTAX=yes
+IPTABLES_HUMAN_SYNTAX=no
 
 # List of built-in iptables chains
 IPTABLES_SYSTEM_CHAINS="PREROUTING INPUT FORWARD OUTPUT POSTROUTING"
@@ -23,7 +23,7 @@ IPTABLES_RULE_EMBEDDING=APPEND
 ## IP6TABLES options
 
 # Enable "human" ip6tables syntax
-IP6TABLES_HUMAN_SYNTAX=yes
+IP6TABLES_HUMAN_SYNTAX=no
 
 # List of built-in iptables chains
 IP6TABLES_SYSTEM_CHAINS="PREROUTING INPUT FORWARD OUTPUT POSTROUTING"

@@ -28,7 +28,7 @@ if [ -x "${IWCONFIG:=$DEFAULT_IWCONFIG}" ]; then
 	xargise_file $MYIFACEDIR/iwconfig "$IWCONFIG $NAME"
 fi
 
-# configure WPA
+# Configure WPA, return special return codes (explained in ifup-common).
 if profiled_filename prof_conf "$MYIFACEDIR/wpa_supplicant.conf"; then
 	[ -x "${WPA_SUPPLICANT:=$DEFAULT_WPA_SUPPLICANT}" ] || {
 		print_error "$WPA_SUPPLICANT does not exist or is not executable. Try installing wpa_supplicant RPM."
@@ -40,5 +40,7 @@ if profiled_filename prof_conf "$MYIFACEDIR/wpa_supplicant.conf"; then
 	}
 	$WPA_SUPPLICANT -i$NAME${WPA_DRIVER:+ -D$WPA_DRIVER} \
 		-B -P/var/run/wpa_supplicant-$NAME.pid -c $prof_conf && \
-		$WPA_CLI -i$NAME -B -P/var/run/wpa_cli-$NAME.pid -a $SCRIPTDIR/wpa_cli.action
+		$WPA_CLI -i$NAME -B -P/var/run/wpa_cli-$NAME.pid -a $SCRIPTDIR/wpa_cli.action && \
+		exit 10
+	exit 11
 fi
