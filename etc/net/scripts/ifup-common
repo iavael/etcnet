@@ -187,6 +187,8 @@ process_sysctl_conf()
 					print_error "Can't autocomplete sysctl variable name '$VARNAME' in file '$SRCFILE'. Please fix"
 					return 1
 			esac
+		else
+			VARPREFIX=
 		fi
 		$SYSCTL -q -w $VARPREFIX$VARNAME=$VARVALUE
 	done

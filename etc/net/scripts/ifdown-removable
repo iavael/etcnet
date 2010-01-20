@@ -2,8 +2,6 @@
 
 # This script is a hook for hotplug or pcmcia-cs.
 
-/sbin/ip ad > /tmp/ipad
-
 usage()
 {
 	echo "Usage: $0 <interface>" >&2
@@ -89,7 +87,7 @@ fi
 is_yes "$IFDOWN_CHILDREN" && ifdown_children
 xargise_file $MYIFACEDIR/ipneigh "$IP neigh del dev $NAME"
 case "$BOOTPROTO" in
-	dhcp|dhcp[\ -,]static|dhcp[\ -,]ipv4ll|dhcp[\ -,]ipv4ll[\ -,]static)
+	dhcp|dhcp[-,\ ]static|dhcp[-,\ ]ipv4ll|dhcp[-,\ ]ipv4ll[-,\ ]static)
 		stop_dhcp_client
 	;;
 	*)

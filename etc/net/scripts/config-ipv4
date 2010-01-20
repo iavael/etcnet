@@ -33,13 +33,13 @@ case $ACTION in
 				ipv4ll)
 					try_ipv4ll && config_ipv4_routes_rules add
 					;;
-				dhcp[\ -,]static)
+				dhcp[-,\ ]static)
 					try_dhcp || try_static && config_ipv4_routes_rules add
 					;;
-				dhcp[\ -,]ipv4ll)
+				dhcp[-,\ ]ipv4ll)
 					try_dhcp || try_ipv4ll && config_ipv4_routes_rules add
 					;;
-				dhcp[\ -,]ipv4ll[\ -,]static)
+				dhcp[-,\ ]ipv4ll[-,\ ]static)
 					try_dhcp || try_ipv4ll || try_static && config_ipv4_routes_rules add
 					;;
 				*)

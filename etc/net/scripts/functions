@@ -506,14 +506,10 @@ stop_dhcp_client()
 			local PIDFILE=/var/run/dhclient-$NAME.pid
 			;;
 	esac
-	if [ -s $PIDFILE ]; then
-		kill -SIGHUP `cat $PIDFILE`
-		# There probably should be a delay/wait loop here, dhcpcd doesn't die fast.
-		sleep ${DHCP_GRACE_TIME:-0}
-		# dhcpcd will bring down the interface when stopping. To keep etcnet logics
-		# to work (running shutdown scripts for example) we should bring it up again
-		$IP link set dev $NAME up
-	fi
+	kill_by_pidfile "$PIDFILE" 250000 $((DHCP_GRACE_TIME*4)) HUP
+	# dhcpcd will bring down the interface when stopping. To keep etcnet logics
+	# to work (running shutdown scripts for example) we should bring it up again
+	$IP link set dev $NAME up
 }
 
 stop_ipv4ll_client()
@@ -542,25 +538,21 @@ eval_string()
     eval "printf '%s\n' \"$@\""
 }
 
-# FIXME: some programs don't remove the pidfile upon exit, this makes
-# the function to roll the longest cycle. ps -A | grep '^ *$PID ' should
-# be used to detect program exit in such case.
 kill_by_pidfile()
 {
 	local PIDFILE=${1:?missing 1st arg to $FUNCNAME}
 	local USECONDS=${2:?missing 2nd arg to $FUNCNAME}
 	local TRIES=${3:?missing 3rd arg to $FUNCNAME}
+	local SIGNAL=${4:-TERM}
 	if [ -s "$PIDFILE" ]; then
-		kill `cat $PIDFILE` 2>/dev/null
-		for ((i=0; i<$TRIES; i++)) do
-			if [ -s "$PIDFILE" ]; then
-				usleep $USECONDS
-			else
-				break
-			fi
+		local PID=$(cat "$PIDFILE")
+		kill -$SIGNAL $PID 2>/dev/null
+		while [ $TRIES -gt 0 ] && kill -0 $PID 2>/dev/null; do
+			usleep $USECONDS
+			TRIES=$((TRIES-1))
 		done
-		if [ -s "$PIDFILE" ]; then
-			kill -9 `cat $PIDFILE` 2>/dev/null
+		if [ $TRIES -le 0 ]; then
+			kill -9 $PID 2>/dev/null
 			rm -f -- "$PIDFILE"
 		fi
 	fi
