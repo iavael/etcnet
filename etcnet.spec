@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.9.10
-Release:	alt2
+Release:	alt2.1
 
 Summary:	/etc/net network configuration system
 License:	GPL-2
@@ -15,7 +15,7 @@ Requires:	etcnet-defaults = %version-%release
 BuildArch:	noarch
 
 Conflicts:	net-scripts
-Conflicts:	ethtool < 3-alt4, ifplugd < 0.28-alt2
+Conflicts:	ethtool < 0:3-alt4, ifplugd < 0.28-alt2
 Provides:	network-config-subsystem
 
 %description
@@ -35,7 +35,7 @@ Summary:	/etc/net plus everything it can work with
 Group:		System/Configuration/Networking
 Requires:	%name = %version-%release, wireless-tools
 Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables
-Requires:	ethtool >= 3-alt4, ifplugd >= 0.28-alt2
+Requires:	ethtool >= 0:3-alt4, ifplugd >= 0.28-alt2
 Requires:	hotplug, ncpfs, ppp, vlan-utils, bridge-utils, openvpn, tunctl
 Requires:	pptp-client, wpa_supplicant, avahi-autoipd, rp-pppoe-base >= 3.6-alt2
 
@@ -137,6 +137,9 @@ fi
 %files full
 
 %changelog
+* Wed Feb 03 2010 Dmitry V. Levin <ldv@altlinux.org> 0.9.10-alt2.1
+- Fixed versioned dependencies on ethtool.
+
 * Wed Jan 20 2010 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.10-alt2
 - fixed: compound BOOTPROTO variable matching (#21759)
 - fixed: per-iface sysctl variable completion (#21917)
