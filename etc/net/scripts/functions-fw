@@ -58,6 +58,23 @@ xtables_list_chain()
     eval "${!XTABLES} -t $TABLE -L $@" || print_error "${!XTABLES} -t $TABLE -L $@"
 }
 
+xtables_loadorder()
+{
+    local DIR=${1:?missing 1st arg to $FUNCNAME}
+    shift
+
+    if [ -f "$DIR/loadorder" -a -s "$DIR/loadorder" ]; then
+	sed -n "/^[^#$]/ s,^,$DIR/&,p" "$DIR/loadorder"
+    else
+	find "$DIR" -mindepth 1 -maxdepth 1 -not '(' -name '*~' -o -name '*.rpm*' ')'
+    fi
+}
+
+xtables_walk()
+{
+    while read; do xtables_loadorder $REPLY; done < <(xtables_loadorder "$@")
+}
+
 xtables_push_rule()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
@@ -180,19 +197,20 @@ xtables_preload()
     }
 }
 
-# xtables_load_rules_from_file <table> <chain>
+# xtables_load_rules_from_file /path/to/<table>/<chain>
 xtables_load_rules_from_file()
 {
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    local FILE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN="${FILE##*/}"
+    local TABLE="${FILE%/*}"; TABLE="${TABLE##*/}"
     local RULE
     local RULES
-    if [ -f "$TABLE/$CHAIN" ] && [ -s "$TABLE/$CHAIN" ]; then
+    if [ -f "$FILE" ] && [ -s "$FILE" ]; then
 	print_message -n -e "\tLoading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
-	RULES=$(< "$TABLE/$CHAIN")
+	RULES=$(< "$FILE")
 	while read RULE; do
 	    RULE=$(xtables_expand_string "$RULE")
-	    [ -z "$RULE" ] || 
+	    [ -z "$RULE" ] ||
 	    {
 		read FIRST SECOND REST < <(echo $RULE)
 		case $FIRST in
@@ -210,21 +228,22 @@ xtables_load_rules_from_file()
     fi
 }
 
-# xtables_flush_rules_from_file <table> <chain> [flush]
+# xtables_flush_rules_from_file /path/to/<table>/<chain> [flush]
 xtables_flush_rules_from_file()
 {
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
+    local FILE=${1:?missing 1st arg to $FUNCNAME}
+    local CHAIN="${FILE##*/}"
+    local TABLE="${FILE%/*}"; TABLE="${TABLE##*/}"
     local RULE
     local RULES
-    if [ -f "$TABLE/$CHAIN" ]; then
+    if [ -f "$FILE" ]; then
 	if [ "$NAME" != "default" ] && [ "$3" != "flush" ]; then
-	    [ ! -s "$TABLE/$CHAIN" ] && return
+	    [ ! -s "$FILE" ] && return
 	    print_message -n -e "\tUnloading rules for the \"$CHAIN\" chain in the \"$TABLE\" table"
-	    RULES=$(tac "$TABLE/$CHAIN")
+	    RULES=$(tac "$FILE")
 	    while read RULE; do
 		RULE=$(xtables_expand_string "$RULE")
-		[ -z "$RULE" ] || 
+		[ -z "$RULE" ] ||
 		{
 		    read  FIRST SECOND REST < <(echo $RULE)
 		    case $FIRST in
@@ -309,41 +328,11 @@ xtables_start()
 	    }
 	done
     done
-    # FIXME  Double code
+
     # Load rules after creating _all_ chains
-    if [ -f "loadorder" ] && [ -s "loadorder" ]; then
-	while read TABLE; do
-	    [ ! -d "$TABLE" ] && continue
-	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
-		while read CHAIN; do
-		    xtables_load_rules_from_file "$TABLE" "$CHAIN"
-		done < <(egrep "^[^#]" "$TABLE/loadorder")
-	    else
-		for CHAIN in "$TABLE"/*; do
-		    CHAIN=$(basename "$CHAIN")
-		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
-		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
-		    xtables_load_rules_from_file "$TABLE" "$CHAIN"
-		done
-	    fi
-	done < <(egrep "^[^#]" loadorder)
-    else
-	for TABLE in *; do
-	    [ ! -d "$TABLE" ] && continue
-	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
-		while read CHAIN; do
-		    xtables_load_rules_from_file "$TABLE" "$CHAIN"
-		done < <(egrep "^[^#]" "$TABLE/loadorder")
-	    else
-		for CHAIN in "$TABLE"/*; do
-		    CHAIN=$(basename "$CHAIN")
-		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
-		    "$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
-		    xtables_load_rules_from_file "$TABLE" "$CHAIN"
-		done
-	    fi
-	done
-    fi
+    while read; do
+	xtables_load_rules_from_file $REPLY
+    done < <(xtables_walk .)
     [ "$NAME" = "default" ] || print_message -n -e "\t"
 }
 
@@ -364,41 +353,12 @@ xtables_stop()
     [ "$NAME" = "default" ] && print_message "Stopping $xtables for $NAME" || print_message -e  "\nStopping $xtables for $NAME"
     local cfwdir
     profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$xtables" && cd "$cfwdir" || return 0
-    # FIXME  Double code
+
     # Flush rules
-    if [ -f "loadorder" ] && [ -s "loadorder" ]; then
-	while read TABLE; do
-	    [ ! -d "$TABLE" ] && continue
-	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
-		while read CHAIN; do
-		    xtables_flush_rules_from_file "$TABLE" "$CHAIN"
-		done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
-	    else
-		for CHAIN in "$TABLE"/*; do
-		    CHAIN=$(basename "$CHAIN")
-		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
-			"$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
-		    xtables_flush_rules_from_file "$TABLE" "$CHAIN"
-		done
-	    fi
-	done < <(tac loadorder|egrep "^[^#]")
-    else
-	for TABLE in *; do
-	    [ ! -d "$TABLE" ] && continue
-	    if [ -f "$TABLE/loadorder" ] && [ -s "$TABLE/loadorder" ]; then
-		while read CHAIN; do
-		    xtables_flush_rules_from_file "$TABLE" "$CHAIN"
-		done < <(tac "$TABLE/loadorder"|egrep "^[^#]")
-	    else
-		for CHAIN in "$TABLE"/*; do
-		    CHAIN=$(basename "$CHAIN")
-		    [ "$TABLE/$CHAIN" != "$TABLE/loadorder" -a  -f "$TABLE/$CHAIN" -a \
-			"$TABLE/${CHAIN%.rpm*}" = "$TABLE/$CHAIN" -a "$TABLE/${CHAIN%\~}" = "$TABLE/$CHAIN" ] || continue
-		    xtables_flush_rules_from_file "$TABLE" "$CHAIN"
-		done
-	    fi
-	done
-    fi
+    while read; do
+	xtables_flush_rules_from_file $REPLY
+    done < <(xtables_walk . |tac)
+
     # Delete user chains
     for TABLE in *; do
 	[ ! -d "$TABLE" ] && continue
