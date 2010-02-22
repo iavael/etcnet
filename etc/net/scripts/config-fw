@@ -72,22 +72,22 @@ for CFW_TYPE in $FW_TYPE; do
 			}
 		    case "$ACTION" in
 			start)
-				iptables_preload
-				iptables_start "$NAME"
+				xtables_preload
+				xtables_start "$NAME"
 				;;
 			stop)
-				iptables_preload
-				iptables_stop "$NAME"
+				xtables_preload
+				xtables_stop "$NAME"
 				;;
 			restart)
-				iptables_preload
-				iptables_stop "$NAME"
-				iptables_start "$NAME"
+				xtables_preload
+				xtables_stop "$NAME"
+				xtables_start "$NAME"
 				;;
 			reload)
-				iptables_preload
-				iptables_stop "$NAME"
-				iptables_start "$NAME"
+				xtables_preload
+				xtables_stop "$NAME"
+				xtables_start "$NAME"
 				;;
 			*)
 				print_message "${0##*/} {start|stop|restart|reload}"
@@ -116,22 +116,22 @@ for CFW_TYPE in $FW_TYPE; do
 			}
 		    case "$ACTION" in
 			start)
-				ip6tables_preload
-				ip6tables_start "$NAME"
+				xtables_preload
+				xtables_start "$NAME"
 				;;
 			stop)
-				ip6tables_preload
-				ip6tables_stop "$NAME"
+				xtables_preload
+				xtables_stop "$NAME"
 				;;
 			restart)
-				ip6tables_preload
-				ip6tables_stop "$NAME"
-				ip6tables_start "$NAME"
+				xtables_preload
+				xtables_stop "$NAME"
+				xtables_start "$NAME"
 				;;
 			reload)
-				ip6tables_preload
-				ip6tables_stop "$NAME"
-				ip6tables_start "$NAME"
+				xtables_preload
+				xtables_stop "$NAME"
+				xtables_start "$NAME"
 				;;
 			*)
 				print_message "${0##*/} {start|stop|restart|reload}"
@@ -149,18 +149,18 @@ for CFW_TYPE in $FW_TYPE; do
 			}
 		    case "$ACTION" in
 		        start)
-			        ebtables_start "$NAME"
+			        xtables_start "$NAME"
 			        ;;
 			stop)
-				ebtables_stop "$NAME"
+				xtables_stop "$NAME"
 				;;
 			restart)
-				ebtables_stop "$NAME"
-				ebtables_start "$NAME"
+				xtables_stop "$NAME"
+				xtables_start "$NAME"
 				;;
 			reload)
-				ebtables_stop "$NAME"
-				ebtables_start "$NAME"
+				xtables_stop "$NAME"
+				xtables_start "$NAME"
 				;;
 			*)
 				print_message "${0##*/} {start|stop|restart|reload}"

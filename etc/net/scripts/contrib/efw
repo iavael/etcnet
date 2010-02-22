@@ -179,244 +179,8 @@ guess_options()
 	}
 }
 
-# iptables suff
-iptables_local_rules_from_file()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
-    [ "$TABLE" = "all" ] && TABLE="*"
-    [ "$CHAIN" = "all" ] && CHAIN="*"
-    for CTABLE in $TABLE; do
-	[ -d "$CTABLE" ] || continue
-	for CCHAIN in "$CTABLE"/$CHAIN; do
-	    CCHAIN=$(basename $CCHAIN)
-	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
-	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
-	    [ "$1" = "unload" ] && iptables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" ||
-		{
-		    [ -s "$CTABLE/$CCHAIN" ] && iptables_load_rules_from_file "$CTABLE" "$CCHAIN"
-		}
-	done
-    done
-}
-
-iptables_local_rule()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
-    local RULE
-    [ "$TABLE" = "all" ] && TABLE="*"
-    [ "$CHAIN" = "all" ] && CHAIN="*"
-    RULE=$(iptables_expand_string $@)
-    [ -z "$RULE" ] && return
-    for CTABLE in $TABLE; do
-	[ -d "$CTABLE" ] || continue
-	for CCHAIN in "$CTABLE"/$CHAIN; do
-	    CCHAIN=$(basename $CCHAIN)
-	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
-	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
-	    read FIRST SECOND REST < <(echo $RULE)
-	    case $FIRST in
-		"-A"|"-D"|"-I")
-			    iptables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
-			    ;;
-		"-P")
-			    iptables_chain_policy $CTABLE $(echo $CCHAIN $SECOND $REST|sed -e 's/-j//g')
-			    ;;
-		*)
-			    iptables_push_rule $CTABLE $CCHAIN $FIRST $SECOND $REST
-			    ;;
-	    esac
-	done
-    done
-}
-
-iptables_local_create_chain()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
-    [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
-    for CTABLE in $TABLE; do
-	iptables_create_chain $CTABLE $CHAIN
-    done
-}
-
-iptables_local_delete_chain()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=$2
-    shift $#
-    [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
-    for CTABLE in $TABLE; do
-	# We can delete only user-defined chains so just don't pass chain name
-	# in case of 'all' chain
-	[ "$CHAIN" = "all" ] && iptables_delete_chain $CTABLE || iptables_delete_chain $CTABLE $CHAIN
-    done
-}
-
-iptables_local_list_chain()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=$2
-    [ -z "$CHAIN" ] && shift || shift 2
-    local LIST_ARGS
-    [ $# -eq 0 ] || 
-	{
-	    iptables_preload
-	    LIST_ARGS=$(iptables_expand_string $@)
-	}
-    [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
-    for CTABLE in $TABLE; do
-	printf "\nTable $CTABLE\n\n"
-	[ "$CHAIN" = "all" ] && iptables_list_chain $CTABLE $LIST_ARGS || iptables_list_chain $CTABLE $CHAIN $LIST_ARGS
-    done
-}
-
-iptables_local_zero_chain()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=$2
-    shift $#
-    [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
-    for CTABLE in $TABLE; do
-	[ "$CHAIN" = "all" ] && iptables_zero_chain $CTABLE || iptables_zero_chain $CTABLE $CHAIN
-    done
-}
-
-iptables_local_rename_chain()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
-    [ "$TABLE" = "all" ] && TABLE=$IPTABLES_TABLES
-    for CTABLE in $TABLE; do
-	iptables_rename_chain $CTABLE $CHAIN $@
-    done
-}
-
-# ip6tables suff
-ip6tables_local_rules_from_file()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
-    [ "$TABLE" = "all" ] && TABLE="*"
-    [ "$CHAIN" = "all" ] && CHAIN="*"
-    for CTABLE in $TABLE; do
-	[ -d "$CTABLE" ] || continue
-	for CCHAIN in "$CTABLE"/$CHAIN; do
-	    CCHAIN=$(basename $CCHAIN)
-	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
-	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
-	    [ "$1" = "unload" ] && ip6tables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" ||
-		{
-		    [ -s "$CTABLE/$CCHAIN" ] && ip6tables_load_rules_from_file "$CTABLE" "$CCHAIN"
-		}
-	done
-    done
-}
-
-ip6tables_local_rule()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
-    local RULE
-    [ "$TABLE" = "all" ] && TABLE="*"
-    [ "$CHAIN" = "all" ] && CHAIN="*"
-    RULE=$(ip6tables_expand_string $@)
-    [ -z "$RULE" ] && return
-    for CTABLE in $TABLE; do
-	[ -d "$CTABLE" ] || continue
-	for CCHAIN in "$CTABLE"/$CHAIN; do
-	    CCHAIN=$(basename $CCHAIN)
-	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
-	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
-	    read FIRST SECOND REST < <(echo $RULE)
-	    case $FIRST in
-		"-A"|"-D"|"-I")
-			    ip6tables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
-			    ;;
-		"-P")
-			    ip6tables_chain_policy $CTABLE $(echo $CCHAIN $SECOND $REST|sed -e 's/-j//g')
-			    ;;
-		*)
-			    ip6tables_push_rule $CTABLE $CCHAIN $FIRST $SECOND $REST
-			    ;;
-	    esac
-	done
-    done
-}
-
-ip6tables_local_create_chain()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
-    [ "$TABLE" = "all" ] && TABLE=$IP6TABLES_TABLES
-    for CTABLE in $TABLE; do
-	ip6tables_create_chain $CTABLE $CHAIN
-    done
-}
-
-ip6tables_local_delete_chain()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=$2
-    shift $#
-    [ "$TABLE" = "all" ] && TABLE=$IP6TABLES_TABLES
-    for CTABLE in $TABLE; do
-	# We can delete only user-defined chains so just don't pass chain name
-	# in case of 'all' chain
-	[ "$CHAIN" = "all" ] && ip6tables_delete_chain $CTABLE || ip6tables_delete_chain $CTABLE $CHAIN
-    done
-}
-
-ip6tables_local_list_chain()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=$2
-    [ -z "$CHAIN" ] && shift || shift 2
-    local LIST_ARGS
-    [ $# -eq 0 ] || 
-	{
-	    ip6tables_preload
-	    LIST_ARGS=$(ip6tables_expand_string $@)
-	}
-    [ "$TABLE" = "all" ] && TABLE=$IP6TABLES_TABLES
-    for CTABLE in $TABLE; do
-	printf "\nTable $CTABLE\n\n"
-	[ "$CHAIN" = "all" ] && ip6tables_list_chain $CTABLE $LIST_ARGS || ip6tables_list_chain $CTABLE $CHAIN $LIST_ARGS
-    done
-}
-
-ip6tables_local_zero_chain()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=$2
-    shift $#
-    [ "$TABLE" = "all" ] && TABLE=$IP6TABLES_TABLES
-    for CTABLE in $TABLE; do
-	[ "$CHAIN" = "all" ] && ip6tables_zero_chain $CTABLE || ip6tables_zero_chain $CTABLE $CHAIN
-    done
-}
-
-ip6tables_local_rename_chain()
-{
-    local TABLE=${1:?missing 1st arg to $FUNCNAME}
-    local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
-    [ "$TABLE" = "all" ] && TABLE=$IP6TABLES_TABLES
-    for CTABLE in $TABLE; do
-	ip6tables_rename_chain $CTABLE $CHAIN $@
-    done
-}
-
-# ebtables suff
-ebtables_local_rules_from_file()
+# xtables suff
+xtables_local_rules_from_file()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
@@ -429,107 +193,244 @@ ebtables_local_rules_from_file()
 	    CCHAIN=$(basename $CCHAIN)
 	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
 	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
-	    [ "$1" = "unload" ] && ebtables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" ||
+	    [ "$1" = "unload" ] && xtables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" ||
 		{
-		    [ -s "$CTABLE/$CCHAIN" ] && ebtables_load_rules_from_file "$CTABLE" "$CCHAIN"
+		    [ -s "$CTABLE/$CCHAIN" ] && xtables_load_rules_from_file "$CTABLE" "$CCHAIN"
 		}
 	done
     done
 }
 
-ebtables_local_rule()
+xtables_local_rule()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
+    shift 2
     local RULE
     [ "$TABLE" = "all" ] && TABLE="*"
     [ "$CHAIN" = "all" ] && CHAIN="*"
-    RULE=$(ebtables_expand_string $@)
+    RULE=$(xtables_expand_string $@)
     [ -z "$RULE" ] && return
     for CTABLE in $TABLE; do
 	[ -d "$CTABLE" ] || continue
-        for CCHAIN in "$CTABLE"/$CHAIN; do
-	CCHAIN=$(basename $CCHAIN)
+	for CCHAIN in "$CTABLE"/$CHAIN; do
+	    CCHAIN=$(basename $CCHAIN)
 	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
 	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
 	    read FIRST SECOND REST < <(echo $RULE)
 	    case $FIRST in
 		"-A"|"-D"|"-I")
-			    ebtables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
+			    xtables_push_rule $CTABLE $FIRST $CCHAIN $SECOND $REST
 			    ;;
 		"-P")
-			    ebtables_chain_policy $CTABLE $(echo $CCHAIN $SECOND $REST|sed -e 's/-j//g')
+			    xtables_chain_policy $CTABLE $(echo $CCHAIN $SECOND $REST|sed -e 's/-j//g')
 			    ;;
 		*)
-			    ebtables_push_rule $CTABLE $CCHAIN $FIRST $SECOND $REST
+			    xtables_push_rule $CTABLE $CCHAIN $FIRST $SECOND $REST
 			    ;;
 	    esac
 	done
     done
 }
 
-ebtables_local_create_chain()
+xtables_local_create_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
-    [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
+    shift 2
+    [ "$TABLE" = "all" ] && TABLE=$(xtables_expand_variable $XTABLES TABLES)
     for CTABLE in $TABLE; do
-	ebtables_create_chain $CTABLE $CHAIN
+	xtables_create_chain $CTABLE $CHAIN
     done
 }
 
-ebtables_local_delete_chain()
+xtables_local_delete_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
     shift $#
-    [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
+    [ "$TABLE" = "all" ] && TABLE=$(xtables_expand_variable $XTABLES TABLES)
     for CTABLE in $TABLE; do
 	# We can delete only user-defined chains so just don't pass chain name
 	# in case of 'all' chain
-	[ "$CHAIN" = "all" ] && ebtables_delete_chain $CTABLE || ebtables_delete_chain $CTABLE $CHAIN
+	[ "$CHAIN" = "all" ] && xtables_delete_chain $CTABLE || iptables_delete_chain $CTABLE $CHAIN
     done
 }
 
-ebtables_local_list_chain()
+xtables_local_list_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
     [ -z "$CHAIN" ] && shift || shift 2
     local LIST_ARGS
-    [ $# -eq 0 ] || 
+    [ $# -eq 0 ] ||
 	{
-	    LIST_ARGS=$(ebtables_expand_string $@)
+	    xtables_preload
+	    LIST_ARGS=$(xtables_expand_string $@)
 	}
-    [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
+    [ "$TABLE" = "all" ] && TABLE=$(xtables_expand_variable $XTABLES TABLES)
     for CTABLE in $TABLE; do
 	printf "\nTable $CTABLE\n\n"
-	[ "$CHAIN" = "all" ] && ebtables_list_chain $CTABLE $LIST_ARGS || ebtables_list_chain $CTABLE $CHAIN $LIST_ARGS
+	[ "$CHAIN" = "all" ] && xtables_list_chain $CTABLE $LIST_ARGS || xtables_list_chain $CTABLE $CHAIN $LIST_ARGS
     done
 }
 
-ebtables_local_zero_chain()
+xtables_local_zero_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=$2
     shift $#
-    [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
+    [ "$TABLE" = "all" ] && TABLE=$(xtables_expand_variable $XTABLES TABLES)
     for CTABLE in $TABLE; do
-	[ "$CHAIN" = "all" ] && ebtables_zero_chain $CTABLE || ebtables_zero_chain $CTABLE $CHAIN
+	[ "$CHAIN" = "all" ] && xtables_zero_chain $CTABLE || xtables_zero_chain $CTABLE $CHAIN
     done
 }
 
-ebtables_local_rename_chain()
+xtables_local_rename_chain()
 {
     local TABLE=${1:?missing 1st arg to $FUNCNAME}
     local CHAIN=${2:?missing 2nd arg to $FUNCNAME}
-    shift 2 
-    [ "$TABLE" = "all" ] && TABLE=$EBTABLES_TABLES
+    shift 2
+    [ "$TABLE" = "all" ] && TABLE=$(xtables_expand_variable $XTABLES TABLES)
     for CTABLE in $TABLE; do
-	ebtables_rename_chain $CTABLE $CHAIN $@
+	xtables_rename_chain $CTABLE $CHAIN $@
     done
+}
+
+xtables_local_action()
+{
+    case "$ACTION" in
+	start)
+		xtables_preload
+		xtables_start "$NAME"
+		;;
+	stop)
+		xtables_preload
+		xtables_stop "$NAME"
+		;;
+	restart)
+		xtables_preload
+		xtables_stop "$NAME"
+		xtables_start "$NAME"
+		;;
+	load)
+		xtables_preload
+		cd "$cfwdir"
+		xtables_local_rules_from_file $TABLE $CHAIN
+		;;
+	unload)
+		xtables_preload
+		cd "$cfwdir"
+		xtables_local_rules_from_file $TABLE $CHAIN unload
+		;;
+	reload)
+		xtables_preload
+		cd "$cfwdir"
+		xtables_local_rules_from_file $TABLE $CHAIN unload
+		xtables_local_rules_from_file $TABLE $CHAIN
+		;;
+	flush)
+		xtables_preload
+		cd "$cfwdir"
+		xtables_local_rules_from_file $TABLE $CHAIN unload flush
+		;;
+	show|list)
+		# FIXME BROKEN Double shift after each
+		# iteration
+		case $# in
+		    1)
+		    shift 1
+		    ;;
+		    2)
+		    shift 2
+		    ;;
+		    3)
+		    shift 3
+		    ;;
+		    *)
+		    shift 4
+		    ;;
+		esac
+		xtables_local_list_chain $TABLE $CHAIN $@
+		;;
+	count|counters)
+		print_error "Not implemented yet"
+		exit 1
+		;;
+	rule)
+		# FIXME BROKEN Double shift after each
+		# iteration
+		case $# in
+		    1)
+		    shift 1
+		    ;;
+		    2)
+		    shift 2
+		    ;;
+		    3)
+		    shift 3
+		    ;;
+		    *)
+		    shift 4
+		    ;;
+		esac
+		xtables_preload
+		cd "$cfwdir"
+		xtables_local_rule $TABLE $CHAIN $@
+		;;
+	new|create)
+		xtables_local_create_chain $TABLE $CHAIN
+		;;
+	remove|delete)
+		xtables_local_delete_chain $TABLE $CHAIN
+		;;
+	zero)
+		xtables_local_zero_chain $TABLE $CHAIN
+		;;
+	policy)
+		# FIXME BROKEN Double shift after each
+		# iteration
+		case $# in
+		    1)
+		    shift 1
+		    ;;
+		    2)
+		    shift 2
+		    ;;
+		    3)
+		    shift 3
+		    ;;
+		    *)
+		    shift 4
+		    ;;
+		esac
+		xtables_preload
+		cd "$cfwdir"
+		xtables_local_rule $TABLE $CHAIN -P $@
+		;;
+	rename)
+		# FIXME BROKEN Double shift after each
+		# iteration
+		case $# in
+		    1)
+		    shift 1
+		    ;;
+		    2)
+		    shift 2
+		    ;;
+		    3)
+		    shift 3
+		    ;;
+		    *)
+		    shift 4
+		    ;;
+		esac
+		xtables_local_rename_chain $TABLE $CHAIN $@
+		;;
+	*)
+		usage
+		;;
+	esac
 }
 
 # Be verbose in any way
@@ -661,138 +562,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 				    }
 			    }
 
-			case "$ACTION" in
-			    start)
-					iptables_preload
-					iptables_start "$NAME"
-					;;
-			    stop)
-					iptables_preload
-					iptables_stop "$NAME"
-					;;
-			    restart)
-					iptables_preload
-					iptables_stop "$NAME"
-					iptables_start "$NAME"
-					;;
-			    load)
-					iptables_preload
-					cd "$cfwdir"
-					iptables_local_rules_from_file $TABLE $CHAIN
-					;;
-			    unload)
-					iptables_preload
-					cd "$cfwdir"
-					iptables_local_rules_from_file $TABLE $CHAIN unload
-					;;
-			    reload)
-					iptables_preload
-					cd "$cfwdir"
-					iptables_local_rules_from_file $TABLE $CHAIN unload
-					iptables_local_rules_from_file $TABLE $CHAIN
-					;;
-			    flush)
-					iptables_preload
-					cd "$cfwdir"
-					iptables_local_rules_from_file $TABLE $CHAIN unload flush
-					;;
-			    show|list)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-						;;
-					    3)
-					    	shift 3
-					    	;;
-					    *)
-						shift 4
-						;;
-					esac
-					iptables_local_list_chain $TABLE $CHAIN $@
-					;;
-			    count|counters)
-					print_error "Not implemented yet"
-					exit 1
-					;;
-			    rule)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-					    	;;
-					    3)
-						shift 3
-						;;
-					    *)
-						shift 4
-						;;
-					esac
-					iptables_preload
-					cd "$cfwdir"
-					iptables_local_rule $TABLE $CHAIN $@
-					;;
-			    new|create)
-					iptables_local_create_chain $TABLE $CHAIN
-					;;
-			    remove|delete)
-					iptables_local_delete_chain $TABLE $CHAIN
-					;;
-			    zero)
-					iptables_local_zero_chain $TABLE $CHAIN
-					;;
-			    policy)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-						;;
-					    3)
-						shift 3
-						;;
-					    *)
-						shift 4
-						;;
-					esac
-					iptables_preload
-					cd "$cfwdir"
-					iptables_local_rule $TABLE $CHAIN -P $@
-					;;
-			    rename)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-						;;
-					    3)
-						shift 3
-						;;
-					    *)
-						shift 4
-						;;
-					esac
-					iptables_local_rename_chain $TABLE $CHAIN $@
-					;;
-			    *)
-					usage
-					;;
-			esac
+			XTABLES=IPTABLES xtables_local_action "$@"
 			print_message
 			;;
 	    "ip6tables")
@@ -823,141 +593,10 @@ for IFACE in "$IFACEDIR"/$NAME; do
 				    }
 			    }
 
-			case "$ACTION" in
-			    start)
-					ip6tables_preload
-					ip6tables_start "$NAME"
-					;;
-			    stop)
-					ip6tables_preload
-					ip6tables_stop "$NAME"
-					;;
-			    restart)
-					ip6tables_preload
-					ip6tables_stop "$NAME"
-					ip6tables_start "$NAME"
-					;;
-			    load)
-					ip6tables_preload
-					cd "$cfwdir"
-					ip6tables_local_rules_from_file $TABLE $CHAIN
-					;;
-			    unload)
-					ip6tables_preload
-					cd "$cfwdir"
-					ip6tables_local_rules_from_file $TABLE $CHAIN unload
-					;;
-			    reload)
-					ip6tables_preload
-					cd "$cfwdir"
-					ip6tables_local_rules_from_file $TABLE $CHAIN unload
-					ip6tables_local_rules_from_file $TABLE $CHAIN
-					;;
-			    flush)
-					ip6tables_preload
-					cd "$cfwdir"
-					ip6tables_local_rules_from_file $TABLE $CHAIN unload flush
-					;;
-			    show|list)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-						;;
-					    3)
-					    	shift 3
-					    	;;
-					    *)
-						shift 4
-						;;
-					esac
-					ip6tables_local_list_chain $TABLE $CHAIN $@
-					;;
-			    count|counters)
-					print_error "Not implemented yet"
-					exit 1
-					;;
-			    rule)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-					    	;;
-					    3)
-						shift 3
-						;;
-					    *)
-						shift 4
-						;;
-					esac
-					ip6tables_preload
-					cd "$cfwdir"
-					ip6tables_local_rule $TABLE $CHAIN $@
-					;;
-			    new|create)
-					ip6tables_local_create_chain $TABLE $CHAIN
-					;;
-			    remove|delete)
-					ip6tables_local_delete_chain $TABLE $CHAIN
-					;;
-			    zero)
-					ip6tables_local_zero_chain $TABLE $CHAIN
-					;;
-			    policy)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-						;;
-					    3)
-						shift 3
-						;;
-					    *)
-						shift 4
-						;;
-					esac
-					ip6tables_preload
-					cd "$cfwdir"
-					ip6tables_local_rule $TABLE $CHAIN -P $@
-					;;
-			    rename)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-						;;
-					    3)
-						shift 3
-						;;
-					    *)
-						shift 4
-						;;
-					esac
-					ip6tables_local_rename_chain $TABLE $CHAIN $@
-					;;
-			    *)
-					usage
-					;;
-			esac
+			XTABLES=IP6TABLES xtables_local_action "$@"
 			print_message
 			;;
-	    "ebtables")
+  	    "ebtables")
 			is_yes "$PROCESS_EBTABLES" || continue
 			profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" ||
 			    {
@@ -973,129 +612,7 @@ for IFACE in "$IFACEDIR"/$NAME; do
 			    }
 			print_message "Firewall type is \"$CFW_TYPE\""
 			[ "$NAME" != "default" ] && pickup_options
-			case "$ACTION" in
-			    start)
-					ebtables_start "$NAME"
-					;;
-			    stop)
-					ebtables_stop "$NAME"
-					;;
-			    restart)
-					ebtables_stop "$NAME"
-					ebtables_start "$NAME"
-					;;
-			    load)
-					cd "$cfwdir"
-					ebtables_local_rules_from_file $TABLE $CHAIN
-					;;
-			    unload)
-					cd "$cfwdir"
-					ebtables_local_rules_from_file $TABLE $CHAIN unload
-					;;
-			    reload)
-					cd "$cfwdir"
-					ebtables_local_rules_from_file $TABLE $CHAIN unload
-					ebtables_local_rules_from_file $TABLE $CHAIN
-					;;
-			    flush)
-					cd "$cfwdir"
-					ebtables_local_rules_from_file $TABLE $CHAIN unload flush
-					;;
-			    show|list)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-						;;
-					    3)
-					    	shift 3
-					    	;;
-					    *)
-						shift 4
-						;;
-					esac
-					ebtables_local_list_chain $TABLE $CHAIN $@
-					;;
-			    count|counters)
-					print_error "Not implemented yet"
-					exit 1
-					;;
-			    rule)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-					    	;;
-					    3)
-						shift 3
-						;;
-					    *)
-						shift 4
-						;;
-					esac
-					cd "$cfwdir"
-					ebtables_local_rule $TABLE $CHAIN $@
-					;;
-			    new|create)
-					ebtables_local_create_chain $TABLE $CHAIN
-					;;
-			    remove|delete)
-					ebtables_local_delete_chain $TABLE $CHAIN
-					;;
-			    zero)
-					ebtables_local_zero_chain $TABLE $CHAIN
-					;;
-			    policy)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-						;;
-					    3)
-						shift 3
-						;;
-					    *)
-						shift 4
-						;;
-					esac
-					cd "$cfwdir"
-					ebtables_local_rule $TABLE $CHAIN -P $@
-					;;
-			    rename)
-					# FIXME BROKEN Double shift after each
-					# iteration
-					case $# in
-					    1)
-						shift 1
-						;;
-					    2)
-						shift 2
-						;;
-					    3)
-						shift 3
-						;;
-					    *)
-						shift 4
-						;;
-					esac
-					ebtables_local_rename_chain $TABLE $CHAIN $@
-					;;
-			    *)
-					usage
-					;;
-			esac
+			XTABLES=EBTABLES xtables_local_action "$@"
 			print_message
 			;;
 		*)
