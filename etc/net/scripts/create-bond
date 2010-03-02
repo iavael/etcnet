@@ -3,10 +3,18 @@
 pickup_defaults
 pickup_options
 
-# TODO: max_bonds=1 to override modules.conf?
-modprobe_with_rename -o $NAME bonding mode=${BONDMODE:-$DEFAULT_BONDMODE} $BONDOPTIONS >/dev/null
+[ -f /sys/class/net/bonding_masters ] || modprobe_with_rename bonding max_bonds=0
 
-# We assume that there is no other bonding modules hanging around.
-# TODO: compute iface table difference and find newly appeared iface.
-# We must assign bond IP address before calling ifenslave.
-$IP link set bond0 name $NAME
+printf '%s%s' + "$NAME" > /sys/class/net/bonding_masters
+
+cd /sys/class/net/$NAME/bonding
+
+printf '%s' ${BONDMODE:-$DEFAULT_BONDMODE} > mode
+
+eval "$BONDOPTIONS"
+for VAR in *; do
+	[ "$VAR" = "primary" ] && continue
+	[ -n "${!VAR}" ] && printf '%s\n' "${!VAR}" > "$VAR"
+done
+
+$IP link set dev $NAME up

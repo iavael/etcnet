@@ -7,11 +7,11 @@ pickup_options
 : ${HOST:?HOST must be set for $NAME}
 : ${BONDOPTIONS:?BONDOPTIONS must be set for $NAME}
 
-[ -x "${IFENSLAVE:=$DEFAULT_IFENSLAVE}" ] || {
-	print_error "$IFENSLAVE does not exist or is not executable. Try installing iputils RPM."
-	exit 1
-}
-
 for host in $HOST; do
-	$IFENSLAVE $NAME $host > /dev/null
+	$IP link set dev $host down
+	printf '%s%s' + $host > /sys/class/net/$NAME/bonding/slaves && print_progress
+	# primary iface for active-backup cannot be set until enslaved
+	[ "${BONDMODE:-$DEFAULT_BONDMODE}" = "active-backup" ] || continue
+	echo "$BONDOPTIONS" | fgrep -qw "primary=$host" || continue
+	printf '%s' $host > /sys/class/net/$NAME/bonding/primary
 done
