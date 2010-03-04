@@ -51,6 +51,32 @@ is_yes "$CONFIG_FW" ||
 
 for CFW_TYPE in $FW_TYPE; do
     case "$CFW_TYPE" in
+        "ipset")
+		    is_yes "$CONFIG_IPV4" || continue
+		    [ -x "$IPSET" ] || 
+			{
+			    print_error "$IPSET not found. Please, install ipset package"
+			    continue
+			}
+		    profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" ||
+			    continue
+		    case "$ACTION" in
+			start)
+				ipset_start "$NAME"
+				;;
+			stop)
+				ipset_stop "$NAME"
+				;;
+			restart|reload)
+				ipset_stop "$NAME"
+				ipset_start "$NAME"
+				;;
+			*)
+				print_message "${0##*/} {start|stop|restart|reload}"
+				exit 1
+				;;
+		    esac
+		    ;;
         "iptables")
 		    # FIXME Does iptables support only IPv4?
 		    is_yes "$CONFIG_IPV4" || continue

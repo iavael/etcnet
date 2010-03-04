@@ -49,6 +49,7 @@ IPX_CONFIGURE=/sbin/ipx_configure
 ALLOW_UNKNOWN=no
 
 # FireWall defaults
+IPSET=/usr/sbin/ipset
 IPTABLES=/sbin/iptables
 IP6TABLES=/sbin/ip6tables
 EBTABLES=/sbin/ebtables

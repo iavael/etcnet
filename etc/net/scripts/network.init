@@ -191,7 +191,7 @@ start()
 			iptables|ip6tables)
 				    xtables_preload
 				    ;;
-			ebtables)
+			ebtables|ipset)
 				    ;;
 			*)
 				    print_error "Unknown firewall type $CFW_TYPE"
@@ -255,7 +255,7 @@ stop()
 			iptables|ip6tables)
 				    xtables_preload
 				    ;;
-			ebtables)
+			ebtables|ipset)
 				    ;;
 			*)
 				    print_error "Unknown firewall type $CFW_TYPE"

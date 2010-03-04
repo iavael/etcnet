@@ -1,7 +1,7 @@
 # Enabled types of the firewall. Now iptables, ip6tables and ebtables are supported.
 # Will start in the defined order. 
 # Value MUST be in the quotes, types MUST be separated by space
-#FW_TYPE="iptables ip6tables ebtables"
+#FW_TYPE="ipset iptables ip6tables ebtables"
 FW_TYPE="iptables"
 
 ## IPTABLES options
