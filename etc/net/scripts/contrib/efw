@@ -11,10 +11,12 @@ NAME=default
 TABLE=filter
 CHAIN=
 MYIFACEDIR=
+PROCESS_IPSET=yes
 PROCESS_IPTABLES=yes
 PROCESS_IP6TABLES=yes
 PROCESS_EBTABLES=yes
 TABLES=
+IPSET_TABLES="ipmap macipmap portmap iphash nethash ipporthash ipportiphash ipportnethash iptree iptreemap setlist"
 IPTABLES_TABLES="mangle filter nat"
 IP6TABLES_TABLES="mangle filter"
 EBTABLES_TABLES="broute filter nat"
@@ -23,8 +25,9 @@ ACTIONS="start stop restart load unload reload flush show list count counters ru
 usage()
 {
     echo '/etc/net FireWall handler'
-    echo "Usage: $0 [--ipt[ables]|--ip6t[ables]|--ebt[ables]|--no-ipt[ables]|--no-ip6t[ables]|--no-ebt[ables]] [iface] [table] [chain] <action> [firewall rule or action options]" >&2
+    echo "Usage: $0 --ips[et]|[--ipt[ables]|--ip6t[ables]|--ebt[ables]|--no-ips[et]|--no-ipt[ables]|--no-ip6t[ables]|--no-ebt[ables]] [iface] [table|settype] [chain|set] <action> [firewall rule or action options]" >&2
     echo ""
+    echo " --ipset        - process only with ipset firewall"
     echo " --iptables     - process only with iptables firewall"
     echo " --ip6tables    - process only with ip6tables firewall"
     echo " --ebtables     - process only with ebtables firewall"
@@ -193,9 +196,9 @@ xtables_local_rules_from_file()
 	    CCHAIN=$(basename $CCHAIN)
 	    [ "$CTABLE/$CCHAIN" != "$CTABLE/loadorder" -a  -f "$CTABLE/$CCHAIN" -a \
 	    "$CTABLE/${CCHAIN%.rpm*}" = "$CTABLE/$CCHAIN" -a "$CTABLE/${CCHAIN%\~}" = "$CTABLE/$CCHAIN" ] || continue
-	    [ "$1" = "unload" ] && xtables_flush_rules_from_file "$CTABLE" "$CCHAIN" "$2" ||
+	    [ "$1" = "unload" ] && xtables_flush_rules_from_file "$CTABLE/$CCHAIN" "$2" ||
 		{
-		    [ -s "$CTABLE/$CCHAIN" ] && xtables_load_rules_from_file "$CTABLE" "$CCHAIN"
+		    [ -s "$CTABLE/$CCHAIN" ] && xtables_load_rules_from_file "$CTABLE/$CCHAIN"
 		}
 	done
     done
@@ -295,6 +298,44 @@ xtables_local_rename_chain()
     for CTABLE in $TABLE; do
 	xtables_rename_chain $CTABLE $CHAIN $@
     done
+}
+
+ipset_local_action()
+{
+    case "$ACTION" in
+	start)
+		ipset_start "$NAME"
+		;;
+	stop)
+		ipset_stop "$NAME"
+		;;
+	restart)
+		ipset_stop "$NAME"
+		ipset_start "$NAME"
+		;;
+	load|unload|reload|flush)
+		print_error "Not implemented yet"
+		;;
+	show|list)
+		$IPSET -L
+		;;
+	count|counters)
+		print_error "Not implemented yet"
+		exit 1
+		;;
+	rule)
+		print_error "Not implemented yet"
+		;;
+	new|create|remove|delete|zero|rename)
+		print_error "Not implemented yet"
+		;;
+	policy)
+		print_error "Not implemented yet"
+		;;
+	*)
+		usage
+		;;
+	esac
 }
 
 xtables_local_action()
@@ -468,7 +509,16 @@ is_yes "$CONFIG_FW" ||
 
 # FIXME variable TABLES must be reworked 
 case "$1" in
+    --ips*)
+			PROCESS_IPSET=yes
+			PROCESS_IPTABLES=no
+			PROCESS_IP6TABLES=no
+			PROCESS_EBTABLES=no
+			TABLES=$IPSET_TABLES
+			shift
+			;;
     --ipt*)
+			PROCESS_IPSET=no
 			PROCESS_IPTABLES=yes
 			PROCESS_IP6TABLES=no
 			PROCESS_EBTABLES=no
@@ -476,6 +526,7 @@ case "$1" in
 			shift
 			;;
     --ip6t*)
+			PROCESS_IPSET=no
 			PROCESS_IPTABLES=no
 			PROCESS_IP6TABLES=yes
 			PROCESS_EBTABLES=no
@@ -483,30 +534,36 @@ case "$1" in
 			shift
 			;;
     --ebt*)
+			PROCESS_IPSET=no
 			PROCESS_IPTABLES=no
 			PROCESS_IP6TABLES=no
 			PROCESS_EBTABLES=yes
 			TABLES=$EBTABLES_TABLES
 			shift
 			;;
+    --no-ips*)
+			PROCESS_IPSET=no
+			TABLES="$IPTABLES_TABLES $IP6TABLES_TABLES $EBTABLES_TABLES"
+			shift
+			;;
     --no-ipt*)
 			PROCESS_IPTABLES=no
-			TABLES="$IP6TABLES_TABLES $EBTABLES_TABLES"
+			TABLES="$IPSET_TABLES $IP6TABLES_TABLES $EBTABLES_TABLES"
 			shift
 			;;
     --no-ip6t*)
 			PROCESS_IP6TABLES=no
-			TABLES="$IPTABLES_TABLES $EBTABLES_TABLES"
+			TABLES="$IPSET_TABLES $IPTABLES_TABLES $EBTABLES_TABLES"
 			shift
 			;;
     --no-ebt*)
 			PROCESS_EBTABLES=no
-			TABLES="$IPTABLES_TABLES $IP6TABLES_TABLES"
+			TABLES="$IPSET_TABLES $IPTABLES_TABLES $IP6TABLES_TABLES"
 			shift
 			;;
     *)
 			# FIXME we must look at the FW_TYPE
-			TABLES="$IPTABLES_TABLES $IP6TABLES_TABLES $EBTABLES_TABLES"
+			TABLES="$IPSET_TABLES $IPTABLES_TABLES $IP6TABLES_TABLES $EBTABLES_TABLES"
 			;;
 esac
 
@@ -534,6 +591,36 @@ for IFACE in "$IFACEDIR"/$NAME; do
     is_yes "$CONFIG_IPV6" && SourceIfNotEmpty $SCRIPTDIR/functions-ipv6 && export IPV6ADDRESS=( $(get_ipv6_addresses $NAME) )
     for CFW_TYPE in $FW_TYPE; do
 	case "$CFW_TYPE" in
+	    "ipset")
+			is_yes "$PROCESS_IPSET" || continue
+			is_yes "$CONFIG_IPV4" || continue
+			profiled_filename_dir cfwdir "$MYIFACEDIR/fw/$CFW_TYPE" ||
+			    {
+				 print_message "No \"$CFW_TYPE\" firewall is configured for interface \"$NAME\""
+				 print_message
+				 continue
+			    }
+			[ -x "$IPSET" ] || 
+			    {
+				print_error "$IPSET not found. Please, install ipset package"
+				print_message
+				continue
+			    }
+			print_message "Firewall type is \"$CFW_TYPE\""
+			[ "$NAME" != "default" ] && pickup_options
+			# Load own interface syntax if exists
+			[ "$NAME" != "default" ] && is_yes "$IPSET_HUMAN_SYNTAX" &&
+			    {
+				[ -s "$cfwdir/syntax" ] &&
+				    {
+					export IPSET_SYNTAX_DIR="$cfwdir"
+					unset IPSET_SYNTAX IPSET_SED_RULES
+				    }
+			    }
+
+			XTABLES=IPSET ipset_local_action "$@"
+			print_message
+			;;
 	    "iptables")
 			is_yes "$PROCESS_IPTABLES" || continue
 			# FIXME Does iptables support only IPv4?
