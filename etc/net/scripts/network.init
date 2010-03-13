@@ -401,9 +401,6 @@ check()
 			ovpn)
 				check_bin_x "${OVPN:-$DEFAULT_OVPN}"
 			;;
-			bond)
-				check_bin_x "${IFENSLAVE:-$DEFAULT_IFENSLAVE}"
-			;;
 			bri)
 				check_bin_x "${BRCTL:-$DEFAULT_BRCTL}"
 			;;
