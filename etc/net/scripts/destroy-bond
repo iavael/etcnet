@@ -3,4 +3,5 @@
 pickup_defaults
 pickup_options
 
-try_rmmod $NAME
+printf '%s%s' - "$NAME" > /sys/class/net/bonding_masters
+[ -n "$(< /sys/class/net/bonding_masters)" ] || try_rmmod bonding

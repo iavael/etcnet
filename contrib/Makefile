@@ -13,6 +13,18 @@ install:
 
 # 1. Install main /etc/net tree.
 	@# Yes, default interface is quite messed up with files and directories.
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/ipmap
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/macipmap
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/portmap
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/iphash
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/nethash
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/ipporthash
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/ipportiphash
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/ipportnethash
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/iptree
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/iptreemap
+	@install -d $(etcnetdir)/ifaces/default/fw/ipset/setlist
+	@install -m 644 etc/net/ifaces/default/fw/ipset/{loadorder,modules} $(etcnetdir)/ifaces/default/fw/ipset
 	@install -d $(etcnetdir)/ifaces/default/fw/iptables/filter
 	@install -d $(etcnetdir)/ifaces/default/fw/iptables/mangle
 	@install -d $(etcnetdir)/ifaces/default/fw/iptables/nat

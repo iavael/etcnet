@@ -188,13 +188,10 @@ start()
 		export CONFIG_FW
 		for CFW_TYPE in $FW_TYPE; do
 		    case "$CFW_TYPE" in
-			"iptables")
-				    iptables_preload
+			iptables|ip6tables)
+				    xtables_preload
 				    ;;
-			"ip6tables")
-				    ip6tables_preload
-				    ;;
-			"ebtables")
+			ebtables|ipset)
 				    ;;
 			*)
 				    print_error "Unknown firewall type $CFW_TYPE"
@@ -255,13 +252,10 @@ stop()
 		export CONFIG_FW
 		for CFW_TYPE in $FW_TYPE; do
 		    case "$CFW_TYPE" in
-			"iptables")
-				    iptables_preload
+			iptables|ip6tables)
+				    xtables_preload
 				    ;;
-			"ip6tables")
-				    ip6tables_preload
-				    ;;
-			"ebtables")
+			ebtables|ipset)
 				    ;;
 			*)
 				    print_error "Unknown firewall type $CFW_TYPE"
@@ -406,9 +400,6 @@ check()
 			;;
 			ovpn)
 				check_bin_x "${OVPN:-$DEFAULT_OVPN}"
-			;;
-			bond)
-				check_bin_x "${IFENSLAVE:-$DEFAULT_IFENSLAVE}"
 			;;
 			bri)
 				check_bin_x "${BRCTL:-$DEFAULT_BRCTL}"

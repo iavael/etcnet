@@ -1,0 +1,36 @@
+						-*- outline -*-
+
+/etc/net now contains ipset support among other firewall types.
+
+ipset can be activated by prepending 'ipset' into FW_TYPE variable.
+ipset rules are organized in tree and contained under <iface>/fw/ipset
+directory and basically resembles iptables ones.
+ipset tree consists of few directories named by ipset type,
+each can contain one or more rule files constructing named set of
+given type:
+
+<iface>/fw/ipset/
+                |- ipmap/
+                        |- set0
+                        +- set1
+                |- iphash
+                |- ipporthash
+                |- iptree
+                |- ipportiphash
+                |- ipportnethash
+                |- iptreemap
+                |- macipmap
+                |- nethash
+                |- portmap
+                +- setlist
+
+First significant line of such rule file constructs set header, subsequent
+ones -- initial members of that ip set, ex:
+
+--- %< <iface>/fw/ipset/ipmap/set0 %< ---
+# header
+--from 172.16.4.8 --to 172.16.4.18
+# members
+172.16.4.10
+172.16.4.11
+--- %< ---
