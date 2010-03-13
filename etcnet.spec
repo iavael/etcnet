@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.9.10
-Release:	alt2.1
+Release:	alt3
 
 Summary:	/etc/net network configuration system
 License:	GPL-2
@@ -15,7 +15,7 @@ Requires:	etcnet-defaults = %version-%release
 BuildArch:	noarch
 
 Conflicts:	net-scripts
-Conflicts:	ethtool < 0:3-alt4, ifplugd < 0.28-alt2
+Conflicts:	ethtool < 0:3-alt4, ifplugd < 0.28-alt2, ipset < 4.1-alt2
 Provides:	network-config-subsystem
 
 %description
@@ -34,7 +34,7 @@ support for new interface types can be added without overall design changes.
 Summary:	/etc/net plus everything it can work with
 Group:		System/Configuration/Networking
 Requires:	%name = %version-%release, wireless-tools
-Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables
+Requires:	dhcpcd >= 1.3.22pl4-alt3, iptables, iptables-ipv6, ebtables, ipset >= 4.1-alt2
 Requires:	ethtool >= 0:3-alt4, ifplugd >= 0.28-alt2
 Requires:	hotplug, ncpfs, ppp, vlan-utils, bridge-utils, openvpn, tunctl
 Requires:	pptp-client, wpa_supplicant, avahi-autoipd, rp-pppoe-base >= 3.6-alt2
@@ -137,6 +137,10 @@ fi
 %files full
 
 %changelog
+* Sat Mar 13 2010 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.10-alt3
+- ipset support added
+- use sysfs interface for bonding (#22665)
+
 * Wed Feb 03 2010 Dmitry V. Levin <ldv@altlinux.org> 0.9.10-alt2.1
 - Fixed versioned dependencies on ethtool.
 
