@@ -13,6 +13,7 @@ ACTION=$2
 eval "IPV4ADDRESS=($3)"
 eval "IPV6ADDRESS=($4)"
 pickup_defaults
+pickup_options
 $MODPROBE ipv6
 
 case $ACTION in

@@ -216,7 +216,7 @@ fi
 # 1: generic error
 # 10: no error, complete the rest via script executed by supplicant
 # 11: failed to run supplicant
-if is_yes "$CONFIG_WIRELESS" && is_wireless $NAME; then
+if ( is_yes "$CONFIG_WIRELESS" && is_wireless $NAME ) || ( is_yes "$CONFIG_DOT1X" ) ; then
 	if ! is_yes $IN_WPA_CLI; then
 		$SCRIPTDIR/config-wireless $NAME
 		rc=$?

@@ -1,0 +1,5 @@
+TYPE=eth
+ONBOOT=yes
+BOOTPROTO=dhcp
+WPA_DRIVER=wired
+CONFIG_DOT1X=yes
