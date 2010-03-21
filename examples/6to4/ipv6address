@@ -1,0 +1,2 @@
+# first six octets: ipv6calc --ipv4_to_6to4addr $TUNLOCAL
+2002:c000:200a::1
