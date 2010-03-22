@@ -19,7 +19,7 @@ $MODPROBE ipv6
 case $ACTION in
 	start)
 		. $SCRIPTDIR/functions-ipv6
-		if ! is_yes "$DONT_FLUSH"; then
+		if [ "$NAME" != "lo" ] && ! is_yes "$DONT_FLUSH"; then
 			$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
 			$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
 			$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
@@ -32,7 +32,7 @@ case $ACTION in
 	stop)
 		. $SCRIPTDIR/functions-ipv6
 		config_ipv6_routes_rules del
-		if ! is_yes "$DONT_FLUSH"; then
+		if [ "$NAME" != "lo" ] && ! is_yes "$DONT_FLUSH"; then
 			$IP -6 address flush dev $NAME scope host >/dev/null 2>&1
 			$IP -6 address flush dev $NAME scope site >/dev/null 2>&1
 			$IP -6 address flush dev $NAME scope global >/dev/null 2>&1
