@@ -52,7 +52,7 @@ install:
 	@install -m 644 etc/net/ifaces/default/fw/ebtables/nat/* $(etcnetdir)/ifaces/default/fw/ebtables/nat
 	@# Finally done with default iface.
 	@install -m 644 etc/net/ifaces/unknown/{options,README} $(etcnetdir)/ifaces/unknown
-	@install -m 644 etc/net/ifaces/lo/{options,ipv4address,ipv6address} $(etcnetdir)/ifaces/lo
+	@install -m 644 etc/net/ifaces/lo/{options,ipv4address} $(etcnetdir)/ifaces/lo
 	@install -m 644 etc/net/options.d/* $(etcnetdir)/options.d
 	@install -m 755 etc/net/scripts/contrib/* $(etcnetdir)/scripts/contrib
 	@install -m 644 etc/net/scripts/functions* $(etcnetdir)/scripts
