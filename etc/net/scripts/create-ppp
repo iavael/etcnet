@@ -62,7 +62,7 @@ case "$PPPTYPE" in
 	;;
 	pppoe)
 		[ -x "${PPPOE:=$DEFAULT_PPPOE}" ] || {
-			print_error "$PPPOE does not exist or is not executable. Try installing rp-pppoe-client RPM."
+			print_error "$PPPOE does not exist or is not executable. Try installing rp-pppoe-base RPM."
 			exit 1
 		}
 		[ -n "$HOST" ] || {
