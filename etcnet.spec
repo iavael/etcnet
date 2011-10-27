@@ -1,6 +1,6 @@
 Name:		etcnet
 Version:	0.9.10
-Release:	alt5
+Release:	alt6
 
 Summary:	/etc/net network configuration system
 License:	GPL-2
@@ -137,6 +137,9 @@ fi
 %files full
 
 %changelog
+* Thu Oct 27 2011 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.10-alt6
+- no not use AUTO as valid DHCP_HOSTNAME value anymore (sem@) (#26512)
+
 * Mon Mar 22 2010 Sergey Bolshakov <sbolshakov@altlinux.ru> 0.9.10-alt5
 - do not flush ipv6 addresses from lo (#22941 again)
 
