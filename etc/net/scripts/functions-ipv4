@@ -23,7 +23,7 @@ dhcp_cmdline()
 			if [ -n "$DHCP_HOSTNAME" ]; then
 				case "$DHCP_HOSTNAME" in
 					AUTO)
-						H="-H"
+						print_warning "AUTO in DHCP_HOSTNAME is no longer supported."
 					;;
 					localhost)
 						[ -n "$HOSTNAME" -a "$HOSTNAME" != "localhost" -a "$HOSTNAME" != "localhost.localdomain" ] && \

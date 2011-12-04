@@ -171,11 +171,23 @@ pickup_options()
 	SourceIfNotEmpty $SCRIPTDIR/functions-$TYPE
 }
 
+_print_log()
+{
+	local prefix="$1"; shift
+
+	echo "$prefix: $0: $@" >&2
+	# don't hang if logger hangs
+	logger -p daemon.info -t /etc/net -- "$prefix: $0: $@" &
+}
+
+print_warning()
+{
+	_print_log "WARNING" "$@"
+}
+
 print_error()
 {
-	echo "ERROR: $0: $@" >&2
-	# don't hang if logger hangs
-	logger -p daemon.info -t /etc/net -- "ERROR: $0: $@" &
+	_print_log "ERROR" "$@"
 }
 
 print_message()
